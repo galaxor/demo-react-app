@@ -23,28 +23,25 @@ export default function NotificationBell() {
     
   }, [notificationsVisible, setNotificationsVisible]);
 
-/*
   useEffect(() => {
-    const closeNotificationsBox = (e) => {
-      if (
-          !notificationsBoxCheckboxRef.current.contains(e.target)
-          && !notificationsBoxBellRef.current.contains(e.target)
-
-&& !notificationsBoxRef.current.contains(e.target)
-
-)
+    function closeNotificationsBox(e) {
+      if (notificationsVisible
+        && !notificationsBoxCheckboxRef.current.contains(e.target)
+        && !notificationsBoxBellRef.current.contains(e.target)
+        && !notificationsBoxRef.current.contains(e.target))
       {
         setNotificationsVisible(false);
       }
-    };
+    }
 
-    window.addEventListener('click', closeNotificationsBox);
+    if (notificationsVisible) {
+      window.addEventListener('click', closeNotificationsBox);
+    }
 
     return () => { 
       window.removeEventListener('click', closeNotificationsBox); 
     };
-  }, [setNotificationsVisible]);
-*/
+  }, [notificationsVisible, setNotificationsVisible, notificationsBoxCheckboxRef, notificationsBoxBellRef, notificationsBoxRef]);
 
 
   return (
