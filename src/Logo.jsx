@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
+
 export default function Logo() {
   return (
-    <div id="site-logo">Cool App</div>
+    <Link id="site-logo" to="/">Cool App</Link>
   );
 }
