@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { UserContext } from './UserContext.jsx';
+
+import UserContext from './UserContext.jsx';
 import PopularFeed from './PopularFeed.jsx';
 import YourFeed from './YourFeed.jsx';
 

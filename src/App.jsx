@@ -3,7 +3,7 @@ import UserSection from './UserSection.jsx';
 import NavigationSidebar from './NavigationSidebar.jsx';
 
 import './App.css';
-import { UserContext } from "./UserContext.jsx";
+import UserContext from "./UserContext.jsx";
 import { useEffect, useState } from 'react';
 
 import User from './logic/user.js';

@@ -1,6 +1,7 @@
 import { useContext } from 'react';
-import { UserContext } from './UserContext.jsx';
 import { Link } from 'react-router-dom';
+
+import UserContext from './UserContext.jsx';
 import NotificationBell from './NotificationBell.jsx';
 
 import User from './logic/user.js';

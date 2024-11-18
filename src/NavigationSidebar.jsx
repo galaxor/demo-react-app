@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { UserContext } from './UserContext';
+import UserContext from './UserContext';
 import { Link, NavLink, useMatches } from 'react-router-dom';
 
 import User from './logic/user.js';
@@ -30,7 +30,7 @@ export default function NavigationSidebar() {
         <>
         <h2 id="account">Account</h2>
         <ul aria-describedby="account">
-        <li>Profile</li>
+        <li><NavLink to="/profile/edit">Profile</NavLink></li>
         <li>Account Settings</li>
         <li><Link onClick={() => setUser(User.logout())}>Log Out</Link></li>
         </ul>

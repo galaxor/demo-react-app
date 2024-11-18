@@ -12,5 +12,11 @@ export default {
   logout: () => {
     window.localStorage.removeItem('user');
     return null;
-  }
+  },
+
+  setName: (name) => {
+    const user = { name: name };
+    window.localStorage.setItem('user', JSON.stringify(user));
+    return user;
+  },
 };
