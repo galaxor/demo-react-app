@@ -2,7 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import FeaturedFeed from './FeaturedFeed.jsx'
+import RootFeed from './RootFeed.jsx'
+import PopularFeed from './PopularFeed.jsx'
 import YourFeed from './YourFeed.jsx'
 
 import {
@@ -17,11 +18,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <FeaturedFeed />,
+        element: <RootFeed />,
       },
       {
         path: "/home",
         element: <YourFeed />,
+      },
+      {
+        path: "/popular",
+        element: <PopularFeed />,
       },
     ],
   },

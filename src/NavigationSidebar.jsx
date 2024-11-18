@@ -19,7 +19,7 @@ export default function NavigationSidebar() {
           <li><NavLink to="/home">Your Feed</NavLink></li>
           : ''
         }
-        <li><NavLink to="/">Featured Feed</NavLink></li>
+        <li><NavLink to="/popular">Popular Posts</NavLink></li>
       </ul>
       </section>
 

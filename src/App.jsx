@@ -1,7 +1,7 @@
 import Logo from './Logo.jsx';
 import UserSection from './UserSection.jsx';
 import NavigationSidebar from './NavigationSidebar.jsx';
-import FeaturedFeed from './FeaturedFeed.jsx';
+import PopularFeed from './PopularFeed.jsx';
 
 import './App.css';
 import { UserContext } from "./UserContext.jsx";
