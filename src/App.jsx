@@ -4,13 +4,22 @@ import NavigationSidebar from './NavigationSidebar.jsx';
 
 import './App.css';
 import { UserContext } from "./UserContext.jsx";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import User from './logic/user.js';
 
 import { Outlet } from "react-router-dom";
 
 function App() {
   const [user, setUser] = useState(null);
   const userContext = {user: user, setUser: setUser};
+
+  useEffect(() => {
+    if (user == null) {
+      const loggedInUser = User.loggedInUser();
+      setUser(loggedInUser);
+    }
+  }, [user, setUser]);
 
   return (
     <>

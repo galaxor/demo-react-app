@@ -3,7 +3,7 @@ import { UserContext } from './UserContext.jsx';
 import { Link } from 'react-router-dom';
 import NotificationBell from './NotificationBell.jsx';
 
-import { User } from './logic/user.js';
+import User from './logic/user.js';
 
 export default function UserSection() {
   const {user, setUser} = useContext(UserContext);

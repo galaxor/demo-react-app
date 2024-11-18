@@ -1,9 +1,16 @@
-export const User = {
+export default {
+  loggedInUser: () => {
+    return JSON.parse(window.localStorage.getItem('user'));
+  },
+
   login: () => {
-    return { name: 'Cool User' };
+    const user = { name: 'Cool User' };
+    window.localStorage.setItem('user', JSON.stringify(user));
+    return user;
   },
 
   logout: () => {
+    window.localStorage.removeItem('user');
     return null;
   }
 };

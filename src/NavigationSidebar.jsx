@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { UserContext } from './UserContext';
 import { Link, NavLink, useMatches } from 'react-router-dom';
 
-import { User } from './logic/user.js';
+import User from './logic/user.js';
 
 import './static/nav.css';
 
