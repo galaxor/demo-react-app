@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
+import './static/NotificationBell.css';
+
 export default function NotificationBell() {
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const notificationsBoxRef = useRef(null);
   const notificationsBoxCheckboxRef = useRef(null);
   const notificationsBoxBellRef = useRef(null);
 
+  // Pressing escape causes the notifications box to close
   useEffect(() => {
     function escKeyHandler(e) {
       if (e.key == 'Escape') {
@@ -23,6 +26,7 @@ export default function NotificationBell() {
     
   }, [notificationsVisible, setNotificationsVisible]);
 
+  // Clicking outside the notifications box causes it to close
   useEffect(() => {
     function closeNotificationsBox(e) {
       if (notificationsVisible
@@ -41,8 +45,16 @@ export default function NotificationBell() {
     return () => { 
       window.removeEventListener('click', closeNotificationsBox); 
     };
-  }, [notificationsVisible, setNotificationsVisible, notificationsBoxCheckboxRef, notificationsBoxBellRef, notificationsBoxRef]);
+  }, [notificationsVisible, setNotificationsVisible]);
 
+  // Focus the notifications box when it first appears.
+  useEffect(() => {
+    if (notificationsVisible) {
+      notificationsBoxRef.current.focus();
+    } else {
+      notificationsBoxCheckboxRef.current.focus();
+    }
+  }, [notificationsVisible]);
 
   return (
     <>
@@ -52,12 +64,12 @@ export default function NotificationBell() {
         aria-label="No new notifications"
         onChange={(e) => {
           setNotificationsVisible(e.target.checked);
-         }}
+        }}
       />
       <label htmlFor="notifications-checkbox" id="notifications-bell" ref={notificationsBoxBellRef}>🔔</label>
 
       {notificationsVisible ? 
-        <section id="notifications" ref={notificationsBoxRef}>
+        <section id="notifications" ref={notificationsBoxRef} tabIndex="-1">
         <h2 id="notifications-header">Notifications</h2>
         <ul aria-labelledby="notifications-header">
           <li>No new notifications</li>
