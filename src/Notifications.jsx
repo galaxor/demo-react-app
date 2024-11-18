@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 
-export function Notifications({ setNotificationsVisible }) {
+const Notifications = forwardRef((props, ref) => {
+  const { setNotificationsVisible } = props;
+
   // Make the Escape key close the notifications box.
   useEffect(() => {
     const closeNotificationsBox = (e) => {
@@ -17,12 +19,34 @@ export function Notifications({ setNotificationsVisible }) {
   }, [setNotificationsVisible]);
 
 
+  // Make it so clicking outside the notifications box closes the box
+  useEffect(() => {
+    console.log("Installing");
+
+    const closeNotificationsBox = (e) => {
+      console.log("Clicked", e.target);
+      if (!ref.current.contains(e.target) && e.target.id!='notifications-checkbox' && e.target.id!='notifications-bell') {
+        setNotificationsVisible(false);
+      }
+    };
+
+    window.addEventListener('click', closeNotificationsBox);
+
+    return () => { 
+      console.log("Uninstalling");
+      window.removeEventListener('click', closeNotificationsBox); 
+    };
+  }, [setNotificationsVisible]);
+
+
   return (
-    <section id="notifications">
+    <section ref={ref} id="notifications">
     <h2 id="notifications-header">Notifications</h2>
     <ul aria-labelledby="notifications-header">
       <li>No new notifications</li>
     </ul>
     </section>
   );
-}
+});
+
+export default Notifications;
