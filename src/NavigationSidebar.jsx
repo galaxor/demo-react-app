@@ -1,21 +1,25 @@
 import { useContext } from 'react';
 import { UserContext } from './UserContext';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import { User } from './logic/user.js';
+
+import './static/nav.css';
 
 export default function NavigationSidebar() {
   const { user, setUser } = useContext(UserContext);
 
-  console.log(User);
-  
   return (
     <aside id="site-navigation">
       <nav id="site-navigation">
       <section>
       <h2 id="available-feeds">Available Feeds</h2>
       <ul aria-describedby="available-feeds">
-        <li>Featured Feed</li>
+        {user ?
+          <li><NavLink to="/home">Your Feed</NavLink></li>
+          : ''
+        }
+        <li><NavLink to="/">Featured Feed</NavLink></li>
       </ul>
       </section>
 
