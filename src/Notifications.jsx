@@ -21,10 +21,7 @@ const Notifications = forwardRef((props, ref) => {
 
   // Make it so clicking outside the notifications box closes the box
   useEffect(() => {
-    console.log("Installing");
-
     const closeNotificationsBox = (e) => {
-      console.log("Clicked", e.target);
       if (!ref.current.contains(e.target) && e.target.id!='notifications-checkbox' && e.target.id!='notifications-bell') {
         setNotificationsVisible(false);
       }
@@ -33,7 +30,6 @@ const Notifications = forwardRef((props, ref) => {
     window.addEventListener('click', closeNotificationsBox);
 
     return () => { 
-      console.log("Uninstalling");
       window.removeEventListener('click', closeNotificationsBox); 
     };
   }, [setNotificationsVisible]);
