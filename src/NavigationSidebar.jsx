@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { UserContext } from './UserContext';
-import { Link, NavLink, useMatch, useMatches } from 'react-router-dom';
+import { Link, NavLink, useMatches } from 'react-router-dom';
 
 import { User } from './logic/user.js';
 
@@ -10,7 +10,6 @@ export default function NavigationSidebar() {
   const { user, setUser } = useContext(UserContext);
 
   const matches = useMatches();
-  console.log(matches);
 
   return (
     <aside id="site-navigation">
