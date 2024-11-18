@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext } from './UserContext.jsx';
 import { Link } from 'react-router-dom';
 import { Notifications } from './Notifications.jsx';
@@ -8,7 +8,6 @@ import { User } from './logic/user.js';
 export default function UserSection() {
   const {user, setUser} = useContext(UserContext);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
-  const notificationsBoxRef = useRef(null);
 
   return (
     <section id="user-section">
@@ -24,7 +23,6 @@ export default function UserSection() {
           <label htmlFor="notifications-checkbox">🔔</label>
           {notificationsVisible ? 
             <Notifications
-                notificationsBoxRef={notificationsBoxRef} 
                 setNotificationsVisible={setNotificationsVisible}
             />
             :

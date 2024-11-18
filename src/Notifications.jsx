@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function Notifications({ setNotificationsVisible, notificationsBoxRef }) {
+export function Notifications({ setNotificationsVisible }) {
   // Make the Escape key close the notifications box.
   useEffect(() => {
     const closeNotificationsBox = (e) => {
@@ -16,8 +16,9 @@ export function Notifications({ setNotificationsVisible, notificationsBoxRef }) 
     };
   }, [setNotificationsVisible]);
 
+
   return (
-    <section ref={notificationsBoxRef} id="notifications">
+    <section id="notifications">
     <h2 id="notifications-header">Notifications</h2>
     <ul aria-labelledby="notifications-header">
       <li>No new notifications</li>
