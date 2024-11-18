@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { UserContext } from './UserContext';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useMatch, useMatches } from 'react-router-dom';
 
 import { User } from './logic/user.js';
 
@@ -9,6 +9,9 @@ import './static/nav.css';
 export default function NavigationSidebar() {
   const { user, setUser } = useContext(UserContext);
 
+  const matches = useMatches();
+  console.log(matches);
+
   return (
     <aside id="site-navigation">
       <nav id="site-navigation">
@@ -16,10 +19,10 @@ export default function NavigationSidebar() {
       <h2 id="available-feeds">Available Feeds</h2>
       <ul aria-describedby="available-feeds">
         {user ?
-          <li><NavLink to="/home">Your Feed</NavLink></li>
+          <li><NavLink className={(user && matches[matches.length-1].pathname=="/") ? 'active' : ''} to="/home">Your Feed</NavLink></li>
           : ''
         }
-        <li><NavLink to="/popular">Popular Posts</NavLink></li>
+        <li><NavLink className={(!user && matches[matches.length-1].pathname=="/") ? 'active' : ''} to="/popular">Popular Posts</NavLink></li>
       </ul>
       </section>
 
