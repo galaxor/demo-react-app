@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
@@ -21,6 +21,15 @@ export default function ProfileEdit() {
   const nameInputRef = useRef(null);
   const avatarPreviewRef = useRef(null);
   const avatarAltTextRef = useRef(null);
+
+  // When you first load the page, the previews will be empty.
+  // Load them with the saved values.
+  useEffect(() => {
+    if (user) {
+      setAvatarPreview(user.avatar);
+      setAvatarAltTextPreview(user.avatarAltText);
+    }
+  }, [user]);
 
 
   function avatarUpload(e) {
