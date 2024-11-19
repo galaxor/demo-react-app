@@ -11,6 +11,7 @@ export default function ProfileEdit() {
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(user? user.avatar : null);
+  const [avatarAltTextPreview, setAvatarAltTextPreview] = useState(user? user.avatarAltText : null);
 
   const nameInputRef = useRef(null);
   const avatarPreviewRef = useRef(null);
@@ -38,8 +39,8 @@ export default function ProfileEdit() {
           User.setAvatarAltText(null);
           User.setAvatar(null);
         } else {
-          User.setAvatarAltText(avatarAltTextRef.current.value);
-          User.setAvatar(avatarPreviewRef.current.src);
+          User.setAvatarAltText(avatarAltTextPreview);
+          User.setAvatar(avatarPreview);
         }
         setRemoveAvatar(false);
         const newUser = User.setName(nameInputRef.current.value);
@@ -85,7 +86,9 @@ export default function ProfileEdit() {
         <>
         <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
         <textarea id="avatar-alt-input" name="avatar-alt" ref={avatarAltTextRef}
-            defaultValue={user.avatarAltText} />
+            value={avatarAltTextPreview}
+            onChange = {(e) => setAvatarAltTextPreview(e.target.value)}
+        />
         </>
         :
         ''
