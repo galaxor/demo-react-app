@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-// import AvatarEditor from 'react-avatar-editor';
+import AvatarEditor from 'react-avatar-editor';
 
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -91,6 +91,20 @@ export default function ProfileEdit() {
           <span id="no-avatar" aria-label="No avatar image">❌</span>
           :
           ''
+        }
+
+        {avatarPreview && !removeAvatar?
+          <AvatarEditor
+            image={avatarPreview}
+            width={250}
+            height={250}
+            border={50}
+            color={[255, 255, 255, 0.6]} // RGBA
+            scale={1.2}
+            rotate={0}
+          />
+        :
+        ''
         }
 
         {avatarPreview ?
