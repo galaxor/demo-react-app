@@ -10,16 +10,19 @@ export default function ProfileEdit() {
   const { user, setUser } = useContext(UserContext);
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
+  const [avatarPreviewing, setAvatarPreviewing] = useState(user && user.avatar);
 
   const nameInputRef = useRef(null);
   const avatarPreviewRef = useRef(null);
   const avatarAltTextRef = useRef(null);
+
 
   function avatarUpload(e) {
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       const avatar = reader.result;
 
+      setAvatarPreviewing(true);
       avatarPreviewRef.current.src = avatar;
     });
 
@@ -64,7 +67,11 @@ export default function ProfileEdit() {
               ''
             }
             <div id="remove-avatar">
-              <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar} onChange={(e) => setRemoveAvatar(e.target.checked)} />
+              <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
+                onChange={(e) => {
+                  setRemoveAvatar(e.target.checked);
+                  setAvatarPreviewing(!e.target.checked);
+                }} />
               <label htmlFor="remove-avatar-checkbox">Remove avatar</label>
             </div>
             </>
@@ -73,7 +80,7 @@ export default function ProfileEdit() {
           }
           </div>
 
-        {user && user.avatar && !removeAvatar ?
+        {avatarPreviewing && !removeAvatar ?
         <>
         <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
         <textarea id="avatar-alt-input" name="avatar-alt" ref={avatarAltTextRef}
