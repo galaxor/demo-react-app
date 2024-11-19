@@ -66,6 +66,7 @@ export default function ProfileEdit() {
 
       setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
     }}>
+      <div id="profile-fields">
       <label htmlFor="avatar-input">Avatar</label>
         <div id="avatar-preview">
         {removeAvatar ?
@@ -123,10 +124,9 @@ export default function ProfileEdit() {
           autoComplete="name"
           defaultValue={user? user.displayName : ""}
         />
+      </div>
 
-      <p>
       <button type="submit">Save your cool changes</button>
-      </p>
     </form>
   </>;
 }

@@ -8,7 +8,7 @@ img.avatar-small {
   height: 1.5em;
 }
 
-form#profile-edit {
+form#profile-edit #profile-fields {
   display: grid;
   grid-template-columns: 30% 70%;
   max-width: fit-content;
