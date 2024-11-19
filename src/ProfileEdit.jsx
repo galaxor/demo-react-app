@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+// import AvatarEditor from 'react-avatar-editor';
 
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -78,8 +79,8 @@ export default function ProfileEdit() {
           autoComplete="photo"
           onChange={avatarUpload}
         />
-          {avatarPreview || (user && user.avatar) ?
-            <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarPreview? avatarPreview : user.avatar} ref={avatarPreviewRef} /></label>
+          {avatarPreview ?
+            <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarPreview} ref={avatarPreviewRef} /></label>
             :
             ''
           }
@@ -92,7 +93,7 @@ export default function ProfileEdit() {
           ''
         }
 
-        {avatarPreview || (user && user.avatar) ?
+        {avatarPreview ?
           <>
           <div id="remove-avatar">
             <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
@@ -107,11 +108,11 @@ export default function ProfileEdit() {
         }
         </div>
 
-      {(avatarPreview || (user && user.avatar)) && !removeAvatar ?
+      {avatarPreview && !removeAvatar ?
       <>
       <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
       <textarea id="avatar-alt-input" name="avatar-alt" ref={avatarAltTextRef}
-          value={avatarAltTextPreview? avatarAltTextPreview : (user? user.avatarAltText ?? "" : "") }
+          value={avatarAltTextPreview}
           onChange = {(e) => setAvatarAltTextPreview(e.target.value)}
       />
       </>
