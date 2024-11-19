@@ -31,7 +31,6 @@ export default function ProfileEdit() {
         const newUser = User.setName(nameInputRef.current.value);
         const newerUser = User.setAvatar(avatarPreviewRef.current.src);
 
-        console.log("Setting user", newerUser);
         setUser(newerUser);
       }}>
         <label htmlFor="avatar-input">Avatar</label>

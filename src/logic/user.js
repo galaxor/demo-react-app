@@ -27,16 +27,16 @@ export default {
   setName: (name) => {
     const account = db.get('accounts', 'testuser');
     const person = db.get('people', account.handle);
-    person.displayName = name;
-    db.set('people', account.handle, person);
-    return person;
+    const newPerson = {...person, displayName: name};
+    db.set('people', account.handle, newPerson);
+    return newPerson;
   },
 
   setAvatar: (avatar) => {
     const account = db.get('accounts', 'testuser');
     const person = db.get('people', account.handle);
-    person.avatar = avatar;
+    const newPerson = {...person, avatar: avatar};
     db.set('people', account.handle, person);
-    return person;
+    return newPerson;
   },
 };

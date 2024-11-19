@@ -46,7 +46,7 @@ class Database {
   set(table, key, value) {
     this[table][key] = value;
     localStorage.setItem(table, JSON.stringify(this[table]));
-    return value;
+    return {...value};
   }
 
   del(table, key) {
