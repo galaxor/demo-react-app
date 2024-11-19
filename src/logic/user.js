@@ -4,8 +4,9 @@ const db = new Database();
 
 export default {
   loggedInUser: () => {
-    const account = db.get('sessions', 'testuser');
-    if (account) {
+    const session = db.get('sessions', 'testuser');
+    if (session) {
+      const account = db.get('accounts', 'testuser');
       return db.get('people', account.handle);
     } else {
       return null;

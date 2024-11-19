@@ -9,8 +9,6 @@ import User from './logic/user.js';
 export default function UserSection() {
   const {user, setUser} = useContext(UserContext);
 
-  console.log(user);
-
   return (
     <section id="user-section">
       <ul>

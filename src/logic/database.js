@@ -31,6 +31,11 @@ class Database {
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('profiles', JSON.stringify(this.profiles));
+    } else {
+      this.accounts = JSON.parse(localStorage.getItem('accounts'));
+      this.sessions = JSON.parse(localStorage.getItem('sessions'));
+      this.people = JSON.parse(localStorage.getItem('people'));
+      this.profiles = JSON.parse(localStorage.getItem('profiles'));
     }
   }
 
