@@ -9,8 +9,12 @@ import './static/ProfileEdit.css';
 export default function ProfileEdit() {
   const { user, setUser } = useContext(UserContext);
 
+  console.log("user is", user);
+
   const [removeAvatar, setRemoveAvatar] = useState(false);
+  console.log("I'd sure like to set that avatarPreview to ", user? user.avatar : null);
   const [avatarPreview, setAvatarPreview] = useState(user? user.avatar : null);
+  console.log("So avatarPreview is", avatarPreview);
   const [avatarAltTextPreview, setAvatarAltTextPreview] = useState(user? user.avatarAltText : null);
 
   const nameInputRef = useRef(null);
@@ -63,7 +67,11 @@ export default function ProfileEdit() {
             src={avatarPreview}
             onChange={avatarUpload}
           />
-          <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarPreview} ref={avatarPreviewRef} /></label>
+            {avatarPreview ?
+              <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarPreview} ref={avatarPreviewRef} /></label>
+              :
+              ''
+            }
           </>
           }
 
@@ -72,6 +80,7 @@ export default function ProfileEdit() {
             :
             ''
           }
+
           {avatarPreview ?
             <>
             <div id="remove-avatar">

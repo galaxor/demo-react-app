@@ -33,6 +33,7 @@ form#profile-edit {
     display: none;
   }
 
+  /*
   label:has(#avatar-preview-img[src]) + #avatar-upload-box {
     display: none;
   }
@@ -40,6 +41,7 @@ form#profile-edit {
   label:has(#avatar-preview-img:not([src])) {
     display: none;
   }
+  */
 }
 
 
