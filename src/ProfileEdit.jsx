@@ -53,7 +53,7 @@ export default function ProfileEdit() {
             autoComplete="photo"
             onChange={avatarUpload}
           />
-          <label htmlFor="avatar-input"><img className="avatar-medium" src={user.avatar} ref={avatarPreviewRef} /></label>
+          <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={user.avatar} ref={avatarPreviewRef} /></label>
           </>
           }
           {user && user.avatar ?
