@@ -13,6 +13,7 @@ export default function NotificationBell() {
     function escKeyHandler(e) {
       if (e.key == 'Escape') {
         setNotificationsVisible(false);
+        notificationsBoxCheckboxRef.current.focus();
       }
     }
 
@@ -35,6 +36,7 @@ export default function NotificationBell() {
         && !notificationsBoxRef.current.contains(e.target))
       {
         setNotificationsVisible(false);
+        notificationsBoxCheckboxRef.current.focus();
       }
     }
 
@@ -51,8 +53,6 @@ export default function NotificationBell() {
   useEffect(() => {
     if (notificationsVisible) {
       notificationsBoxRef.current.focus();
-    } else {
-      notificationsBoxCheckboxRef.current.focus();
     }
   }, [notificationsVisible]);
 
@@ -64,6 +64,10 @@ export default function NotificationBell() {
         aria-label="No new notifications"
         onChange={(e) => {
           setNotificationsVisible(e.target.checked);
+
+          if (!e.target.checked) {
+            notificationsBoxCheckboxRef.current.focus();
+          }
         }}
       />
       <label htmlFor="notifications-checkbox" id="notifications-bell" ref={notificationsBoxBellRef}>🔔</label>
