@@ -1,5 +1,7 @@
 import { useContext, useRef, useState } from 'react';
 
+import SystemNotificationsContext from './SystemNotificationsContext.jsx';
+import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
 
 import User from './logic/user.js';
@@ -8,6 +10,7 @@ import './static/ProfileEdit.css';
 
 export default function ProfileEdit() {
   const { user, setUser } = useContext(UserContext);
+  const { systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(user? user.avatar : null);
@@ -32,6 +35,7 @@ export default function ProfileEdit() {
 
   return <>
     <h1>Edit Your Profile</h1>
+    <SystemNotificationArea />
     <form id="profile-edit" onSubmit={(e) => {
       e.preventDefault();
       if (removeAvatar) {
@@ -49,6 +53,8 @@ export default function ProfileEdit() {
       setRemoveAvatar(false);
       const newUser = User.setName(nameInputRef.current.value);
       setUser(newUser);
+
+      setSystemNotifications([...systemNotifications, {type: 'status', message: "Profile Updated"}]);
     }}>
       <label htmlFor="avatar-input">Avatar</label>
         <div id="avatar-preview">

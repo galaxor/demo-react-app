@@ -7,10 +7,12 @@ import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 export default function SystemNotificationArea() {
   const { systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
 
-  const notifications = systemNotifications.map(item => <li key={uuidv4()} className="item.level">{item.message}</li> );
+  const notifications = systemNotifications.map(item => 
+    <li key={uuidv4()} className="item.level" role={item.level == 'error'? "alert" : "status"}>{item.message}</li> 
+  );
 
   if (systemNotifications) {
-    return <section><h2>System Notifications</h2><ul id="system-notifications">{notifications}</ul></section>;
+    return <section id="system-notifications"><h2 id="system-notification-header">System Notifications</h2><ul aria-describedby="system-notification-header">{notifications}</ul></section>;
   }
 }
 

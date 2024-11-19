@@ -1,22 +1,22 @@
+import { useEffect, useState } from 'react';
+import { Outlet } from "react-router-dom";
+
 import Logo from './Logo.jsx';
 import UserSection from './UserSection.jsx';
 import NavigationSidebar from './NavigationSidebar.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
-import './App.css';
-import UserContext from "./UserContext.jsx";
 import SystemNotificationsContext from "./SystemNotificationsContext.jsx";
-import { useEffect, useState } from 'react';
+import UserContext from "./UserContext.jsx";
 
+import './App.css';
 import User from './logic/user.js';
-
-import { Outlet } from "react-router-dom";
 
 function App() {
   const [user, setUser] = useState(null);
   const userContext = {user: user, setUser: setUser};
 
-  const [systemNotifications, setSystemNotifications] = useState([{level: 'success', message: "It's okay!"}]);
+  const [systemNotifications, setSystemNotifications] = useState([]);
   const systemNotificationsContext = {systemNotifications: systemNotifications, setSystemNotifications: setSystemNotifications};
 
   useEffect(() => {
@@ -37,7 +37,6 @@ function App() {
 
     <NavigationSidebar />
     <main>
-    <SystemNotificationArea />
     <Outlet />
     </main>
     </SystemNotificationsContext.Provider>
