@@ -11,6 +11,7 @@ export default function ProfileEdit() {
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(user? user.avatar : null);
+
   const [avatarAltTextPreview, setAvatarAltTextPreview] = useState(user? user.avatarAltText : null);
 
   const nameInputRef = useRef(null);
@@ -23,7 +24,6 @@ export default function ProfileEdit() {
     reader.addEventListener("load", () => {
       const avatar = reader.result;
 
-      console.log("Setting the thing");
       setAvatarPreview(avatar);
     });
 
@@ -60,10 +60,13 @@ export default function ProfileEdit() {
           <input type="file" id="avatar-input" name="avatar"
             accept="image/*"
             autoComplete="photo"
-            src={avatarPreview}
             onChange={avatarUpload}
           />
-          <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarPreview} ref={avatarPreviewRef} /></label>
+            {avatarPreview || (user && user.avatar) ?
+              <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarPreview? avatarPreview : user.avatar} ref={avatarPreviewRef} /></label>
+              :
+              ''
+            }
           </>
           }
 
@@ -72,7 +75,8 @@ export default function ProfileEdit() {
             :
             ''
           }
-          {avatarPreview ?
+
+          {avatarPreview || (user && user.avatar) ?
             <>
             <div id="remove-avatar">
               <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
@@ -87,11 +91,11 @@ export default function ProfileEdit() {
           }
           </div>
 
-        {avatarPreview && !removeAvatar ?
+        {(avatarPreview || (user && user.avatar)) && !removeAvatar ?
         <>
         <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
         <textarea id="avatar-alt-input" name="avatar-alt" ref={avatarAltTextRef}
-            value={avatarAltTextPreview}
+            value={avatarAltTextPreview? avatarAltTextPreview : (user? user.avatarAltText : "") }
             onChange = {(e) => setAvatarAltTextPreview(e.target.value)}
         />
         </>
