@@ -36,7 +36,16 @@ export default {
     const account = db.get('accounts', 'testuser');
     const person = db.get('people', account.handle);
     const newPerson = {...person, avatar: avatar};
-    db.set('people', account.handle, person);
+    console.log("Saving", newPerson);
+    db.set('people', account.handle, newPerson);
+    return newPerson;
+  },
+
+  setAvatarAltText: (altText) => {
+    const account = db.get('accounts', 'testuser');
+    const person = db.get('people', account.handle);
+    const newPerson = {...person, avatarAltText: altText};
+    db.set('people', account.handle, newPerson);
     return newPerson;
   },
 };

@@ -18,7 +18,7 @@ export default function UserSection() {
           <NotificationBell />
         </li>
         <li id="user-name">{user.avatar? 
-          <img src={user.avatar} className="avatar-small" />
+          <img src={user.avatar} className="avatar-small" alt={user.avatarAltText} />
           :
           ""}
           {user.displayName}

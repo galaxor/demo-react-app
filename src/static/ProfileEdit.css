@@ -7,3 +7,31 @@ img.avatar-small {
   width: 1.5em;
   height: 1.5em;
 }
+
+form#profile-edit {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  max-width: fit-content;
+  gap: 2ex;
+  align-items: center;
+
+  label {
+    text-align: right;
+    font-weight: bold;
+  }
+
+  span#no-avatar,
+  label#avatar-upload-box {
+    display: block;
+    width: 4em;
+    height: 4em;
+    border: 2px solid black;
+    text-align: center;
+  }
+
+  #avatar-input {
+    display: none;
+  }
+}
+
+
