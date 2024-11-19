@@ -95,7 +95,7 @@ export default function ProfileEdit() {
         <>
         <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
         <textarea id="avatar-alt-input" name="avatar-alt" ref={avatarAltTextRef}
-            value={avatarAltTextPreview? avatarAltTextPreview : (user? user.avatarAltText : "") }
+            value={avatarAltTextPreview? avatarAltTextPreview : (user? user.avatarAltText ?? "" : "") }
             onChange = {(e) => setAvatarAltTextPreview(e.target.value)}
         />
         </>
