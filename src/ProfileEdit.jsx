@@ -17,7 +17,7 @@ export default function ProfileEdit() {
         setUser(newUser);
       }}>
         <label htmlFor="name-input">Name</label><input id="name-input" name="name" ref={nameInputRef}
-          defaultValue={user? user.name : ""} />
+          defaultValue={user? user.displayName : ""} />
 
         <p>
         <button type="submit">Save your cool changes</button>

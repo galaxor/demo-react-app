@@ -9,6 +9,8 @@ import User from './logic/user.js';
 export default function UserSection() {
   const {user, setUser} = useContext(UserContext);
 
+  console.log(user);
+
   return (
     <section id="user-section">
       <ul>
@@ -17,7 +19,7 @@ export default function UserSection() {
         <li id="notification-bell">
           <NotificationBell />
         </li>
-        <li id="user-name">{user.name}</li>
+        <li id="user-name">{user.displayName}</li>
         </>
         :
         <li id="login"><Link onClick={() => setUser(User.login())}>Log In</Link></li>

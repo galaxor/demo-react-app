@@ -1,22 +1,33 @@
+import Database from './database.js'
+
+const db = new Database();
+
 export default {
   loggedInUser: () => {
-    return JSON.parse(window.localStorage.getItem('user'));
+    const account = db.get('sessions', 'testuser');
+    if (account) {
+      return db.get('people', account.handle);
+    } else {
+      return null;
+    }
   },
 
   login: () => {
-    const user = { name: 'Cool User' };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    return user;
+    const account = db.get('accounts', 'testuser');
+    db.set('sessions', 'testuser', true);
+    return db.get('people', account.handle);
   },
 
   logout: () => {
-    window.localStorage.removeItem('user');
+    db.del('sessions', 'testuser');
     return null;
   },
 
   setName: (name) => {
-    const user = { name: name };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    return user;
+    const account = db.get('accounts', 'testuser');
+    const person = db.get('people', account.handle);
+    person.displayName = name;
+    db.set('people', account.handle, person);
+    return person;
   },
 };
