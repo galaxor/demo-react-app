@@ -17,7 +17,12 @@ export default function UserSection() {
         <li id="notification-bell">
           <NotificationBell />
         </li>
-        <li id="user-name">{user.displayName}</li>
+        <li id="user-name">{user.avatar? 
+          <img src={user.avatar} className="avatar-small" />
+          :
+          ""}
+          {user.displayName}
+        </li>
         </>
         :
         <li id="login"><Link onClick={() => setUser(User.login())}>Log In</Link></li>

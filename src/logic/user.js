@@ -31,4 +31,12 @@ export default {
     db.set('people', account.handle, person);
     return person;
   },
+
+  setAvatar: (avatar) => {
+    const account = db.get('accounts', 'testuser');
+    const person = db.get('people', account.handle);
+    person.avatar = avatar;
+    db.set('people', account.handle, person);
+    return person;
+  },
 };
