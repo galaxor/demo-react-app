@@ -20,7 +20,7 @@ export default function ProfileEdit() {
       avatarPreviewRef.current.src = avatar;
     });
 
-    const avatar = reader.readAsDataURL(e.target.files[0]);
+    reader.readAsDataURL(e.target.files[0]);
   }
 
   return <>
@@ -28,10 +28,10 @@ export default function ProfileEdit() {
       <h1>Edit Your Profile</h1>
       <form onSubmit={(e) => {
         e.preventDefault();
-        const newUser = User.setName(nameInputRef.current.value);
-        const newerUser = User.setAvatar(avatarPreviewRef.current.src);
+        User.setName(nameInputRef.current.value);
+        const newUser = User.setAvatar(avatarPreviewRef.current.src);
 
-        setUser(newerUser);
+        setUser(newUser);
       }}>
         <label htmlFor="avatar-input">Avatar</label>
           <div id="avatar-preview">
