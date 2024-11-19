@@ -10,7 +10,7 @@ export default function ProfileEdit() {
   const { user, setUser } = useContext(UserContext);
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
-  const [avatarPreviewing, setAvatarPreviewing] = useState(user && user.avatar);
+  const [avatarPreview, setAvatarPreview] = useState(user? user.avatar : null);
 
   const nameInputRef = useRef(null);
   const avatarPreviewRef = useRef(null);
@@ -22,8 +22,8 @@ export default function ProfileEdit() {
     reader.addEventListener("load", () => {
       const avatar = reader.result;
 
-      setAvatarPreviewing(true);
-      avatarPreviewRef.current.src = avatar;
+      console.log("Setting the thing");
+      setAvatarPreview(avatar);
     });
 
     reader.readAsDataURL(e.target.files[0]);
@@ -54,23 +54,24 @@ export default function ProfileEdit() {
           <input type="file" id="avatar-input" name="avatar"
             accept="image/*"
             autoComplete="photo"
+            src={avatarPreview}
             onChange={avatarUpload}
           />
-          <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={user.avatar} ref={avatarPreviewRef} /></label>
+          <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarPreview} ref={avatarPreviewRef} /></label>
           </>
           }
-          {user && user.avatar ?
+
+          {removeAvatar ?
+            <span id="no-avatar" aria-label="No avatar image">❌</span>
+            :
+            ''
+          }
+          {avatarPreview ?
             <>
-            {removeAvatar ?
-              <span id="no-avatar" aria-label="No avatar image">❌</span>
-              :
-              ''
-            }
             <div id="remove-avatar">
               <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
                 onChange={(e) => {
                   setRemoveAvatar(e.target.checked);
-                  setAvatarPreviewing(!e.target.checked);
                 }} />
               <label htmlFor="remove-avatar-checkbox">Remove avatar</label>
             </div>
@@ -80,7 +81,7 @@ export default function ProfileEdit() {
           }
           </div>
 
-        {avatarPreviewing && !removeAvatar ?
+        {avatarPreview && !removeAvatar ?
         <>
         <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
         <textarea id="avatar-alt-input" name="avatar-alt" ref={avatarAltTextRef}
