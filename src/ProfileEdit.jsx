@@ -36,8 +36,13 @@ export default function ProfileEdit() {
       <form id="profile-edit" onSubmit={(e) => {
         e.preventDefault();
         if (removeAvatar) {
+          // backend updates
           User.setAvatarAltText(null);
           User.setAvatar(null);
+
+          // frontend updates
+          setAvatarPreview(null);
+          setAvatarAltTextPreview("");
         } else {
           User.setAvatarAltText(avatarAltTextPreview);
           User.setAvatar(avatarPreview);
