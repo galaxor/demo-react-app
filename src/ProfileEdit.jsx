@@ -1,4 +1,5 @@
 import { useContext, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -54,7 +55,7 @@ export default function ProfileEdit() {
       const newUser = User.setName(nameInputRef.current.value);
       setUser(newUser);
 
-      setSystemNotifications([...systemNotifications, {type: 'status', message: "Profile Updated"}]);
+      setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
     }}>
       <label htmlFor="avatar-input">Avatar</label>
         <div id="avatar-preview">
