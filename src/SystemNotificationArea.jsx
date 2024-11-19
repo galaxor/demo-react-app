@@ -20,7 +20,7 @@ export default function SystemNotificationArea() {
   });
 
   if (systemNotifications.length > 0) {
-    return <section id="system-notifications"><h2 id="system-notification-header">System Notifications</h2><ul aria-describedby="system-notification-header">{notifications}</ul></section>;
+    return <aside id="system-notifications"><h2 id="system-notification-header">System Notifications</h2><ul aria-describedby="system-notification-header">{notifications}</ul></aside>;
   }
 }
 
