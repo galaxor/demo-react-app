@@ -1,6 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import AvatarEditor from 'react-avatar-editor';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
 
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -94,6 +96,8 @@ export default function ProfileEdit() {
         }
 
         {avatarPreview && !removeAvatar?
+          <div>
+            <div>
           <AvatarEditor
             image={avatarPreview}
             width={250}
@@ -103,6 +107,22 @@ export default function ProfileEdit() {
             scale={1.2}
             rotate={0}
           />
+            </div>
+            <div>
+            <Typography id="non-linear-slider" gutterBottom>
+              Scale
+            </Typography>
+            <Slider
+              name="avatar-scale"
+              aria-label="Scale"
+              min={0.5}
+              max={3}
+              defaultValue={1}
+              shiftStep={0.1}
+              step={0.1}
+            />
+            </div>
+          </div>
         :
         ''
         }
