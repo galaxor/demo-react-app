@@ -29,8 +29,14 @@ form#profile-edit #profile-fields {
     text-align: center;
   }
 
+  /* Hide the native file input */
   #avatar-input {
-    display: none;
+    height: 0.1px;
+    width: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
   }
 
   label:has(#avatar-preview-img[src]) + #avatar-upload-box {
