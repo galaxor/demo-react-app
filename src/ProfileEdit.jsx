@@ -1,6 +1,7 @@
 import { useContext, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+import Avatar from './Avatar.jsx';
 import AvatarUpload from './AvatarUpload.jsx';
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -24,6 +25,11 @@ export default function ProfileEdit() {
 
   return <>
     <h1>Edit Your Profile</h1>
+
+<h2>Test avatar</h2>
+
+<Avatar avatar={user} />
+
 
     <SystemNotificationArea />
     <form id="profile-edit" onSubmit={(e) => {
