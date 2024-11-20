@@ -46,4 +46,16 @@ export default {
     return setProp('avatarAltText', avatarAltText);
   },
 
+  setAvatarPosition: (avatarPosition) => {
+    return setProp('avatarPosition', avatarPosition);
+  },
+
+  setAvatarRotate: (avatarRotate) => {
+    return setProp('avatarRotate', avatarRotate);
+  },
+
+  setAvatarScale: (avatarScale) => {
+    return setProp('avatarScale', avatarScale);
+  },
+
 };

@@ -34,6 +34,9 @@ export default function ProfileEdit() {
     if (user) {
       setAvatarPreview(user.avatar);
       setAvatarAltTextPreview(user.avatarAltText);
+      setAvatarPosition(user.avatarPosition);
+      setAvatarRotate(user.avatarRotate);
+      setAvatarScale(user.avatarScale);
     }
   }, [user]);
 
@@ -63,8 +66,11 @@ export default function ProfileEdit() {
         setAvatarPreview(null);
         setAvatarAltTextPreview("");
       } else {
-        User.setAvatarAltText(avatarAltTextPreview);
         User.setAvatar(avatarPreview);
+        User.setAvatarAltText(avatarAltTextPreview);
+        User.setAvatarPosition(avatarPosition);
+        User.setAvatarRotate(avatarRotate);
+        User.setAvatarScale(avatarScale);
       }
       setRemoveAvatar(false);
       const newUser = User.setName(nameInputRef.current.value);
