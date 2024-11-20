@@ -20,6 +20,8 @@ export default function ProfileEdit() {
 
   const [avatarAltTextPreview, setAvatarAltTextPreview] = useState(user? user.avatarAltText : null);
 
+  const [avatarPosition, setAvatarPosition] = useState({x: 0, y: 0});
+  const [avatarRotate, setAvatarRotate] = useState(0);
   const [avatarScale, setAvatarScale] = useState(1);
 
   const nameInputRef = useRef(null);
@@ -105,9 +107,11 @@ export default function ProfileEdit() {
                 height={250}
                 border={50}
                 color={[255, 255, 255, 0.6]} // RGBA
-                scale={avatarScale}
                 borderRadius={250}
-                rotate={0}
+                scale={avatarScale}
+                rotate={avatarRotate}
+                position={avatarPosition}
+                onPositionChange={newPos => setAvatarPosition({...newPos})}
               />
             </div>
             <div>
@@ -122,6 +126,18 @@ export default function ProfileEdit() {
               shiftStep={0.1}
               step={0.1}
               onChange={(e, value) => setAvatarScale(value)}
+            />
+            <InputSlider
+              label="Rotate (degrees)"
+              name="avatar-rotate"
+              id="avatar-rotate"
+              min={-180}
+              max={180}
+              value={avatarRotate}
+              setValue={setAvatarRotate}
+              shiftStep={5}
+              step={5}
+              onChange={(e, value) => setAvatarRotate(value)}
             />
             </div>
           </div>
