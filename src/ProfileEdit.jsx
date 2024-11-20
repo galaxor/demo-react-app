@@ -20,9 +20,9 @@ export default function ProfileEdit() {
 
   const [avatarAltTextPreview, setAvatarAltTextPreview] = useState(user? user.avatarAltText : null);
 
-  const [avatarPosition, setAvatarPosition] = useState({x: 0, y: 0});
-  const [avatarRotate, setAvatarRotate] = useState(0);
-  const [avatarScale, setAvatarScale] = useState(1);
+  const [avatarPosition, setAvatarPosition] = useState(user? user.avatarPosition : {x: 0, y: 0});
+  const [avatarRotate, setAvatarRotate] = useState(user? user.avatarRotate : 0);
+  const [avatarScale, setAvatarScale] = useState(user? user.avatarScale : 1);
 
   const nameInputRef = useRef(null);
   const avatarPreviewRef = useRef(null);

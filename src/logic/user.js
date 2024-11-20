@@ -2,6 +2,16 @@ import Database from './database.js'
 
 const db = new Database();
 
+function setProp(prop, val) {
+  const account = db.get('accounts', 'testuser');
+  const person = db.get('people', account.handle);
+  var newPerson = {...person};
+  newPerson[prop] = val;
+
+  db.set('people', account.handle, newPerson);
+  return newPerson;
+};
+
 export default {
   loggedInUser: () => {
     const session = db.get('sessions', 'testuser');
@@ -24,27 +34,16 @@ export default {
     return null;
   },
 
-  setName: (name) => {
-    const account = db.get('accounts', 'testuser');
-    const person = db.get('people', account.handle);
-    const newPerson = {...person, displayName: name};
-    db.set('people', account.handle, newPerson);
-    return newPerson;
+  setName: (displayName) => {
+    return setProp('displayName', displayName);
   },
 
   setAvatar: (avatar) => {
-    const account = db.get('accounts', 'testuser');
-    const person = db.get('people', account.handle);
-    const newPerson = {...person, avatar: avatar};
-    db.set('people', account.handle, newPerson);
-    return newPerson;
+    return setProp('avatar', avatar);
   },
 
-  setAvatarAltText: (altText) => {
-    const account = db.get('accounts', 'testuser');
-    const person = db.get('people', account.handle);
-    const newPerson = {...person, avatarAltText: altText};
-    db.set('people', account.handle, newPerson);
-    return newPerson;
+  setAvatarAltText: (avatarAltText) => {
+    return setProp('avatarAltText', avatarAltText);
   },
+
 };

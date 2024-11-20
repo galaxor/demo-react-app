@@ -18,6 +18,9 @@ class Database {
 
           displayName: 'Cool User',
           avatar: null,
+          avatarPosition: {x: 0, y: 0},
+          avatarRotate: 0,
+          avatarScale: 1,
         },
       };
 
