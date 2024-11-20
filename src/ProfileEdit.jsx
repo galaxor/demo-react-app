@@ -20,6 +20,10 @@ export default function ProfileEdit() {
 
   const [avatar, setAvatar] = useState(null);
 
+  function onAvatarChange(newAvatar) {
+    setAvatar(newAvatar);
+  }
+
   return <>
     <h1>Edit Your Profile</h1>
     <SystemNotificationArea />
@@ -40,7 +44,7 @@ export default function ProfileEdit() {
       <div id="profile-fields">
       <label htmlFor="avatar-input">Avatar</label>
         <AvatarUpload
-          onChange={newAvatar => setAvatar(newAvatar)}
+          onChange={onAvatarChange}
         />
 
       <label htmlFor="name-input">Name</label>

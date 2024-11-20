@@ -6,7 +6,7 @@ import InputSlider from './InputSlider.jsx';
 import UserContext from './UserContext.jsx';
 
 export default function AvatarUpload({onChange}) {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
 
@@ -17,11 +17,13 @@ export default function AvatarUpload({onChange}) {
   const [avatarScale, setAvatarScale] = useState(null);
 
   function avatarUpload(e) {
+    setRemoveAvatar(false);
+
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       const avatar = reader.result;
 
-      setAvatarPreview(avatar);
+      setAvatar(avatar);
     });
 
     reader.readAsDataURL(e.target.files[0]);
@@ -53,7 +55,7 @@ export default function AvatarUpload({onChange}) {
 
   return (
     <div id="avatar-preview">
-    {removeAvatar ?
+    {removeAvatar && avatar ?
     ''
     :
     <>
@@ -70,7 +72,7 @@ export default function AvatarUpload({onChange}) {
     </>
     }
 
-    {removeAvatar ?
+    {removeAvatar && avatar ?
       <span id="no-avatar" aria-label="No avatar image">❌</span>
       :
       ''
@@ -141,7 +143,7 @@ export default function AvatarUpload({onChange}) {
   <>
   <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
   <textarea id="avatar-alt-input" name="avatar-alt"
-      value={avatarAltText}
+      value={avatarAltText ?? ""}
       onChange = {(e) => setAvatarAltText(e.target.value)}
   />
   </>
