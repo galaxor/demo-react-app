@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 
 import InputSlider from './InputSlider.jsx';
 
 import UserContext from './UserContext.jsx';
 
-export default function AvatarUpload({onChange}) {
+export default function AvatarUpload({onChange, getImageRef}) {
   const { user } = useContext(UserContext);
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
@@ -15,6 +15,14 @@ export default function AvatarUpload({onChange}) {
   const [avatarPosition, setAvatarPosition] = useState(null);
   const [avatarRotate, setAvatarRotate] = useState(null);
   const [avatarScale, setAvatarScale] = useState(null);
+
+  const avatarEditorRef = useRef({});
+
+  const getImageFn = function () {
+    const image = avatarEditorRef.current.getImageScaledToCanvas().toDataURL();
+    return image;
+  }
+  getImageRef.current.getImage = getImageFn;
 
   function avatarUpload(e) {
     setRemoveAvatar(false);
@@ -82,6 +90,7 @@ export default function AvatarUpload({onChange}) {
       <div>
         <div>
           <AvatarEditor
+            ref={avatarEditorRef}
             image={avatar}
             width={250}
             height={250}

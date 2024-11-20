@@ -19,6 +19,7 @@ export default function ProfileEdit() {
   const nameInputRef = useRef(null);
 
   const [avatar, setAvatar] = useState(null);
+  const avatarEditorRef = useRef({});
 
   function onAvatarChange(newAvatar) {
     setAvatar(newAvatar);
@@ -30,7 +31,9 @@ export default function ProfileEdit() {
     <form id="profile-edit" onSubmit={(e) => {
       e.preventDefault();
 
-      User.setAvatar(avatar.avatar);
+      const editedAvatar = avatarEditorRef.current.getImage();
+      User.setAvatar(editedAvatar);
+      User.setAvatarOrig(avatar.avatar);
       User.setAvatarAltText(avatar.avatarAltText);
       User.setAvatarPosition(avatar.avatarPosition);
       User.setAvatarRotate(avatar.avatarRotate);
@@ -40,10 +43,12 @@ export default function ProfileEdit() {
       setUser(newUser);
 
       setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
+
     }}>
       <div id="profile-fields">
       <label htmlFor="avatar-input">Avatar</label>
         <AvatarUpload
+          getImageRef={avatarEditorRef}
           onChange={onAvatarChange}
         />
 

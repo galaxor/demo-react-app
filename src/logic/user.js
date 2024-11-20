@@ -42,6 +42,10 @@ export default {
     return setProp('avatar', avatar);
   },
 
+  setAvatarOrig: (avatarOrig) => {
+    return setProp('avatarOrig', avatarOrig);
+  },
+
   setAvatarAltText: (avatarAltText) => {
     return setProp('avatarAltText', avatarAltText);
   },
