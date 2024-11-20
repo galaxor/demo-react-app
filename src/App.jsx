@@ -4,7 +4,6 @@ import { Outlet } from "react-router-dom";
 import Logo from './Logo.jsx';
 import UserSection from './UserSection.jsx';
 import NavigationSidebar from './NavigationSidebar.jsx';
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 import SystemNotificationsContext from "./SystemNotificationsContext.jsx";
 import UserContext from "./UserContext.jsx";

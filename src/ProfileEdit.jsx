@@ -1,9 +1,7 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import AvatarEditor from 'react-avatar-editor';
 
 import AvatarUpload from './AvatarUpload.jsx';
-import InputSlider from './InputSlider.jsx';
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
@@ -26,6 +24,7 @@ export default function ProfileEdit() {
 
   return <>
     <h1>Edit Your Profile</h1>
+
     <SystemNotificationArea />
     <form id="profile-edit" onSubmit={(e) => {
       e.preventDefault();
