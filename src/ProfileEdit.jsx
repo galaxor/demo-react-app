@@ -32,8 +32,8 @@ export default function ProfileEdit() {
       e.preventDefault();
 
       const editedAvatar = avatarEditorRef.current.getImage();
-      User.setAvatar(editedAvatar);
-      User.setAvatarOrig(avatar.avatar);
+      User.setAvatar(avatar.avatar);
+      User.setAvatarCropped(editedAvatar);
       User.setAvatarAltText(avatar.avatarAltText);
       User.setAvatarPosition(avatar.avatarPosition);
       User.setAvatarRotate(avatar.avatarRotate);

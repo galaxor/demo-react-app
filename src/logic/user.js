@@ -42,8 +42,8 @@ export default {
     return setProp('avatar', avatar);
   },
 
-  setAvatarOrig: (avatarOrig) => {
-    return setProp('avatarOrig', avatarOrig);
+  setAvatarCropped: (avatarCropped) => {
+    return setProp('avatarCropped', avatarCropped);
   },
 
   setAvatarAltText: (avatarAltText) => {
