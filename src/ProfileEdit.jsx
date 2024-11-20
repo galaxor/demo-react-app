@@ -17,32 +17,20 @@ export default function ProfileEdit() {
   const { systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
 
   const nameInputRef = useRef(null);
-  const avatarPreviewRef = useRef(null);
-  const avatarAltTextRef = useRef(null);
+
+  const [avatar, setAvatar] = useState(null);
 
   return <>
     <h1>Edit Your Profile</h1>
     <SystemNotificationArea />
     <form id="profile-edit" onSubmit={(e) => {
       e.preventDefault();
-      /*
-      if (removeAvatar) {
-        // backend updates
-        User.setAvatarAltText(null);
-        User.setAvatar(null);
 
-        // frontend updates
-        setAvatarPreview(null);
-        setAvatarAltTextPreview("");
-      } else {
-        User.setAvatar(avatarPreview);
-        User.setAvatarAltText(avatarAltTextPreview);
-        User.setAvatarPosition(avatarPosition);
-        User.setAvatarRotate(avatarRotate);
-        User.setAvatarScale(avatarScale);
-      }
-      setRemoveAvatar(false);
-      */
+      User.setAvatar(avatar.avatar);
+      User.setAvatarAltText(avatar.avatarAltText);
+      User.setAvatarPosition(avatar.avatarPosition);
+      User.setAvatarRotate(avatar.avatarRotate);
+      User.setAvatarScale(avatar.avatarScale);
 
       const newUser = User.setName(nameInputRef.current.value);
       setUser(newUser);
@@ -51,7 +39,9 @@ export default function ProfileEdit() {
     }}>
       <div id="profile-fields">
       <label htmlFor="avatar-input">Avatar</label>
-        <AvatarUpload />
+        <AvatarUpload
+          onChange={newAvatar => setAvatar(newAvatar)}
+        />
 
       <label htmlFor="name-input">Name</label>
         <input id="name-input" name="name" ref={nameInputRef}

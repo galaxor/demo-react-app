@@ -5,7 +5,7 @@ import InputSlider from './InputSlider.jsx';
 
 import UserContext from './UserContext.jsx';
 
-export default function AvatarUpload() {
+export default function AvatarUpload({onChange}) {
   const { user, setUser } = useContext(UserContext);
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
@@ -38,6 +38,18 @@ export default function AvatarUpload() {
       setAvatarScale(user.avatarScale);
     }
   }, [user]);
+
+  // This is how we export the changes:  Let them pass us an onChange hook, and
+  // then when any of these values changes, we ship it out to the hook.
+  useEffect(() => {
+    if (typeof onChange === 'function') {
+      if (removeAvatar) {
+        onChange({avatar: null, avatarAltText: null, avatarPosition: {x: 0, y: 0}, avatarRotate: 0, avatarScale: 1});
+      } else {
+        onChange({avatar: avatar, avatarAltText: avatarAltText, avatarPosition: avatarPosition, avatarRotate: avatarRotate, avatarScale: avatarScale});
+      }
+    }
+  }, [avatar, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar]);
 
   return (
     <div id="avatar-preview">
