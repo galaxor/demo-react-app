@@ -1,9 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import AvatarEditor from 'react-avatar-editor';
-import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
 
+import InputSlider from './InputSlider.jsx';
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
@@ -20,6 +19,8 @@ export default function ProfileEdit() {
   const [avatarPreview, setAvatarPreview] = useState(user? user.avatar : null);
 
   const [avatarAltTextPreview, setAvatarAltTextPreview] = useState(user? user.avatarAltText : null);
+
+  const [avatarScale, setAvatarScale] = useState(1);
 
   const nameInputRef = useRef(null);
   const avatarPreviewRef = useRef(null);
@@ -104,23 +105,23 @@ export default function ProfileEdit() {
                 height={250}
                 border={50}
                 color={[255, 255, 255, 0.6]} // RGBA
-                scale={1.2}
+                scale={avatarScale}
                 borderRadius={250}
                 rotate={0}
               />
             </div>
             <div>
-            <Typography id="non-linear-slider" gutterBottom>
-              Scale
-            </Typography>
-            <Slider
+            <InputSlider
+              label="Scale"
               name="avatar-scale"
-              aria-label="Scale"
+              id="avatar-scale"
               min={0.5}
               max={3}
-              defaultValue={1}
+              value={avatarScale}
+              setValue={setAvatarScale}
               shiftStep={0.1}
               step={0.1}
+              onChange={(e, value) => setAvatarScale(value)}
             />
             </div>
           </div>
