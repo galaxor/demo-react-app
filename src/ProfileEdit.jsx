@@ -98,15 +98,16 @@ export default function ProfileEdit() {
         {avatarPreview && !removeAvatar?
           <div>
             <div>
-          <AvatarEditor
-            image={avatarPreview}
-            width={250}
-            height={250}
-            border={50}
-            color={[255, 255, 255, 0.6]} // RGBA
-            scale={1.2}
-            rotate={0}
-          />
+              <AvatarEditor
+                image={avatarPreview}
+                width={250}
+                height={250}
+                border={50}
+                color={[255, 255, 255, 0.6]} // RGBA
+                scale={1.2}
+                borderRadius={250}
+                rotate={0}
+              />
             </div>
             <div>
             <Typography id="non-linear-slider" gutterBottom>
