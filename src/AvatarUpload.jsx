@@ -12,6 +12,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
 
+  const [avatarEdited, setAvatarEdited] = useState(user? user.avatar : null);
   const [avatarOrig, setAvatarOrig] = useState(user? user.avatarOrig : null);
   const [avatarAltText, setAvatarAltText] = useState(null);
   const [avatarPosition, setAvatarPosition] = useState(null);
@@ -84,7 +85,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
       {avatarOrig ?
         <div className="avatar-preview-bar">
           <label htmlFor="avatar-input" className="avatar-preview">
-            <img alt="" src={getImageFn()} id="avatar-preview-img" />
+            <img alt="" src={avatarEdited} id="avatar-preview-img" />
           </label>
           <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box"><span aria-label="Upload Image">📷</span></label>
         </div>
@@ -114,7 +115,11 @@ export default function AvatarUpload({onChange, getImageRef}) {
             scale={avatarScale}
             rotate={avatarRotate}
             position={avatarPosition}
-            onPositionChange={newPos => setAvatarPosition({...newPos})}
+            onPositionChange={newPos => {
+              setAvatarPosition({...newPos});
+              setAvatarEdited(getImageFn());
+            }}
+            onImageReady={() => setAvatarEdited(getImageFn())}
           />
         </div>
         <div>
@@ -128,7 +133,10 @@ export default function AvatarUpload({onChange, getImageRef}) {
           setValue={setAvatarScale}
           shiftStep={0.1}
           step={0.1}
-          onChange={(e, value) => setAvatarScale(value)}
+          onChange={(e, value) => {
+            setAvatarScale(value);
+            setAvatarEdited(getImageFn());
+          }}
         />
         <InputSlider
           label="Rotate (degrees)"
@@ -141,7 +149,10 @@ export default function AvatarUpload({onChange, getImageRef}) {
           setValue={setAvatarRotate}
           shiftStep={5}
           step={5}
-          onChange={(e, value) => setAvatarRotate(value)}
+          onChange={(e, value) => {
+            setAvatarRotate(value);
+            setAvatarEdited(getImageFn());
+          }}
         />
         </div>
       </div>
