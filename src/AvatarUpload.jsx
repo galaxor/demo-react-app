@@ -87,7 +87,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
           <label htmlFor="avatar-input" className="avatar-preview">
             <img alt="" src={avatarEdited} id="avatar-preview-img" />
           </label>
-          <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box"><span aria-label="Upload Image">📷</span></label>
+          <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box">📷<br />Replace Image</label>
         </div>
         :
         ''
@@ -166,7 +166,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
       </div>
       </>
       :
-      <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box" aria-label="Upload Image">📷</label>
+      <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box">📷<br />Upload Image</label>
     }
 
   {avatarOrig && !removeAvatar ?
