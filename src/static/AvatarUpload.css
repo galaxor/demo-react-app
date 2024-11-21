@@ -64,4 +64,10 @@ div.avatar-editor {
     position: absolute;
     z-index: -1;
   }
+
+  .four-arrows {
+    display: block;
+    position: absolute;
+    font-size: 200%;
+  }
 }
