@@ -15,6 +15,7 @@ export default function ProfileEdit() {
   const { systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
 
   const nameInputRef = useRef(null);
+  const bioInputRef = useRef(null);
 
   const [avatar, setAvatar] = useState(null);
   const avatarEditorRef = useRef({});
@@ -43,6 +44,8 @@ export default function ProfileEdit() {
       User.setAvatarRotate(avatar.avatarRotate);
       User.setAvatarScale(avatar.avatarScale);
 
+      User.setBio(bioInputRef.current.value);
+
       const newUser = User.setName(nameInputRef.current.value);
       setUser(newUser);
 
@@ -50,17 +53,23 @@ export default function ProfileEdit() {
 
     }}>
       <div id="profile-fields">
-      <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
-        <AvatarUpload
-          getImageRef={avatarEditorRef}
-          onChange={onAvatarChange}
-        />
+        <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
+          <AvatarUpload
+            getImageRef={avatarEditorRef}
+            onChange={onAvatarChange}
+          />
 
-      <label htmlFor="name-input" className="profile-field-label">Name</label>
-        <input id="name-input" name="name" ref={nameInputRef}
-          autoComplete="name"
-          defaultValue={user? user.displayName : ""}
-        />
+        <label className="profile-field-label">Name</label>
+          <input name="name" ref={nameInputRef}
+            autoComplete="name"
+            defaultValue={user? user.displayName : ""}
+          />
+
+        <label className="profile-field-label">Bio</label>
+          <textarea name="bio" ref={bioInputRef}
+            placeholder="Tell people a little about yourself."
+            defaultValue={user? user.bio : ""}
+          />
       </div>
 
       <button type="submit">Save your cool changes</button>

@@ -38,6 +38,10 @@ export default {
     return setProp('displayName', displayName);
   },
 
+  setBio: (bio) => {
+    return setProp('bio', bio);
+  },
+
   setAvatar: (avatar) => {
     return setProp('avatar', avatar);
   },

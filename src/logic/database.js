@@ -17,7 +17,38 @@ class Database {
           handle: 'testuser@local',
 
           displayName: 'Cool User',
+          bio: "I am you! I love poking around demonstration websites.",
+
           avatar: null,
+          avatarOrig: null,
+          avatarPosition: {x: 0, y: 0},
+          avatarRotate: 0,
+          avatarScale: 1,
+        },
+
+        'alice@coolserver': {
+          localUserId: null,
+          handle: 'alice@coolserver',
+
+          displayName: 'Alice (from cryptography)',
+          bio: "I love being a party to private conversations!",
+
+          avatar: null,
+          avatarOrig: null,
+          avatarPosition: {x: 0, y: 0},
+          avatarRotate: 0,
+          avatarScale: 1,
+        },
+
+        'mittens@kittens': {
+          localUserId: null,
+          handle: 'mittens@kittens',
+
+          displayName: 'Mittens Chalk',
+          bio: "Artisan, engineer, geologist, woodcutter.",
+
+          avatar: null,
+          avatarOrig: null,
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
           avatarScale: 1,
