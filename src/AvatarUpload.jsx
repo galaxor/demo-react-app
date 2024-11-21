@@ -202,6 +202,7 @@ function AvatarAltText({avatarAltText, setAvatarAltText}) {
     <label className="avatar-alt-text">Alt Text <br />
     <textarea name="avatar-alt"
         value={avatarAltText ?? ""}
+        placeholder="Describe the image as if you're talking to someone who can't see it."
         onChange = {(e) => setAvatarAltText(e.target.value)}
     />
     </label>
