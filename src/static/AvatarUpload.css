@@ -1,0 +1,41 @@
+div.avatar-upload {
+  .avatar-preview {
+    width: 75px;
+    height: 75px;
+
+    border: 2px solid transparent;
+    align-content: center;
+
+    img {
+      object-fit: contain;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .avatar-preview-bar {
+    display: flex;
+    gap: 1ex;
+  }
+
+  span#no-avatar,
+  label#avatar-upload-box {
+    display: block;
+    border: 2px solid black;
+    text-align: center;
+    align-content: center;
+
+    width: 75px;
+    height: 75px;
+  }
+
+  /* Hide the native file input */
+  #avatar-input {
+    height: 0.1px;
+    width: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+}

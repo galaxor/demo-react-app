@@ -33,9 +33,10 @@ export default function ProfileEdit() {
 
       // The rest of the avatar data comes through the state every time we make
       // an update, but the cropped version, we have to ask for specifically.
-      const editedAvatar = avatarEditorRef.current.getImage();
-      User.setAvatar(editedAvatar);
-
+      if (avatarEditorRef && avatarEditorRef.current) {
+        const editedAvatar = avatarEditorRef.current.getImage();
+        User.setAvatar(editedAvatar);
+      }
 
       User.setAvatarOrig(avatar.avatarOrig);
       User.setAvatarAltText(avatar.avatarAltText);

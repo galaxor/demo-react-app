@@ -5,6 +5,8 @@ import InputSlider from './InputSlider.jsx';
 
 import UserContext from './UserContext.jsx';
 
+import './static/AvatarUpload.css';
+
 export default function AvatarUpload({onChange, getImageRef}) {
   const { user } = useContext(UserContext);
 
@@ -19,8 +21,12 @@ export default function AvatarUpload({onChange, getImageRef}) {
   const avatarEditorRef = useRef({});
 
   const getImageFn = function () {
-    const image = avatarEditorRef.current.getImageScaledToCanvas().toDataURL();
-    return image;
+    if (avatarEditorRef && avatarEditorRef.current) {
+      const image = avatarEditorRef.current.getImageScaledToCanvas().toDataURL();
+      return image;
+    } else {
+      return null;
+    }
   }
   getImageRef.current.getImage = getImageFn;
 
@@ -65,7 +71,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
   }, [avatarOrig, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar]);
 
   return (
-    <div id="avatar-preview">
+    <div id="avatar-preview" className="avatar-upload">
     {removeAvatar && avatarOrig ?
     ''
     :
@@ -76,7 +82,10 @@ export default function AvatarUpload({onChange, getImageRef}) {
       onChange={avatarUpload}
     />
       {avatarOrig ?
-        <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarOrig} /></label>
+        <div className="avatar-preview-bar">
+          <label htmlFor="avatar-input" className="avatar-preview"><img id="avatar-preview-img" src={avatarOrig} /></label>
+          <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box" aria-label="Upload Image">📷</label>
+        </div>
         :
         ''
       }
@@ -149,7 +158,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
       </div>
       </>
       :
-      <label htmlFor="avatar-input" id="avatar-upload-box" aria-label="Upload Image">📷</label>
+      <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box" aria-label="Upload Image">📷</label>
     }
 
   {avatarOrig && !removeAvatar ?

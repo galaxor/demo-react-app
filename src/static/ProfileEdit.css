@@ -8,7 +8,7 @@ img.avatar-small {
   height: 1.5em;
 }
 
-form#profile-edit #profile-fields {
+#profile-fields {
   display: grid;
   grid-template-columns: 30% 70%;
   max-width: fit-content;
@@ -20,32 +20,6 @@ form#profile-edit #profile-fields {
     font-weight: bold;
   }
 
-  span#no-avatar,
-  label#avatar-upload-box {
-    display: block;
-    width: 4em;
-    height: 4em;
-    border: 2px solid black;
-    text-align: center;
-  }
-
-  /* Hide the native file input */
-  #avatar-input {
-    height: 0.1px;
-    width: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-  }
-
-  label:has(#avatar-preview-img[src]) + #avatar-upload-box {
-    display: none;
-  }
-
-  label:has(#avatar-preview-img:not([src])) {
-    display: none;
-  }
 }
 
 
