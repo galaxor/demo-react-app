@@ -143,9 +143,41 @@ export default function AvatarUpload({onChange, getImageRef}) {
 }
 
 function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatarScale, setAvatarScale, avatarRotate, setAvatarRotate, avatarPosition, setAvatarPosition, getImageFn, avatarEdited, setAvatarEdited}) {
+  const [panFocused, setPanFocused] = useState(false);
+
+  useEffect(() => {
+    function handleArrowKeys(e) {
+      if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+        const {x, y} = avatarPosition;
+
+        const moveAmount=0.05;
+        var newAvatarPosition;
+
+        switch(e.key) {
+        case "ArrowDown": newAvatarPosition = {...avatarPosition, y: y+moveAmount}; break;
+        case "ArrowUp": newAvatarPosition = {...avatarPosition, y: y-moveAmount}; break;
+        case "ArrowLeft": newAvatarPosition = {...avatarPosition, x: x-moveAmount}; break;
+        case "ArrowRight": newAvatarPosition = {...avatarPosition, x: x+moveAmount}; break;
+        }
+
+        setAvatarPosition(newAvatarPosition);
+      }
+    }
+
+    if (panFocused) {
+      window.addEventListener('keydown', handleArrowKeys);
+    }
+
+    return () => window.removeEventListener('keydown', handleArrowKeys);
+  }, [avatarPosition, setAvatarPosition, panFocused]);
+
   return (
     <div>
-      <div>
+      <div 
+        tabIndex={0} 
+        onFocus={() => setPanFocused(true)}
+        onBlur={(e) => setPanFocused(false)}>
         <AvatarEditor
           ref={avatarEditorRef}
           image={avatarOrig}
