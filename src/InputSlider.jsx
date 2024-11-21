@@ -10,7 +10,7 @@ const Input = styled(MuiInput)`
   width: 42px;
 `;
 
-export default function InputSlider({id, name, min, max, value, setValue, label, size, step, shiftStep}) {
+export default function InputSlider({id, name, min, max, marks, value, setValue, label, size, step, shiftStep}) {
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -42,6 +42,7 @@ export default function InputSlider({id, name, min, max, value, setValue, label,
             shiftStep={shiftStep}
             min={min}
             max={max}
+            marks={marks}
           />
         </Grid>
         <Grid item>

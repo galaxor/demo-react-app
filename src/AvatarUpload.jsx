@@ -111,7 +111,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
           label="Scale"
           name="avatar-scale"
           id="avatar-scale"
-          min={0.5}
+          min={1}
           max={3}
           value={avatarScale}
           setValue={setAvatarScale}
@@ -125,6 +125,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
           id="avatar-rotate"
           min={-180}
           max={180}
+          marks={[{value: 0, label: "0°"}]}
           value={avatarRotate}
           setValue={setAvatarRotate}
           shiftStep={5}
