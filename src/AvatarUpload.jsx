@@ -97,18 +97,27 @@ export default function AvatarUpload({onChange, getImageRef}) {
           }
 
           {avatarOrig?
-            <div className="remove-avatar">
+            <label className="remove-avatar">
               <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
                 onChange={(e) => {
                   setRemoveAvatar(e.target.checked);
-                }} />
-              <label htmlFor="remove-avatar-checkbox" className="no-avatar">Remove avatar</label>
-            </div>
+                }} /> <br />
+              Remove avatar
+            </label>
             :
             ''
           }
         </div>
       </div>
+
+      {avatarOrig && !removeAvatar ?
+        <AvatarAltText
+          avatarAltText={avatarAltText}
+          setAvatarAltText={setAvatarAltText}
+        />
+      :
+      ""
+      }
 
       {avatarOrig && !removeAvatar ?
         <AvatarEditorSection
@@ -129,14 +138,6 @@ export default function AvatarUpload({onChange, getImageRef}) {
         ''
       }
 
-      {avatarOrig && !removeAvatar ?
-        <AvatarAltText
-          avatarAltText={avatarAltText}
-          setAvatarAltText={setAvatarAltText}
-        />
-      :
-      ""
-    }
     </div>
   );
 }
@@ -198,11 +199,12 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
 function AvatarAltText({avatarAltText, setAvatarAltText}) {
   return (
     <>
-    <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
-    <textarea id="avatar-alt-input" name="avatar-alt"
+    <label className="avatar-alt-text">Alt Text <br />
+    <textarea name="avatar-alt"
         value={avatarAltText ?? ""}
         onChange = {(e) => setAvatarAltText(e.target.value)}
     />
+    </label>
     </>
   );
 }
