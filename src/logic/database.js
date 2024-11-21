@@ -89,8 +89,12 @@ class Database {
           author: "alice@coolserver",
           createdAt: "2024-11-21T14:46:26-05:00",
           updatedAt: "2024-11-21T14:46:26-05:00",
-          deletedAt: null,
+          sensitive: false,
           text: "This is my post about stuff.",
+
+          spoilerText: null,
+
+          deletedAt: null,
 
           inReplyTo: null, // URI of post that this is replying to
           reblogOf: null,  // URI of post that this is a reblog of
@@ -104,14 +108,21 @@ class Database {
         },
       };
 
+      this.popularPosts = {
+        "alice@coolserver/a-cool-article": "2024-11-21T14:46:26-05:00",
+      };
+
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('posts', JSON.stringify(this.posts));
+      localStorage.setItem('popularPosts', JSON.stringify(this.posts));
     } else {
       this.accounts = JSON.parse(localStorage.getItem('accounts'));
       this.sessions = JSON.parse(localStorage.getItem('sessions'));
       this.people = JSON.parse(localStorage.getItem('people'));
+      this.posts = JSON.parse(localStorage.getItem('posts'));
+      this.popularPosts = JSON.parse(localStorage.getItem('popularPosts'));
     }
   }
 

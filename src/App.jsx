@@ -11,12 +11,16 @@ import UserContext from "./UserContext.jsx";
 import './App.css';
 import User from './logic/user.js';
 
+import Database from './logic/database.js'
+
 function App() {
   const [user, setUser] = useState(null);
   const userContext = {user: user, setUser: setUser};
 
   const [systemNotifications, setSystemNotifications] = useState([]);
   const systemNotificationsContext = {systemNotifications: systemNotifications, setSystemNotifications: setSystemNotifications};
+
+  const db = new Database();
 
   useEffect(() => {
     if (user == null) {
