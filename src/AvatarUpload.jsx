@@ -84,10 +84,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
       {avatarOrig ?
         <div className="avatar-preview-bar">
           <label htmlFor="avatar-input" className="avatar-preview">
-            <img alt="" src={avatarOrig} id="avatar-preview-img" 
-              style={{
-                transform: "scale("+avatarScale+") translate("+(50-avatarPosition.x*100)+"%, "+(50-avatarPosition.y*100)+"%)"
-              }} />
+            <img alt="" src={getImageFn()} id="avatar-preview-img" />
           </label>
           <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box"><span aria-label="Upload Image">📷</span></label>
         </div>
@@ -111,9 +108,9 @@ export default function AvatarUpload({onChange, getImageRef}) {
             image={avatarOrig}
             width={250}
             height={250}
-            border={50}
+            border={0}
             color={[255, 255, 255, 0.6]} // RGBA
-            borderRadius={250}
+            borderRadius={125}
             scale={avatarScale}
             rotate={avatarRotate}
             position={avatarPosition}

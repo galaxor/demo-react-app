@@ -5,12 +5,12 @@ div.avatar-upload {
     border-radius: 50%;
     overflow: hidden;
 
-    border: 2px solid transparent;
+    border: 2px solid black;
     align-content: center;
 
     img {
-      object-fit: contain;
-      width: 100%;
+      object-fit: cover;
+      width: auto;
       height: 100%;
     }
   }
