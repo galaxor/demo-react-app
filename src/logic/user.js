@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import Database from './database.js'
 
 const db = new Database();
@@ -17,7 +18,11 @@ export default {
     const session = db.get('sessions', 'testuser');
     if (session) {
       const account = db.get('accounts', 'testuser');
-      return db.get('people', account.handle);
+      const person = db.get('people', account.handle);
+
+      // XXX we can't adorn things from the database until we fix the mutability problem.
+      // person.session = session;
+      return person;
     } else {
       return null;
     }
@@ -25,8 +30,12 @@ export default {
 
   login: () => {
     const account = db.get('accounts', 'testuser');
-    db.set('sessions', 'testuser', true);
-    return db.get('people', account.handle);
+    const sessionId = uuidv4();
+    db.set('sessions', 'testuser', sessionId);
+    const user = db.get('people', account.handle);
+    // XXX we can't adorn things from the database until we fix the mutability problem.
+    // user.session = sessionId;
+    return user;
   },
 
   logout: () => {

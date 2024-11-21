@@ -7,6 +7,7 @@ import NavigationSidebar from './NavigationSidebar.jsx';
 
 import SystemNotificationsContext from "./SystemNotificationsContext.jsx";
 import UserContext from "./UserContext.jsx";
+import DatabaseContext from "./DatabaseContext.jsx";
 
 import './App.css';
 import User from './logic/user.js';
@@ -15,12 +16,11 @@ import Database from './logic/database.js'
 
 function App() {
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const userContext = {user: user, setUser: setUser};
 
   const [systemNotifications, setSystemNotifications] = useState([]);
   const systemNotificationsContext = {systemNotifications: systemNotifications, setSystemNotifications: setSystemNotifications};
-
-  const db = new Database();
 
   useEffect(() => {
     if (user == null) {
@@ -29,8 +29,11 @@ function App() {
     }
   }, [user, setUser]);
 
+  const databaseContext = new Database();
+
   return (
     <>
+    <DatabaseContext.Provider value={databaseContext}>
     <UserContext.Provider value={userContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>
     <header>
@@ -44,6 +47,7 @@ function App() {
     </main>
     </SystemNotificationsContext.Provider>
     </UserContext.Provider>
+    </DatabaseContext.Provider>
     </>
   );
 }
