@@ -72,7 +72,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
   }, [avatarOrig, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar]);
 
   return (
-    <div className="avatar-editor">
+    <div className={'avatar-editor '+(avatarOrig && !removeAvatar? 'avatar-editor-open' : '') }>
       <div id="avatar-preview" className="avatar-upload">
         <div className="avatar-preview-bar">
           {avatarOrig && removeAvatar? 

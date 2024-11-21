@@ -1,8 +1,12 @@
-div.avatar-editor {
-  width: 250px;
+div.avatar-editor-open {
   border: 1px solid black;
   border-radius: 25px;
   padding: 10px;
+  box-shadow: rgba(0.8, 0.8, 0.8, 1) 0 0 5px;
+}
+
+div.avatar-editor {
+  width: 250px;
 
   .avatar-preview {
     width: 75px;
