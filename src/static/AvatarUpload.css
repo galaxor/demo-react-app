@@ -2,6 +2,8 @@ div.avatar-upload {
   .avatar-preview {
     width: 75px;
     height: 75px;
+    border-radius: 50%;
+    overflow: hidden;
 
     border: 2px solid transparent;
     align-content: center;
@@ -9,7 +11,7 @@ div.avatar-upload {
     img {
       object-fit: contain;
       width: 100%;
-      height: auto;
+      height: 100%;
     }
   }
 
