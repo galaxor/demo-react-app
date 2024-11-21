@@ -17,6 +17,7 @@ export default function ProfileEdit() {
   const nameInputRef = useRef(null);
 
   const [avatar, setAvatar] = useState(null);
+  const avatarEditorRef = useRef({});
 
   function onAvatarChange(newAvatar) {
     setAvatar(newAvatar);
@@ -29,7 +30,14 @@ export default function ProfileEdit() {
     <form id="profile-edit" onSubmit={(e) => {
       e.preventDefault();
 
-      User.setAvatar(avatar.avatar);
+      // The rest of the avatar data comes through the state every time we make
+      // an update, but the cropped version, we have to ask for specifically.
+      if (avatarEditorRef && avatarEditorRef.current) {
+        const editedAvatar = avatarEditorRef.current.getImage();
+        User.setAvatar(editedAvatar);
+      }
+
+      User.setAvatarOrig(avatar.avatarOrig);
       User.setAvatarAltText(avatar.avatarAltText);
       User.setAvatarPosition(avatar.avatarPosition);
       User.setAvatarRotate(avatar.avatarRotate);
@@ -39,10 +47,12 @@ export default function ProfileEdit() {
       setUser(newUser);
 
       setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
+
     }}>
       <div id="profile-fields">
       <label htmlFor="avatar-input">Avatar</label>
         <AvatarUpload
+          getImageRef={avatarEditorRef}
           onChange={onAvatarChange}
         />
 
