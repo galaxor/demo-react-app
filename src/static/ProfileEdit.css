@@ -21,7 +21,7 @@ img.avatar-small {
   gap: 2ex;
   align-items: center;
 
-  label {
+  .profile-field-label {
     text-align: right;
     font-weight: bold;
   }

@@ -50,13 +50,13 @@ export default function ProfileEdit() {
 
     }}>
       <div id="profile-fields">
-      <label htmlFor="avatar-input">Avatar</label>
+      <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
         <AvatarUpload
           getImageRef={avatarEditorRef}
           onChange={onAvatarChange}
         />
 
-      <label htmlFor="name-input">Name</label>
+      <label htmlFor="name-input" className="profile-field-label">Name</label>
         <input id="name-input" name="name" ref={nameInputRef}
           autoComplete="name"
           defaultValue={user? user.displayName : ""}
