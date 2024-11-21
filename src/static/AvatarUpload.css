@@ -20,8 +20,8 @@ div.avatar-upload {
     gap: 1ex;
   }
 
-  span#no-avatar,
-  label#avatar-upload-box {
+  div.remove-avatar,
+  label.avatar-upload-box {
     display: block;
     border: 2px solid black;
     text-align: center;

@@ -22,7 +22,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
   const avatarEditorRef = useRef({});
 
   const getImageFn = function () {
-    if (avatarEditorRef && avatarEditorRef.current) {
+    if (avatarEditorRef && avatarEditorRef.current && avatarEditorRef.current.getImageScaledToCanvas) {
       const image = avatarEditorRef.current.getImageScaledToCanvas().toDataURL();
       return image;
     } else {
@@ -72,114 +72,137 @@ export default function AvatarUpload({onChange, getImageRef}) {
   }, [avatarOrig, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar]);
 
   return (
-    <div id="avatar-preview" className="avatar-upload">
-    {removeAvatar && avatarOrig ?
-    ''
-    :
-    <>
-    <input type="file" id="avatar-input" name="avatar"
-      accept="image/*"
-      autoComplete="photo"
-      onChange={avatarUpload}
-    />
-      {avatarOrig ?
+    <div className="avatar-editor">
+      <div id="avatar-preview" className="avatar-upload">
         <div className="avatar-preview-bar">
-          <label htmlFor="avatar-input" className="avatar-preview">
-            <img alt="" src={avatarEdited} id="avatar-preview-img" />
-          </label>
-          <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box">📷<br />Replace Image</label>
+          {avatarOrig && removeAvatar? 
+            ''
+            :
+            <>
+            <input type="file" id="avatar-input" name="avatar"
+              accept="image/*"
+              autoComplete="photo"
+              onChange={avatarUpload}
+            />
+            {avatarOrig?
+              <label htmlFor="avatar-input" className="avatar-preview">
+                <img alt="" src={avatarEdited} id="avatar-preview-img" />
+              </label>
+              :
+              ''
+            }
+
+            <label htmlFor="avatar-input" className="avatar-upload-box">📷<br />{avatarOrig? "Replace Image" : "Upload Image"}</label>
+            </>
+          }
+
+          {avatarOrig?
+            <div className="remove-avatar">
+              <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
+                onChange={(e) => {
+                  setRemoveAvatar(e.target.checked);
+                }} />
+              <label htmlFor="remove-avatar-checkbox" className="no-avatar">Remove avatar</label>
+            </div>
+            :
+            ''
+          }
         </div>
+      </div>
+
+      {avatarOrig && !removeAvatar ?
+        <AvatarEditorSection
+          avatarEditorRef={avatarEditorRef}
+          avatarOrig={avatarOrig}
+          setAvatarOrig={setAvatarOrig}
+          avatarScale={avatarScale}
+          setAvatarScale={setAvatarScale}
+          avatarRotate={avatarRotate}
+          setAvatarRotate={setAvatarRotate}
+          avatarPosition={avatarPosition}
+          setAvatarPosition={setAvatarPosition}
+          getImageFn={getImageFn}
+          avatarEdited={avatarEdited}
+          setAvatarEdited={setAvatarEdited}
+        />
         :
         ''
       }
-    </>
-    }
 
-    {removeAvatar && avatarOrig ?
-      <span id="no-avatar" aria-label="No avatar image">❌</span>
+      {avatarOrig && !removeAvatar ?
+        <AvatarAltText
+          avatarAltText={avatarAltText}
+          setAvatarAltText={setAvatarAltText}
+        />
       :
-      ''
+      ""
     }
+    </div>
+  );
+}
 
-    {avatarOrig && !removeAvatar?
+function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatarScale, setAvatarScale, avatarRotate, setAvatarRotate, avatarPosition, setAvatarPosition, getImageFn, avatarEdited, setAvatarEdited}) {
+  return (
+    <div>
       <div>
-        <div>
-          <AvatarEditor
-            ref={avatarEditorRef}
-            image={avatarOrig}
-            width={250}
-            height={250}
-            border={0}
-            color={[255, 255, 255, 0.6]} // RGBA
-            borderRadius={125}
-            scale={avatarScale}
-            rotate={avatarRotate}
-            position={avatarPosition}
-            onPositionChange={newPos => {
-              setAvatarPosition({...newPos});
-              setAvatarEdited(getImageFn());
-            }}
-            onImageReady={() => setAvatarEdited(getImageFn())}
-            onImageChange={() => setAvatarEdited(getImageFn())}
-          />
-        </div>
-        <div>
-        <InputSlider
-          label="Scale"
-          name="avatar-scale"
-          id="avatar-scale"
-          min={1}
-          max={3}
-          value={avatarScale}
-          setValue={setAvatarScale}
-          shiftStep={0.1}
-          step={0.1}
-          onChange={(e, value) => setAvatarScale(value)}
+        <AvatarEditor
+          ref={avatarEditorRef}
+          image={avatarOrig}
+          width={250}
+          height={250}
+          border={0}
+          color={[255, 255, 255, 0.6]} // RGBA
+          borderRadius={125}
+          scale={avatarScale}
+          rotate={avatarRotate}
+          position={avatarPosition}
+          onPositionChange={newPos => {
+            setAvatarPosition({...newPos});
+            setAvatarEdited(getImageFn());
+          }}
+          onImageReady={() => setAvatarEdited(getImageFn())}
+          onImageChange={() => setAvatarEdited(getImageFn())}
         />
-        <InputSlider
-          label="Rotate (degrees)"
-          name="avatar-rotate"
-          id="avatar-rotate"
-          min={-180}
-          max={180}
-          marks={[{value: 0, label: "0°"}]}
-          value={avatarRotate}
-          setValue={setAvatarRotate}
-          shiftStep={5}
-          step={5}
-          onChange={(e, value) => setAvatarRotate(value)}
-        />
-        </div>
       </div>
-    :
-    ''
-    }
-
-    {avatarOrig ?
-      <>
-      <div id="remove-avatar">
-        <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
-          onChange={(e) => {
-            setRemoveAvatar(e.target.checked);
-          }} />
-        <label htmlFor="remove-avatar-checkbox">Remove avatar</label>
+      <div>
+      <InputSlider
+        label="Scale"
+        name="avatar-scale"
+        id="avatar-scale"
+        min={1}
+        max={3}
+        value={avatarScale}
+        setValue={setAvatarScale}
+        shiftStep={0.1}
+        step={0.1}
+        onChange={(e, value) => setAvatarScale(value)}
+      />
+      <InputSlider
+        label="Rotate (degrees)"
+        name="avatar-rotate"
+        id="avatar-rotate"
+        min={-180}
+        max={180}
+        marks={[{value: 0, label: "0°"}]}
+        value={avatarRotate}
+        setValue={setAvatarRotate}
+        shiftStep={5}
+        step={5}
+        onChange={(e, value) => setAvatarRotate(value)}
+      />
       </div>
-      </>
-      :
-      <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box">📷<br />Upload Image</label>
-    }
+    </div>
+  );
+}
 
-  {avatarOrig && !removeAvatar ?
-  <>
-  <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
-  <textarea id="avatar-alt-input" name="avatar-alt"
-      value={avatarAltText ?? ""}
-      onChange = {(e) => setAvatarAltText(e.target.value)}
-  />
-  </>
-  :
-  ''
-  }
-  </div>
+function AvatarAltText({avatarAltText, setAvatarAltText}) {
+  return (
+    <>
+    <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
+    <textarea id="avatar-alt-input" name="avatar-alt"
+        value={avatarAltText ?? ""}
+        onChange = {(e) => setAvatarAltText(e.target.value)}
+    />
+    </>
   );
 }
