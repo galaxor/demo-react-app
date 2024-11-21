@@ -79,20 +79,22 @@ export default function AvatarUpload({onChange, getImageRef}) {
             ''
             :
             <>
-            <input type="file" id="avatar-input" name="avatar"
-              accept="image/*"
-              autoComplete="photo"
-              onChange={avatarUpload}
-            />
             {avatarOrig?
               <label htmlFor="avatar-input" className="avatar-preview">
-                <img alt="" src={avatarEdited} id="avatar-preview-img" />
+                <img alt="Image preview" src={avatarEdited} id="avatar-preview-img" />
               </label>
               :
               ''
             }
 
-            <label htmlFor="avatar-input" className="avatar-upload-box">📷<br />{avatarOrig? "Replace Image" : "Upload Image"}</label>
+            <label className="avatar-upload-box">
+              <input type="file" id="avatar-input" className="avatar-input" name="avatar"
+                accept="image/*"
+                autoComplete="photo"
+                onChange={avatarUpload}
+              />
+              📷<br />{avatarOrig? "Replace Image" : "Upload Image"}
+            </label>
             </>
           }
 

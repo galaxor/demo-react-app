@@ -40,6 +40,11 @@ div.avatar-editor {
     height: 75px;
   }
 
+  label.remove-avatar:has(input:focus),
+  label.avatar-upload-box:has(input:focus) {
+    box-shadow: blue 0 0 3px;
+  }
+
   label.avatar-alt-text {
     display: block;
     width: 100%;
@@ -56,7 +61,7 @@ div.avatar-editor {
   }
 
   /* Hide the native file input */
-  #avatar-input {
+  .avatar-input {
     height: 0.1px;
     width: 0.1px;
     opacity: 0;
