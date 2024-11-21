@@ -31,9 +31,13 @@ export default function ProfileEdit() {
     <form id="profile-edit" onSubmit={(e) => {
       e.preventDefault();
 
+      // The rest of the avatar data comes through the state every time we make
+      // an update, but the cropped version, we have to ask for specifically.
       const editedAvatar = avatarEditorRef.current.getImage();
-      User.setAvatar(avatar.avatar);
-      User.setAvatarCropped(editedAvatar);
+      User.setAvatar(editedAvatar);
+
+
+      User.setAvatarOrig(avatar.avatarOrig);
       User.setAvatarAltText(avatar.avatarAltText);
       User.setAvatarPosition(avatar.avatarPosition);
       User.setAvatarRotate(avatar.avatarRotate);

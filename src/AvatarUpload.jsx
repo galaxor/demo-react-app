@@ -10,7 +10,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
 
-  const [avatar, setAvatar] = useState(user? user.avatar : null);
+  const [avatarOrig, setAvatarOrig] = useState(user? user.avatarOrig : null);
   const [avatarAltText, setAvatarAltText] = useState(null);
   const [avatarPosition, setAvatarPosition] = useState(null);
   const [avatarRotate, setAvatarRotate] = useState(null);
@@ -29,9 +29,12 @@ export default function AvatarUpload({onChange, getImageRef}) {
 
     const reader = new FileReader();
     reader.addEventListener("load", () => {
-      const avatar = reader.result;
+      const avatarOrig = reader.result;
 
-      setAvatar(avatar);
+      setAvatarOrig(avatarOrig);
+      setAvatarPosition({x: 0, y: 0});
+      setAvatarRotate(0);
+      setAvatarScale(1);
     });
 
     reader.readAsDataURL(e.target.files[0]);
@@ -41,7 +44,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
   // Load them with the saved values.
   useEffect(() => {
     if (user) {
-      setAvatar(user.avatar);
+      setAvatarOrig(user.avatarOrig);
       setAvatarAltText(user.avatarAltText);
       setAvatarPosition(user.avatarPosition);
       setAvatarRotate(user.avatarRotate);
@@ -54,16 +57,16 @@ export default function AvatarUpload({onChange, getImageRef}) {
   useEffect(() => {
     if (typeof onChange === 'function') {
       if (removeAvatar) {
-        onChange({avatar: null, avatarAltText: null, avatarPosition: {x: 0, y: 0}, avatarRotate: 0, avatarScale: 1});
+        onChange({avatarOrig: null, avatarAltText: null, avatarPosition: {x: 0, y: 0}, avatarRotate: 0, avatarScale: 1});
       } else {
-        onChange({avatar: avatar, avatarAltText: avatarAltText, avatarPosition: avatarPosition, avatarRotate: avatarRotate, avatarScale: avatarScale});
+        onChange({avatarOrig: avatarOrig, avatarAltText: avatarAltText, avatarPosition: avatarPosition, avatarRotate: avatarRotate, avatarScale: avatarScale});
       }
     }
-  }, [avatar, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar]);
+  }, [avatarOrig, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar]);
 
   return (
     <div id="avatar-preview">
-    {removeAvatar && avatar ?
+    {removeAvatar && avatarOrig ?
     ''
     :
     <>
@@ -72,26 +75,26 @@ export default function AvatarUpload({onChange, getImageRef}) {
       autoComplete="photo"
       onChange={avatarUpload}
     />
-      {avatar ?
-        <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatar} /></label>
+      {avatarOrig ?
+        <label htmlFor="avatar-input"><img id="avatar-preview-img" className="avatar-medium" src={avatarOrig} /></label>
         :
         ''
       }
     </>
     }
 
-    {removeAvatar && avatar ?
+    {removeAvatar && avatarOrig ?
       <span id="no-avatar" aria-label="No avatar image">❌</span>
       :
       ''
     }
 
-    {avatar && !removeAvatar?
+    {avatarOrig && !removeAvatar?
       <div>
         <div>
           <AvatarEditor
             ref={avatarEditorRef}
-            image={avatar}
+            image={avatarOrig}
             width={250}
             height={250}
             border={50}
@@ -134,7 +137,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
     ''
     }
 
-    {avatar ?
+    {avatarOrig ?
       <>
       <div id="remove-avatar">
         <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
@@ -148,7 +151,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
       <label htmlFor="avatar-input" id="avatar-upload-box" aria-label="Upload Image">📷</label>
     }
 
-  {avatar && !removeAvatar ?
+  {avatarOrig && !removeAvatar ?
   <>
   <label htmlFor="avatar-alt-input">Avatar Alt Text</label>
   <textarea id="avatar-alt-input" name="avatar-alt"
