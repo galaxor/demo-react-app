@@ -104,7 +104,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
                 onChange={(e) => {
                   setRemoveAvatar(e.target.checked);
                 }} /> <br />
-              Remove avatar
+              Remove Image
             </label>
             :
             ''
