@@ -120,6 +120,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
               setAvatarEdited(getImageFn());
             }}
             onImageReady={() => setAvatarEdited(getImageFn())}
+            onImageChange={() => setAvatarEdited(getImageFn())}
           />
         </div>
         <div>
@@ -133,10 +134,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
           setValue={setAvatarScale}
           shiftStep={0.1}
           step={0.1}
-          onChange={(e, value) => {
-            setAvatarScale(value);
-            setAvatarEdited(getImageFn());
-          }}
+          onChange={(e, value) => setAvatarScale(value)}
         />
         <InputSlider
           label="Rotate (degrees)"
@@ -149,10 +147,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
           setValue={setAvatarRotate}
           shiftStep={5}
           step={5}
-          onChange={(e, value) => {
-            setAvatarRotate(value);
-            setAvatarEdited(getImageFn());
-          }}
+          onChange={(e, value) => setAvatarRotate(value)}
         />
         </div>
       </div>

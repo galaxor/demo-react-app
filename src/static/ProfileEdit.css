@@ -1,11 +1,17 @@
+img.avatar-medium,
+img.avatar-small {
+  border-radius: 50%;
+  border: 2px solid black;
+}
+
 img.avatar-medium {
-  width: 4em;
-  height: 4em;
+  width: 75px;
+  height: 75px;
 }
 
 img.avatar-small {
-  width: 1.5em;
-  height: 1.5em;
+  width: 40px;
+  height: 40px;
 }
 
 #profile-fields {
