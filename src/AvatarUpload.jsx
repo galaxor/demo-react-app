@@ -83,8 +83,8 @@ export default function AvatarUpload({onChange, getImageRef}) {
     />
       {avatarOrig ?
         <div className="avatar-preview-bar">
-          <label htmlFor="avatar-input" className="avatar-preview"><img id="avatar-preview-img" src={avatarOrig} /></label>
-          <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box" aria-label="Upload Image">📷</label>
+          <label htmlFor="avatar-input" className="avatar-preview"><img alt="" id="avatar-preview-img" src={avatarOrig} /></label>
+          <label htmlFor="avatar-input" className="upload-image" id="avatar-upload-box"><span aria-label="Upload Image">📷</span></label>
         </div>
         :
         ''
