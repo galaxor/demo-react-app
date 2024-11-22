@@ -6,15 +6,15 @@ import UserSection from './UserSection.jsx';
 import NavigationSidebar from './NavigationSidebar.jsx';
 
 import SystemNotificationsContext from "./SystemNotificationsContext.jsx";
-import UserContext from "./UserContext.jsx";
+
 import DatabaseContext from "./DatabaseContext.jsx";
+import LanguageContext from "./LanguageContext.jsx";
+import UserContext from "./UserContext.jsx";
 
 import './App.css';
 import User from './logic/user.js';
 
-import Database from './logic/database.js'
-
-function App() {
+function App({db}) {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
 
@@ -25,17 +25,21 @@ function App() {
 
   const userContext = {user: user, setUser: setUser, sessionId: sessionId, setSessionId: setSessionId};
 
+  // TODO: Add i18n support 🤪
+  // Anybody can read navigator.language.
+  // But the idea is one day this could be a state value that you can change with a drop down.
+  const languageContext = navigator.language;
+
   useEffect(() => {
     const loggedInUser = User.loggedInUser();
     setUser(loggedInUser);
   }, [sessionId, setUser]);
 
-  const databaseContext = new Database();
-
   return (
     <>
-    <DatabaseContext.Provider value={databaseContext}>
+    <DatabaseContext.Provider value={db}>
     <UserContext.Provider value={userContext}>
+    <LanguageContext.Provider value={languageContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>
     <header>
       <Logo />
@@ -47,6 +51,7 @@ function App() {
     <Outlet />
     </main>
     </SystemNotificationsContext.Provider>
+    </LanguageContext.Provider>
     </UserContext.Provider>
     </DatabaseContext.Provider>
     </>

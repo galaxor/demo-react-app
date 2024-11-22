@@ -30,7 +30,7 @@ export default function NavigationSidebar() {
         <>
         <h2 id="account">Account</h2>
         <ul aria-describedby="account">
-        <li><NavLink to="/profile/edit">Profile</NavLink></li>
+        <li><NavLink to="/profile">Profile</NavLink></li>
         <li>Account Settings</li>
         <li><Link onClick={() => setSessionId(User.logout())}>Log Out</Link></li>
         </ul>
