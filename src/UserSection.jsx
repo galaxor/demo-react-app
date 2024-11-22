@@ -7,7 +7,7 @@ import NotificationBell from './NotificationBell.jsx';
 import User from './logic/user.js';
 
 export default function UserSection() {
-  const {user, setUser} = useContext(UserContext);
+  const {user, setSessionId} = useContext(UserContext);
 
   return (
     <section id="user-section">
@@ -25,7 +25,7 @@ export default function UserSection() {
         </li>
         </>
         :
-        <li id="login"><Link onClick={() => setUser(User.login())}>Log In</Link></li>
+        <li id="login"><Link onClick={() => setSessionId(User.login())}>Log In</Link></li>
       }
       </ul>
     </section>

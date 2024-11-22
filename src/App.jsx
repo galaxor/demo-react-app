@@ -17,17 +17,20 @@ import Database from './logic/database.js'
 function App() {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
-  const userContext = {user: user, setUser: setUser};
 
   const [systemNotifications, setSystemNotifications] = useState([]);
   const systemNotificationsContext = {systemNotifications: systemNotifications, setSystemNotifications: setSystemNotifications};
 
+  const [sessionId, setSessionId] = useState(null);
+
+  const userContext = {user: user, setUser: setUser, sessionId: sessionId, setSessionId: setSessionId};
+
   useEffect(() => {
-    if (user == null) {
+    if (sessionId != null) {
       const loggedInUser = User.loggedInUser();
       setUser(loggedInUser);
     }
-  }, [user, setUser]);
+  }, [sessionId, setUser]);
 
   const databaseContext = new Database();
 

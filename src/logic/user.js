@@ -32,10 +32,9 @@ export default {
     const account = db.get('accounts', 'testuser');
     const sessionId = uuidv4();
     db.set('sessions', 'testuser', sessionId);
-    const user = db.get('people', account.handle);
     // XXX we can't adorn things from the database until we fix the mutability problem.
     // user.session = sessionId;
-    return user;
+    return sessionId;
   },
 
   logout: () => {
