@@ -3,7 +3,7 @@ export default function Post({post, dateFormat}) {
     <article className="post h-entry">
       <span className="post-date">
         Posted
-        <a className="post-time dt-published" href={'/post/' + post.uri}>
+        <a className="post-time u-url" href={'/post/' + post.uri}>
             <span className="dt-published published-date">
               <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time>
               {/* This is where I would put the "time ago" */}
