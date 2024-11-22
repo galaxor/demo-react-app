@@ -1,4 +1,11 @@
+import { useContext } from 'react'
+import ReactTimeAgo from 'react-time-ago'
+
+import LanguageContext from './LanguageContext.jsx'
+
 export default function Post({post, dateFormat}) {
+  const languageContext = useContext(LanguageContext);
+
   return (
     <article className="post h-entry">
       <span className="post-date">
@@ -6,13 +13,13 @@ export default function Post({post, dateFormat}) {
         <a className="post-time dt-published" href={'/post/' + post.uri}>
             <span className="dt-published published-date">
               <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time>
-              {/* This is where I would put the "time ago" */}
+              (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
             </span>
 
             {post.updatedAt !== post.createdAt ?
               <span className="dt-updated updated-date">
                 <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time>
-                {/* This is where I would put the "time ago" */}
+                { /* <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} /> */ }
               </span>
               :
               ''
