@@ -12,6 +12,20 @@ class Database {
       };
 
       this.people = {
+        'astra_underscore@wetdry.world': {
+          localUserId: null,
+          handle: 'astra_underscore@wetdry.world',
+          
+          displayName: 'Astra Underscore',
+          bio: "Hello, my name is Astra! I am a trans girl from Chile born in '01 who loves computing, drawing, writing, and research!\n\n#ACAB #BlackLivesMatter\n\nI love chatting, so just DM me if you want to talk c:",
+
+          avatar: "https://media.wetdry.world/accounts/avatars/111/705/918/702/387/227/original/8b89b6d8c18bf716.png",
+          avatarOrig: null,
+          avatarPosition: {x: 0, y: 0},
+          avatarRotate: 0,
+          avatarScale: 1,
+        },
+
         'testuser@local': {
           localUserId: 'testuser',
           handle: 'testuser@local',
@@ -91,6 +105,29 @@ class Database {
           updatedAt: "2024-11-21T14:46:26-05:00",
           sensitive: false,
           text: "This is my post about stuff.",
+
+          spoilerText: null,
+
+          deletedAt: null,
+
+          inReplyTo: null, // URI of post that this is replying to
+          reblogOf: null,  // URI of post that this is a reblog of
+
+          canonicalUrl: null,
+
+          language: "en-US",
+          conversationId: "alice@coolserver/a-cool-article",
+
+          local: false,
+        },
+
+        "astra_underscore@wetdry.world/113522617022220742": {
+          uri: "astra_underscore@wetdry.world/113522617022220742",
+          author: "astra_underscore@wetdry.world",
+          createdAt: "2024-11-21T02:30:00-04:00",
+          updatedAt: "2024-11-21T02:34:00-04:00",
+          sensitive: false,
+          text: "robot girl that goes \"woop woop! woop woop! terrain! terrain! pull up! pull up!\" while tumbling down a flight of stairs",
 
           spoilerText: null,
 

@@ -18,8 +18,9 @@ export default function Post({post, dateFormat}) {
 
             {post.updatedAt !== post.createdAt ?
               <span className="dt-updated updated-date">
+                Updated
                 <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time>
-                <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />
+                (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
               </span>
               :
               ''
@@ -31,7 +32,7 @@ export default function Post({post, dateFormat}) {
         By
         <a className="p-author h-card" href={'/people/' + post.authorPerson.handle}>
           {post.authorPerson.avatar? 
-            <img alt="" className="avatar-small" href={post.authorPerson.avatar} />
+            <img alt="" className="avatar-small" src={post.authorPerson.avatar} />
             :
             ''
           }
