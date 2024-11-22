@@ -13,9 +13,7 @@ import DatabaseContext from "./DatabaseContext.jsx";
 import './App.css';
 import User from './logic/user.js';
 
-import Database from './logic/database.js'
-
-function App() {
+function App({db}) {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
 
@@ -34,11 +32,9 @@ function App() {
     setUser(loggedInUser);
   }, [sessionId, setUser]);
 
-  const databaseContext = new Database();
-
   return (
     <>
-    <DatabaseContext.Provider value={databaseContext}>
+    <DatabaseContext.Provider value={db}>
     <UserContext.Provider value={userContext}>
     <LanguageContext.Provider value={languageContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>

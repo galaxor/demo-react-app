@@ -5,8 +5,11 @@ import './index.css'
 import App from './App.jsx'
 import PopularFeed from './PopularFeed.jsx'
 import ProfileEdit from './ProfileEdit.jsx'
+import { ProfileView, getPersonLoader } from './ProfileView.jsx'
 import RootFeed from './RootFeed.jsx'
 import YourFeed from './YourFeed.jsx'
+
+import Database from "./logic/database.js";
 
 import {
   createBrowserRouter,
@@ -31,11 +34,12 @@ if (typeof timeAgoLocales[lang] === "undefined") {
   TimeAgo.addDefaultLocale(timeAgoLocales[navigatorLanguage]);
 }
 
+const database = new Database();
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <App db={database} />,
     children: [
       {
         path: "/",
@@ -52,6 +56,11 @@ const router = createBrowserRouter([
       {
         path: "/profile/edit",
         element: <ProfileEdit />,
+      },
+      {
+        path: "/people/:handle",
+        loader: getPersonLoader(database),
+        element: <ProfileView />,
       },
     ],
   },

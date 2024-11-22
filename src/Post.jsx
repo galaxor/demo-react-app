@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import ReactTimeAgo from 'react-time-ago'
+import { Link } from 'react-router-dom';
 
 import LanguageContext from './LanguageContext.jsx'
 
@@ -10,7 +11,7 @@ export default function Post({post, dateFormat}) {
     <article className="post h-entry">
       <span className="post-date">
         Posted
-        <a className="post-time dt-published" href={'/post/' + post.uri}>
+        <Link className="post-time dt-published" to={'/post/' + post.uri}>
             <span className="dt-published published-date">
               <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time>
               (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
@@ -25,12 +26,12 @@ export default function Post({post, dateFormat}) {
               :
               ''
             }
-        </a>
+        </Link>
       </span>
           
       <span className="post-author">
         By
-        <a className="p-author h-card" href={'/people/' + post.authorPerson.handle}>
+        <Link className="p-author h-card" to={'/people/' + post.authorPerson.handle}>
           {post.authorPerson.avatar? 
             <img alt="" className="avatar-small" src={post.authorPerson.avatar} />
             :
@@ -38,7 +39,7 @@ export default function Post({post, dateFormat}) {
           }
           <bdi className="author-displayName">{post.authorPerson.displayName}</bdi>
           <span className="author-handle">{post.authorPerson.handle}</span>
-        </a>
+        </Link>
       </span>
 
       <div className="post-text e-content" lang={post.language}>{post.text}</div>
