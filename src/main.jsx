@@ -13,6 +13,25 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import TimeAgo from 'javascript-time-ago'
+// XXX We have to manually do this for every language we support.
+import en from 'javascript-time-ago/locale/en'
+
+const timeAgoLocales = {
+  en: en
+};
+for (var lang in timeAgoLocales) {
+  TimeAgo.addLocale(timeAgoLocales[lang]);
+}
+
+const navigatorLanguage = navigator.language.split('-')[0];
+if (typeof timeAgoLocales[lang] === "undefined") {
+  TimeAgo.addDefaultLocale(timeAgoLocales['en']);
+} else {
+  TimeAgo.addDefaultLocale(timeAgoLocales[navigatorLanguage]);
+}
+
+
 const router = createBrowserRouter([
   {
     path: "/",
