@@ -19,7 +19,7 @@ export default function Post({post, dateFormat}) {
             {post.updatedAt !== post.createdAt ?
               <span className="dt-updated updated-date">
                 <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time>
-                { /* <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} /> */ }
+                <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />
               </span>
               :
               ''
