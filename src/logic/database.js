@@ -15,6 +15,8 @@ class Database {
         '@astra_underscore@wetdry.world': {
           localUserId: null,
           handle: '@astra_underscore@wetdry.world',
+
+          url: 'https://wetdry.world/@astra_underscore',
           
           displayName: 'Astra Underscore',
           bio: "Hello, my name is Astra! I am a trans girl from Chile born in '01 who loves computing, drawing, writing, and research!\n\n#ACAB #BlackLivesMatter\n\nI love chatting, so just DM me if you want to talk c:",
@@ -30,6 +32,8 @@ class Database {
           localUserId: null,
           handle: '@darkphoenix@not.an.evilcyberhacker.net',
 
+          url: 'https://not.an.evilcyberhacker.net/@darkphoenix',
+
           displayName: 'Ash',
           bio: " darkphoenix@disaster.queer:/mnt/gay/agenda# :idle:\n everyone's favourite chaotic bi poly disaster queer (accept no substitutes) :neofox_flag_bi: :neofox_flag_polyam: :neofox_flag_nb: :neofox_flag_genderfluid: :neofox_flag_trans:\n chaotic neutral\n queer as in fuck you\n too hot to be gender solid\n \"a boy for meme purposes roughly 50% of the time\"\n \"train slut\"\n AuDHD haver (confirmed)\n just another train and computer geek really\n probably passing through your area by train at this very moment\n most certainly the best worst thing that hasn't happened to you yet\n flirting okay unless i tell you otherwise; please tell me I'm cute\n has bitten a bunch of cute entities and now some of them are mine maybe\n I supposedly run this place, mostly for myself and a few close friends like half the extended polycule\n occasionally horny but always CWed\n \n 🐣 11.01.24\n :neocat_floof_estrogen: 22.09.24\n",
 
@@ -43,6 +47,8 @@ class Database {
         'testuser@local': {
           localUserId: 'testuser',
           handle: 'testuser@local',
+
+          url: null,
 
           displayName: 'Cool User',
           bio: "I am you! I love poking around demonstration websites.",
@@ -58,6 +64,8 @@ class Database {
           localUserId: null,
           handle: 'alice@coolserver',
 
+          url: 'https://coolserver.example.org/alice',
+
           displayName: 'Alice (from cryptography)',
           bio: "I love being a party to private conversations!",
 
@@ -71,6 +79,8 @@ class Database {
         'mittens@kittens': {
           localUserId: null,
           handle: 'mittens@kittens',
+
+          url: 'https://kittens.example.org/@mittens',
 
           displayName: 'Mittens Chalk',
           bio: "Artisan, engineer, geologist, woodcutter.",
@@ -86,6 +96,8 @@ class Database {
           localUserId: null,
           handle: 'jasper.shadow@solarpunk',
 
+          url: 'https://solarpunk.example.org/@jasper.shadow',
+
           displayName: 'Jasper Shadow',
           bio: "I want to be a Geoengineer when I grow up. That's not a thing, but hopefully one day it will be.",
 
@@ -99,6 +111,8 @@ class Database {
         'cfur@corporate': {
           localUserId: null,
           handle: 'cfur@corporate',
+
+          url: 'https://corporate.example.org/@cfur',
 
           displayName: 'Charlie Fur',
           bio: "VP of marketing at Globo, Inc. Avid hunter.",
@@ -228,7 +242,6 @@ class Database {
     localStorage.removeItem('accounts');
     localStorage.removeItem('sessions');
     localStorage.removeItem('people');
-    localStorage.removeItem('profiles');
   }
 }
 

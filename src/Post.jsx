@@ -31,14 +31,14 @@ export default function Post({post, dateFormat}) {
           
       <span className="post-author">
         By
-        <Link className="p-author h-card" to={'/people/' + post.authorPerson.handle}>
+        <Link className="p-author h-card u-url" to={'/people/' + post.authorPerson.handle}>
           {post.authorPerson.avatar? 
             <img alt="" className="avatar-small" src={post.authorPerson.avatar} />
             :
             ''
           }
-          <bdi className="author-displayName">{post.authorPerson.displayName}</bdi>
-          <span className="author-handle">{post.authorPerson.handle}</span>
+          <bdi className="author-displayName p-name">{post.authorPerson.displayName}</bdi>
+          <span className="author-handle u-impp">{post.authorPerson.handle}</span>
         </Link>
       </span>
 

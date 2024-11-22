@@ -1,11 +1,7 @@
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
+img.avatar-large,
 img.avatar-medium,
 img.avatar-small {
-  border-radius: 50%;
+  border-radius: 50%; 
   border: 2px solid black;
 }
 
