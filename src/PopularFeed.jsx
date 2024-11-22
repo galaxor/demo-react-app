@@ -14,14 +14,11 @@ export default function PopularFeed() {
   const popularPostsDB = new PopularPosts(db);
   const peopleDB = new People(db);
 
-  const [popularPosts, setPopularPosts] = useState({});
+  const [postsForDisplay, setPostsForDisplay] = useState(null);
 
-/*
-  useEffect(() => {
+  if (!postsForDisplay) {
     const postsByURI = postsDB.get();
-    
-    setPopularPosts(postsByURI);
-
+  
     const postsForDisplay = Object.entries(postsByURI).map(([postURI, updatedDate]) => {
       var post = postsDB.get(postURI);
       post.authorPerson = peopleDB.get(post.author);
@@ -29,9 +26,10 @@ export default function PopularFeed() {
       return post;
     });
 
-    console.log(postsForDisplay);
-  }, [popularPosts, setPopularPosts]);
-*/
+    setPostsForDisplay(postsForDisplay);
+
+    console.log("PFD", postsForDisplay);
+  }
 
   return (
     <main>
