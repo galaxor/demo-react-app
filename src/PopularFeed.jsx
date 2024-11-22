@@ -27,18 +27,71 @@ export default function PopularFeed() {
     });
 
     setPostsForDisplay(postsForDisplay);
-
-    console.log("PFD", postsForDisplay);
   }
+
+  const dateFormat = new Intl.DateTimeFormat(navigator.language, {
+    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
+  });
+
+/*
+              {post.updatedAt !== post.createdAt ?
+                <span className="date-updated">Updated
+                  <time className="dt-updated" datetime={post.updatedAt}>{dateFormat.format(post.updatedAt)}</time></span>
+                  (some time ago)
+                :
+                ''
+              }
+*/
 
   return (
     <main>
       <h1 id="featured-feed">Popular Posts</h1>
       <SystemNotificationArea />
-      <ul aria-describedby="featured-feed">
-        <li><article>Test post 1 by person</article></li>
-        <li><article>Test post 2 by other person</article></li>
-      </ul>
+
+      {postsForDisplay?
+        postsForDisplay.map((post) => {
+          console.log(post);
+          return (
+          <article className="post h-entry">
+            <span className="post-date">
+              Posted
+              <a className="post-time dt-published" href={'/post/' + post.uri}>
+                  <span className="dt-published published-date">
+                    <time datetime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time>
+                    {/* This is where I would put the "time ago" */}
+                  </span>
+
+                  {post.updatedAt !== post.createdAt ?
+                    <span className="dt-updated updated-date">
+                      <time datetime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time>
+                      {/* This is where I would put the "time ago" */}
+                    </span>
+                    :
+                    ''
+                  }
+              </a>
+            </span>
+                
+            <span className="post-author">
+              By
+              <a className="p-author h-card" href={'/people/' + post.authorPerson.handle}>
+                {post.authorPerson.avatar? 
+                  <img alt="" className="avatar-small" href={post.authorPerson.avatar} />
+                  :
+                  ''
+                }
+                <bdi className="author-displayName">{post.authorPerson.displayName}</bdi>
+                <span className="author-handle">{post.authorPerson.handle}</span>
+              </a>
+            </span>
+
+            <div className="post-text e-content" lang={post.language}>{post.text}</div>
+          </article>
+          );
+        })
+      :
+        'No posts to display.'
+      }
     </main>
   );
 }
