@@ -127,8 +127,6 @@ class Database {
   }
 
   get(table, key) {
-    // XXX This is how it should be, but it breaks stuff because I messed up.
-    /*
     if (typeof key === "undefined") {
       return JSON.parse(JSON.stringify(this[table]));
     } else {
@@ -139,10 +137,6 @@ class Database {
         return JSON.parse(JSON.stringify(result));
       }
     }
-    */
-
-    // XXX Because we're not returning a copy, downstream stuff can get the object and then mutate it.
-    return this[table][key];
   }
 
   set(table, key, value) {
