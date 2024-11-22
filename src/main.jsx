@@ -58,6 +58,10 @@ const router = createBrowserRouter([
         element: <ProfileEdit />,
       },
       {
+        path: "/profile",
+        element: <ProfileView loggedInUser={true} navigatedDirectly={true} />,
+      },
+      {
         path: "/people/:handle",
         loader: getPersonLoader(database),
         element: <ProfileView />,

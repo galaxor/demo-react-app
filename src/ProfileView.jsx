@@ -3,6 +3,7 @@ import { Link, useLoaderData } from "react-router-dom";
 
 import DatabaseContext from './DatabaseContext.jsx';
 import People from './logic/people.js';
+import UserContext from './UserContext.jsx';
 
 import './static/ProfileView.css'
 
@@ -16,8 +17,28 @@ export function getPersonLoader(db) {
   };
 }
 
-export function ProfileView({handle}) {
-  const { person } = useLoaderData();
+export function ProfileView({handle, loggedInUser, navigatedDirectly }) {
+  const { user, setUser } = useContext(UserContext);
+
+  if (navigatedDirectly) {
+    console.log("They navigated direclty here.");
+  } else {
+    console.log("It's a coinky-dink");
+  }
+
+  let person;
+  if (loggedInUser) {
+    person = user;
+  } else {
+    person = useLoaderData().person;
+  }
+
+  // This condition happens if we're supposed to be looking at the logged in
+  // user, but they haven't loaded yet.
+  if (loggedInUser && person === null) {
+    // This is where we would draw a throbber, probably, if the database was actually asynchronous.
+    return "";
+  }
 
   return (
     <main className="h-card profile-view">
