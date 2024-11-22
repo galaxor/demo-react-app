@@ -33,16 +33,6 @@ export default function PopularFeed() {
     weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
   });
 
-/*
-              {post.updatedAt !== post.createdAt ?
-                <span className="date-updated">Updated
-                  <time className="dt-updated" datetime={post.updatedAt}>{dateFormat.format(post.updatedAt)}</time></span>
-                  (some time ago)
-                :
-                ''
-              }
-*/
-
   return (
     <main>
       <h1 id="featured-feed">Popular Posts</h1>
