@@ -17,14 +17,8 @@ export function getPersonLoader(db) {
   };
 }
 
-export function ProfileView({handle, loggedInUser, navigatedDirectly }) {
+export function ProfileView({handle, loggedInUser }) {
   const { user, setUser } = useContext(UserContext);
-
-  if (navigatedDirectly) {
-    console.log("They navigated direclty here.");
-  } else {
-    console.log("It's a coinky-dink");
-  }
 
   let person;
   if (loggedInUser) {

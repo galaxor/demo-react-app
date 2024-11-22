@@ -59,7 +59,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <ProfileView loggedInUser={true} navigatedDirectly={true} />,
+        element: <ProfileView loggedInUser={true} />,
       },
       {
         path: "/people/:handle",
