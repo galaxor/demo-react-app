@@ -4,7 +4,7 @@ class Database {
       // Initializing the database.
       this.accounts = {
         'testuser': {
-          handle: 'testuser@local',
+          handle: '@testuser@local',
         },
       };
 
@@ -44,9 +44,9 @@ class Database {
           avatarScale: 1,
         },
 
-        'testuser@local': {
+        '@testuser@local': {
           localUserId: 'testuser',
-          handle: 'testuser@local',
+          handle: '@testuser@local',
 
           url: null,
 

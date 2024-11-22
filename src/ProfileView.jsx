@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 
 import DatabaseContext from './DatabaseContext.jsx';
 import People from './logic/people.js';
@@ -22,10 +22,17 @@ export function ProfileView({handle}) {
   return (
     <main className="h-card profile-view">
       <h1>
-        <a className="u-url link-external" rel="noopener noreferrer" target="_blank" href={person.url}>
-          <span className="display-name p-name"><bdi>{person.displayName}</bdi></span>
-          <span className="author-handle u-impp">{person.handle}</span>
-        </a>
+        {person.localUserId?
+          <Link className="u-url" href={'/person/'+handle}>
+            <span className="display-name p-name"><bdi>{person.displayName}</bdi></span>
+            <span className="author-handle u-impp">{person.handle}</span>
+          </Link>
+          :
+          <a className="u-url link-external" rel="noopener noreferrer" target="_blank" href={person.url}>
+            <span className="display-name p-name"><bdi>{person.displayName}</bdi></span>
+            <span className="author-handle u-impp">{person.handle}</span>
+          </a>
+        }
       </h1>
 
       <h2>Bio</h2>
@@ -34,9 +41,13 @@ export function ProfileView({handle}) {
         {person.bio}
       </div>
 
-      <h2>Avatar</h2>
+      {person.avatar &&
+        <>
+        <h2>Avatar</h2>
 
-      <a rel="noopener noreferrer" target="_blank" href={person.url} aria-label={person.displayName + ' ' + person.handle}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
+        <a rel="noopener noreferrer" target="_blank" href={person.url} aria-label={person.displayName + ' ' + person.handle}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
+        </>
+      }
     </main>
   );
 }
