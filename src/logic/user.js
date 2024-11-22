@@ -15,13 +15,13 @@ function setProp(prop, val) {
 
 export default {
   loggedInUser: () => {
-    const session = db.get('sessions', 'testuser');
+    const sessionId = localStorage.getItem('sessionId');
+    const session = db.get('sessions', sessionId);
     if (session) {
       const account = db.get('accounts', 'testuser');
       const person = db.get('people', account.handle);
 
-      // XXX we can't adorn things from the database until we fix the mutability problem.
-      // person.session = session;
+      person.session = session;
       return person;
     } else {
       return null;
@@ -31,14 +31,17 @@ export default {
   login: () => {
     const account = db.get('accounts', 'testuser');
     const sessionId = uuidv4();
-    db.set('sessions', 'testuser', sessionId);
-    // XXX we can't adorn things from the database until we fix the mutability problem.
-    // user.session = sessionId;
+    db.set('sessions', sessionId, 'testuser');
+
+    localStorage.setItem('sessionId', sessionId);
+
     return sessionId;
   },
 
   logout: () => {
-    db.del('sessions', 'testuser');
+    const sessionId = localStorage.getItem('sessionId');
+    db.del('sessions', sessionId);
+    localStorage.removeItem('sessionId');
     return null;
   },
 

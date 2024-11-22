@@ -26,10 +26,8 @@ function App() {
   const userContext = {user: user, setUser: setUser, sessionId: sessionId, setSessionId: setSessionId};
 
   useEffect(() => {
-    if (sessionId != null) {
-      const loggedInUser = User.loggedInUser();
-      setUser(loggedInUser);
-    }
+    const loggedInUser = User.loggedInUser();
+    setUser(loggedInUser);
   }, [sessionId, setUser]);
 
   const databaseContext = new Database();
