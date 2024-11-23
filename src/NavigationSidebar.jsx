@@ -31,6 +31,12 @@ export default function NavigationSidebar() {
         <h2 id="account">Account</h2>
         <ul aria-describedby="account">
         <li><NavLink to="/profile">Profile</NavLink></li>
+        { ['/profile', '/profile/edit'].includes(matches[matches.length-1].pathname) ?
+          <ul>
+          <li><NavLink to="/profile/edit">Edit Your Profile</NavLink></li>
+          </ul>
+          : ''
+        }
         <li>Account Settings</li>
         <li><Link onClick={() => setSessionId(User.logout())}>Log Out</Link></li>
         </ul>
