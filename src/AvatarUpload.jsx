@@ -14,10 +14,10 @@ export default function AvatarUpload({onChange, getImageRef}) {
 
   const [avatarEdited, setAvatarEdited] = useState(user? user.avatar : null);
   const [avatarOrig, setAvatarOrig] = useState(user? user.avatarOrig : null);
-  const [avatarAltText, setAvatarAltText] = useState(null);
-  const [avatarPosition, setAvatarPosition] = useState(null);
-  const [avatarRotate, setAvatarRotate] = useState(null);
-  const [avatarScale, setAvatarScale] = useState(null);
+  const [avatarAltText, setAvatarAltText] = useState("");
+  const [avatarPosition, setAvatarPosition] = useState({x: 0.5, y: 0.5});
+  const [avatarRotate, setAvatarRotate] = useState(0);
+  const [avatarScale, setAvatarScale] = useState(1);
 
   const avatarEditorRef = useRef({});
 

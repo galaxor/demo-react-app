@@ -20,7 +20,7 @@ export default function ProfileEdit() {
   const [avatar, setAvatar] = useState(null);
   const avatarEditorRef = useRef({});
 
-  const onAvatarChange = useCallback(newAvatar => setAvatar(newAvatar), []);
+  const onAvatarChange = useCallback(newAvatar => (newAvatar? setAvatar(newAvatar) : ""), []);
 
   return <>
     <main className="profile-edit">

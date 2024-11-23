@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
 import { getPersonLoader, PeopleDB } from './logic/people.js';
@@ -12,9 +12,12 @@ export default function ProfileView({handle, loggedInUser }) {
   const loaderData = useLoaderData();
   const loadedPerson = loaderData? useLoaderData().person : null;
 
+  let thisIsYou = false;
+
   let person;
   if (loggedInUser) {
     person = user;
+    thisIsYou = true;
   } else {
     person = loadedPerson;
   }
@@ -41,6 +44,16 @@ export default function ProfileView({handle, loggedInUser }) {
           </a>
         }
       </h1>
+
+      <aside className="profile-actions">
+        <h2 id="profile-actions">Actions</h2>
+        <nav aria-labelledby="profile-actions">
+          <ul aria-labelledby="profile-actions">
+            {thisIsYou && <li><Link to="/profile/edit">Edit Profile</Link></li>}
+            {!thisIsYou && <li>Friend Status</li>}
+          </ul>
+        </nav>
+      </aside>
 
       <h2>Bio</h2>
       
