@@ -1,5 +1,5 @@
 import Post from './Post.jsx';
-import PostsDB from './logic/posts.js';
+import { PostsDB } from './logic/posts.js';
 import DatabaseContext from './DatabaseContext.jsx'
 import { useContext } from 'react';
 

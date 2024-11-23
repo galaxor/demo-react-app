@@ -1,4 +1,4 @@
-import PostsDB from './logic/Posts.js';
+import { PostsDB } from './logic/posts.js';
 
 import Post from './Post.jsx';
 import Replies from './Replies.jsx';
@@ -9,17 +9,7 @@ import { useContext } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
-export function getPostLoader(db) {
-  return ({params}) => {
-    const postsDB = new PostsDB(db);
-
-    const post = postsDB.get(params.postUri);
-
-    return { post };
-  };
-}
-
-export function PostSingle() {
+export default function PostSingle() {
   const post = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);

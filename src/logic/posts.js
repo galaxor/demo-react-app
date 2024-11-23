@@ -1,4 +1,14 @@
-class PostsDB {
+export function getPostLoader(db) {
+  return ({params}) => {
+    const postsDB = new PostsDB(db);
+
+    const post = postsDB.get(params.postUri);
+
+    return { post };
+  };
+}
+
+export class PostsDB {
   db = null;
 
   constructor(db) {
@@ -22,5 +32,3 @@ class PostsDB {
     return replies;
   }
 }
-
-export default PostsDB;
