@@ -60,9 +60,9 @@ class Database {
           avatarScale: 1,
         },
 
-        '@alice@coolserver': {
-          localUserId: null,
-          handle: '@alice@coolserver',
+        '@alice@local': {
+          localUserId: 'alice',
+          handle: '@alice@local',
 
           url: 'https://coolserver.example.org/alice',
 
@@ -127,23 +127,23 @@ class Database {
 
       this.follows = [
         ["@testuser@local", '@astra_underscore@wetdry.world'],
-        ["@testuser@local", '@alice@coolserver'],
+        ["@testuser@local", '@alice@local'],
         ["@astra_underscore@wetdry.world", '@darkphoenix@not.an.evilcyberhacker.net'],
         ['@astra_underscore@wetdry.world', "@testuser@local"],
         ["@testuser@local", '@darkphoenix@not.an.evilcyberhacker.net'],
-        ['@cfur@corporate', '@alice@coolserver'],
+        ['@cfur@corporate', '@alice@local'],
         ['@cfur@corporate', '@testuser@local'],
-        ['@alice@coolserver', '@cfur@corporate'],
-        ['@alice@coolserver', '@mittens@kittens'],
-        ['@alice@coolserver', '@jasper.shadow@solarpunk'],
-        ['@mittens@kittens', '@alice@coolserver'],
-        ['@jasper.shadow@solarpunk', '@alice@coolserver'],
+        ['@alice@local', '@cfur@corporate'],
+        ['@alice@local', '@mittens@kittens'],
+        ['@alice@local', '@jasper.shadow@solarpunk'],
+        ['@mittens@kittens', '@alice@local'],
+        ['@jasper.shadow@solarpunk', '@alice@local'],
       ];
 
       this.posts = {
-        "@alice@coolserver/a-cool-article": {
-          uri: "@alice@coolserver/a-cool-article",
-          author: "@alice@coolserver",
+        "@alice@local/a-cool-article": {
+          uri: "@alice@local/a-cool-article",
+          author: "@alice@local",
           createdAt: "2024-11-21T14:46:26-05:00",
           updatedAt: "2024-11-21T14:46:26-05:00",
           sensitive: false,
@@ -159,7 +159,7 @@ class Database {
           canonicalUrl: null,
 
           language: "en-US",
-          conversationId: "@alice@coolserver/a-cool-article",
+          conversationId: null,
 
           local: false,
         },
@@ -235,7 +235,7 @@ class Database {
       };
 
       this.popularPosts = [
-        { uri: "@alice@coolserver/a-cool-article", updatedAt: "2024-11-21T14:46:26-05:00" },
+        { uri: "@alice@local/a-cool-article", updatedAt: "2024-11-21T14:46:26-05:00" },
         { uri: "https://wetdry.world/@astra_underscore/113522617022220742", updatedAt: "2024-11-21T02:34:00-04:00" },
       ];
 

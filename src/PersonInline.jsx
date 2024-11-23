@@ -19,17 +19,24 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   // display name, but have some kind of tooltip to say what server they're
   // from.
 
-// Important states to note:
-// * You follow them
-// * They follow you (maybe not. We're trying to figure out if they're legit.  Whether they follow you is not important.  Bots and imitators can do that)
-// * They are on your home server (maybe mention this?)
-
   const { user } = useContext(UserContext);
 
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
 
-  const youFollowThem = (user === null)? false : peopleDB.doesXFollowY(user.handle, person.handle);
+  // Important states to note, so the user can make decisions about how much
+  // they trust this user.
+  // Things to note:
+  // * You follow them
+  // * They are on your home server
+
+  // XXX One day, we should have a way to note when two people with the same
+  // display name appear on the same page, and give them numbers:  "Pam 1 said
+  // this, Pam 2 said that".
+
+  const isYou = (user && user.handle === person.handle);
+  const youFollowThem = (user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle);
+  const onHomeServer = (person.localUserId !== null); 
 
   return (
     <span className="person-inline">
@@ -39,7 +46,9 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
         <span className="handle-inline u-impp">{person.handle}</span>
       </Link>
       <span className="person-inline-trust-info">
-        {youFollowThem && <> You follow them </>}
+        {isYou && <span className="is-you">You</span>} {" "}
+        {youFollowThem && <span className="trust-you-follow-them">You follow them</span>} {" "}
+        {onHomeServer && <span className="trust-on-this-server">from this server</span>}
       </span>
     </span>
   );
