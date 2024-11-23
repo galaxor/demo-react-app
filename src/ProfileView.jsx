@@ -50,7 +50,14 @@ export default function ProfileView({handle, loggedInUser }) {
         <nav aria-labelledby="profile-actions">
           <ul aria-labelledby="profile-actions">
             {thisIsYou && <li><Link to="/profile/edit">Edit Profile</Link></li>}
-            {!thisIsYou && <li>Friend Status</li>}
+            {!thisIsYou &&
+              <li id="friend-status">Friend Status
+                <ul className="friend-status" aria-labelledby="friend-status">
+                  <li><label>Follow <bdi>{person.displayName}</bdi> <input type="checkbox" /></label></li>
+                  <li><label><bdi>{person.displayName}</bdi> follows you <input type="checkbox" /></label></li>
+                </ul>
+              </li>
+            }
           </ul>
         </nav>
       </aside>

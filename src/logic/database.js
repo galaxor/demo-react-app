@@ -60,9 +60,9 @@ class Database {
           avatarScale: 1,
         },
 
-        'alice@coolserver': {
+        '@alice@coolserver': {
           localUserId: null,
-          handle: 'alice@coolserver',
+          handle: '@alice@coolserver',
 
           url: 'https://coolserver.example.org/alice',
 
@@ -76,9 +76,9 @@ class Database {
           avatarScale: 1,
         },
 
-        'mittens@kittens': {
+        '@mittens@kittens': {
           localUserId: null,
-          handle: 'mittens@kittens',
+          handle: '@mittens@kittens',
 
           url: 'https://kittens.example.org/@mittens',
 
@@ -92,9 +92,9 @@ class Database {
           avatarScale: 1,
         },
 
-        'jasper.shadow@solarpunk': {
+        '@jasper.shadow@solarpunk': {
           localUserId: null,
-          handle: 'jasper.shadow@solarpunk',
+          handle: '@jasper.shadow@solarpunk',
 
           url: 'https://solarpunk.example.org/@jasper.shadow',
 
@@ -108,9 +108,9 @@ class Database {
           avatarScale: 1,
         },
 
-        'cfur@corporate': {
+        '@cfur@corporate': {
           localUserId: null,
-          handle: 'cfur@corporate',
+          handle: '@cfur@corporate',
 
           url: 'https://corporate.example.org/@cfur',
 
@@ -125,10 +125,25 @@ class Database {
         }
       };
 
+      this.follows = {
+        "testuser@local": '@astra_underscore@wetdry.world',
+        "testuser@local": '@alice@coolserver',
+        "@astra_underscore@wetdry.world": '@darkphoenix@not.an.evilcyberhacker.net',
+        '@astra_underscore@wetdry.world': "testuser@local",
+        "testuser@local": '@darkphoenix@not.an.evilcyberhacker.net',
+        '@cfur@corporate': '@alice@coolserver',
+        '@cfur@corporate': '@testuser@local',
+        '@alice@coolserver': '@cfur@corporate',
+        '@alice@coolserver': '@mittens@kittens',
+        '@alice@coolserver': '@jasper.shadow@solarpunk',
+        '@mittens@kittends': '@alice@coolserver',
+        '@jasper.shadow@solarpunk': '@alice@coolserver',
+      };
+
       this.posts = {
-        "alice@coolserver/a-cool-article": {
-          uri: "alice@coolserver/a-cool-article",
-          author: "alice@coolserver",
+        "@alice@coolserver/a-cool-article": {
+          uri: "@alice@coolserver/a-cool-article",
+          author: "@alice@coolserver",
           createdAt: "2024-11-21T14:46:26-05:00",
           updatedAt: "2024-11-21T14:46:26-05:00",
           sensitive: false,
@@ -144,7 +159,7 @@ class Database {
           canonicalUrl: null,
 
           language: "en-US",
-          conversationId: "alice@coolserver/a-cool-article",
+          conversationId: "@alice@coolserver/a-cool-article",
 
           local: false,
         },
@@ -220,7 +235,7 @@ class Database {
       };
 
       this.popularPosts = [
-        { uri: "alice@coolserver/a-cool-article", updatedAt: "2024-11-21T14:46:26-05:00" },
+        { uri: "@alice@coolserver/a-cool-article", updatedAt: "2024-11-21T14:46:26-05:00" },
         { uri: "https://wetdry.world/@astra_underscore/113522617022220742", updatedAt: "2024-11-21T02:34:00-04:00" },
       ];
 
