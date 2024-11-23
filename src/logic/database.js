@@ -136,7 +136,7 @@ class Database {
         ['@alice@coolserver', '@cfur@corporate'],
         ['@alice@coolserver', '@mittens@kittens'],
         ['@alice@coolserver', '@jasper.shadow@solarpunk'],
-        ['@mittens@kittends', '@alice@coolserver'],
+        ['@mittens@kittens', '@alice@coolserver'],
         ['@jasper.shadow@solarpunk', '@alice@coolserver'],
       ];
 
