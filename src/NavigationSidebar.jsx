@@ -7,7 +7,7 @@ import User from './logic/user.js';
 import './static/nav.css';
 
 export default function NavigationSidebar() {
-  const { user, setUser, sessionId, setSessionId } = useContext(UserContext);
+  const { user, setSessionId } = useContext(UserContext);
 
   const matches = useMatches();
 

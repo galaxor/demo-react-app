@@ -6,7 +6,7 @@ import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 
 import { useContext } from 'react';
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
 export function getPostLoader(db) {

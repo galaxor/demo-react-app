@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
-import DatabaseContext from './DatabaseContext.jsx';
 import PeopleDB from './logic/people.js';
 import UserContext from './UserContext.jsx';
 
@@ -18,13 +17,16 @@ export function getPersonLoader(db) {
 }
 
 export function ProfileView({handle, loggedInUser }) {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+
+  const loaderData = useLoaderData();
+  const loadedPerson = loaderData? useLoaderData().person : null;
 
   let person;
   if (loggedInUser) {
     person = user;
   } else {
-    person = useLoaderData().person;
+    person = loadedPerson;
   }
 
   // This condition happens if we're supposed to be looking at the logged in

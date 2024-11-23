@@ -179,7 +179,7 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
       <div 
         tabIndex={0} 
         onFocus={() => setPanFocused(true)}
-        onBlur={(e) => setPanFocused(false)}>
+        onBlur={() => setPanFocused(false)}>
         {panFocused?
           <span className="four-arrows" aria-label="Use arrow keys to move the image around">✢</span>
           :

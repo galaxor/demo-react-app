@@ -29,7 +29,6 @@ export default {
   },
 
   login: () => {
-    const account = db.get('accounts', 'testuser');
     const sessionId = uuidv4();
     db.set('sessions', sessionId, 'testuser');
 
