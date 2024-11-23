@@ -1,4 +1,4 @@
-class Posts {
+class PostsDB {
   db = null;
 
   constructor(db) {
@@ -10,4 +10,4 @@ class Posts {
   }
 }
 
-export default Posts;
+export default PostsDB;

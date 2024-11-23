@@ -1,4 +1,4 @@
-class People {
+class PeopleDB {
   db = null;
 
   constructor(db) {
@@ -11,4 +11,4 @@ class People {
   }
 }
 
-export default People;
+export default PeopleDB;

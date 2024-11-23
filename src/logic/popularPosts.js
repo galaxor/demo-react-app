@@ -1,4 +1,4 @@
-class PopularPosts {
+class PopularPostsDB {
   db = null;
 
   constructor(db) {
@@ -16,4 +16,4 @@ class PopularPosts {
   }
 }
 
-export default PopularPosts;
+export default PopularPostsDB;
