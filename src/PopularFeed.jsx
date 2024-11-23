@@ -19,10 +19,10 @@ export default function PopularFeed() {
   const [postsForDisplay, setPostsForDisplay] = useState(null);
 
   if (!postsForDisplay) {
-    const postsByURI = postsDB.get();
+    const postsByURI = popularPostsDB.get();
   
-    const postsForDisplay = Object.entries(postsByURI).map(([postURI, updatedDate]) => {
-      var post = postsDB.get(postURI);
+    const postsForDisplay = postsByURI.map(popularPost => {
+      var post = postsDB.get(popularPost.uri);
       post.authorPerson = peopleDB.get(post.author);
 
       return post;

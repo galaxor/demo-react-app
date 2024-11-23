@@ -9,7 +9,7 @@ class PopularPosts {
     const popularPosts = this.db.get('popularPosts');
 
     popularPosts.sort((a, b) => {
-      if (a.updatedAt==b.updatedAt) {return 0;} else { return a.updatedAt < b.updatedAt? -1 : 1; }
+      if (a.updatedAt==b.updatedAt) {return 0;} else { return a.updatedAt > b.updatedAt? -1 : 1; }
     });
 
     return popularPosts;

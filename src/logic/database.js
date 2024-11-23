@@ -196,15 +196,16 @@ class Database {
         },
       };
 
-      this.popularPosts = {
-        "alice@coolserver/a-cool-article": "2024-11-21T14:46:26-05:00",
-      };
+      this.popularPosts = [
+        { uri: "alice@coolserver/a-cool-article", updatedAt: "2024-11-21T14:46:26-05:00" },
+        { uri: "https://wetdry.world/@astra_underscore/113522617022220742", updatedAt: "2024-11-21T02:34:00-04:00" },
+      ];
 
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('posts', JSON.stringify(this.posts));
-      localStorage.setItem('popularPosts', JSON.stringify(this.posts));
+      localStorage.setItem('popularPosts', JSON.stringify(this.popularPosts));
     } else {
       this.accounts = JSON.parse(localStorage.getItem('accounts'));
       this.sessions = JSON.parse(localStorage.getItem('sessions'));
