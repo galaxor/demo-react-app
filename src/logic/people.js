@@ -25,6 +25,10 @@ export class PeopleDB {
 
     return followsPerson;
   }
+
+  doesXFollowY(xHandle, yHandle) {
+    return this.db.get('follows').filter(([x, y]) => x === xHandle && y === yHandle).length > 0;
+  }
 }
 
 export function getPersonLoader(db) {

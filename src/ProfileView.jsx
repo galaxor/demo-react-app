@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
 import { getPersonLoader, PeopleDB } from './logic/people.js';
+import PersonInline from './PersonInline.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
 import UserContext from './UserContext.jsx';
 
@@ -32,6 +33,9 @@ export default function ProfileView({handle, loggedInUser }) {
     // This is where we would draw a throbber, probably, if the database was actually asynchronous.
     return "";
   }
+
+// XXX They should get a badge if they're on your home server.
+// Maybe next to their name?
 
   const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
 
@@ -89,7 +93,10 @@ export default function ProfileView({handle, loggedInUser }) {
           <h2 id="who-follows-them">Who follows <bdi>{person.displayName}</bdi></h2>
 
           <ul aria-labelledby="who-follows-them">
-          {JSON.stringify(whoFollowsThem)}
+          {whoFollowsThem.map(personWhoFollows => {
+            return (<li key={personWhoFollows.handle}><PersonInline person={personWhoFollows} /></li>);
+            }
+          )}
           </ul>
         </section>
       </aside>
