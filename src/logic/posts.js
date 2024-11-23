@@ -6,7 +6,9 @@ class PostsDB {
   }
 
   get(uri) {
-    return this.db.get('posts', uri);
+    const post = this.db.get('posts', uri);
+    post.authorPerson = this.db.get('people', post.author);
+    return post;
   }
 }
 
