@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import LanguageContext from './LanguageContext.jsx'
 
-export default function Post({post, dateFormat}) {
+export default function Post({post, dateFormat, children}) {
   const languageContext = useContext(LanguageContext);
 
   return (
@@ -43,6 +43,8 @@ export default function Post({post, dateFormat}) {
       </span>
 
       <div className="post-text e-content" lang={post.language}>{post.text}</div>
+
+      {children}
     </article>
   );
 }
