@@ -69,7 +69,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
         onChange({avatarOrig: avatarOrig, avatarAltText: avatarAltText, avatarPosition: avatarPosition, avatarRotate: avatarRotate, avatarScale: avatarScale});
       }
     }
-  }, [avatarOrig, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar]);
+  }, [avatarOrig, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar, onChange]);
 
   return (
     <div className={'avatar-editor '+(avatarOrig && !removeAvatar? 'avatar-editor-open' : '') }>

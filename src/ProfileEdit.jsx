@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import AvatarUpload from './AvatarUpload.jsx';
@@ -20,9 +20,7 @@ export default function ProfileEdit() {
   const [avatar, setAvatar] = useState(null);
   const avatarEditorRef = useRef({});
 
-  function onAvatarChange(newAvatar) {
-    setAvatar(newAvatar);
-  }
+  const onAvatarChange = useCallback(newAvatar => setAvatar(newAvatar), []);
 
   return <>
     <main className="profile-edit">
