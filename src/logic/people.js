@@ -1,4 +1,4 @@
-class PeopleDB {
+export class PeopleDB {
   db = null;
 
   constructor(db) {
@@ -11,4 +11,12 @@ class PeopleDB {
   }
 }
 
-export default PeopleDB;
+export function getPersonLoader(db) {
+  return ({params}) => {
+    const peopleDB = new PeopleDB(db);
+
+    const person = peopleDB.get(params.handle);
+
+    return { person };
+  };
+}

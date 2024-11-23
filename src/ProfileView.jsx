@@ -1,22 +1,12 @@
 import { useContext } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
-import PeopleDB from './logic/people.js';
+import { getPersonLoader, PeopleDB } from './logic/people.js';
 import UserContext from './UserContext.jsx';
 
 import './static/ProfileView.css'
 
-export function getPersonLoader(db) {
-  return ({params}) => {
-    const peopleDB = new PeopleDB(db);
-
-    const person = peopleDB.get(params.handle);
-
-    return { person };
-  };
-}
-
-export function ProfileView({handle, loggedInUser }) {
+export default function ProfileView({handle, loggedInUser }) {
   const { user } = useContext(UserContext);
 
   const loaderData = useLoaderData();

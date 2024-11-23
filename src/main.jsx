@@ -6,11 +6,12 @@ import App from './App.jsx'
 import PopularFeed from './PopularFeed.jsx'
 import { PostSingle, getPostLoader } from './PostSingle.jsx'
 import ProfileEdit from './ProfileEdit.jsx'
-import { ProfileView, getPersonLoader } from './ProfileView.jsx'
+import ProfileView from './ProfileView.jsx'
 import RootFeed from './RootFeed.jsx'
 import YourFeed from './YourFeed.jsx'
 
 import Database from "./logic/database.js";
+import { getPersonLoader } from './logic/people.js';
 
 import {
   createBrowserRouter,
