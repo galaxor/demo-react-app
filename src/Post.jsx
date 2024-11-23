@@ -11,7 +11,7 @@ export default function Post({post, dateFormat}) {
     <article className="post h-entry">
       <span className="post-date">
         Posted
-        <Link className="post-time dt-published" to={'/post/' + post.uri}>
+        <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
             <span className="dt-published published-date">
               <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time>
               (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)

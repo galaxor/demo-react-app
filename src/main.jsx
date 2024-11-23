@@ -4,6 +4,7 @@ import './index.css'
 
 import App from './App.jsx'
 import PopularFeed from './PopularFeed.jsx'
+import { PostSingle, getPostLoader } from './PostSingle.jsx'
 import ProfileEdit from './ProfileEdit.jsx'
 import { ProfileView, getPersonLoader } from './ProfileView.jsx'
 import RootFeed from './RootFeed.jsx'
@@ -65,6 +66,11 @@ const router = createBrowserRouter([
         path: "/people/:handle",
         loader: getPersonLoader(database),
         element: <ProfileView />,
+      },
+      {
+        path: "/post/:postUri",
+        loader: getPostLoader(database),
+        element: <PostSingle />,
       },
     ],
   },
