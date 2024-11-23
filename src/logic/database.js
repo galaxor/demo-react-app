@@ -190,7 +190,30 @@ class Database {
           canonicalUrl: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
 
           language: "en-US",
-          conversationId: "alice@coolserver/a-cool-article",
+          conversationId: "https://wetdry.world/@astra_underscore/113522617022220742",
+
+          local: false,
+        },
+
+        "testuser@local/same": {
+          uri: "testuser@local/same",
+          author: "@testuser@local",
+          createdAt: "2024-11-23T00:50:00-05:00",
+          updatedAt: "2024-11-23T00:50:00-05:00",
+          sensitive: false,
+          text: "@darkphoenix@not.an.evilcyberhacker.net same",
+
+          spoilerText: null,
+
+          deletedAt: null,
+
+          inReplyTo: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
+          reblogOf: null,  // URI of post that this is a reblog of
+
+          canonicalUrl: "testuser@local/same",
+
+          language: "en-US",
+          conversationId: "https://wetdry.world/@astra_underscore/113522617022220742",
 
           local: false,
         },

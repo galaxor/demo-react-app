@@ -15,7 +15,20 @@ export default function Replies({postRepliedTo}) {
 
   return (
     <ul className="replies">
-      {replies.map(reply => <li><Post key={reply.uri} post={reply} dateFormat={dateFormat} /></li>)}
+      {replies.map(reply => {
+        const repliesToReply = postsDB.getRepliesTo(reply.uri);
+        return (
+        <li>
+          <Post key={reply.uri} post={reply} dateFormat={dateFormat} />
+          {repliesToReply.length > 0 &&
+            <ul className="replies">
+              <Replies postRepliedTo={reply} />
+            </ul>
+          }
+        </li>
+        );
+      })
+    }
     </ul>
   );
 }
