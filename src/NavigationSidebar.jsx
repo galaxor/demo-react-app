@@ -48,7 +48,7 @@ export default function NavigationSidebar() {
         <h2 id="join-the-site">Join</h2>
         <ul aria-describedby="join-the-site">
           <li>Create Account</li>
-          <li><Link onClick={() => setSessionId(User.login())}>Log In</Link></li>
+          <li><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); }}>Log In</Link></li>
         </ul>
         </>
 

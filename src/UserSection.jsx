@@ -25,7 +25,7 @@ export default function UserSection() {
         </li>
         </>
         :
-        <li id="login"><Link onClick={() => setSessionId(User.login())}>Log In</Link></li>
+        <li><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); }}>Log In</Link></li>
       }
       </ul>
     </section>
