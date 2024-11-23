@@ -21,7 +21,7 @@ class Database {
           displayName: 'Astra Underscore',
           bio: "Hello, my name is Astra! I am a trans girl from Chile born in '01 who loves computing, drawing, writing, and research!\n\n#ACAB #BlackLivesMatter\n\nI love chatting, so just DM me if you want to talk c:",
 
-          avatar: "https://media.wetdry.world/accounts/avatars/111/705/918/702/387/227/original/8b89b6d8c18bf716.png",
+          avatar: "/astra_underscore.png",
           avatarOrig: null,
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
@@ -37,7 +37,7 @@ class Database {
           displayName: 'Ash',
           bio: " darkphoenix@disaster.queer:/mnt/gay/agenda# :idle:\n everyone's favourite chaotic bi poly disaster queer (accept no substitutes) :neofox_flag_bi: :neofox_flag_polyam: :neofox_flag_nb: :neofox_flag_genderfluid: :neofox_flag_trans:\n chaotic neutral\n queer as in fuck you\n too hot to be gender solid\n \"a boy for meme purposes roughly 50% of the time\"\n \"train slut\"\n AuDHD haver (confirmed)\n just another train and computer geek really\n probably passing through your area by train at this very moment\n most certainly the best worst thing that hasn't happened to you yet\n flirting okay unless i tell you otherwise; please tell me I'm cute\n has bitten a bunch of cute entities and now some of them are mine maybe\n I supposedly run this place, mostly for myself and a few close friends like half the extended polycule\n occasionally horny but always CWed\n \n 🐣 11.01.24\n :neocat_floof_estrogen: 22.09.24\n",
 
-          avatar: 'https://not.an.evilcyberhacker.net/proxy/avatar.webp?url=https%3A%2F%2Fnot.an.evilcyberhacker.net%2Ffiles%2Fwebpublic-a5823ad4-2284-4eea-b8ee-0db646241918&avatar=1',
+          avatar: '/darkphoenix.png',
           avatarOrig: null,
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
