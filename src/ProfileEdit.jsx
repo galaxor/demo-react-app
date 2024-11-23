@@ -25,6 +25,7 @@ export default function ProfileEdit() {
   }
 
   return <>
+    <main className="profile-edit">
     <h1>Edit Your Profile</h1>
 
     <SystemNotificationArea />
@@ -74,5 +75,6 @@ export default function ProfileEdit() {
 
       <button type="submit">Save your cool changes</button>
     </form>
+    </main>
   </>;
 }

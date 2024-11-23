@@ -47,9 +47,7 @@ function App({db}) {
     </header>
 
     <NavigationSidebar />
-    <main>
     <Outlet />
-    </main>
     </SystemNotificationsContext.Provider>
     </LanguageContext.Provider>
     </UserContext.Provider>
