@@ -3,6 +3,7 @@ import ReactTimeAgo from 'react-time-ago'
 import { Link } from 'react-router-dom';
 
 import LanguageContext from './LanguageContext.jsx'
+import PersonInline from './PersonInline.jsx'
 
 export default function Post({post, children}) {
   const languageContext = useContext(LanguageContext);
@@ -35,15 +36,7 @@ export default function Post({post, children}) {
           
       <span className="post-author">
         By {" "}
-        <Link className="p-author h-card u-url" to={'/people/' + post.authorPerson.handle}>
-          {post.authorPerson.avatar? 
-            <img alt="" className="avatar-small" src={post.authorPerson.avatar} />
-            :
-            ''
-          }
-          {" "} <bdi className="author-displayName p-name">{post.authorPerson.displayName}</bdi> {" "}
-          (<span className="author-handle u-impp">{post.authorPerson.handle}</span>)
-        </Link>
+        <PersonInline person={post.authorPerson} />
       </span>
 
       <div className="post-text e-content" lang={post.language}>{post.text}</div>

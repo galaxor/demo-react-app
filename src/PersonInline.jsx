@@ -47,8 +47,8 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
       </Link>
       <span className="person-inline-trust-info">
         {isYou && <span className="is-you">You</span>} {" "}
-        {youFollowThem && <span className="trust-you-follow-them">You follow them</span>} {" "}
-        {onHomeServer && <span className="trust-on-this-server">from this server</span>}
+        {youFollowThem && <span className="trust-you-follow-them">You follow them.</span>} {" "}
+        {onHomeServer && <span className="trust-on-this-server">From this server.</span>}
       </span>
     </span>
   );
