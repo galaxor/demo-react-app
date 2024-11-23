@@ -19,7 +19,7 @@ export default function Replies({postRepliedTo, prune, replies}) {
         } else {
           const repliesToReply = postsDB.getRepliesTo(reply.uri);
           return (
-          <li>
+          <li key={'li-'+reply.uri}>
             <Post key={reply.uri} post={reply} />
             {repliesToReply.length > 0 &&
               <ul className="replies">
