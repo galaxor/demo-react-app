@@ -29,6 +29,22 @@ export class PeopleDB {
   doesXFollowY(xHandle, yHandle) {
     return this.db.get('follows').filter(([x, y]) => x === xHandle && y === yHandle).length > 0;
   }
+
+  follow(personWhoFollows, personWhoIsFollowed) {
+    if (this.doesXFollowY(personWhoFollows, personWhoIsFollowed)) {
+      // It's a no-op. It has already been done.
+      return;
+    } else {
+      this.db.addRow('follows', [personWhoFollows, personWhoIsFollowed]);
+    }
+  }
+
+  unfollow(personWhoOnceFollowed, personWhoWasOnceFollowed) {
+    this.db.delRow('follows', (([a, b]) => {
+      const result = (personWhoOnceFollowed === a && personWhoWasOnceFollowed === b);
+      return result;
+    }));
+  }
 }
 
 export function getPersonLoader(db) {

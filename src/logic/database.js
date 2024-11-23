@@ -274,6 +274,21 @@ class Database {
     return {...value};
   }
 
+  addRow(table, row) {
+    this[table].push(row);
+    localStorage.setItem(table, JSON.stringify(this[table]));
+  }
+
+  // You pass a filter function that returns true for rows you want to delete.
+  // We delete them.
+  delRow(table, filterFn) {
+    const newTable = this[table].filter((a) => {
+      return !filterFn(a);
+    });
+    this[table] = newTable;
+    localStorage.setItem(table, JSON.stringify(this[table]));
+  }
+
   del(table, key) {
     delete this[table][key];
     localStorage.setItem(table, JSON.stringify(this[table]));

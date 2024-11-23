@@ -40,9 +40,6 @@ export default function ProfileView({handle, loggedInUser }) {
     (user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle)
   );
 
-  console.log("YFT", youFollowThem);
-  console.log((user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle));
-
   const theyFollowYou = (user === null || isYou)? false : peopleDB.doesXFollowY(person.handle, user.handle);
   const onHomeServer = (person.localUserId !== null); 
 
@@ -73,7 +70,14 @@ export default function ProfileView({handle, loggedInUser }) {
               <li id="friend-status">Friend Status
                 <ul className="friend-status" aria-labelledby="friend-status">
                   <li><label>Follow <bdi>{person.displayName}</bdi> 
-                    <input type="checkbox" value={youFollowThem} onChange={(e) => {console.log("Changing");}} />
+                    <input type="checkbox" 
+                      checked={youFollowThem}
+                      onChange={(e) => {
+                        if (e.target.checked) { peopleDB.follow(user.handle, person.handle); }
+                        else { peopleDB.unfollow(user.handle, person.handle); }
+
+                        setYouFollowThem(e.target.checked);
+                      }} />
                   </label></li>
 
                   <li><label><bdi>{person.displayName}</bdi> follows you <input type="checkbox" /></label></li>
