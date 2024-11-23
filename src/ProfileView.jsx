@@ -2,12 +2,16 @@ import { useContext, useState } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
 import { getPersonLoader, PeopleDB } from './logic/people.js';
+import DatabaseContext from './DatabaseContext.jsx';
 import UserContext from './UserContext.jsx';
 
 import './static/ProfileView.css'
 
 export default function ProfileView({handle, loggedInUser }) {
   const { user } = useContext(UserContext);
+  const db = useContext(DatabaseContext);
+
+  const peopleDB = new PeopleDB(db);
 
   const loaderData = useLoaderData();
   const loadedPerson = loaderData? useLoaderData().person : null;
@@ -28,6 +32,8 @@ export default function ProfileView({handle, loggedInUser }) {
     // This is where we would draw a throbber, probably, if the database was actually asynchronous.
     return "";
   }
+
+  const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
 
   return (
     <main className="h-card profile-view">
@@ -75,6 +81,18 @@ export default function ProfileView({handle, loggedInUser }) {
         <a rel="noopener noreferrer" target="_blank" href={person.url} aria-label={person.displayName + ' ' + person.handle}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
         </>
       }
+
+      <aside className="follow-information">
+        {/* We'll put the "who do they follow" thing first?  Or second? I can't decide. */}
+
+        <section aria-labelledby="who-follows-them">
+          <h2 id="who-follows-them">Who follows <bdi>{person.displayName}</bdi></h2>
+
+          <ul aria-labelledby="who-follows-them">
+          {JSON.stringify(whoFollowsThem)}
+          </ul>
+        </section>
+      </aside>
     </main>
   );
 }

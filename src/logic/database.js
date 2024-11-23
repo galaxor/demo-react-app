@@ -50,8 +50,8 @@ class Database {
 
           url: null,
 
-          displayName: 'Cool User',
-          bio: "I am you! I love poking around demonstration websites.",
+          displayName: 'Test User',
+          bio: "I love testing websites!",
 
           avatar: null,
           avatarOrig: null,
@@ -125,20 +125,20 @@ class Database {
         }
       };
 
-      this.follows = {
-        "testuser@local": '@astra_underscore@wetdry.world',
-        "testuser@local": '@alice@coolserver',
-        "@astra_underscore@wetdry.world": '@darkphoenix@not.an.evilcyberhacker.net',
-        '@astra_underscore@wetdry.world': "testuser@local",
-        "testuser@local": '@darkphoenix@not.an.evilcyberhacker.net',
-        '@cfur@corporate': '@alice@coolserver',
-        '@cfur@corporate': '@testuser@local',
-        '@alice@coolserver': '@cfur@corporate',
-        '@alice@coolserver': '@mittens@kittens',
-        '@alice@coolserver': '@jasper.shadow@solarpunk',
-        '@mittens@kittends': '@alice@coolserver',
-        '@jasper.shadow@solarpunk': '@alice@coolserver',
-      };
+      this.follows = [
+        ["@testuser@local", '@astra_underscore@wetdry.world'],
+        ["@testuser@local", '@alice@coolserver'],
+        ["@astra_underscore@wetdry.world", '@darkphoenix@not.an.evilcyberhacker.net'],
+        ['@astra_underscore@wetdry.world', "@testuser@local"],
+        ["@testuser@local", '@darkphoenix@not.an.evilcyberhacker.net'],
+        ['@cfur@corporate', '@alice@coolserver'],
+        ['@cfur@corporate', '@testuser@local'],
+        ['@alice@coolserver', '@cfur@corporate'],
+        ['@alice@coolserver', '@mittens@kittens'],
+        ['@alice@coolserver', '@jasper.shadow@solarpunk'],
+        ['@mittens@kittends', '@alice@coolserver'],
+        ['@jasper.shadow@solarpunk', '@alice@coolserver'],
+      ];
 
       this.posts = {
         "@alice@coolserver/a-cool-article": {
@@ -240,12 +240,14 @@ class Database {
       ];
 
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
+      localStorage.setItem('follows', JSON.stringify(this.follows));
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('posts', JSON.stringify(this.posts));
       localStorage.setItem('popularPosts', JSON.stringify(this.popularPosts));
     } else {
       this.accounts = JSON.parse(localStorage.getItem('accounts'));
+      this.follows = JSON.parse(localStorage.getItem('follows'));
       this.sessions = JSON.parse(localStorage.getItem('sessions'));
       this.people = JSON.parse(localStorage.getItem('people'));
       this.posts = JSON.parse(localStorage.getItem('posts'));

@@ -9,6 +9,22 @@ export class PeopleDB {
     if (!handle) { throw new TypeError("Get which person?"); }
     return this.db.get('people', handle);
   }
+
+  whoFollowsThem(handle) {
+    if (!handle) { throw new TypeError("We're asking who follows someone, but we don't know who someone is."); }
+
+    const followsPerson = this.db.get('follows')
+      .filter(([personWhoFollows, personWhoIsFollowed]) => {
+        return personWhoIsFollowed === handle;
+      })
+      .map(([handleOfPersonWhoFollows, handleOfPersonWhoIsFollowed]) => {
+        const personWhoFollows = this.get(handleOfPersonWhoFollows);
+        return personWhoFollows;
+      })
+    ;
+
+    return followsPerson;
+  }
 }
 
 export function getPersonLoader(db) {
