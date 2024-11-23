@@ -19,10 +19,6 @@ export default function PopularFeed() {
     setPostsForDisplay(postsForDisplay);
   }
 
-  const dateFormat = new Intl.DateTimeFormat(navigator.language, {
-    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
-  });
-
   return (
     <main>
       <h1 id="featured-feed">Popular Posts</h1>

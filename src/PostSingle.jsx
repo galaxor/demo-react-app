@@ -22,10 +22,6 @@ export function PostSingle() {
   const post = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
 
-  const dateFormat = new Intl.DateTimeFormat(navigator.language, {
-    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
-  });
-
   return (
     <>
     <main className="post-single">
@@ -35,7 +31,7 @@ export function PostSingle() {
         </time>
         {post.updatedAt !== post.createdAt &&
           <>
-          , edited {" "}
+          , updated {" "}
             <time dateTime={post.updatedAt}>
               <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />
             </time>
@@ -43,7 +39,7 @@ export function PostSingle() {
         }
       </h1>
 
-      <Post post={post} dateFormat={dateFormat}>
+      <Post post={post}>
         <section className="replies-section">
           <h2>Replies</h2>
           <Replies postRepliedTo={post} />

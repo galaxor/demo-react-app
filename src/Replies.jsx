@@ -9,17 +9,13 @@ export default function Replies({postRepliedTo}) {
 
   const replies = postsDB.getRepliesTo(postRepliedTo.uri);
 
-  const dateFormat = new Intl.DateTimeFormat(navigator.language, {
-    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
-  });
-
   return (
     <ul className="replies">
       {replies.map(reply => {
         const repliesToReply = postsDB.getRepliesTo(reply.uri);
         return (
         <li>
-          <Post key={reply.uri} post={reply} dateFormat={dateFormat} />
+          <Post key={reply.uri} post={reply} />
           {repliesToReply.length > 0 &&
             <ul className="replies">
               <Replies postRepliedTo={reply} />

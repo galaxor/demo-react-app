@@ -4,8 +4,12 @@ import { Link } from 'react-router-dom';
 
 import LanguageContext from './LanguageContext.jsx'
 
-export default function Post({post, dateFormat, children}) {
+export default function Post({post, children}) {
   const languageContext = useContext(LanguageContext);
+
+  const dateFormat = new Intl.DateTimeFormat(navigator.language, {
+    weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
+  });
 
   return (
     <article className="post h-entry">
@@ -15,11 +19,11 @@ export default function Post({post, dateFormat, children}) {
             <span className="dt-published published-date">
               <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time> {" "}
               (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
-            </span> {" "}
+            </span>
 
             {post.updatedAt !== post.createdAt ?
               <span className="dt-updated updated-date">
-                Updated {" "}
+                , updated {" "}
                 <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time> {" "}
                 (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
               </span>
