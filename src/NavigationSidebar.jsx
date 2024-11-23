@@ -7,7 +7,7 @@ import User from './logic/user.js';
 import './static/nav.css';
 
 export default function NavigationSidebar() {
-  const { user, setSessionId } = useContext(UserContext);
+  const { user, setUser, setSessionId } = useContext(UserContext);
 
   const matches = useMatches();
 
@@ -38,7 +38,7 @@ export default function NavigationSidebar() {
           : ''
         }
         <li>Account Settings</li>
-        <li><Link onClick={() => setSessionId(User.logout())}>Log Out</Link></li>
+        <li><Link onClick={() => { setSessionId(User.logout()); setUser(null); }}>Log Out</Link></li>
         </ul>
         </>
 
@@ -48,7 +48,7 @@ export default function NavigationSidebar() {
         <h2 id="join-the-site">Join</h2>
         <ul aria-describedby="join-the-site">
           <li>Create Account</li>
-          <li><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); }}>Log In</Link></li>
+          <li><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); setUser(User.loggedInUser()); }}>Log In</Link></li>
         </ul>
         </>
 

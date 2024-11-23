@@ -12,6 +12,7 @@ export default function ProfileView({handle, loggedInUser }) {
   const { user } = useContext(UserContext);
   const db = useContext(DatabaseContext);
 
+
   const peopleDB = new PeopleDB(db);
 
   const loaderData = useLoaderData();
@@ -34,8 +35,16 @@ export default function ProfileView({handle, loggedInUser }) {
     return "";
   }
 
-// XXX They should get a badge if they're on your home server.
-// Maybe next to their name?
+  const isYou = (user && user.handle === person.handle);
+  const [youFollowThem, setYouFollowThem] = useState(
+    (user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle)
+  );
+
+  console.log("YFT", youFollowThem);
+  console.log((user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle));
+
+  const theyFollowYou = (user === null || isYou)? false : peopleDB.doesXFollowY(person.handle, user.handle);
+  const onHomeServer = (person.localUserId !== null); 
 
   const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
 
@@ -63,7 +72,10 @@ export default function ProfileView({handle, loggedInUser }) {
             {!thisIsYou &&
               <li id="friend-status">Friend Status
                 <ul className="friend-status" aria-labelledby="friend-status">
-                  <li><label>Follow <bdi>{person.displayName}</bdi> <input type="checkbox" /></label></li>
+                  <li><label>Follow <bdi>{person.displayName}</bdi> 
+                    <input type="checkbox" value={youFollowThem} onChange={(e) => {console.log("Changing");}} />
+                  </label></li>
+
                   <li><label><bdi>{person.displayName}</bdi> follows you <input type="checkbox" /></label></li>
                 </ul>
               </li>

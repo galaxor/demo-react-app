@@ -15,7 +15,7 @@ import './App.css';
 import User from './logic/user.js';
 
 function App({db}) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(User.loggedInUser());
   const [session, setSession] = useState(null);
 
   const [systemNotifications, setSystemNotifications] = useState([]);
@@ -29,11 +29,6 @@ function App({db}) {
   // Anybody can read navigator.language.
   // But the idea is one day this could be a state value that you can change with a drop down.
   const languageContext = navigator.language;
-
-  useEffect(() => {
-    const loggedInUser = User.loggedInUser();
-    setUser(loggedInUser);
-  }, [sessionId, setUser]);
 
   return (
     <>
