@@ -31,6 +31,7 @@ export function PostSingle() {
                           postsDB.get(post.conversationId)
                           ;
 
+  const replies = postsDB.getRepliesTo(post.uri);
 
   return (
     <>
@@ -49,12 +50,14 @@ export function PostSingle() {
         }
       </h1>
 
-      <Post post={post}>
-        <section className="replies-section" aria-labelledby="replies-section-header">
-          <h2 id="replies-section-header">Replies</h2>
-          <Replies postRepliedTo={post} />
-        </section>
-      </Post>
+        <Post post={post}>
+          {replies.length > 0 &&
+            <section className="replies-section" aria-labelledby="replies-section-header">
+              <h2 id="replies-section-header">Replies</h2>
+              <Replies postRepliedTo={post} replies={replies} />
+            </section>
+          }
+        </Post>
 
       {post.conversationId &&
         <section className="thread-context" aria-labelledby="thread-context-header">
