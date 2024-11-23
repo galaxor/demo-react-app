@@ -10,17 +10,17 @@ export default function Post({post, dateFormat, children}) {
   return (
     <article className="post h-entry">
       <span className="post-date">
-        Posted
+        Posted {" "}
         <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
             <span className="dt-published published-date">
-              <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time>
+              <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time> {" "}
               (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
-            </span>
+            </span> {" "}
 
             {post.updatedAt !== post.createdAt ?
               <span className="dt-updated updated-date">
-                Updated
-                <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time>
+                Updated {" "}
+                <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time> {" "}
                 (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
               </span>
               :
@@ -30,15 +30,15 @@ export default function Post({post, dateFormat, children}) {
       </span>
           
       <span className="post-author">
-        By
+        By {" "}
         <Link className="p-author h-card u-url" to={'/people/' + post.authorPerson.handle}>
           {post.authorPerson.avatar? 
             <img alt="" className="avatar-small" src={post.authorPerson.avatar} />
             :
             ''
           }
-          <bdi className="author-displayName p-name">{post.authorPerson.displayName}</bdi>
-          <span className="author-handle u-impp">{post.authorPerson.handle}</span>
+          {" "} <bdi className="author-displayName p-name">{post.authorPerson.displayName}</bdi> {" "}
+          (<span className="author-handle u-impp">{post.authorPerson.handle}</span>)
         </Link>
       </span>
 
