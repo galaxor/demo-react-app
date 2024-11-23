@@ -1,8 +1,7 @@
 import PostsDB from './logic/Posts.js';
 
-import DatabaseContext from './DatabaseContext.jsx';
 import Post from './Post.jsx';
-import { useContext } from 'react';
+import Replies from './Replies.jsx';
 import { Link, useLoaderData } from "react-router-dom";
 
 export function getPostLoader(db) {
@@ -16,8 +15,6 @@ export function getPostLoader(db) {
 }
 
 export function PostSingle() {
-  const db = useContext(DatabaseContext);
-
   const post = useLoaderData().post;
 
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
@@ -25,6 +22,9 @@ export function PostSingle() {
   });
 
   return (
+    <>
     <Post post={post} dateFormat={dateFormat} />
+    <Replies postRepliedTo={post} />
+    </>
   );
 }
