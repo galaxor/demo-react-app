@@ -39,9 +39,8 @@ export default function ProfileView({handle, loggedInUser }) {
 
   const [youFollowThem, setYouFollowThem] = useState();
 
-// console.log(user? user.handle : null, person.handle, "Follow??", user? peopleDB.doesXFollowY(user.handle, person.handle) : null, "But I've got", youFollowThem);
+  const theyFollowYou = user? peopleDB.doesXFollowY(person.handle, user.handle) : null;
 
-  const theyFollowYou = (user === null || isYou)? false : peopleDB.doesXFollowY(person.handle, user.handle);
   const onHomeServer = (person.localUserId !== null); 
 
   const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
@@ -87,7 +86,10 @@ export default function ProfileView({handle, loggedInUser }) {
                         }} />
                     </label></li>
 
-                    <li><label><bdi>{person.displayName}</bdi> follows you <input type="checkbox" /></label></li>
+                    <li><label>
+                      <bdi>{person.displayName}</bdi> follows you 
+                        <input type="checkbox" disabled={true} checked={theyFollowYou} />
+                    </label></li>
                   </ul>
                 </li>
               }
