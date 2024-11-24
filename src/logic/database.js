@@ -53,11 +53,11 @@ class Database {
           displayName: 'Test User',
           bio: "I love testing websites!",
 
-          avatar: null,
-          avatarOrig: null,
-          avatarPosition: {x: 0, y: 0},
+          avatar: '/puppy-avatar.png',
+          avatarOrig: '/puppy.jpg',
+          avatarPosition: { x: 0.5360000000000001, y: 0.42666666666666675 },
           avatarRotate: 0,
-          avatarScale: 1,
+          avatarScale: 1.5,
         },
 
         '@alice@local': {
