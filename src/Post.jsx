@@ -5,15 +5,17 @@ import { Link } from 'react-router-dom';
 import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx'
 
+import './static/Post.css'
+
 export default function Post({post, children}) {
   const languageContext = useContext(LanguageContext);
 
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
-    weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
   });
 
   // If it's a boost, we need to draw it as a boost.
-  if (post.boostedPosts && post.boostedPosts.length > 0) {
+  if (post.boostedPosts && post.boostedPosts.length > 0 && post.text === null) {
     return (
       <article className="post h-entry">
         <div className="boost-info">
@@ -62,6 +64,14 @@ export default function Post({post, children}) {
       </span>
 
       <div className="post-text e-content" lang={post.language}>{post.text}</div>
+
+      {post.boostedPosts && post.boostedPosts.length > 0 &&
+        <div className="quote-boosted-posts">
+          {post.boostedPosts.map(boostedPost => 
+            <Post key={boostedPost.uri} post={boostedPost} />
+          )}
+        </div>
+      }
 
       {children}
     </article>
