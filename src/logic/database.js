@@ -302,7 +302,7 @@ class Database {
       // If a post has boost-attachments and text, display it as a quote boosts, and DO include it in "posts (no boosts)".
       this.boosts = [
         { booster: '@cfur@corporate', boostersPost: "@cfur@corporate/boost-a-cool-article", boostedPost: "@alice@local/a-cool-article" },
-        { booster: '@cfur@corporate', boosersPost: "@cfur@corporate/help-alice-find-bob", boostedPost: "@alice@local/has-anyone-seen-bob" },
+        { booster: '@cfur@corporate', boostersPost: "@cfur@corporate/help-alice-find-bob", boostedPost: "@alice@local/has-anyone-seen-bob" },
       ];
 
       this.popularPosts = [

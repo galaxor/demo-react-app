@@ -14,7 +14,6 @@ export default function PostsByPerson({showReplies}) {
   const postsDB = new PostsDB(db);
   const theirPosts = postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
 
-
   return (
     <section className="their-posts" aria-labelledby="their-posts">
       <h2 id="their-posts">Posts by <bdi>{person.displayName}</bdi></h2>

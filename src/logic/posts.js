@@ -51,7 +51,7 @@ export class PostsDB {
       // Show it, I guess....)
       .filter(post => includeBoosts || (post.text !== null || post.boostedPosts.length === 0)) 
 
-      // Right now, "boostedPosts" is just a list of the post handles.
+      // Right now, "boostedPosts" is just the rows from the boosts table.
       // Let's get the actual text of those posts.
       .map(post => { 
         return {
@@ -59,6 +59,7 @@ export class PostsDB {
           boostedPosts: post.boostedPosts.map(boostedPostRow => {
             const boostedPost = this.db.get('posts', boostedPostRow.boostedPost);
             boostedPost.authorPerson = this.db.get('people', boostedPost.author);
+            return boostedPost;
           })
         };
       })
