@@ -162,6 +162,28 @@ class Database {
           local: true,
         },
 
+        "@alice@local/has-anyone-seen-bob": {
+          uri: "@alice@local/has-anyone-seen-bob",
+          author: "@alice@local",
+          createdAt: "2024-11-24T13:41:26-05:00",
+          updatedAt: "2024-11-24T13:41:26-05:00",
+          sensitive: false,
+          text: "I've been trying to reach Bob.  I have a message to send him.  Has anyone seen him?  Feel free to boost for reach.",
+
+          spoilerText: null,
+
+          deletedAt: null,
+
+          inReplyTo: null, // URI of post that this is replying to
+
+          canonicalUrl: null,
+
+          language: "en-US",
+          conversationId: null,
+
+          local: true,
+        },
+
         "https://wetdry.world/@astra_underscore/113522617022220742": {
           uri: "https://wetdry.world/@astra_underscore/113522617022220742",
           author: "@astra_underscore@wetdry.world",
@@ -242,10 +264,32 @@ class Database {
 
           inReplyTo: null,
 
-          canonicalUrl: "testuser@local/same",
+          canonicalUrl: "@cfur@corporate/boost-a-cool-article",
 
           language: "en-US",
           conversationId: "@alice@local/a-cool-article",
+
+          local: false,
+        },
+
+        "@cfur@corporate/help-alice-find-bob": {
+          uri: "@cfur@corporate/help-alice-find-bob",
+          author: "@cfur@corporate",
+          createdAt: "2024-11-24T13:44:31-05:00",
+          updatedAt: "2024-11-24T13:44:31-05:00",
+          sensitive: false,
+          text: "If anyone knows where Bob is, please let @alice@local know!  I am addicted to their antics!",
+
+          spoilerText: null,
+
+          deletedAt: null,
+
+          inReplyTo: null,
+
+          canonicalUrl: "@cfur@corporate/help-alice-find-bob",
+
+          language: "en-US",
+          conversationId: "@alice@local/has-anyone-seen-bob",
 
           local: false,
         },
@@ -258,6 +302,7 @@ class Database {
       // If a post has boost-attachments and text, display it as a quote boosts, and DO include it in "posts (no boosts)".
       this.boosts = [
         { booster: '@cfur@corporate', boostersPost: "@cfur@corporate/boost-a-cool-article", boostedPost: "@alice@local/a-cool-article" },
+        { booster: '@cfur@corporate', boosersPost: "@cfur@corporate/help-alice-find-bob", boostedPost: "@alice@local/has-anyone-seen-bob" },
       ];
 
       this.popularPosts = [
