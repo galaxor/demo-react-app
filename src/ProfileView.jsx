@@ -1,13 +1,8 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
-import DatabaseContext from './DatabaseContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
-import { PeopleDB } from './logic/people.js';
-import PersonInline from './PersonInline.jsx';
-import { PostsDB } from './logic/posts.js';
 import PostsByPerson from './PostsByPerson.jsx';
-import PostsList from './PostsList.jsx';
 import ProfileBio from './ProfileBio.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
@@ -18,9 +13,6 @@ import './static/ProfileView.css'
 
 export default function ProfileView({handle, loggedInUser }) {
   const { user } = useContext(UserContext);
-  const db = useContext(DatabaseContext);
-
-  const peopleDB = new PeopleDB(db);
 
   const loaderData = useLoaderData();
   const loadedPerson = loaderData? loaderData.person : null;
@@ -42,12 +34,6 @@ export default function ProfileView({handle, loggedInUser }) {
   const onHomeServer = (person.localUserId !== null); 
 
   const isYou = (user && user.handle === person.handle);
-
-  const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
-  const whoDoTheyFollow = peopleDB.whoDoTheyFollow(person.handle);
-
-  const postsDB = new PostsDB(db);
-  const theirPosts = postsDB.getPostsBy(person.handle);
 
   return (
     <main className="h-card profile-view">
