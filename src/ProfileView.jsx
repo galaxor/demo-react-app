@@ -1,7 +1,9 @@
 import { useContext } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
+import DatabaseContext from './DatabaseContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
+import { PeopleDB } from './logic/people.js';
 import PostsByPerson from './PostsByPerson.jsx';
 import ProfileBio from './ProfileBio.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -23,6 +25,11 @@ export default function ProfileView({handle, loggedInUser }) {
   } else {
     person = loadedPerson;
   }
+
+  const db = useContext(DatabaseContext);
+  const peopleDB = new PeopleDB(db);
+  const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
+  const whoDoTheyFollow = peopleDB.whoDoTheyFollow(person.handle);
 
   // This condition happens if we're supposed to be looking at the logged in
   // user, but they haven't loaded yet.
@@ -69,10 +76,20 @@ export default function ProfileView({handle, loggedInUser }) {
         </>
       }
 
+      <nav className="navigation-tabs" aria-labelledby="navigation">
+        <h2 id="navigation">Navigation</h2>
+        <ul className="navigation-tabs" aria-labelledby="navigation">
+          <li>Bio</li>
+          <li>{whoFollowsThem.length} Followers</li>
+          <li>Follows {whoDoTheyFollow.length}</li>
+          <li>Posts</li>
+        </ul>
+      </nav>
+        
       <ProfileBio person={person} />
 
-      <WhoFollowsThem person={person} />
-      <WhoDoTheyFollow person={person} />
+      <WhoFollowsThem person={person} whoFollowsThem={whoFollowsThem} />
+      <WhoDoTheyFollow person={person} whoDoTheyFollow={whoDoTheyFollow} />
 
       <PostsByPerson person={person} />
     </main>

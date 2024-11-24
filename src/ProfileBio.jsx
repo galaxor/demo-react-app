@@ -3,7 +3,7 @@ export default function ProfileBio({person}) {
     <>
     <h2>Bio</h2>
     
-    <div className="profile-bio">
+    <div className="profile-bio p-note">
       {person.bio}
     </div>
     </>

@@ -1,16 +1,16 @@
-import { useContext } from 'react';
-import DatabaseContext from './DatabaseContext.jsx';
-import { PeopleDB } from './logic/people.js';
 import PersonInline from './PersonInline.jsx';
 
-export default function WhoFollowsThem({person}) {
-  const db = useContext(DatabaseContext);
-  const peopleDB = new PeopleDB(db);
-  const whoDoTheyFollow = peopleDB.whoDoTheyFollow(person.handle);
+export default function WhoFollowsThem({person, whoDoTheyFollow}) {
 
   return (
     <section aria-labelledby="who-do-they-follow">
-      <h2 id="who-do-they-follow">Who does <bdi>{person.displayName}</bdi> follow?</h2>
+      <h2 id="who-do-they-follow">
+        {whoDoTheyFollow.length === 1 ?
+          <> <bdi>{person.displayName}</bdi> follows {whoDoTheyFollow.length} person </>
+          :
+          <> <bdi>{person.displayName}</bdi> follows {whoDoTheyFollow.length} people </>
+        }
+      </h2>
 
       {whoDoTheyFollow.length > 0 ?
         <ul aria-labelledby="who-do-they-follow">
