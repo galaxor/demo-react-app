@@ -159,7 +159,7 @@ class Database {
           language: "en-US",
           conversationId: null,
 
-          local: false,
+          local: true,
         },
 
         "https://wetdry.world/@astra_underscore/113522617022220742": {
@@ -225,12 +225,12 @@ class Database {
           language: "en-US",
           conversationId: "https://wetdry.world/@astra_underscore/113522617022220742",
 
-          local: false,
+          local: true,
         },
 
         "@cfur@corporate/boost-a-cool-article": {
-          uri: "@cfur@corporate",
-          author: "@testuser@local",
+          uri: "@cfur@corporate/boost-a-cool-article",
+          author: "@cfur@corporate",
           createdAt: "2024-11-24T12:16:31-05:00",
           updatedAt: "2024-11-24T12:16:31-05:00",
           sensitive: false,

@@ -6,12 +6,8 @@ import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
 import PersonContext from './PersonContext.jsx';
 import { PeopleDB } from './logic/people.js';
-import PostsByPerson from './PostsByPerson.jsx';
-import ProfileBio from './ProfileBio.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
-import WhoDoTheyFollow from './WhoDoTheyFollow.jsx';
-import WhoFollowsThem from './WhoFollowsThem.jsx';
 
 import './static/ProfileView.css'
 

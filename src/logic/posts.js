@@ -39,7 +39,7 @@ export class PostsDB {
         const newPost = {
           ...post,
           authorPerson: this.db.get('people', post.author),
-          boostedPosts: this.db.get('boosts').filter(boost => boost.booster === handle && boostersPost === post.uri)
+          boostedPosts: this.db.get('boosts').filter(boost => boost.booster === handle && boost.boostersPost === post.uri)
         }; 
 
         return newPost;
