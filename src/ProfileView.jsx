@@ -66,7 +66,7 @@ export default function ProfileView({handle, loggedInUser }) {
 
       {onHomeServer && <span className="trust-on-this-server">From this server.</span>} {" "}
 
-      {!isYou && <FriendStatus person={person} />}
+      {user && !isYou && <FriendStatus person={person} />}
 
       {isYou && <Link className="edit-your-profile" to="/profile/edit">Edit Profile</Link>}
 
