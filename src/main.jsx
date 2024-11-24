@@ -75,22 +75,18 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            loader: getPersonLoader(database),
             element: <ProfileBio />,
           },
           {
             path: "/people/:handle/posts",
-            loader: getPersonLoader(database),
             element: <PostsByPerson />,
           },
           {
             path: "/people/:handle/followers",
-            loader: getPersonLoader(database),
             element: <WhoFollowsThem />,
           },
           {
             path: "/people/:handle/follows",
-            loader: getPersonLoader(database),
             element: <WhoDoTheyFollow />,
           },
         ],
