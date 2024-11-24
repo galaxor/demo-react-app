@@ -126,12 +126,6 @@ export default function ProfileView({handle, loggedInUser }) {
         </aside>
       }
 
-      <h2>Bio</h2>
-      
-      <div className="profile-bio">
-        {person.bio}
-      </div>
-
       {person.avatar &&
         <>
         <h2>Avatar</h2>
@@ -139,6 +133,12 @@ export default function ProfileView({handle, loggedInUser }) {
         <a rel="noopener noreferrer" target="_blank" href={person.url} aria-label={person.displayName + ' ' + person.handle}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
         </>
       }
+
+      <h2>Bio</h2>
+      
+      <div className="profile-bio">
+        {person.bio}
+      </div>
 
       <aside className="follow-information">
         {/* We'll put the "who do they follow" thing first?  Or second? I can't decide. */}
