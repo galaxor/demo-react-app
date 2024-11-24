@@ -4,6 +4,7 @@ import Post from './Post.jsx';
 import Replies from './Replies.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
+import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 import { useContext } from 'react';
 import { useLoaderData } from "react-router-dom";
@@ -40,23 +41,25 @@ export default function PostSingle() {
         }
       </h1>
 
-        <Post post={post}>
-          {replies.length > 0 &&
-            <section className="replies-section" aria-labelledby="replies-section-header">
-              <h2 id="replies-section-header">Replies</h2>
-              <Replies postRepliedTo={post} replies={replies} />
-            </section>
-          }
-        </Post>
+      <SystemNotificationArea />
 
-      {post.conversationId &&
-        <section className="thread-context" aria-labelledby="thread-context-header">
-          <h2 id="thread-context-header">Thread Context</h2>
-          <Post post={originatingPost}>
-            <Replies postRepliedTo={originatingPost} prune={post.uri} />
-          </Post>
-        </section>
-      }
+      <Post post={post}>
+        {replies.length > 0 &&
+          <section className="replies-section" aria-labelledby="replies-section-header">
+            <h2 id="replies-section-header">Replies</h2>
+            <Replies postRepliedTo={post} replies={replies} />
+          </section>
+        }
+
+        {post.conversationId &&
+          <section className="thread-context" aria-labelledby="thread-context-header">
+            <h2 id="thread-context-header">Thread Context</h2>
+            <Post post={originatingPost}>
+              <Replies postRepliedTo={originatingPost} prune={post.uri} />
+            </Post>
+          </section>
+        }
+      </Post>
     </main>
     </>
   );

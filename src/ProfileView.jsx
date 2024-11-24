@@ -4,6 +4,7 @@ import { Link, useLoaderData } from "react-router-dom";
 import { PeopleDB } from './logic/people.js';
 import PersonInline from './PersonInline.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
+import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
 
 import './static/ProfileView.css'
@@ -60,6 +61,8 @@ export default function ProfileView({handle, loggedInUser }) {
         {" "}
         {isYou && <span className="is-you">(You)</span>}
       </h1>
+
+      <SystemNotificationArea />
 
       {onHomeServer && <span className="trust-on-this-server">From this server.</span>}
 
