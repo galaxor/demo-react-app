@@ -134,7 +134,6 @@ class Database {
         ['@cfur@corporate', '@alice@local'],
         ['@cfur@corporate', '@testuser@local'],
         ['@alice@local', '@cfur@corporate'],
-        ['@alice@local', '@mittens@kittens'],
         ['@alice@local', '@jasper.shadow@solarpunk'],
         ['@mittens@kittens', '@alice@local'],
         ['@jasper.shadow@solarpunk', '@alice@local'],
