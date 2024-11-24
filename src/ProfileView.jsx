@@ -144,25 +144,33 @@ export default function ProfileView({handle, loggedInUser }) {
         {/* We'll put the "who do they follow" thing first?  Or second? I can't decide. */}
 
         <section aria-labelledby="who-follows-them">
-          <h2 id="who-follows-them">Who follows <bdi>{person.displayName}</bdi></h2>
+          <h2 id="who-follows-them">Who follows <bdi>{person.displayName}</bdi>?</h2>
 
-          <ul aria-labelledby="who-follows-them">
-          {whoFollowsThem.map(personWhoFollows => {
-            return (<li key={personWhoFollows.handle}><PersonInline person={personWhoFollows} /></li>);
-            }
-          )}
-          </ul>
+          {whoFollowsThem.length > 0 ?
+            <ul aria-labelledby="who-follows-them">
+            {whoFollowsThem.map(personWhoFollows => {
+              return (<li key={personWhoFollows.handle}><PersonInline person={personWhoFollows} /></li>);
+              }
+            )}
+            </ul>
+            :
+            <div>No one follows <bdi>{person.displayName}</bdi>.</div>
+          }
         </section>
 
         <section aria-labelledby="who-do-they-follow">
           <h2 id="who-do-they-follow">Who does <bdi>{person.displayName}</bdi> follow?</h2>
 
-          <ul aria-labelledby="who-do-they-follow">
-          {whoDoTheyFollow.map(personWhoIsFollowed => {
-            return (<li key={personWhoIsFollowed.handle}><PersonInline person={personWhoIsFollowed} /></li>);
-            }
-          )}
-          </ul>
+          {whoDoTheyFollow.length > 0 ?
+            <ul aria-labelledby="who-do-they-follow">
+            {whoDoTheyFollow.map(personWhoIsFollowed => {
+              return (<li key={personWhoIsFollowed.handle}><PersonInline person={personWhoIsFollowed} /></li>);
+              }
+            )}
+            </ul>
+            :
+            <div><bdi>{person.displayName}</bdi> does not follow anyone.</div>
+          }
         </section>
       </aside>
 
