@@ -32,13 +32,26 @@ export class PostsDB {
     return replies;
   }
 
-  getPostsBy(handle, showReplies) {
+  getPostsBy(handle, {showReplies, includeBoosts}) {
     const posts = Object.entries(this.db.get('posts'))
       .filter(([postURI, post]) => (post.author === handle) && (showReplies || post.inReplyTo === null) )
-      .map(([postURI, post]) => { return {...post, authorPerson: this.db.get('people', post.author)}; })
+      .map(([postURI, post]) => { 
+        const newPost = {
+          ...post,
+          authorPerson: this.db.get('people', post.author),
+          boostedPosts: this.db.get('boosts').filter(boost => boost.booster === handle && boostersPost === post.uri)
+        }; 
+
+        return newPost;
+      })
+      // Now take out boost posts if that's what we want.
+      // We exclude posts that have no text, but boost stuff.
+      // (What do we do with posts that have no text, but don't boost stuff?
+      // Show it, I guess....)
+      .filter(post => includeBoosts || (post.text !== null || post.boostedPosts.length === 0)) 
     ;
 
-    posts.sort((a, b) => a.createdAt < b.createdAt);
+    posts.sort((a, b) => a.updatedAt < b.updatedAt);
 
     return posts;
   }

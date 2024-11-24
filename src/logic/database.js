@@ -153,7 +153,6 @@ class Database {
           deletedAt: null,
 
           inReplyTo: null, // URI of post that this is replying to
-          reblogOf: null,  // URI of post that this is a reblog of
 
           canonicalUrl: null,
 
@@ -176,7 +175,6 @@ class Database {
           deletedAt: null,
 
           inReplyTo: null, // URI of post that this is replying to
-          reblogOf: null,  // URI of post that this is a reblog of
 
           canonicalUrl: "https://wetdry.world/@astra_underscore/113522617022220742",
 
@@ -199,7 +197,6 @@ class Database {
           deletedAt: null,
 
           inReplyTo: "https://wetdry.world/@astra_underscore/113522617022220742",
-          reblogOf: null,  // URI of post that this is a reblog of
 
           canonicalUrl: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
 
@@ -222,7 +219,6 @@ class Database {
           deletedAt: null,
 
           inReplyTo: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
-          reblogOf: null,  // URI of post that this is a reblog of
 
           canonicalUrl: "testuser@local/same",
 
@@ -231,7 +227,38 @@ class Database {
 
           local: false,
         },
+
+        "@cfur@corporate/boost-a-cool-article": {
+          uri: "@cfur@corporate",
+          author: "@testuser@local",
+          createdAt: "2024-11-24T12:16:31-05:00",
+          updatedAt: "2024-11-24T12:16:31-05:00",
+          sensitive: false,
+          text: null,
+
+          spoilerText: null,
+
+          deletedAt: null,
+
+          inReplyTo: null,
+
+          canonicalUrl: "testuser@local/same",
+
+          language: "en-US",
+          conversationId: "@alice@local/a-cool-article",
+
+          local: false,
+        },
       };
+
+      // "Booster's post" has the authoritative information about the created/updated times of the boost.
+      // It also may contain text.  If it does, this is a quote boost.
+      // Also, a post may boost several posts simultaneously.
+      // If a post has boost-attachments and no text, display as a boost, and don't include in "posts (no boosts)".
+      // If a post has boost-attachments and text, display it as a quote boosts, and DO include it in "posts (no boosts)".
+      this.boosts = [
+        { booster: '@cfur@corporate', boostersPost: "@cfur@corporate/boost-a-cool-article", boostedPost: "@alice@local/a-cool-article" },
+      ];
 
       this.popularPosts = [
         { uri: "@alice@local/a-cool-article", updatedAt: "2024-11-21T14:46:26-05:00" },
@@ -239,6 +266,7 @@ class Database {
       ];
 
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
+      localStorage.setItem('boosts', JSON.stringify(this.boosts));
       localStorage.setItem('follows', JSON.stringify(this.follows));
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
@@ -246,6 +274,7 @@ class Database {
       localStorage.setItem('popularPosts', JSON.stringify(this.popularPosts));
     } else {
       this.accounts = JSON.parse(localStorage.getItem('accounts'));
+      this.boosts = JSON.parse(localStorage.getItem('boosts'));
       this.follows = JSON.parse(localStorage.getItem('follows'));
       this.sessions = JSON.parse(localStorage.getItem('sessions'));
       this.people = JSON.parse(localStorage.getItem('people'));

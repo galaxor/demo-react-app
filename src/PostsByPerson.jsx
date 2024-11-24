@@ -10,7 +10,7 @@ export default function PostsByPerson({showReplies}) {
 
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
-  const theirPosts = postsDB.getPostsBy(person.handle, showReplies);
+  const theirPosts = postsDB.getPostsBy(person.handle, {showReplies});
 
   return (
     <section className="their-posts" aria-labelledby="their-posts">
