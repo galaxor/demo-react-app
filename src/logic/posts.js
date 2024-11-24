@@ -44,11 +44,24 @@ export class PostsDB {
 
         return newPost;
       })
+
       // Now take out boost posts if that's what we want.
       // We exclude posts that have no text, but boost stuff.
       // (What do we do with posts that have no text, but don't boost stuff?
       // Show it, I guess....)
       .filter(post => includeBoosts || (post.text !== null || post.boostedPosts.length === 0)) 
+
+      // Right now, "boostedPosts" is just a list of the post handles.
+      // Let's get the actual text of those posts.
+      .map(post => { 
+        return {
+          ...post,
+          boostedPosts: post.boostedPosts.map(boostedPostRow => {
+            const boostedPost = this.db.get('posts', boostedPostRow.boostedPost);
+            boostedPost.authorPerson = this.db.get('people', boostedPost.author);
+          })
+        };
+      })
     ;
 
     posts.sort((a, b) => a.updatedAt < b.updatedAt);
