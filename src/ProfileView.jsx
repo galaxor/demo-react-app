@@ -70,7 +70,16 @@ export default function ProfileView({handle, loggedInUser }) {
               {!thisIsYou &&
                 <li id="friend-status">Friend Status
                   <ul className="friend-status" aria-labelledby="friend-status">
-                    <li><label>Follow <bdi>{person.displayName}</bdi> 
+                    <li><label>
+                      {(typeof youFollowThem === "undefined"? 
+                            (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
+                            : youFollowThem)
+                        ?
+                        <> You follow <bdi>{person.displayName}</bdi> </>
+                        :
+                        <> Follow <bdi>{person.displayName}</bdi> </>
+                      }
+
                       <input type="checkbox" 
                         checked={ 
                           typeof youFollowThem === "undefined"? 
@@ -87,8 +96,17 @@ export default function ProfileView({handle, loggedInUser }) {
                     </label></li>
 
                     <li><label>
-                      <bdi>{person.displayName}</bdi> follows you 
-                        <input type="checkbox" disabled={true} checked={theyFollowYou} />
+                      {theyFollowYou ?
+                        <>
+                        <bdi>{person.displayName}</bdi> follows you 
+                          <input type="checkbox" disabled={true} checked={true} />
+                        </>
+                        :
+                        <>
+                        <bdi>{person.displayName}</bdi> does not follow you 
+                          <input type="checkbox" disabled={true} checked={false} />
+                        </>
+                      }
                     </label></li>
                   </ul>
                 </li>
