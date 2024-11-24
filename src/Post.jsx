@@ -12,6 +12,28 @@ export default function Post({post, children}) {
     weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
   });
 
+  // If it's a boost, we need to draw it as a boost.
+  if (post.boostedPosts && post.boostedPosts.length > 0) {
+    return (
+      <article className="post h-entry">
+        <div className="boost-info">
+        ♻ <PersonInline person={post.authorPerson} /> boosted this at {" "}
+          <time dateTime={post.updatedAt}>
+            {dateFormat.format(new Date(post.updatedAt))}
+            (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
+          </time>
+        </div>
+
+        <div className="boosted-posts">
+          {post.boostedPosts.map(boostedPost => 
+            <Post key={boostedPost.uri} post={boostedPost} />
+          )}
+        </div>
+        
+      </article>
+    );
+  }
+
   return (
     <article className="post h-entry">
       <span className="post-date">
