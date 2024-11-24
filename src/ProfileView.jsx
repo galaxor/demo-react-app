@@ -36,9 +36,10 @@ export default function ProfileView({handle, loggedInUser }) {
   }
 
   const isYou = (user && user.handle === person.handle);
-  const [youFollowThem, setYouFollowThem] = useState(
-    (user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle)
-  );
+
+  const [youFollowThem, setYouFollowThem] = useState();
+
+// console.log(user? user.handle : null, person.handle, "Follow??", user? peopleDB.doesXFollowY(user.handle, person.handle) : null, "But I've got", youFollowThem);
 
   const theyFollowYou = (user === null || isYou)? false : peopleDB.doesXFollowY(person.handle, user.handle);
   const onHomeServer = (person.localUserId !== null); 
@@ -61,32 +62,39 @@ export default function ProfileView({handle, loggedInUser }) {
         }
       </h1>
 
-      <aside className="profile-actions">
-        <h2 id="profile-actions">Actions</h2>
-        <nav aria-labelledby="profile-actions">
-          <ul aria-labelledby="profile-actions">
-            {thisIsYou && <li><Link to="/profile/edit">Edit Profile</Link></li>}
-            {!thisIsYou &&
-              <li id="friend-status">Friend Status
-                <ul className="friend-status" aria-labelledby="friend-status">
-                  <li><label>Follow <bdi>{person.displayName}</bdi> 
-                    <input type="checkbox" 
-                      checked={youFollowThem}
-                      onChange={(e) => {
-                        if (e.target.checked) { peopleDB.follow(user.handle, person.handle); }
-                        else { peopleDB.unfollow(user.handle, person.handle); }
+      {user !== null && 
+        <aside className="profile-actions">
+          <h2 id="profile-actions">Actions</h2>
+          <nav aria-labelledby="profile-actions">
+            <ul aria-labelledby="profile-actions">
+              {thisIsYou && <li><Link to="/profile/edit">Edit Profile</Link></li>}
+              {!thisIsYou &&
+                <li id="friend-status">Friend Status
+                  <ul className="friend-status" aria-labelledby="friend-status">
+                    <li><label>Follow <bdi>{person.displayName}</bdi> 
+                      <input type="checkbox" 
+                        checked={ 
+                          typeof youFollowThem === "undefined"? 
+                            (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
+                            : youFollowThem
+                        }
 
-                        setYouFollowThem(e.target.checked);
-                      }} />
-                  </label></li>
+                        onChange={(e) => {
+                          if (e.target.checked) { peopleDB.follow(user.handle, person.handle); }
+                          else { peopleDB.unfollow(user.handle, person.handle); }
 
-                  <li><label><bdi>{person.displayName}</bdi> follows you <input type="checkbox" /></label></li>
-                </ul>
-              </li>
-            }
-          </ul>
-        </nav>
-      </aside>
+                          setYouFollowThem(e.target.checked);
+                        }} />
+                    </label></li>
+
+                    <li><label><bdi>{person.displayName}</bdi> follows you <input type="checkbox" /></label></li>
+                  </ul>
+                </li>
+              }
+            </ul>
+          </nav>
+        </aside>
+      }
 
       <h2>Bio</h2>
       
