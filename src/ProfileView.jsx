@@ -81,7 +81,7 @@ export default function ProfileView({handle, loggedInUser }) {
       <nav className="navigation-tabs" aria-labelledby="navigation">
         <h2 id="navigation">Navigation</h2>
         <ul className="navigation-tabs" aria-labelledby="navigation">
-          <li><NavLink to={'/people/'+person.handle}>Bio</NavLink></li>
+          <li><NavLink to={'/people/'+person.handle} end>Bio</NavLink></li>
           <li><NavLink to={'/people/'+person.handle+'/posts'}>Posts</NavLink></li>
           <li><NavLink to={'/people/'+person.handle+'/followers'}>{whoFollowsThem.length} Followers</NavLink></li>
           <li><NavLink to={'/people/'+person.handle+'/follows'}>Follows {whoDoTheyFollow.length}</NavLink></li>
