@@ -31,4 +31,15 @@ export class PostsDB {
 
     return replies;
   }
+
+  getPostsBy(handle) {
+    const posts = Object.entries(this.db.get('posts'))
+      .filter(([postURI, post]) => post.author === handle)
+      .map(([postURI, post]) => { return {...post, authorPerson: this.db.get('people', post.author)}; })
+    ;
+
+    posts.sort((a, b) => a.createdAt < b.createdAt);
+
+    return posts;
+  }
 }

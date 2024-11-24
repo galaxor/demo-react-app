@@ -1,9 +1,11 @@
 import { useContext, useState } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
+import DatabaseContext from './DatabaseContext.jsx';
 import { PeopleDB } from './logic/people.js';
 import PersonInline from './PersonInline.jsx';
-import DatabaseContext from './DatabaseContext.jsx';
+import { PostsDB } from './logic/posts.js';
+import PostsList from './PostsList.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
 
@@ -43,6 +45,9 @@ export default function ProfileView({handle, loggedInUser }) {
 
   const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
   const whoDoTheyFollow = peopleDB.whoDoTheyFollow(person.handle);
+
+  const postsDB = new PostsDB(db);
+  const theirPosts = postsDB.getPostsBy(person.handle);
 
   return (
     <main className="h-card profile-view">
@@ -160,6 +165,12 @@ export default function ProfileView({handle, loggedInUser }) {
           </ul>
         </section>
       </aside>
+
+      <section className="their-posts" aria-labelledby="their-posts">
+        <h2 id="their-posts">Posts by <bdi>{person.displayName}</bdi></h2>
+
+        <PostsList posts={theirPosts} />
+      </section>
     </main>
   );
 }
