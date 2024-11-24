@@ -1,4 +1,16 @@
+article.post {
+  margin-top: 1em;
+}
+
 .quote-boosted-posts {
   padding-left: 1em;
   border: 1px solid black;
+
+  & > article.post {
+    margin-top: 1ex;
+  }
+}
+
+.boosted-posts > .post {
+  margin-top: 0;
 }
