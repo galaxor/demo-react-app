@@ -15,9 +15,23 @@ export class PostsDB {
     this.db = db;
   }
 
+  // Return the posts that are boosted in this post.
+  getBoostedPosts(uri) {
+    return this.db.get('boosts')
+      .filter(boostRow => boostRow.boostersPost === uri)
+      .map(boostedPostRow => {
+        const boostedPost = this.db.get('posts', boostedPostRow.boostedPost);
+        boostedPost.authorPerson = this.db.get('people', boostedPost.author);
+        return boostedPost;
+      })
+    ;
+  }
+
   get(uri) {
     const post = this.db.get('posts', uri);
     post.authorPerson = this.db.get('people', post.author);
+    post.boostedPosts = this.getBoostedPosts(uri);
+
     return post;
   }
 
