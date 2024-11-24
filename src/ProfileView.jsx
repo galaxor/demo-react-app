@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
 import DatabaseContext from './DatabaseContext.jsx';
+import FriendStatus from './FriendStatus.jsx';
 import { PeopleDB } from './logic/people.js';
 import PersonInline from './PersonInline.jsx';
 import { PostsDB } from './logic/posts.js';
@@ -69,62 +70,11 @@ export default function ProfileView({handle, loggedInUser }) {
 
       <SystemNotificationArea />
 
-      {onHomeServer && <span className="trust-on-this-server">From this server.</span>}
+      {onHomeServer && <span className="trust-on-this-server">From this server.</span>} {" "}
 
-      {user !== null && 
-        <aside className="profile-actions">
-          <h2 id="profile-actions">Actions</h2>
-          <nav aria-labelledby="profile-actions">
-            <ul aria-labelledby="profile-actions">
-              {isYou && <li><Link to="/profile/edit">Edit Profile</Link></li>}
-              {!isYou &&
-                <li id="friend-status">Friend Status
-                  <ul className="friend-status" aria-labelledby="friend-status">
-                    <li><label>
-                      {(typeof youFollowThem === "undefined"? 
-                            (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
-                            : youFollowThem)
-                        ?
-                        <> You follow <bdi>{person.displayName}</bdi> </>
-                        :
-                        <> Follow <bdi>{person.displayName}</bdi> </>
-                      }
+      {!isYou && <FriendStatus person={person} />}
 
-                      <input type="checkbox" 
-                        checked={ 
-                          typeof youFollowThem === "undefined"? 
-                            (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
-                            : youFollowThem
-                        }
-
-                        onChange={(e) => {
-                          if (e.target.checked) { peopleDB.follow(user.handle, person.handle); }
-                          else { peopleDB.unfollow(user.handle, person.handle); }
-
-                          setYouFollowThem(e.target.checked);
-                        }} />
-                    </label></li>
-
-                    <li><label>
-                      {theyFollowYou ?
-                        <>
-                        <bdi>{person.displayName}</bdi> follows you 
-                          <input type="checkbox" disabled={true} checked={true} />
-                        </>
-                        :
-                        <>
-                        <bdi>{person.displayName}</bdi> does not follow you 
-                          <input type="checkbox" disabled={true} checked={false} />
-                        </>
-                      }
-                    </label></li>
-                  </ul>
-                </li>
-              }
-            </ul>
-          </nav>
-        </aside>
-      }
+      {isYou && <Link className="edit-your-profile" to="/profile/edit">Edit Profile</Link>}
 
       {person.avatar &&
         <>
