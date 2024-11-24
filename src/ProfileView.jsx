@@ -1,8 +1,10 @@
 import { useContext } from 'react';
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, NavLink, Outlet, useLoaderData } from "react-router-dom";
 
 import DatabaseContext from './DatabaseContext.jsx';
+import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
+import PersonContext from './PersonContext.jsx';
 import { PeopleDB } from './logic/people.js';
 import PostsByPerson from './PostsByPerson.jsx';
 import ProfileBio from './ProfileBio.jsx';
@@ -79,19 +81,18 @@ export default function ProfileView({handle, loggedInUser }) {
       <nav className="navigation-tabs" aria-labelledby="navigation">
         <h2 id="navigation">Navigation</h2>
         <ul className="navigation-tabs" aria-labelledby="navigation">
-          <li>Bio</li>
-          <li>{whoFollowsThem.length} Followers</li>
-          <li>Follows {whoDoTheyFollow.length}</li>
-          <li>Posts</li>
+          <li><NavLink to={'/people/'+person.handle}>Bio</NavLink></li>
+          <li><NavLink to={'/people/'+person.handle+'/posts'}>Posts</NavLink></li>
+          <li><NavLink to={'/people/'+person.handle+'/followers'}>{whoFollowsThem.length} Followers</NavLink></li>
+          <li><NavLink to={'/people/'+person.handle+'/follows'}>Follows {whoDoTheyFollow.length}</NavLink></li>
         </ul>
       </nav>
         
-      <ProfileBio person={person} />
-
-      <WhoFollowsThem person={person} whoFollowsThem={whoFollowsThem} />
-      <WhoDoTheyFollow person={person} whoDoTheyFollow={whoDoTheyFollow} />
-
-      <PostsByPerson person={person} />
+      <PersonContext.Provider value={person}>
+        <FollowInfoContext.Provider value={ { whoDoTheyFollow, whoFollowsThem } }>
+          <Outlet />
+        </FollowInfoContext.Provider>
+      </PersonContext.Provider>
     </main>
   );
 }

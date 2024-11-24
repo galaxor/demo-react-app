@@ -1,4 +1,10 @@
-export default function ProfileBio({person}) {
+import { useContext } from 'react';
+
+import PersonContext from './PersonContext.jsx';
+
+export default function ProfileBio() {
+  const person = useContext(PersonContext);
+
   return (
     <>
     <h2>Bio</h2>

@@ -1,6 +1,13 @@
+import { useContext } from 'react';
+
+import FollowInfoContext from './FollowInfoContext.jsx';
+import PersonContext from './PersonContext.jsx';
 import PersonInline from './PersonInline.jsx';
 
-export default function WhoFollowsThem({person, whoDoTheyFollow}) {
+
+export default function WhoFollowsThem() {
+  const person = useContext(PersonContext);
+  const { whoDoTheyFollow } = useContext(FollowInfoContext);
 
   return (
     <section aria-labelledby="who-do-they-follow">

@@ -4,11 +4,15 @@ import './index.css'
 
 import App from './App.jsx'
 import PopularFeed from './PopularFeed.jsx'
+import PostsByPerson from './PostsByPerson.jsx'
 import PostSingle from './PostSingle.jsx'
+import ProfileBio from './ProfileBio.jsx'
 import ProfileEdit from './ProfileEdit.jsx'
 import ProfileView from './ProfileView.jsx'
 import RootFeed from './RootFeed.jsx'
 import YourFeed from './YourFeed.jsx'
+import WhoFollowsThem from './WhoFollowsThem.jsx'
+import WhoDoTheyFollow from './WhoDoTheyFollow.jsx'
 
 import Database from "./logic/database.js";
 import { getPersonLoader } from './logic/people.js';
@@ -68,6 +72,28 @@ const router = createBrowserRouter([
         path: "/people/:handle",
         loader: getPersonLoader(database),
         element: <ProfileView />,
+        children: [
+          {
+            index: true,
+            loader: getPersonLoader(database),
+            element: <ProfileBio />,
+          },
+          {
+            path: "/people/:handle/posts",
+            loader: getPersonLoader(database),
+            element: <PostsByPerson />,
+          },
+          {
+            path: "/people/:handle/followers",
+            loader: getPersonLoader(database),
+            element: <WhoFollowsThem />,
+          },
+          {
+            path: "/people/:handle/follows",
+            loader: getPersonLoader(database),
+            element: <WhoDoTheyFollow />,
+          },
+        ],
       },
       {
         path: "/post/:postUri",
