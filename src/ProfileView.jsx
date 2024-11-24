@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { Link, useLoaderData } from "react-router-dom";
 
-import { getPersonLoader, PeopleDB } from './logic/people.js';
+import { PeopleDB } from './logic/people.js';
 import PersonInline from './PersonInline.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
 import UserContext from './UserContext.jsx';
@@ -16,14 +16,11 @@ export default function ProfileView({handle, loggedInUser }) {
   const peopleDB = new PeopleDB(db);
 
   const loaderData = useLoaderData();
-  const loadedPerson = loaderData? useLoaderData().person : null;
-
-  let thisIsYou = false;
+  const loadedPerson = loaderData? loaderData.person : null;
 
   let person;
   if (loggedInUser) {
     person = user;
-    thisIsYou = true;
   } else {
     person = loadedPerson;
   }
@@ -35,22 +32,23 @@ export default function ProfileView({handle, loggedInUser }) {
     return "";
   }
 
+  const onHomeServer = (person.localUserId !== null); 
+
   const isYou = (user && user.handle === person.handle);
 
   const [youFollowThem, setYouFollowThem] = useState();
 
   const theyFollowYou = user? peopleDB.doesXFollowY(person.handle, user.handle) : null;
 
-  const onHomeServer = (person.localUserId !== null); 
-
   const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
+  const whoDoTheyFollow = peopleDB.whoDoTheyFollow(person.handle);
 
   return (
     <main className="h-card profile-view">
       <h1>
         {person.localUserId?
           <Link className="u-url" href={'/person/'+handle}>
-            <span className="display-name p-name"><bdi>{person.displayName}</bdi></span>
+            <span className="display-name p-name"><bdi>{person.displayName}</bdi></span> {" "}
             <span className="author-handle u-impp">{person.handle}</span>
           </Link>
           :
@@ -59,15 +57,19 @@ export default function ProfileView({handle, loggedInUser }) {
             <span className="author-handle u-impp">{person.handle}</span>
           </a>
         }
+        {" "}
+        {isYou && <span className="is-you">(You)</span>}
       </h1>
+
+      {onHomeServer && <span className="trust-on-this-server">From this server.</span>}
 
       {user !== null && 
         <aside className="profile-actions">
           <h2 id="profile-actions">Actions</h2>
           <nav aria-labelledby="profile-actions">
             <ul aria-labelledby="profile-actions">
-              {thisIsYou && <li><Link to="/profile/edit">Edit Profile</Link></li>}
-              {!thisIsYou &&
+              {isYou && <li><Link to="/profile/edit">Edit Profile</Link></li>}
+              {!isYou &&
                 <li id="friend-status">Friend Status
                   <ul className="friend-status" aria-labelledby="friend-status">
                     <li><label>
@@ -139,6 +141,17 @@ export default function ProfileView({handle, loggedInUser }) {
           <ul aria-labelledby="who-follows-them">
           {whoFollowsThem.map(personWhoFollows => {
             return (<li key={personWhoFollows.handle}><PersonInline person={personWhoFollows} /></li>);
+            }
+          )}
+          </ul>
+        </section>
+
+        <section aria-labelledby="who-do-they-follow">
+          <h2 id="who-do-they-follow">Who does <bdi>{person.displayName}</bdi> follow?</h2>
+
+          <ul aria-labelledby="who-do-they-follow">
+          {whoDoTheyFollow.map(personWhoIsFollowed => {
+            return (<li key={personWhoIsFollowed.handle}><PersonInline person={personWhoIsFollowed} /></li>);
             }
           )}
           </ul>

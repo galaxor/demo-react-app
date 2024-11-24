@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet } from "react-router-dom";
 
 import Logo from './Logo.jsx';
@@ -16,14 +16,13 @@ import User from './logic/user.js';
 
 function App({db}) {
   const [user, setUser] = useState(User.loggedInUser());
-  const [session, setSession] = useState(null);
 
   const [systemNotifications, setSystemNotifications] = useState([]);
   const systemNotificationsContext = {systemNotifications: systemNotifications, setSystemNotifications: setSystemNotifications};
 
   const [sessionId, setSessionId] = useState(null);
 
-  const userContext = {user: user, setUser: setUser, sessionId: sessionId, setSessionId: setSessionId};
+  const userContext = {user, setUser, sessionId, setSessionId};
 
   // TODO: Add i18n support 🤪
   // Anybody can read navigator.language.

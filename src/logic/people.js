@@ -26,6 +26,22 @@ export class PeopleDB {
     return followsPerson;
   }
 
+  whoDoTheyFollow(handle) {
+    if (!handle) { throw new TypeError("We're asking who someone follows, but we don't know who someone is."); }
+
+    const followsPerson = this.db.get('follows')
+      .filter(([personWhoFollows, personWhoIsFollowed]) => {
+        return personWhoFollows === handle;
+      })
+      .map(([handleOfPersonWhoFollows, handleOfPersonWhoIsFollowed]) => {
+        const personWhoIsFollowed = this.get(handleOfPersonWhoIsFollowed);
+        return personWhoIsFollowed;
+      })
+    ;
+
+    return followsPerson;
+  }
+
   doesXFollowY(xHandle, yHandle) {
     return this.db.get('follows').filter(([x, y]) => x === xHandle && y === yHandle).length > 0;
   }
