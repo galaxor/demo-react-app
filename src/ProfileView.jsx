@@ -6,16 +6,19 @@ import FriendStatus from './FriendStatus.jsx';
 import { PeopleDB } from './logic/people.js';
 import PersonInline from './PersonInline.jsx';
 import { PostsDB } from './logic/posts.js';
+import PostsByPerson from './PostsByPerson.jsx';
 import PostsList from './PostsList.jsx';
+import ProfileBio from './ProfileBio.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
+import WhoDoTheyFollow from './WhoDoTheyFollow.jsx';
+import WhoFollowsThem from './WhoFollowsThem.jsx';
 
 import './static/ProfileView.css'
 
 export default function ProfileView({handle, loggedInUser }) {
   const { user } = useContext(UserContext);
   const db = useContext(DatabaseContext);
-
 
   const peopleDB = new PeopleDB(db);
 
@@ -39,10 +42,6 @@ export default function ProfileView({handle, loggedInUser }) {
   const onHomeServer = (person.localUserId !== null); 
 
   const isYou = (user && user.handle === person.handle);
-
-  const [youFollowThem, setYouFollowThem] = useState();
-
-  const theyFollowYou = user? peopleDB.doesXFollowY(person.handle, user.handle) : null;
 
   const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
   const whoDoTheyFollow = peopleDB.whoDoTheyFollow(person.handle);
@@ -84,51 +83,12 @@ export default function ProfileView({handle, loggedInUser }) {
         </>
       }
 
-      <h2>Bio</h2>
-      
-      <div className="profile-bio">
-        {person.bio}
-      </div>
+      <ProfileBio person={person} />
 
-      <aside className="follow-information">
-        {/* We'll put the "who do they follow" thing first?  Or second? I can't decide. */}
+      <WhoFollowsThem person={person} />
+      <WhoDoTheyFollow person={person} />
 
-        <section aria-labelledby="who-follows-them">
-          <h2 id="who-follows-them">Who follows <bdi>{person.displayName}</bdi>?</h2>
-
-          {whoFollowsThem.length > 0 ?
-            <ul aria-labelledby="who-follows-them">
-            {whoFollowsThem.map(personWhoFollows => {
-              return (<li key={personWhoFollows.handle}><PersonInline person={personWhoFollows} /></li>);
-              }
-            )}
-            </ul>
-            :
-            <div>No one follows <bdi>{person.displayName}</bdi>.</div>
-          }
-        </section>
-
-        <section aria-labelledby="who-do-they-follow">
-          <h2 id="who-do-they-follow">Who does <bdi>{person.displayName}</bdi> follow?</h2>
-
-          {whoDoTheyFollow.length > 0 ?
-            <ul aria-labelledby="who-do-they-follow">
-            {whoDoTheyFollow.map(personWhoIsFollowed => {
-              return (<li key={personWhoIsFollowed.handle}><PersonInline person={personWhoIsFollowed} /></li>);
-              }
-            )}
-            </ul>
-            :
-            <div><bdi>{person.displayName}</bdi> does not follow anyone.</div>
-          }
-        </section>
-      </aside>
-
-      <section className="their-posts" aria-labelledby="their-posts">
-        <h2 id="their-posts">Posts by <bdi>{person.displayName}</bdi></h2>
-
-        <PostsList posts={theirPosts} />
-      </section>
+      <PostsByPerson person={person} />
     </main>
   );
 }
