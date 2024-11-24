@@ -30,7 +30,7 @@ export default function NavigationSidebar() {
         <>
         <h2 id="account">Account</h2>
         <ul aria-describedby="account">
-        <li><NavLink to="/profile">Profile</NavLink></li>
+        <li><NavLink to="/profile" end>Profile</NavLink></li>
         { ['/profile', '/profile/edit'].includes(matches[matches.length-1].pathname) ?
           <ul>
           <li><NavLink to="/profile/edit">Edit Your Profile</NavLink></li>
