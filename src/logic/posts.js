@@ -32,9 +32,9 @@ export class PostsDB {
     return replies;
   }
 
-  getPostsBy(handle) {
+  getPostsBy(handle, showReplies) {
     const posts = Object.entries(this.db.get('posts'))
-      .filter(([postURI, post]) => post.author === handle)
+      .filter(([postURI, post]) => (post.author === handle) && (showReplies || post.inReplyTo === null) )
       .map(([postURI, post]) => { return {...post, authorPerson: this.db.get('people', post.author)}; })
     ;
 

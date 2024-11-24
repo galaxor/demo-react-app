@@ -79,7 +79,11 @@ const router = createBrowserRouter([
           },
           {
             path: "/people/:handle/posts",
-            element: <PostsByPerson />,
+            element: <PostsByPerson showReplies={false} />,
+          },
+          {
+            path: "/people/:handle/posts-replies",
+            element: <PostsByPerson showReplies={true} />,
           },
           {
             path: "/people/:handle/followers",
