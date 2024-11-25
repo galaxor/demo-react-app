@@ -106,8 +106,30 @@ export class PostsDB {
       }, {}
     ));
 
+    // There should always be Likes, even if there are 0 of them.
+    if (typeof totals.find(r => r.type === "like") === "undefined") {
+      totals.unshift({
+        type: "like",
+        unicode: null,
+        reactName: null,
+        reactServer: null,
+        createdAt: "", // "" will get sorted before all dates.
+        total: 0,
+      });
+    }
+
     // We want to sort the oldest one at the top.
-    totals.sort((a, b) => a.createdAt===b.createdAt? 0 : a.createdAt < b.createdAt);
+    // Except we want likes to always be at the top.
+    totals.sort((a, b) => {
+      if (a.type === "like") { return -1; }
+      if (b.type === "like") { return 1; }
+      if (a.createdAt === b.createdAt) { return 0; }
+      if (a.createdAt < b.createdAt) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
 
     return totals;
   }
