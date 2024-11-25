@@ -41,44 +41,22 @@ function reactionGlyph(reaction) {
 }
 
 function toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue, yourReactions, setYourReactions}) {
-  const createdAt = new Date();
+  const createdAt = new Date().toISOString();
 
   // Make the change in the database
   postsDB.setReaction({reactorHandle: user.handle, reactingTo: post.uri, reaction, createdAt, newValue});
 
-  // Construct a new reactionTotals object, which has 1 either added to or
-  // subtracted from the existing total for this reaction.
-  // Set that in the state variable, so it can be seen in the post.
-  const newReactionTotals = reactionTotals.map(reactionTotal => {
-    if (reactionTotal.type === reaction.type
-        && reactionTotal.unicode === reaction.unicode
-        && reactionTotal.reactName === reaction.reactName
-        && reactionTotal.reactServer === reaction.reactServer)
-    {
-      return {
-        ...reactionTotal,
-        total: newValue? reactionTotal.total-1 : reactionTotal.total+1,
-      };
-    } else {
-      return {...reactionTotal};
-    }
-  });
+  // Set the "your reactions" state based on what's in the database now.
+  // (this will refresh from the database, so if you did a different reaction
+  // in another window, we'll get that change now).
+  setYourReactions(postsDB.getReactionsByPerson(user.handle, post.uri));
 
-  setReactionTotals(newReactionTotals);
-
-  // Now construct a new yourReactions object, with a row either put in or taken out for you.
-  const newYourReactions = newValue?
-    // We're adding your reaction.
-    [...yourReactions, {...reaction, reactorHandle: user.handle, createdAt}]
-    :
-    // We're removing your reaction.
-    yourReactions.filter(yourReaction => !( 
-      yourReaction.type === reaction.type 
-      && yourReaction.unicode === reaction.unicode 
-      && yourReaction.reactName === reaction.reactName 
-      && yourReaction.reactServer === reaction.reactServer)
-    )
-  ;
+  // Refresh the reaction totals while we're at it.
+  // That way, whenever you react to something, you will see what other people
+  // have been doing.
+  // This will probably also be periodically refreshed by info we subscribe to
+  // from the server thru websocket or something.
+  setReactionTotals(postsDB.getReactionsTo(post.uri));
 }
 
 // We have the State variables reactionTotals and setReactionTotals so we can

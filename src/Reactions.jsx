@@ -21,12 +21,29 @@ export default function Reactions({post}) {
 
   const { user } = useContext(UserContext);
 
-  const initialYourReactions = user? postsDB.getReactionsByPerson(user.handle, post.uri) : [];
-
   // We're going to make the totals into a state variable so you can change them by clicking.
   // We have to pass it to the <Reaction> component, because that's what you'll be clicking on.
   const [reactionTotals, setReactionTotals] = useState(initialReactionTotals);
-  const [yourReactions, setYourReactions] = useState(initialYourReactions);
+
+  const [yourReactions, setYourReactions] = useState();
+
+  // When we change users or load the page for the first time, the state won't
+  // have any opinion on whether we were among the people who set these
+  // reactions.  In that case, get it from the database.
+  // But if we have been on the page long enough to have pushed some buttons,
+  // don't read the database, read the state.
+  // (but also, when we push buttons, we'll refresh from the database after updating it).
+  const reactionButtonStates = typeof yourReactions === "undefined"?
+    ( user? postsDB.getReactionsByPerson(user.handle, post.uri) : [] )
+    :
+    yourReactions
+  ;
+
+// XXX Here's the bug:
+// Be logged out.
+// Click on Astra's post.
+// Click log in.
+// You reacted :joy:, but it doesn't show as yours until you reload the page.
 
   const htmlId = encodeURIComponent(post.uri);
   return (
@@ -38,7 +55,7 @@ export default function Reactions({post}) {
             <Reaction post={post} reaction={reaction} 
               reactionTotals={reactionTotals} 
               setReactionTotals={setReactionTotals}
-              yourReactions={yourReactions}
+              yourReactions={reactionButtonStates}
               setYourReactions={setYourReactions}
             />
           </li>
