@@ -1,8 +1,10 @@
 import { useContext, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx'
 import { PostsDB } from './logic/posts.js';
 import Reaction from './Reaction.jsx';
+import ReactionsMenu from './ReactionsMenu.jsx';
 import UserContext from './UserContext.jsx';
 
 export default function Reactions({post}) {
@@ -39,12 +41,6 @@ export default function Reactions({post}) {
     yourReactions
   ;
 
-// XXX Here's the bug:
-// Be logged out.
-// Click on Astra's post.
-// Click log in.
-// You reacted :joy:, but it doesn't show as yours until you reload the page.
-
   const htmlId = encodeURIComponent(post.uri);
   return (
     <aside className="reactions" aria-labelledby={htmlId}>
@@ -61,6 +57,21 @@ export default function Reactions({post}) {
           </li>
         )}
       </ul>
+
+      {user && 
+        <ReactionsMenu 
+          htmlId={htmlId+'-add'}
+          post={post} 
+          reactionTotals={reactionTotals} 
+          setReactionTotals={setReactionTotals}
+          yourReactions={reactionButtonStates}
+          setYourReactions={setYourReactions}
+        />
+      }
     </aside>
   );
+}
+
+function toggleAddReaction(e) {
+  alert("I should toggle your reactions");
 }
