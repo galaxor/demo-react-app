@@ -85,11 +85,8 @@ export class PostsDB {
   }
 
   getReactionsTo(postURI) {
-    const totals0 = this.db.get('reactions');
-
-    const totals1 = totals0.filter(reaction => reaction.reactingTo === postURI);
-
-    const totals2 = totals1
+    const totals = Object.values(this.db.get('reactions')
+      .filter(reaction => reaction.reactingTo === postURI)
       .reduce((totals, reaction) => {
         const key = [reaction.type, reaction.unicode, reaction.reactName, reaction.reactServer].join(':');
 
@@ -107,9 +104,7 @@ export class PostsDB {
 
         return totals;
       }, {}
-    );
-
-    const totals = Object.values(totals2);
+    ));
 
     // We want to sort the oldest one at the top.
     totals.sort((a, b) => a.createdAt===b.createdAt? 0 : a.createdAt < b.createdAt);
