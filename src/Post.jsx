@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx'
+import Reactions from './Reactions.jsx'
 
 import './static/Post.css'
 
@@ -72,6 +73,8 @@ export default function Post({post, children}) {
           )}
         </div>
       }
+
+      <Reactions post={post} />
 
       {children}
     </article>

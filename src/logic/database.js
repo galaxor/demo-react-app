@@ -289,7 +289,7 @@ class Database {
           canonicalUrl: "@cfur@corporate/help-alice-find-bob",
 
           language: "en-US",
-          conversationId: "@alice@local/has-anyone-seen-bob",
+          conversationId: null,
 
           local: false,
         },
@@ -310,6 +310,55 @@ class Database {
         { uri: "https://wetdry.world/@astra_underscore/113522617022220742", updatedAt: "2024-11-21T02:34:00-04:00" },
       ];
 
+      this.reactions = [
+        {
+          reactorHandle: '@testuser@local',
+          reactingTo: "https://wetdry.world/@astra_underscore/113522617022220742",
+          // The type field can be one of: "like", "dislike", "unicode", "react"
+          // If it's "dislike", that's a Lemmy downvote.
+          // If it's "unicode", then the unicode field should have one unicode emoji in it.
+          // If it's "react", then reactname will be something like "neofox"
+          //   and the server will be whatever server neofox comes from.
+          //   I don't really know how that works, that's just what I gleaned
+          //   from looking at misskey, which I want to interact with.
+          type: "unicode",
+          unicode: "😂",
+          reactName: null,
+          reactServer: null,
+          createdAt: "2024-11-24T17:11:11-0500",
+        },
+
+        {
+          reactorHandle: '@darkphoenix@not.an.evilcyberhacker.net',
+          reactingTo: "https://wetdry.world/@astra_underscore/113522617022220742",
+          type: "like",
+          unicode: null,
+          reactName: null,
+          reactServer: null,
+          createdAt: "2024-11-21T07:35:00+01:00",
+        },
+
+        {
+          reactorHandle: '@cfur@corporate',
+          reactingTo: '@alice@local/a-cool-article',
+          type: "like",
+          unicode: null,
+          reactName: null,
+          reactServer: null,
+          createdAt: "2024-11-24T12:16:30-05:00",
+        },
+
+        {
+          reactorHandle: '@cfur@corporate',
+          reactingTo: '@alice@local/has-anyone-seen-bob',
+          type: "like",
+          unicode: null,
+          reactName: null,
+          reactServer: null,
+          createdAt: "2024-11-24T13:44:30-05:00",
+        },
+      ];
+
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
       localStorage.setItem('boosts', JSON.stringify(this.boosts));
       localStorage.setItem('follows', JSON.stringify(this.follows));
@@ -317,6 +366,7 @@ class Database {
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('posts', JSON.stringify(this.posts));
       localStorage.setItem('popularPosts', JSON.stringify(this.popularPosts));
+      localStorage.setItem('reactions', JSON.stringify(this.reactions));
     } else {
       this.accounts = JSON.parse(localStorage.getItem('accounts'));
       this.boosts = JSON.parse(localStorage.getItem('boosts'));
@@ -325,6 +375,7 @@ class Database {
       this.people = JSON.parse(localStorage.getItem('people'));
       this.posts = JSON.parse(localStorage.getItem('posts'));
       this.popularPosts = JSON.parse(localStorage.getItem('popularPosts'));
+      this.reactions = JSON.parse(localStorage.getItem('reactions'));
     }
   }
 

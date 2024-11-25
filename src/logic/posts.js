@@ -83,4 +83,27 @@ export class PostsDB {
 
     return posts;
   }
+
+  getReactionsTo(postURI) {
+    return this.db.get('reactions').filter(reaction => reaction.reactingTo === postURI)
+      .reduce((totals, reaction) => {
+        const key = [reaction.type, reaction.unicode, reaction.reactName, reaction.reactServer].join(':');
+
+        if (typeof totals[key] === "undefined") {
+          totals[key] = {...reaction};
+          delete totals[key].reactorHandle;
+          delete totals[key].reactingTo;
+          totals[key].total = 1;
+        } else {
+          totals[key] += 1;
+          if (reaction.createdAt < totals[key].createdAt) {
+            totals[key].createdAt = reaction.createdAt;
+          }
+        } 
+
+        return totals;
+      }, {}
+    )
+    ;
+  }
 }
