@@ -124,7 +124,7 @@ export class PostsDB {
       if (a.type === "like") { return -1; }
       if (b.type === "like") { return 1; }
       if (a.createdAt === b.createdAt) { return 0; }
-      if (a.createdAt < b.createdAt) {
+      if (a.createdAt > b.createdAt) {
         return 1;
       } else {
         return -1;
