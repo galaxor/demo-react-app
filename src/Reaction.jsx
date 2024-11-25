@@ -1,6 +1,8 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
+import DatabaseContext from './DatabaseContext.jsx'
+import { PostsDB } from './logic/posts.js';
 import UserContext from './UserContext.jsx';
 
 function reactionGlyph(reaction) {
@@ -36,22 +38,57 @@ function reactionGlyph(reaction) {
   }
 }
 
+function toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue}) {
+  const createdAt = new Date();
+
+  // Make the change in the database
+  postsDB.setReaction({reactorHandle: user.handle, reactingTo: post.uri, reaction, createdAt, newValue});
+
+  // Construct a new reactionTotals object, which has 1 either added to or
+  // subtracted from the existing total for this reaction.
+  // Set that in the state variable, so it can be seen in the post.
+  const newReactionTotals = reactionTotals.map(reactionTotal => {
+    if (reactionTotal.type === reaction.type
+        && reactionTotal.unicode === reaction.unicode
+        && reactionTotal.reactName === reaction.reactName
+        && reactionTotal.reactServer === reaction.reactServer)
+    {
+      return {
+        ...reactionTotal,
+        total: newValue? reactionTotal.total-1 : reactionTotal.total+1,
+      };
+    } else {
+      return {...reactionTotal};
+    }
+  });
+
+  console.log("I just set it to", newReactionTotals);
+
+  setReactionTotals(newReactionTotals);
+}
+
 // We have the State variables reactionTotals and setReactionTotals so we can
 // use them in the onClick handler to create reactions.
-export default function Reaction({reaction, reactionTotals, setReactionTotals}) {
+export default function Reaction({post, reaction, reactionTotals, setReactionTotals}) {
   const glyph = reactionGlyph(reaction);
 
   const { user } = useContext(UserContext);
 
+  const db = useContext(DatabaseContext);
+  const postsDB = new PostsDB(db);
+
   // If they're not logged in, they don't get a clickable link.
   return (
     user? 
-      <Link className="reaction" onClick={e => e.preventDefault()}>
+      <Link className="reaction" onClick={e => {
+        e.preventDefault();
+        toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue: e.target.clicked});
+      }}>
         <span className="glyph">{glyph}</span>
         {reaction.total && <span className="count">{reaction.total}</span>}
       </Link>
     :
-      <div className="reaction" onClick={e => e.preventDefault()}>
+      <div className="reaction">
         <span className="glyph">{glyph}</span>
         {reaction.total && <span className="count">{reaction.total}</span>}
       </div>

@@ -399,7 +399,7 @@ class Database {
   }
 
   addRow(table, row) {
-    this[table].push(row);
+    this[table].push(...row);
     localStorage.setItem(table, JSON.stringify(this[table]));
   }
 

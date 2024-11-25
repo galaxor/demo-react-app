@@ -110,4 +110,29 @@ export class PostsDB {
 
     return totals;
   }
+
+  setReaction({reactorHandle, reactingTo, reaction, createdAt, newValue}) {
+    this.db.delRow('reactions', dbReaction => {
+      return (
+        dbReaction.reactorHandle === reactorHandle
+        && dbReaction.reactingTo === reactingTo
+        && dbReaction.type === reaction.type
+        && dbReaction.unicode === reaction.unicode
+        && dbReaction.reactName === reaction.reactName
+        && dbReaction.reactServer === reaction.reactServer
+      );
+    });
+
+    // We've deleted any previous reactions of this type, by this person, on this post.
+    // Now, if they wanted to add a reaction, let's put one in.
+    // It'll have the latest createdAt date.
+    if (newValue) {
+      this.db.addRow('reactions', {
+        ...reaction,
+        reactorHandle,
+        reactingTo,
+        createdAt,
+      });
+    }
+  }
 }

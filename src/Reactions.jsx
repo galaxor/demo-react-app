@@ -22,8 +22,6 @@ export default function Reactions({post}) {
   // We have to pass it to the <Reaction> component, because that's what you'll be clicking on.
   const [reactionTotals, setReactionTotals] = useState(initialReactionTotals);
 
-  console.log("RXN", reactionTotals);
-
   const htmlId = encodeURIComponent(post.uri);
   return (
     <aside className="reactions" aria-labelledby={htmlId}>
@@ -31,7 +29,7 @@ export default function Reactions({post}) {
       <ul aria-labelledby={htmlId}>
         {reactionTotals.map(reaction =>
           <li key={[reaction.type, reaction.unicode, reaction.reactServer].join('-')}>
-            <Reaction reaction={reaction} reactionTotals={reactionTotals} setReactionTotals={setReactionTotals} />
+            <Reaction post={post} reaction={reaction} reactionTotals={reactionTotals} setReactionTotals={setReactionTotals} />
           </li>
         )}
       </ul>
