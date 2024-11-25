@@ -1,4 +1,7 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+
+import UserContext from './UserContext.jsx';
 
 function reactionGlyph(reaction) {
   // The template for the react is:
@@ -38,10 +41,19 @@ function reactionGlyph(reaction) {
 export default function Reaction({reaction, reactionTotals, setReactionTotals}) {
   const glyph = reactionGlyph(reaction);
 
+  const { user } = useContext(UserContext);
+
+  // If they're not logged in, they don't get a clickable link.
   return (
-    <Link className="reaction" onClick={e => e.preventDefault()}>
-      <span className="glyph">{glyph}</span>
-      {reaction.total && <span className="count">{reaction.total}</span>}
-    </Link>
+    user? 
+      <Link className="reaction" onClick={e => e.preventDefault()}>
+        <span className="glyph">{glyph}</span>
+        {reaction.total && <span className="count">{reaction.total}</span>}
+      </Link>
+    :
+      <div className="reaction" onClick={e => e.preventDefault()}>
+        <span className="glyph">{glyph}</span>
+        {reaction.total && <span className="count">{reaction.total}</span>}
+      </div>
   );
 }
