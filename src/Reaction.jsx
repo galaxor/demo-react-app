@@ -5,6 +5,8 @@ import DatabaseContext from './DatabaseContext.jsx'
 import { PostsDB } from './logic/posts.js';
 import UserContext from './UserContext.jsx';
 
+import './static/Reaction.css';
+
 function reactionGlyph(reaction) {
   // The template for the react is:
   // {
@@ -38,7 +40,7 @@ function reactionGlyph(reaction) {
   }
 }
 
-function toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue}) {
+function toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue, yourReactions, setYourReactions}) {
   const createdAt = new Date();
 
   // Make the change in the database
@@ -62,14 +64,26 @@ function toggleReaction({user, postsDB, post, reaction, reactionTotals, setReact
     }
   });
 
-  console.log("I just set it to", newReactionTotals);
-
   setReactionTotals(newReactionTotals);
+
+  // Now construct a new yourReactions object, with a row either put in or taken out for you.
+  const newYourReactions = newValue?
+    // We're adding your reaction.
+    [...yourReactions, {...reaction, reactorHandle: user.handle, createdAt}]
+    :
+    // We're removing your reaction.
+    yourReactions.filter(yourReaction => !( 
+      yourReaction.type === reaction.type 
+      && yourReaction.unicode === reaction.unicode 
+      && yourReaction.reactName === reaction.reactName 
+      && yourReaction.reactServer === reaction.reactServer)
+    )
+  ;
 }
 
 // We have the State variables reactionTotals and setReactionTotals so we can
 // use them in the onClick handler to create reactions.
-export default function Reaction({post, reaction, reactionTotals, setReactionTotals}) {
+export default function Reaction({post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions}) {
   const glyph = reactionGlyph(reaction);
 
   const { user } = useContext(UserContext);
@@ -77,13 +91,29 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
+  // Is this type of reaction among those listed, which you did on this post?
+  const didYouDoThis = user?
+    typeof yourReactions.find(yourReaction => 
+        yourReaction.reactorHandle === user.handle
+        && yourReaction.reactingTo === post.uri
+        && yourReaction.type === reaction.type 
+        && yourReaction.unicode === reaction.unicode
+        && yourReaction.reactName === reaction.reactName
+        && yourReaction.reactServer === reaction.reactServer
+    ) !== "undefined"
+    : false
+  ;
+
   // If they're not logged in, they don't get a clickable link.
   return (
     user? 
-      <Link className="reaction" onClick={e => {
-        e.preventDefault();
-        toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue: e.target.clicked});
-      }}>
+      <Link className={'reaction ' + (didYouDoThis? 'you-did-this' : '')}
+        onClick={e => {
+          e.preventDefault();
+          toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions,
+            newValue: !didYouDoThis});
+        }
+      }>
         <span className="glyph">{glyph}</span>
         {reaction.total && <span className="count">{reaction.total}</span>}
       </Link>

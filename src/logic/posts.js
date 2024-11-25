@@ -111,6 +111,16 @@ export class PostsDB {
     return totals;
   }
 
+  getReactionsByPerson(personHandle, postURI) {
+    return this.db.get('reactions').filter(reaction => {
+      const result = reaction.reactorHandle === personHandle
+        && reaction.reactingTo === postURI
+      ;
+
+      return result;
+    });
+  }
+
   setReaction({reactorHandle, reactingTo, reaction, createdAt, newValue}) {
     this.db.delRow('reactions', dbReaction => {
       return (
