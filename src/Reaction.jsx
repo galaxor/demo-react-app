@@ -26,7 +26,7 @@ function reactionGlyph(reaction) {
   //   from looking at misskey, which I want to interact with.
 
   switch (reaction.type) {
-  case 'like': return '⭐️';
+  case 'like': return <span aria-label="Like">⭐️</span>;
 
   // XXX I'll have to validate this sometime by allowlisting certain emojis.  Otherwise, they could react with a whole post!
   // Counting "characters" in unicode isn't really a thing that's possible.
