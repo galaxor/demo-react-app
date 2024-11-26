@@ -27,8 +27,8 @@ export default function PostEditor() {
   return (
     <MDXEditor markdown="" autofocus className="post-editor" placeholder="What do you want to share?"
       plugins={[
-        codeBlockPlugin({defaultCodeBlockLanguage: 'txt'}),
-        codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text', jsx: 'JSX', ts: 'TypeScript', tsx: 'TSX' } }),
+        codeBlockPlugin({defaultCodeBlockLanguage: ''}),
+        codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', "": 'Text', jsx: 'JSX', ts: 'TypeScript', tsx: 'TSX' } }),
         diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
         listsPlugin(),
         linkPlugin(),
