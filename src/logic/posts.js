@@ -88,7 +88,7 @@ export class PostsDB {
     const totals = Object.values(this.db.get('reactions')
       .filter(reaction => reaction.reactingTo === postURI)
       .reduce((totals, reaction) => {
-        const key = [reaction.type, reaction.unicode, reaction.reactName, reaction.reactServer].join(':');
+        const key = [reaction.type, reaction.unicode, reaction.reactName, reaction.reactServer, reaction.reactURL].join(':');
 
         if (typeof totals[key] === "undefined") {
           totals[key] = {...reaction};
@@ -113,6 +113,7 @@ export class PostsDB {
         unicode: null,
         reactName: null,
         reactServer: null,
+        reactURL: null,
         createdAt: "", // "" will get sorted before all dates.
         total: 0,
       });
@@ -153,6 +154,7 @@ export class PostsDB {
         && dbReaction.unicode === reaction.unicode
         && dbReaction.reactName === reaction.reactName
         && dbReaction.reactServer === reaction.reactServer
+        && dbReaction.reactUrl === reaction.reactUrl
       );
     });
 

@@ -325,6 +325,8 @@ class Database {
           unicode: "😂",
           reactName: null,
           reactServer: null,
+          reactURL: null,
+          altText: null,
           createdAt: "2024-11-24T17:11:11-0500",
         },
 
@@ -335,6 +337,8 @@ class Database {
           unicode: null,
           reactName: null,
           reactServer: null,
+          reactURL: null,
+          altText: null,
           createdAt: "2024-11-21T07:35:00+01:00",
         },
 
@@ -345,6 +349,8 @@ class Database {
           unicode: null,
           reactName: null,
           reactServer: null,
+          reactURL: null,
+          altText: null,
           createdAt: "2024-11-24T12:16:30-05:00",
         },
 
@@ -355,6 +361,8 @@ class Database {
           unicode: null,
           reactName: null,
           reactServer: null,
+          reactURL: null,
+          altText: null,
           createdAt: "2024-11-24T13:44:30-05:00",
         },
       ];

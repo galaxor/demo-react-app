@@ -13,7 +13,7 @@ export default function Reactions({post}) {
 
   // "reactionTotals" should be a reactive value and we can add things to it with state, by reacting to the post.
 
-  // "react" will be like a react row from the database in that it will have type, unicode, reactName, and reactServer.
+  // "react" will be like a react row from the database in that it will have type, unicode, reactName, reactServer, altText, and reactUrl.
   // But we also add total (a number).
   // And we add youToo (a boolean), true if you reacted this react.
 
@@ -47,7 +47,7 @@ export default function Reactions({post}) {
       <span id={htmlId} className="reactions-header">Reactions</span>
       <ul aria-labelledby={htmlId}>
         {reactionTotals.map(reaction =>
-          <li key={[reaction.type, reaction.unicode, reaction.reactServer].join('-')}>
+          <li key={[reaction.type, reaction.unicode, reaction.reactServer, reaction.reactUrl].join('-')}>
             <Reaction post={post} reaction={reaction} 
               reactionTotals={reactionTotals} 
               setReactionTotals={setReactionTotals}

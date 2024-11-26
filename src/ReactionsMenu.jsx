@@ -33,14 +33,20 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
 function addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen}) {
   // construct reaction here, based on "emoji".
 
+console.log(emoji);
+
   const reaction = {
     reactorHandle: user.handle,
     reactingTo: post.uri,
-    type: "unicode",
+    type: "url",
     unicode: emoji.emoji,
     reactName: null,
     reactServer: null,
+    altText: emoji.names[0],
+    reactUrl: emoji.imageUrl,
   };
+
+console.log("Adding to db", reaction);
 
   toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue: true, yourReactions, setYourReactions});
 

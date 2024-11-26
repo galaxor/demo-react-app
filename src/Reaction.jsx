@@ -15,12 +15,15 @@ function reactionGlyph(reaction) {
   //   unicode: null,
   //   reactName: null,
   //   reactServer: null,
+  //   altText: null,
+  //   reactUrl: null,
   //   createdAt: "2024-11-21T07:35:00+01:00",
   // }
 
-  // The type field can be one of: "like", "dislike", "unicode", "react"
+  // The type field can be one of: "like", "dislike", "unicode", "react", "url"
   // If it's "dislike", that's a Lemmy downvote.
   // If it's "unicode", then the unicode field should have one unicode emoji in it.
+  // If it's "url", the image can be found at reactUrl and the alt text is stored in the altText field.
   // If it's "react", then reactname will be something like "neofox"
   //   and the server will be whatever server neofox comes from.
   //   I don't really know how that works, that's just what I gleaned
@@ -38,6 +41,8 @@ function reactionGlyph(reaction) {
 
   // XXX I haven't implemented rich reactions at all.
   case 'react': return '?';
+
+  case 'url': return <img className="emoji" alt={reaction.altText} src={reaction.reactUrl} />;
   }
 }
 
@@ -60,6 +65,7 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
         && yourReaction.unicode === reaction.unicode
         && yourReaction.reactName === reaction.reactName
         && yourReaction.reactServer === reaction.reactServer
+        && yourReaction.reactUrl === reaction.reactUrl
     ) !== "undefined"
     : false
   ;
