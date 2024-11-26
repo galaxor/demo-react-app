@@ -264,5 +264,9 @@ export class PostsDB {
       .filter(boost => boost.boostersPost.text !== null)
     ;
   }
+
+  addPost(post) {
+    return this.db.set('posts', post.uri, post);
+  }
 }
 
