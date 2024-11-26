@@ -29,34 +29,34 @@ export default function Boosts({post}) {
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
 
   return (
-    <aside className="boosts" aria-labelledby={htmlId}>
-      <span id={htmlId} className="boosts-header">
-        Boosts
-      </span>
-      <ul aria-labelledby={htmlId}>
-        <li className={'non-quote-boosts ' + ((typeof youDidThis === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
-          {user? 
-            <Link to="/" onClick={e => { e.preventDefault(); clickBoosts({user, post, postsDB, numberOfBoosts, setNumberOfBoosts, setYouDidThis})}}>
-              <span className="icon" aria-label="Boosts">♻</span>
-              <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
-            </Link>
-            :
-            <div>
-              <span className="icon" aria-label="Boosts">♻</span>
-              <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
-            </div>
-          }
-            
-        </li>
-
-        <li className={'quote-boosts ' + ((typeof yourQuoteBoosts === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
+    <>
+    <span id={htmlId} className="boosts-header">
+      Boosts
+    </span>
+    <ul aria-labelledby={htmlId}>
+      <li className={'non-quote-boosts ' + ((typeof youDidThis === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
+        {user? 
+          <Link to="/" onClick={e => { e.preventDefault(); clickBoosts({user, post, postsDB, numberOfBoosts, setNumberOfBoosts, setYouDidThis})}}>
+            <span className="icon" aria-label="Boosts">♻</span>
+            <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
+          </Link>
+          :
           <div>
-            <span className="icon" aria-label="Quote Boosts">♻💬</span>
-            <span className="total">{typeof numberOfQuoteBoosts === "undefined"? quoteBoosts.length : numberOfQuoteBoosts}</span>
+            <span className="icon" aria-label="Boosts">♻</span>
+            <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
           </div>
-        </li>
-      </ul>
-    </aside>
+        }
+          
+      </li>
+
+      <li className={'quote-boosts ' + ((typeof yourQuoteBoosts === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
+        <div>
+          <span className="icon" aria-label="Quote Boosts">♻💬</span>
+          <span className="total">{typeof numberOfQuoteBoosts === "undefined"? quoteBoosts.length : numberOfQuoteBoosts}</span>
+        </div>
+      </li>
+    </ul>
+    </>
   );
 }
 

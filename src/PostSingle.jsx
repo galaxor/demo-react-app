@@ -43,7 +43,7 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
-      <Post post={post}>
+      <Post post={post} replies={replies}>
         {replies.length > 0 &&
           <section className="replies-section" aria-labelledby="replies-section-header">
             <h2 id="replies-section-header">Replies</h2>

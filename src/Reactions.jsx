@@ -43,7 +43,7 @@ export default function Reactions({post}) {
 
   const htmlId = encodeURIComponent(post.uri)+'-reactions';
   return (
-    <aside className="reactions" aria-labelledby={htmlId}>
+    <>
       <span id={htmlId} className="reactions-header">Reactions</span>
       <ul aria-labelledby={htmlId}>
         {reactionTotals.map(reaction =>
@@ -56,19 +56,20 @@ export default function Reactions({post}) {
             />
           </li>
         )}
+        {user && 
+          <li>
+            <ReactionsMenu 
+              htmlId={htmlId+'-add'}
+              post={post} 
+              reactionTotals={reactionTotals} 
+              setReactionTotals={setReactionTotals}
+              yourReactions={reactionButtonStates}
+              setYourReactions={setYourReactions}
+            />
+          </li>
+        }
       </ul>
-
-      {user && 
-        <ReactionsMenu 
-          htmlId={htmlId+'-add'}
-          post={post} 
-          reactionTotals={reactionTotals} 
-          setReactionTotals={setReactionTotals}
-          yourReactions={reactionButtonStates}
-          setYourReactions={setYourReactions}
-        />
-      }
-    </aside>
+    </>
   );
 }
 
