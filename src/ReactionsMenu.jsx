@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
 import { PostsDB } from './logic/posts.js';
@@ -12,7 +12,7 @@ import emojiData from 'emoji-datasource-twitter/emoji_pretty.json'
 
 export default function ReactionsMenu({htmlId, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions}) {
   const { user, setUser } = useContext(UserContext);
-  const dialogRef = useRef(null);
+  const addAReactionRef = useRef(null);
 
   const [ menuOpen, setMenuOpen ] = useState(false);
 
@@ -21,13 +21,52 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
 
   const [skinTone, useSkinTone] = useState();
 
+  // Pressing escape causes the reactions dialog to close
+  useEffect(() => {
+    function escKeyHandler(e) {
+      if (e.key == 'Escape') {
+        setMenuOpen(false);
+        addAReactionRef.current.focus();
+      }
+    }
+
+    if (menuOpen) {
+      window.addEventListener('keyup', escKeyHandler);
+    }
+
+    return () => {
+      window.removeEventListener('keyup', escKeyHandler); 
+    };
+    
+  }, [menuOpen, setMenuOpen]);
+
+  // Clicking outside the notifications box causes it to close
+  useEffect(() => {
+    function clickHandler(e) {
+      const emojiPicker = document.querySelector('.emoji-picker');
+
+      if (menuOpen && emojiPicker && !document.querySelector('.emoji-picker').contains(e.target)) {
+        setMenuOpen(false);
+        addAReactionRef.current.focus();
+      }
+    }
+
+    if (menuOpen) {
+      window.addEventListener('click', clickHandler);
+    }
+
+    return () => { 
+      window.removeEventListener('click', clickHandler); 
+    };
+  }, [menuOpen, setMenuOpen]);
+
   return (
     <>
-    <Link id={htmlId} onClick={e => setMenuOpen(!menuOpen)}>Add a reaction</Link>
-    <EmojiPicker open={menuOpen} 
+    <Link id={htmlId} ref={addAReactionRef} onClick={e => setMenuOpen(!menuOpen)}>Add a reaction</Link>
+    <EmojiPicker className="emoji-picker" open={menuOpen} 
       defaultSkinTone={typeof skinTone==="undefined"? user.skinTonePref : skinTone}
       onEmojiClick={emoji =>
-        addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen})
+        addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen, addAReactionRef})
       }
       onSkinToneChange={newTone => skinToneChange({newTone, user, setUser})}
       getEmojiUrl={(x) => "/emoji-datasource-twitter/twitter/64/"+x+".png"} />
@@ -35,7 +74,7 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
   );
 }
 
-function addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen}) {
+function addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen, addAReactionRef}) {
   // construct reaction here, based on "emoji".
 
   const reaction = {
@@ -52,6 +91,7 @@ function addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReacti
   toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, newValue: true, yourReactions, setYourReactions});
 
   setMenuOpen(false);
+  addAReactionRef.current.focus();
 }
 
 function skinToneChange({newTone, user, setUser}) {
