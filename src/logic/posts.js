@@ -259,6 +259,9 @@ export class PostsDB {
   getQuoteBoostsOf(uri) {
     return this.db.boosts.filter(boost => boost.boostedPost === uri)
       .map(boost => { return {...boost, boostersPost: this.db.get('posts', boost.boostersPost)}; })
+      
+      // Get rid of the boosts that are not quote-boosts.
+      .filter(boost => boost.boostersPost.text !== null)
     ;
   }
 }

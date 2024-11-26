@@ -23,10 +23,8 @@ export default function Boosts({post}) {
   const didYouDoThis = user && typeof boostsOfPost[user.handle] !== "undefined";
 
   // XXX Same here.
-  const quoteBoostsOfPost = postsDB.getQuoteBoostsOf(post.uri);
-  const yourQuoteBoostsOf = user? quoteBoostsOfPost.filter(boost => boost.booster === user.handle) : [];
-
-  console.log("QB", quoteBoostsOfPost);
+  const quoteBoosts = postsDB.getQuoteBoostsOf(post.uri);
+  const yourQuoteBoosts = user? quoteBoosts.filter(boost => boost.booster === user.handle) : [];
 
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
 
@@ -49,6 +47,13 @@ export default function Boosts({post}) {
             </div>
           }
             
+        </li>
+
+        <li className={'quote-boosts ' + ((typeof yourQuoteBoosts === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
+          <div>
+            <span className="icon" aria-label="Quote Boosts">♻💬</span>
+            <span className="total">{typeof numberOfQuoteBoosts === "undefined"? quoteBoosts.length : numberOfQuoteBoosts}</span>
+          </div>
         </li>
       </ul>
     </aside>
