@@ -242,7 +242,7 @@ export class PostsDB {
       deletedAt: null,
       inReplyTo: null,
       canonicalUrl: null,
-      language: "en-US", // There's no text, so I don't know what to put here.  Null?
+      language: null, // There's no text, so I don't know what to put here.  Null?
       conversationId: null,
       local: true,
     };
