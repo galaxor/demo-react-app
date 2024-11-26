@@ -13,8 +13,20 @@ export default function Boosts({post}) {
   const [numberOfBoosts, setNumberOfBoosts] = useState();
   const [youDidThis, setYouDidThis] = useState();
 
+  const [numberOfQuoteBoosts, setNumberOfQuoteBoosts] = useState();
+  const [youQuoteBoosted, setYouQuoteBoosted] = useState();
+
+  // XXX This won't work at scale. No reason we have to actually pull down all
+  // the posts.  Just ask the database for the number of them.
+  // On the details page, we can get a paged version of the query.
   const boostsOfPost = postsDB.getBoostsOf(post.uri);
   const didYouDoThis = user && typeof boostsOfPost[user.handle] !== "undefined";
+
+  // XXX Same here.
+  const quoteBoostsOfPost = postsDB.getQuoteBoostsOf(post.uri);
+  const yourQuoteBoostsOf = user? quoteBoostsOfPost.filter(boost => boost.booster === user.handle) : [];
+
+  console.log("QB", quoteBoostsOfPost);
 
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
 

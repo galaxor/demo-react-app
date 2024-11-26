@@ -255,5 +255,11 @@ export class PostsDB {
     };
     this.db.addRow('boosts', newBoost);
   }
+
+  getQuoteBoostsOf(uri) {
+    return this.db.boosts.filter(boost => boost.boostedPost === uri)
+      .map(boost => { return {...boost, boostersPost: this.db.get('posts', boost.boostersPost)}; })
+    ;
+  }
 }
 
