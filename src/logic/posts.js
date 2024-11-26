@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 export function getPostLoader(db) {
   return ({params}) => {
     const postsDB = new PostsDB(db);
@@ -173,10 +175,15 @@ export class PostsDB {
 
   getBoostsOf(uri) {
     // This will return the most recent boost of this post by each person.
-    return Object.values(this.db.get('boosts')
+    // (Quote-boosts are not considered).
+    return this.db.get('boosts')
       .filter(row => row.boostedPost===uri)
       .reduce((mostRecentByEachPerson, boost) => {
         const boostersPost = this.db.get('posts', boost.boostersPost);
+
+        // If it's a quote-boost, make no changes.
+        if (boostersPost.text !== null) { return mostRecentByEachPerson; }
+
         if (typeof mostRecentByEachPerson[boost.booster] === "undefined") {
           boost.boostersPost = boostersPost;
           boost.createdAt = boostersPost.updatedAt;
@@ -188,7 +195,65 @@ export class PostsDB {
           }
         }
         return mostRecentByEachPerson;
-      }, {}))
+      }, {})
     ;
   }
+
+  removeBoostsBy({boostedPostUri, boosterHandle}) {
+    // Remove boosts of this post made by this person.
+    // Don't touch quote-boosts.
+    const boostsToRemove = this.db.get('boosts')
+      .filter(boost => {
+        const boostersPost = this.db.get('posts', boost.boostersPost);
+        if (boost.booster === boosterHandle && boost.boostedPost === boostedPostUri && boostersPost.text === null) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    ;
+
+    boostsToRemove.forEach(boostToRemove => {
+      this.db.delRow('boosts', boost => 
+          boost.booster === boostToRemove.booster 
+          && boost.boostedPost===boostToRemove.boostedPost 
+          && boost.boostersPost === boostToRemove.boostersPost
+      );
+
+      this.db.del('posts', boostToRemove.boostersPost);
+    });
+  }
+
+  boost({boostedPostUri, boosterHandle}) {
+    // Remove any old (non-quote) boosts.
+    this.removeBoostsBy({boostedPostUri, boosterHandle});
+
+    // Make a new boost.
+    const newPostUri = boosterHandle+'/'+uuidv4();
+    const createdAt = new Date().toISOString();
+    const newBoostersPost = {
+      uri: newPostUri,
+      author: boosterHandle,
+      createdAt: createdAt,
+      updatedAt: createdAt,
+      sensitive: false,
+      text: null,
+      spoilerText: null,
+      deletedAt: null,
+      inReplyTo: null,
+      canonicalUrl: null,
+      language: "en-US", // There's no text, so I don't know what to put here.  Null?
+      conversationId: null,
+      local: true,
+    };
+    this.db.set('posts', newPostUri, newBoostersPost);
+
+    const newBoost = {
+      booster: boosterHandle,
+      boostersPost: newPostUri,
+      boostedPost: boostedPostUri,
+    };
+    this.db.addRow('boosts', newBoost);
+  }
 }
+

@@ -1,19 +1,20 @@
 import { useContext, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx'
 import { PostsDB } from './logic/posts.js';
 import UserContext from './UserContext.jsx';
 
 export default function Boosts({post}) {
+  const { user } = useContext(UserContext);
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const [yourReactions, setYourReactions] = useState();
-  const { user } = useContext(UserContext);
+  const [numberOfBoosts, setNumberOfBoosts] = useState();
+  const [youDidThis, setYouDidThis] = useState();
 
   const boostsOfPost = postsDB.getBoostsOf(post.uri);
-
-  console.log(boostsOfPost);
+  const didYouDoThis = user && typeof boostsOfPost[user.handle] !== "undefined";
 
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
 
@@ -23,16 +24,16 @@ export default function Boosts({post}) {
         Boosts
       </span>
       <ul aria-labelledby={htmlId}>
-        <li className="non-quote-boosts">
+        <li className={'non-quote-boosts ' + ((typeof youDidThis === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
           {user? 
-            <div className="Link">
+            <Link to="/" onClick={e => { e.preventDefault(); clickBoosts({user, post, postsDB, numberOfBoosts, setNumberOfBoosts, setYouDidThis})}}>
               <span className="icon" aria-label="Boosts">♻</span>
-              <span className="total">{boostsOfPost.length}</span>
-            </div>
+              <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
+            </Link>
             :
-            <div className="Not-a-link">
+            <div>
               <span className="icon" aria-label="Boosts">♻</span>
-              <span className="total">{boostsOfPost.length}</span>
+              <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
             </div>
           }
             
@@ -40,5 +41,24 @@ export default function Boosts({post}) {
       </ul>
     </aside>
   );
-  
+}
+
+function clickBoosts({user, post, postsDB, numberOfBoosts, setNumberOfBoosts, setYouDidThis}) {
+  const boostsOfPost = postsDB.getBoostsOf(post.uri);
+  const youDidThis = typeof boostsOfPost[user.handle] !== "undefined";
+
+  // If they did this (boosted the post), we should unboost the post.
+  // If they didn't do this, we should boost the post.
+  if (youDidThis) {
+    // unboosting the post
+    postsDB.removeBoostsBy({boostedPostUri: post.uri, boosterHandle: user.handle});
+    setYouDidThis(false);
+    setNumberOfBoosts(Object.keys(boostsOfPost).length - 1);
+  } else {
+    // boosting the post
+    postsDB.boost({boostedPostUri: post.uri, boosterHandle: user.handle});
+    setYouDidThis(true);
+    setNumberOfBoosts(Object.keys(boostsOfPost).length + 1);
+  }
+
 }
