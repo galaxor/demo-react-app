@@ -1,7 +1,9 @@
 import { 
   MDXEditor,
   toolbarPlugin,
+    BlockTypeSelect,
     BoldItalicUnderlineToggles, 
+    codeBlockPlugin,
     codeMirrorPlugin,
     CodeToggle,
     CreateLink,
@@ -13,6 +15,7 @@ import {
     listsPlugin,
     ListsToggle,
     markdownShortcutPlugin,
+    quotePlugin,
     UndoRedo
  } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css';
@@ -24,12 +27,12 @@ export default function PostEditor() {
   return (
     <MDXEditor markdown="" autofocus className="post-editor" placeholder="What do you want to share?"
       plugins={[
+        codeBlockPlugin({defaultCodeBlockLanguage: 'js'}),
         codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text' } }),
         diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
         listsPlugin(),
         linkPlugin(),
         linkDialogPlugin(),
-        markdownShortcutPlugin(),
         toolbarPlugin({
           toolbarClassName: "post-editor-toolbar",
           toolbarContents: () => (
@@ -37,6 +40,7 @@ export default function PostEditor() {
               <DiffSourceToggleWrapper>
                 <UndoRedo />
                 <BoldItalicUnderlineToggles />
+                <BlockTypeSelect />
                 <CreateLink />
                 <CodeToggle />
                 <InsertCodeBlock />
@@ -44,7 +48,9 @@ export default function PostEditor() {
               </DiffSourceToggleWrapper>
             </>
           ),
-        })
+        }),
+        quotePlugin(),
+        markdownShortcutPlugin(),
       ]}
     />
   );
