@@ -40,11 +40,11 @@ export default function PostEditor() {
               <DiffSourceToggleWrapper>
                 <UndoRedo />
                 <BoldItalicUnderlineToggles />
-                <BlockTypeSelect />
                 <CreateLink />
                 <CodeToggle />
-                <InsertCodeBlock />
+                <BlockTypeSelect />
                 <ListsToggle />
+                <InsertCodeBlock />
               </DiffSourceToggleWrapper>
             </>
           ),
