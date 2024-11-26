@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import ReactTimeAgo from 'react-time-ago'
 import { Link } from 'react-router-dom';
 
+import Boosts from './Boosts.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx'
 import Reactions from './Reactions.jsx'
@@ -74,6 +75,7 @@ export default function Post({post, children}) {
         </div>
       }
 
+      <Boosts post={post} />
       <Reactions post={post} />
 
       {children}

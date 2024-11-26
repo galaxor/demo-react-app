@@ -41,7 +41,7 @@ export default function Reactions({post}) {
     yourReactions
   ;
 
-  const htmlId = encodeURIComponent(post.uri);
+  const htmlId = encodeURIComponent(post.uri)+'-reactions';
   return (
     <aside className="reactions" aria-labelledby={htmlId}>
       <span id={htmlId} className="reactions-header">Reactions</span>

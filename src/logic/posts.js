@@ -170,4 +170,25 @@ export class PostsDB {
       });
     }
   }
+
+  getBoostsOf(uri) {
+    // This will return the most recent boost of this post by each person.
+    return Object.values(this.db.get('boosts')
+      .filter(row => row.boostedPost===uri)
+      .reduce((mostRecentByEachPerson, boost) => {
+        const boostersPost = this.db.get('posts', boost.boostersPost);
+        if (typeof mostRecentByEachPerson[boost.booster] === "undefined") {
+          boost.boostersPost = boostersPost;
+          boost.createdAt = boostersPost.updatedAt;
+          mostRecentByEachPerson[boost.booster] = boost;
+        } else {
+          if (mostRecentByEachPerson[boost.booster].createdAt < boostersPost.updatedAt) {
+            mostRecentByEachPerson[boost.booster].boostersPost = boost;
+            mostRecentByEachPerson[boost.booster].createdAt = boostersPost.updatedAt;
+          }
+        }
+        return mostRecentByEachPerson;
+      }, {}))
+    ;
+  }
 }
