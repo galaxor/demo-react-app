@@ -76,4 +76,7 @@ export default {
     return setProp('avatarScale', avatarScale);
   },
 
+  setSkinTone: (newTone) => {
+    return setProp('skinTonePref', newTone);
+  },
 };

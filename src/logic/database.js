@@ -26,6 +26,8 @@ class Database {
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
           avatarScale: 1,
+
+          skinTonePref: "neutral",
         },
 
         '@darkphoenix@not.an.evilcyberhacker.net': {
@@ -42,6 +44,8 @@ class Database {
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
           avatarScale: 1,
+
+          skinTonePref: "neutral",
         },
 
         '@testuser@local': {
@@ -58,6 +62,8 @@ class Database {
           avatarPosition: { x: 0.5360000000000001, y: 0.42666666666666675 },
           avatarRotate: 0,
           avatarScale: 1.5,
+
+          skinTonePref: "neutral",
         },
 
         '@alice@local': {
@@ -74,6 +80,8 @@ class Database {
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
           avatarScale: 1,
+
+          skinTonePref: "neutral",
         },
 
         '@mittens@kittens': {
@@ -90,6 +98,8 @@ class Database {
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
           avatarScale: 1,
+
+          skinTonePref: "neutral",
         },
 
         '@jasper.shadow@solarpunk': {
@@ -106,6 +116,8 @@ class Database {
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
           avatarScale: 1,
+
+          skinTonePref: "neutral",
         },
 
         '@cfur@corporate': {
@@ -122,6 +134,8 @@ class Database {
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
           avatarScale: 1,
+
+          skinTonePref: "neutral",
         }
       };
 
