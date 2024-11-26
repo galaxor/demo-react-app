@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 
 import App from './App.jsx'
+import CreatePost from './CreatePost.jsx'
 import PopularFeed from './PopularFeed.jsx'
 import PostsByPerson from './PostsByPerson.jsx'
 import PostSingle from './PostSingle.jsx'
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
         path: "/post/:postUri",
         loader: getPostLoader(database),
         element: <PostSingle />,
+      },
+      {
+        path: "/create",
+        element: <CreatePost />
       },
     ],
   },
