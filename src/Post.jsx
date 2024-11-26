@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import ReactTimeAgo from 'react-time-ago'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import Markdown from 'react-markdown'
 
 import Boosts from './Boosts.jsx'
 import LanguageContext from './LanguageContext.jsx'
@@ -65,7 +66,8 @@ export default function Post({post, children}) {
         <PersonInline person={post.authorPerson} />
       </span>
 
-      <div className="post-text e-content" lang={post.language}>{post.text}</div>
+      {(post.type ?? "text") === "text" && <div className="post-text e-content" lang={post.language}>{post.text}</div>}
+      {post.type === "markdown" && <div className="post-text e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
 
       {post.boostedPosts && post.boostedPosts.length > 0 &&
         <div className="quote-boosted-posts">

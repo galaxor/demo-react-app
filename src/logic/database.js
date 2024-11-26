@@ -160,6 +160,7 @@ class Database {
           createdAt: "2024-11-21T14:46:26-05:00",
           updatedAt: "2024-11-21T14:46:26-05:00",
           sensitive: false,
+          type: "text",
           text: "This is my post about stuff.",
 
           spoilerText: null,
@@ -182,6 +183,7 @@ class Database {
           createdAt: "2024-11-24T13:41:26-05:00",
           updatedAt: "2024-11-24T13:41:26-05:00",
           sensitive: false,
+          type: "text",
           text: "I've been trying to reach Bob.  I have a message to send him.  Has anyone seen him?  Feel free to boost for reach.",
 
           spoilerText: null,
@@ -204,6 +206,7 @@ class Database {
           createdAt: "2024-11-21T02:30:00-04:00",
           updatedAt: "2024-11-21T02:34:00-04:00",
           sensitive: false,
+          type: "text",
           text: "robot girl that goes \"woop woop! woop woop! terrain! terrain! pull up! pull up!\" while tumbling down a flight of stairs",
 
           spoilerText: null,
@@ -226,6 +229,7 @@ class Database {
           createdAt: "2024-11-21T07:37:00+01:00",
           updatedAt: "2024-11-21T07:37:00+01:00",
           sensitive: false,
+          type: "text",
           text: "@astra_underscore@wetdry.world i can hear this in my brain",
 
           spoilerText: null,
@@ -248,6 +252,7 @@ class Database {
           createdAt: "2024-11-23T00:50:00-05:00",
           updatedAt: "2024-11-23T00:50:00-05:00",
           sensitive: false,
+          type: "text",
           text: "@darkphoenix@not.an.evilcyberhacker.net same",
 
           spoilerText: null,
@@ -292,6 +297,7 @@ class Database {
           createdAt: "2024-11-24T13:44:31-05:00",
           updatedAt: "2024-11-24T13:44:31-05:00",
           sensitive: false,
+          type: "text",
           text: "If anyone knows where Bob is, please let @alice@local know!  I am addicted to their antics!",
 
           spoilerText: null,

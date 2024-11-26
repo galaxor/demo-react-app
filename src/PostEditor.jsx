@@ -96,6 +96,7 @@ function savePost({ user, postsDB, text, systemNotifications, setSystemNotificat
     createdAt: createdAt,
     updatedAt: createdAt,
     sensitive: false,
+    type: "markdown",
     text: text,
     spoilerText: null,
     deletedAt: null,

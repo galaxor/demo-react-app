@@ -14,7 +14,8 @@ export default function NavigationSidebar() {
   return (
     <aside id="site-navigation">
       <nav id="site-navigation">
-      <h2><NavLink to="/create">Create</NavLink></h2>
+
+      {user && <h2><NavLink to="/create">Create</NavLink></h2>}
 
       <section>
       <h2 id="available-feeds">Available Feeds</h2>

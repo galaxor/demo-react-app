@@ -14,3 +14,10 @@ article.post {
 .boosted-posts > .post {
   margin-top: 0;
 }
+
+.post-text blockquote,
+.mdxeditor-rich-text-editor blockquote {
+  border-left: 1ex solid #ccc;
+  margin-left: 10px;
+  padding-left: 20px;
+}
