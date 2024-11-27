@@ -7,10 +7,6 @@ export default function Replies({postRepliedTo, prune, replies}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  if (!replies) {
-    replies = postsDB.getRepliesTo(postRepliedTo.uri);
-  }
-
   return (
     <ul className="replies">
       {replies.map(reply => {

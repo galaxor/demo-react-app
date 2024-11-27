@@ -32,7 +32,7 @@ import UserContext from './UserContext.jsx'
 
 import './static/PostEditor.css'
 
-export default function PostEditor() {
+export default function PostEditor({onSave, replyingTo}) {
   const editorRef = useRef(null);
   const db = useContext(DatabaseContext);
   const { user } = useContext(UserContext);
@@ -78,12 +78,12 @@ export default function PostEditor() {
         ]}
       />
     </div>
-    <button onClick={() => savePost({ user, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, navigate })}>Post</button>
+    <button onClick={() => savePost({ user, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo })}>Post</button>
     </>
   );
 }
 
-function savePost({ user, postsDB, text, systemNotifications, setSystemNotifications, navigate }) {
+function savePost({ user, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -100,7 +100,7 @@ function savePost({ user, postsDB, text, systemNotifications, setSystemNotificat
     text: text,
     spoilerText: null,
     deletedAt: null,
-    inReplyTo: null,
+    inReplyTo: replyingTo ?? null,
     language: "", // XXX implement a language picker
     conversationId: null,
     local: true,
@@ -113,5 +113,5 @@ function savePost({ user, postsDB, text, systemNotifications, setSystemNotificat
     </>
   }]);
 
-  navigate(canonicalUrl);
+  onSave && onSave(newPost);
 }

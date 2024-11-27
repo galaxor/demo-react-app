@@ -5,7 +5,11 @@ export default function CreatePost() {
     <main className="create-post">
       <h1>Create a Post</h1>
 
-      <PostEditor />
+      <PostEditor onSave={navigateToNewPost} />
     </main>
   );
+}
+
+function navigateToNewPost(post) {
+  navigate(post.canonicalUrl);
 }

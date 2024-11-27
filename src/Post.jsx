@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import ReactTimeAgo from 'react-time-ago'
 import { Link } from 'react-router-dom'
 import Markdown from 'react-markdown'
@@ -7,6 +7,7 @@ import Boosts from './Boosts.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import NumReplies from './NumReplies.jsx'
 import PersonInline from './PersonInline.jsx'
+import PostEditor from './PostEditor.jsx'
 import Reactions from './Reactions.jsx'
 import UserContext from './UserContext.jsx'
 
@@ -17,6 +18,9 @@ export default function Post({post, replies, children}) {
 
   const { user } = useContext(UserContext);
 
+  const [numReplies, setNumReplies] = useState(null);
+  const [composingReply, setComposingReply] = useState(false);
+
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
   });
@@ -25,7 +29,7 @@ export default function Post({post, replies, children}) {
 
   // If it's a boost, we need to draw it as a boost.
   if (post.boostedPosts && post.boostedPosts.length > 0 && post.text === null) {
-    return (
+    return ( <>
       <article className="post h-entry">
         <div className="boost-info">
         ♻ <PersonInline person={post.authorPerson} /> boosted this at {" "}
@@ -42,10 +46,10 @@ export default function Post({post, replies, children}) {
         </div>
         
       </article>
-    );
+    </> );
   }
 
-  return (
+  return (<>
     <article className="post h-entry">
       <span className="post-date">
         Posted {" "}
@@ -87,13 +91,26 @@ export default function Post({post, replies, children}) {
         <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
         
         <ul aria-labelledby={htmlId+'-header'}>
-          <li><NumReplies post={post} replies={replies} /></li>
+          <li><NumReplies post={post} knownReplies={replies} setComposingReply={setComposingReply} numReplies={numReplies}  /></li>
           <li><Boosts post={post} /></li>
           <li><Reactions post={post} /></li>
         </ul>
       </aside>
 
       {children}
+
+      {composingReply &&
+        <div className="composing-reply">
+          <PostEditor replyingTo={post.uri} onSave={post => closeReply({post, setComposingReply, numReplies, setNumReplies}) } />
+        </div>
+      }
     </article>
+
+    </>
   );
+}
+
+function closeReply({post, setComposingReply, numReplies, setNumReplies}) {
+  setNumReplies(numReplies+1);
+  setComposingReply(false);
 }
