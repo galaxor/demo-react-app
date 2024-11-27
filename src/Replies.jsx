@@ -1,11 +1,13 @@
 import Post from './Post.jsx';
 import { PostsDB } from './logic/posts.js';
 import DatabaseContext from './DatabaseContext.jsx'
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
-export default function Replies({postRepliedTo, prune, replies}) {
+export default function Replies({postRepliedTo, prune, knownReplies, setKnownReplies}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
+
+  const [replies, setReplies] = useState(knownReplies ??  postsDB.getRepliesTo(postRepliedTo.uri));
 
   return (
     <ul className="replies">

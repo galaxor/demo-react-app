@@ -6,7 +6,7 @@ import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
@@ -22,7 +22,7 @@ export default function PostSingle() {
                           postsDB.get(post.conversationId)
                           ;
 
-  const replies = postsDB.getRepliesTo(post.uri);
+  const [knownReplies, setKnownReplies] = useState(postsDB.getRepliesTo(post.uri));
 
   return (
     <>
@@ -43,17 +43,18 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
-      <Post post={post} replies={replies}>
-        {replies.length > 0 &&
+      <Post post={post} knownReplies={knownReplies} setKnownReplies={setKnownReplies}>
+        {knownReplies.length > 0 &&
           <section className="replies-section" aria-labelledby="replies-section-header">
             <h2 id="replies-section-header">Replies</h2>
-            <Replies postRepliedTo={post} replies={replies} />
+            <Replies postRepliedTo={post} knownReplies={knownReplies} setKnownReplies={setKnownReplies} />
           </section>
         }
 
         {post.conversationId &&
           <section className="thread-context" aria-labelledby="thread-context-header">
             <h2 id="thread-context-header">Thread Context</h2>
+            {/* We haven't pre-computed the replies to the originating post. Our children will have to do that for themselves. */}
             <Post post={originatingPost}>
               <Replies postRepliedTo={originatingPost} prune={post.uri} />
             </Post>

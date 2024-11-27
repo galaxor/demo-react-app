@@ -4,21 +4,40 @@ import { Link } from 'react-router-dom'
 import Markdown from 'react-markdown'
 
 import Boosts from './Boosts.jsx'
+import DatabaseContext from './DatabaseContext'
 import LanguageContext from './LanguageContext.jsx'
 import NumReplies from './NumReplies.jsx'
 import PersonInline from './PersonInline.jsx'
 import PostEditor from './PostEditor.jsx'
+import { PostsDB } from './logic/posts.js'
 import Reactions from './Reactions.jsx'
 import UserContext from './UserContext.jsx'
 
 import './static/Post.css'
 
-export default function Post({post, replies, children}) {
+export default function Post({post, children, knownReplies, setKnownReplies}) {
   const languageContext = useContext(LanguageContext);
+  const db = useContext(DatabaseContext);
+  const postsDB = new PostsDB(db);
 
   const { user } = useContext(UserContext);
 
-  const [numReplies, setNumReplies] = useState(null);
+  const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
+
+  // If we're drawing a normal post or a quote-boost, we want the replies to this post.
+  // If we're drawing a boost-post, we want the replies to the boosted post instead.
+  // Also, we may have been passed a precomputed set of replies.  If so, we
+  // want to use that instead of recomputing them here.
+  const precomputedReplies = knownReplies ??
+    postsDB.getRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri)
+  ;
+
+  const [replies, setReplies] = useState(precomputedReplies);
+  // XXX We're assuming that this post only boosted one post.  We'll enforce
+  // that for now, but one day, we'd like to expand that.  In that case, we'll
+  // need some way of knowing *which* post is being boosted here.
+
+  const [numReplies, setNumReplies] = useState(precomputedReplies.length);
   const [composingReply, setComposingReply] = useState(false);
 
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
@@ -28,7 +47,7 @@ export default function Post({post, replies, children}) {
   const htmlId = encodeURIComponent(post.uri)+'-stats';
 
   // If it's a boost, we need to draw it as a boost.
-  if (post.boostedPosts && post.boostedPosts.length > 0 && post.text === null) {
+  if (isBoostPost) {
     return ( <>
       <article className="post h-entry">
         <div className="boost-info">
@@ -41,7 +60,7 @@ export default function Post({post, replies, children}) {
 
         <div className="boosted-posts">
           {post.boostedPosts.map(boostedPost => 
-            <Post key={boostedPost.uri} post={boostedPost} />
+            <Post key={boostedPost.uri} post={boostedPost} knownReplies={replies} setKnownReplies={setReplies} />
           )}
         </div>
         
@@ -80,18 +99,18 @@ export default function Post({post, replies, children}) {
       {post.type === "markdown" && <div className="post-text e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
 
       {post.boostedPosts && post.boostedPosts.length > 0 &&
-        <div className="quote-boosted-posts">
+        <blockquote className="quote-boosted-posts">
           {post.boostedPosts.map(boostedPost => 
             <Post key={boostedPost.uri} post={boostedPost} />
           )}
-        </div>
+        </blockquote>
       }
 
       <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
         <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
         
         <ul aria-labelledby={htmlId+'-header'}>
-          <li><NumReplies post={post} knownReplies={replies} setComposingReply={setComposingReply} numReplies={numReplies}  /></li>
+          <li><NumReplies post={post} knownReplies={replies} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
           <li><Boosts post={post} /></li>
           <li><Reactions post={post} /></li>
         </ul>

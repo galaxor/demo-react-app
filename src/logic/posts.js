@@ -38,9 +38,9 @@ export class PostsDB {
   }
 
   getRepliesTo(uri) {
-    const replies = Object.entries(this.db.get('posts'))
-      .filter(([postURI, post]) => post.inReplyTo === uri)
-      .map(([postURI, post]) => { return {...post, authorPerson: this.db.get('people', post.author)}; })
+    const replies = Object.values(this.db.get('posts'))
+      .filter(post => post.inReplyTo === uri)
+      .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
     ;
 
     replies.sort((a, b) => a.createdAt < b.createdAt);
