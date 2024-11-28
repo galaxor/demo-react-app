@@ -10,21 +10,11 @@ export default function Boosts({post}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const [numberOfBoosts, setNumberOfBoosts] = useState();
-  const [youDidThis, setYouDidThis] = useState();
+  const [numBoosts, setNumBoosts] = useState(postsDB.getNumberOfBoostsOf(post.uri));
+  const [numYourBoosts, setNumYourBoosts] = useState(user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0);
 
-  const [numberOfQuoteBoosts, setNumberOfQuoteBoosts] = useState();
-  const [youQuoteBoosted, setYouQuoteBoosted] = useState();
-
-  // XXX This won't work at scale. No reason we have to actually pull down all
-  // the posts.  Just ask the database for the number of them.
-  // On the details page, we can get a paged version of the query.
-  const boostsOfPost = postsDB.getBoostsOf(post.uri);
-  const didYouDoThis = user && typeof boostsOfPost[user.handle] !== "undefined";
-
-  // XXX Same here.
-  const quoteBoosts = postsDB.getQuoteBoostsOf(post.uri);
-  const yourQuoteBoosts = user? quoteBoosts.filter(boost => boost.booster === user.handle) : [];
+  const [numQuoteBoosts, setNumQuoteBoosts] = useState(postsDB.getNumberOfQuoteBoostsOf(post.uri));
+  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0);
 
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
 
@@ -34,25 +24,25 @@ export default function Boosts({post}) {
       Boosts
     </span>
     <ul aria-labelledby={htmlId}>
-      <li className={'non-quote-boosts ' + ((typeof youDidThis === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
+      <li className={'non-quote-boosts ' + ((numYourBoosts > 0) && 'you-did-this')}>
         {user? 
-          <Link to="/" onClick={e => { e.preventDefault(); clickBoosts({user, post, postsDB, numberOfBoosts, setNumberOfBoosts, setYouDidThis})}}>
+          <Link to="/" onClick={e => { e.preventDefault(); clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts})}}>
             <span className="icon" aria-label="Boosts">♻</span>
-            <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
+            <span className="total">{numBoosts}</span>
           </Link>
           :
           <div>
             <span className="icon" aria-label="Boosts">♻</span>
-            <span className="total">{typeof numberOfBoosts === "undefined"? Object.keys(boostsOfPost).length : numberOfBoosts}</span>
+            <span className="total">{numBoosts}</span>
           </div>
         }
           
       </li>
 
-      <li className={'quote-boosts ' + ((typeof yourQuoteBoosts === "undefined"? didYouDoThis : youDidThis) && 'you-did-this')}>
+      <li className={'quote-boosts ' + ((numYourQuoteBoosts > 0) && 'you-did-this')}>
         <div>
           <span className="icon" aria-label="Quote Boosts">♻💬</span>
-          <span className="total">{typeof numberOfQuoteBoosts === "undefined"? quoteBoosts.length : numberOfQuoteBoosts}</span>
+          <span className="total">{numQuoteBoosts}</span>
         </div>
       </li>
     </ul>
@@ -60,22 +50,17 @@ export default function Boosts({post}) {
   );
 }
 
-function clickBoosts({user, post, postsDB, numberOfBoosts, setNumberOfBoosts, setYouDidThis}) {
-  const boostsOfPost = postsDB.getBoostsOf(post.uri);
-  const youDidThis = typeof boostsOfPost[user.handle] !== "undefined";
-
+function clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts}) {
   // If they did this (boosted the post), we should unboost the post.
   // If they didn't do this, we should boost the post.
-  if (youDidThis) {
+  if (numYourBoosts > 0) {
     // unboosting the post
     postsDB.removeBoostsBy({boostedPostUri: post.uri, boosterHandle: user.handle});
-    setYouDidThis(false);
-    setNumberOfBoosts(Object.keys(boostsOfPost).length - 1);
   } else {
     // boosting the post
     postsDB.boost({boostedPostUri: post.uri, boosterHandle: user.handle});
-    setYouDidThis(true);
-    setNumberOfBoosts(Object.keys(boostsOfPost).length + 1);
   }
 
+  setNumBoosts(postsDB.getNumberOfBoostsOf(post.uri));
+  setNumYourBoosts(postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}));
 }
