@@ -28,16 +28,14 @@ export default function Post({post, children, knownReplies, setKnownReplies}) {
   // If we're drawing a boost-post, we want the replies to the boosted post instead.
   // Also, we may have been passed a precomputed set of replies.  If so, we
   // want to use that instead of recomputing them here.
-  const precomputedReplies = knownReplies ??
-    postsDB.getRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri)
-  ;
 
-  const [replies, setReplies] = useState(precomputedReplies);
+  const [replies, setReplies] = useState(knownReplies ??
+              postsDB.getRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
   // XXX We're assuming that this post only boosted one post.  We'll enforce
   // that for now, but one day, we'd like to expand that.  In that case, we'll
   // need some way of knowing *which* post is being boosted here.
 
-  const [numReplies, setNumReplies] = useState(precomputedReplies.length);
+  const [numReplies, setNumReplies] = useState(replies.length);
   const [composingReply, setComposingReply] = useState(false);
 
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
