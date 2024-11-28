@@ -8,7 +8,7 @@ import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
@@ -18,6 +18,8 @@ export default function PostSingle() {
   const db = useContext(DatabaseContext);
 
   const postsDB = new PostsDB(db);
+
+  const postRef = useRef();
 
   const [replies, setReplies] = useState(postsDB.getRepliesTo(post.uri));
 
@@ -50,10 +52,10 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
-      <Post post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
+      <Post ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
         {composingReply &&
           <div className="composing-reply">
-            <PostEditor replyingTo={post.uri} onSave={post => closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}) } />
+            <PostEditor replyingTo={post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyLink(); } } />
           </div>
         }
 

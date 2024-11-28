@@ -8,12 +8,14 @@ import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 
 export default function PostAndReplies({post, prune}) {
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
+
+  const postRef = useRef();
 
   const postsDB = new PostsDB(db);
 
@@ -26,10 +28,10 @@ export default function PostAndReplies({post, prune}) {
 
   return (
     <>
-      <Post post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
+      <Post ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
         {composingReply &&
           <div className="composing-reply">
-            <PostEditor replyingTo={post.uri} onSave={post => closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}) } />
+            <PostEditor replyingTo={post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyLink(); } } />
           </div>
         }
 

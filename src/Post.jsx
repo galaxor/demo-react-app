@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
 import ReactTimeAgo from 'react-time-ago'
 import { Link } from 'react-router-dom'
 import Markdown from 'react-markdown'
@@ -15,10 +15,22 @@ import UserContext from './UserContext.jsx'
 
 import './static/Post.css'
 
-export default function Post({post, composingReply, setComposingReply, numReplies, setNumReplies, children}) {
+const Post = forwardRef(function Post(props, ref) {
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children} = props;
+
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
+
+  const replyLinkRef = useRef(null);
+
+  useImperativeHandle(ref, () => {
+    return {
+      focusReplyLink() {
+        replyLinkRef.current.focus();
+      },
+    };
+  }, []);
 
   const { user } = useContext(UserContext);
 
@@ -101,7 +113,7 @@ export default function Post({post, composingReply, setComposingReply, numReplie
         <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
         
         <ul aria-labelledby={htmlId+'-header'}>
-          <li><NumReplies post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
+          <li><NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
           <li><Boosts post={post} /></li>
           <li><Reactions post={post} /></li>
         </ul>
@@ -112,4 +124,6 @@ export default function Post({post, composingReply, setComposingReply, numReplie
 
     </>
   );
-}
+});
+
+export default Post;
