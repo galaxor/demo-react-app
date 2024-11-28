@@ -48,6 +48,15 @@ export class PostsDB {
     return replies;
   }
 
+  getNumRepliesTo(uri) {
+    const replies = Object.values(this.db.get('posts'))
+      .filter(post => post.inReplyTo === uri)
+      .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
+    ;
+
+    return replies.length;
+  }
+
   getPostsBy(handle, {showReplies, includeBoosts}) {
     const posts = Object.entries(this.db.get('posts'))
       .filter(([postURI, post]) => (post.author === handle) && (showReplies || post.inReplyTo === null) )

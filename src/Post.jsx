@@ -35,7 +35,7 @@ export default function Post({post, children, knownReplies, setKnownReplies}) {
   // that for now, but one day, we'd like to expand that.  In that case, we'll
   // need some way of knowing *which* post is being boosted here.
 
-  const [numReplies, setNumReplies] = useState(replies.length);
+  const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
   const [composingReply, setComposingReply] = useState(false);
 
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
