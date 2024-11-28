@@ -15,7 +15,7 @@ import UserContext from './UserContext.jsx'
 
 import './static/Post.css'
 
-export default function Post({post, children, knownReplies, setKnownReplies}) {
+export default function Post({post, composingReply, setComposingReply, numReplies, setNumReplies, children}) {
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
@@ -26,17 +26,10 @@ export default function Post({post, children, knownReplies, setKnownReplies}) {
 
   // If we're drawing a normal post or a quote-boost, we want the replies to this post.
   // If we're drawing a boost-post, we want the replies to the boosted post instead.
-  // Also, we may have been passed a precomputed set of replies.  If so, we
-  // want to use that instead of recomputing them here.
 
-  const [replies, setReplies] = useState(knownReplies ??
-              postsDB.getRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
   // XXX We're assuming that this post only boosted one post.  We'll enforce
   // that for now, but one day, we'd like to expand that.  In that case, we'll
   // need some way of knowing *which* post is being boosted here.
-
-  const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
-  const [composingReply, setComposingReply] = useState(false);
 
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
@@ -58,7 +51,7 @@ export default function Post({post, children, knownReplies, setKnownReplies}) {
 
         <div className="boosted-posts">
           {post.boostedPosts.map(boostedPost => 
-            <Post key={boostedPost.uri} post={boostedPost} knownReplies={replies} setKnownReplies={setReplies} />
+            <Post key={boostedPost.uri} post={boostedPost} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} />
           )}
         </div>
         
@@ -99,7 +92,7 @@ export default function Post({post, children, knownReplies, setKnownReplies}) {
       {post.boostedPosts && post.boostedPosts.length > 0 &&
         <blockquote className="quote-boosted-posts">
           {post.boostedPosts.map(boostedPost => 
-            <Post key={boostedPost.uri} post={boostedPost} />
+            <Post key={boostedPost.uri} post={boostedPost}  />
           )}
         </blockquote>
       }
@@ -108,32 +101,15 @@ export default function Post({post, children, knownReplies, setKnownReplies}) {
         <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
         
         <ul aria-labelledby={htmlId+'-header'}>
-          <li><NumReplies post={post} knownReplies={replies} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
+          <li><NumReplies post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
           <li><Boosts post={post} /></li>
           <li><Reactions post={post} /></li>
         </ul>
       </aside>
-
-      {composingReply &&
-        <div className="composing-reply">
-          <PostEditor replyingTo={post.uri} onSave={post => closeReply({post, setComposingReply, numReplies, setNumReplies, knownReplies, setKnownReplies, postsDB}) } />
-        </div>
-      }
 
       {children}
     </article>
 
     </>
   );
-}
-
-function closeReply({post, setComposingReply, numReplies, setNumReplies, knownReplies, setKnownReplies, postsDB}) {
-  setNumReplies(numReplies+1);
-  setComposingReply(false);
-
-  console.log(post.inReplyTo);
-
-  const updatedReplies = postsDB.getRepliesTo(post.inReplyTo);
-
-  setKnownReplies(updatedReplies);
 }
