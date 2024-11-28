@@ -1,6 +1,6 @@
 import { PostsDB } from './logic/posts.js';
 
-import { closeReply } from './closeReply.js'
+import { closeReplyNoDBRefresh } from './closeReply.js'
 import Post from './Post.jsx';
 import PostEditor from './PostEditor.jsx';
 import Replies from './Replies.jsx';
@@ -17,7 +17,7 @@ export default function PostAndReplies({post, prune}) {
 
   const postsDB = new PostsDB(db);
 
-  const [replies, setReplies] = useState(postsDB.getRepliesTo(post.uri));
+  const [replies, setReplies] = useState([]);
 
   const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
   const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
@@ -29,7 +29,7 @@ export default function PostAndReplies({post, prune}) {
       <Post post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
         {composingReply &&
           <div className="composing-reply">
-            <PostEditor replyingTo={post.uri} onSave={post => closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}) } />
+            <PostEditor replyingTo={post.uri} onSave={post => closeReplyNoDBRefresh({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}) } />
           </div>
         }
 

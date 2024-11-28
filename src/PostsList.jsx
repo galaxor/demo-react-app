@@ -1,4 +1,5 @@
 import Post from './Post.jsx'
+import PostAndYourNewReplies from './PostAndYourNewReplies.jsx'
 
 export default function PostsList({posts}) {
   
@@ -8,7 +9,7 @@ export default function PostsList({posts}) {
         <>
         {posts.map((post) => { 
             return (
-              <Post key={post.uri} post={post} />
+              <PostAndYourNewReplies key={post.uri} post={post} />
             );
           })}
         </>
