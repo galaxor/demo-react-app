@@ -19,7 +19,7 @@ import {
     UndoRedo
  } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
-import { useContext, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router"
 import { v4 as uuidv4 } from "uuid"
@@ -47,10 +47,15 @@ export default function PostEditor({onSave, replyingTo}) {
 
   // XXX Language picker:  Do we make a custom toolbar component, or put it somewhere else?
 
+  // The "autofocus" prop of MDXEditor doesn't seem to be hooked up to anything, so I'll do it myself!
+  useEffect(() => {
+    editorRef.current.focus();
+  });
+
   return (
     <>
     <div className="post-editor">
-      <MDXEditor markdown="" ref={editorRef} autofocus
+      <MDXEditor markdown="" ref={editorRef}
         placeholder="What do you want to share?"
         plugins={[
           codeBlockPlugin({defaultCodeBlockLanguage: ''}),
