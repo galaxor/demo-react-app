@@ -25,6 +25,7 @@ import { useNavigate } from "react-router"
 import { v4 as uuidv4 } from "uuid"
 
 import DatabaseContext from './DatabaseContext.jsx'
+import { PeopleDB } from './logic/people.js'
 import { PostsDB } from './logic/posts.js'
 import SystemNotificationsContext from './SystemNotificationsContext'
 import UserContext from './UserContext.jsx'
@@ -36,6 +37,7 @@ export default function PostEditor({onSave, replyingTo}) {
   const editorRef = useRef(null);
   const db = useContext(DatabaseContext);
   const { user } = useContext(UserContext);
+  const peopleDB = new PeopleDB(db);
   const postsDB = new PostsDB(db);
 
   const {systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
@@ -78,12 +80,12 @@ export default function PostEditor({onSave, replyingTo}) {
         ]}
       />
     </div>
-    <button onClick={() => savePost({ user, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo })}>Post</button>
+    <button onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo })}>Post</button>
     </>
   );
 }
 
-function savePost({ user, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo }) {
+function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -112,6 +114,8 @@ function savePost({ user, postsDB, text, systemNotifications, setSystemNotificat
       Your new post was saved. <Link to={canonicalUrl}>View post.</Link>
     </>
   }]);
+
+  newPost.authorPerson = peopleDB.get(user.handle);
 
   onSave && onSave(newPost);
 }

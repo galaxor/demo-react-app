@@ -7,7 +7,7 @@ export default function Replies({postRepliedTo, prune, knownReplies, setKnownRep
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const [replies, setReplies] = useState(knownReplies ??  postsDB.getRepliesTo(postRepliedTo.uri));
+  const replies = knownReplies ?? postsDB.getRepliesTo(postRepliedTo.uri);
 
   return (
     <ul className="replies">

@@ -116,20 +116,26 @@ export default function Post({post, children, knownReplies, setKnownReplies}) {
         </ul>
       </aside>
 
-      {children}
-
       {composingReply &&
         <div className="composing-reply">
-          <PostEditor replyingTo={post.uri} onSave={post => closeReply({post, setComposingReply, numReplies, setNumReplies}) } />
+          <PostEditor replyingTo={post.uri} onSave={post => closeReply({post, setComposingReply, numReplies, setNumReplies, knownReplies, setKnownReplies, postsDB}) } />
         </div>
       }
+
+      {children}
     </article>
 
     </>
   );
 }
 
-function closeReply({post, setComposingReply, numReplies, setNumReplies}) {
+function closeReply({post, setComposingReply, numReplies, setNumReplies, knownReplies, setKnownReplies, postsDB}) {
   setNumReplies(numReplies+1);
   setComposingReply(false);
+
+  console.log(post.inReplyTo);
+
+  const updatedReplies = postsDB.getRepliesTo(post.inReplyTo);
+
+  setKnownReplies(updatedReplies);
 }
