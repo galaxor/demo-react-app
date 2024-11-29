@@ -8,7 +8,7 @@ import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
-import { useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
@@ -33,6 +33,13 @@ export default function PostSingle() {
 
   const [composingReply, setComposingReply] = useState(false);
 
+  // Scroll the post into view when it first becomes visible.
+  const scrollHereRef = useCallback(node => {
+    if (node) { node.scrollIntoView(); }
+
+    return {current: node};
+  }, []);
+
   return (
     <>
     <main className="post-single">
@@ -52,6 +59,7 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
+      <div ref={scrollHereRef} />
       <Post ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
         {composingReply &&
           <div className="composing-reply">
