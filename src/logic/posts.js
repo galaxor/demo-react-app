@@ -337,7 +337,11 @@ export class PostsDB {
       // We don't want to see their replies.
       .filter(post => peopleYouFollow.includes(post.author) && post.inReplyTo===null)
       // Fill in the "authorPerson".
-      .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
+      .map(post => { return {
+        ...post,
+        authorPerson: this.db.get('people', post.author),
+        boostedPosts: this.getBoostedPosts(post.uri)
+      }; })
     ;
 
     theirPosts.sort((a, b) => a.updatedAt === b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : -1));
