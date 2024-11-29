@@ -18,8 +18,6 @@ import './static/Post.css'
 const Post = forwardRef(function Post(props, ref) {
   const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats} = props;
 
-  console.log("This is the one", post);
-
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
 
@@ -42,8 +40,6 @@ const Post = forwardRef(function Post(props, ref) {
   const { user } = useContext(UserContext);
 
   const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
-
-  console.log("Is boost?", isBoostPost);
 
   // If we're drawing a normal post or a quote-boost, we want the replies to this post.
   // If we're drawing a boost-post, we want the replies to the boosted post instead.

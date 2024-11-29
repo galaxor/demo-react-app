@@ -328,8 +328,6 @@ export class PostsDB {
       boostedPost: boostedPostUri,
     };
 
-    console.log("I'll be adding", newBoost);
-
     this.db.addRow('boosts', newBoost);
   }
 
