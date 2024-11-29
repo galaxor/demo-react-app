@@ -72,7 +72,3 @@ export default function Reactions({post}) {
     </>
   );
 }
-
-function toggleAddReaction(e) {
-  alert("I should toggle your reactions");
-}
