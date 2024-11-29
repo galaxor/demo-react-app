@@ -3,6 +3,7 @@ import { PostsDB } from './logic/posts.js';
 
 import PersonInline from './PersonInline.jsx';
 import Post from './Post.jsx';
+import PostsList from './PostsList.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -12,7 +13,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
-export default function BoostsDetail() {
+export default function QuoteBoostsDetail() {
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
   });
@@ -36,31 +37,33 @@ export default function BoostsDetail() {
     return {current: node};
   }, []);
 
-  function getNumBoosts() { return postsDB.getNumberOfBoostsOf(post.uri); }
-  function getNumYourBoosts() { return user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0; }
-  const [numBoosts, setNumBoosts] = useState(getNumBoosts());
-  const [numYourBoosts, setNumYourBoosts] = useState(getNumYourBoosts());
+  function getNumQuoteBoosts() { return postsDB.getNumberOfQuoteBoostsOf(post.uri); }
+  function getNumYourQuoteBoosts() { return user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0; }
+  const [numQuoteBoosts, setNumQuoteBoosts] = useState(getNumQuoteBoosts());
+  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(getNumYourQuoteBoosts());
 
   // Reset the boosts if you log in, so you can see if you're included among them.
   useEffect(() => {
-    setNumBoosts(getNumBoosts());
-    setNumYourBoosts(getNumYourBoosts());
-  }, [user, setNumBoosts, setNumYourBoosts]);
+    setNumQuoteBoosts(getNumQuoteBoosts());
+    setNumYourQuoteBoosts(getNumYourQuoteBoosts());
+  }, [user, setNumQuoteBoosts, setNumYourQuoteBoosts]);
 
-  function getBoostPostsList() {
-    const boostPosts = postsDB.getBoostsOf(post.uri);
+  function getQuoteBoostPostsList() {
+    const quoteBoostPosts = postsDB.getQuoteBoostsOf(post.uri);
 
     // We now have { handle1: boost-row-1, handle2: boost-row-2 }
     // We want a list of the boostersPosts.
-    const boostPostsList = Object.values(boostPosts)
+    const quoteBoostPostsList = Object.values(quoteBoostPosts)
       .map(row => row.boostersPost)
     ;
 
-    boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
-    return boostPostsList;
+    quoteBoostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
+    return quoteBoostPostsList;
   }
 
-  const [boostPostsList, setBoostPostsList] = useState(getBoostPostsList());
+  const quoteBoostPostsList = getQuoteBoostPostsList();
+
+  console.log(quoteBoostPostsList);
 
   // XXX You should be able to search the list of people who boosted the post.
   // Especially since, one day, this might be paged, in case some post has like 29k boosts.
@@ -85,33 +88,11 @@ export default function BoostsDetail() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} />
-      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies}
-        onBoost={() => {
-          setNumBoosts(getNumBoosts());
-          setNumYourBoosts(getNumYourBoosts());
-          setBoostPostsList(getBoostPostsList());
-        }
-      } />
+      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies} />
 
-      <h2>Boosted by {numBoosts} people</h2>
+      <h2>Quote-Boosted by {numQuoteBoosts} people</h2>
 
-      {numBoosts <= 0? "No boosts." :
-        <ul>
-        {boostPostsList.map(post => {
-          const key=encodeURIComponent(post.uri);
-          const authorPerson = peopleDB.get(post.author);
-
-          return (
-            <li key={key}><PersonInline person={authorPerson} /> at {" "}
-              <time dateTime={post.updatedAt}>
-                {dateFormat.format(new Date(post.updatedAt))}
-                (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
-              </time>
-            </li>
-          );
-        })}
-        </ul>
-      }
+      <PostsList posts={quoteBoostPostsList} />
 
     </main>
     </>

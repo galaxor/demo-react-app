@@ -12,6 +12,7 @@ import ProfileBio from './ProfileBio.jsx'
 import ProfileEdit from './ProfileEdit.jsx'
 import ProfileView from './ProfileView.jsx'
 import QuoteBoost from './QuoteBoost.jsx'
+import QuoteBoostsDetail from './QuoteBoostsDetail.jsx'
 import RootFeed from './RootFeed.jsx'
 import YourFeed from './YourFeed.jsx'
 import WhoFollowsThem from './WhoFollowsThem.jsx'
@@ -107,6 +108,11 @@ const router = createBrowserRouter([
         path: "/post/:postUri/boosts",
         loader: getPostLoader(database),
         element: <BoostsDetail />,
+      },
+      {
+        path: "/post/:postUri/quote-boosts",
+        loader: getPostLoader(database),
+        element: <QuoteBoostsDetail />,
       },
       {
         path: "/create",
