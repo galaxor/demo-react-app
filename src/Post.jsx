@@ -16,7 +16,7 @@ import UserContext from './UserContext.jsx'
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats} = props;
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -76,55 +76,73 @@ const Post = forwardRef(function Post(props, ref) {
     </> );
   }
 
+  const replyingToPost = showReplyBanner && post.inReplyTo? postsDB.get(post.inReplyTo) : null;
+  console.log(replyingToPost);
+
   return (<>
     <article className="post h-entry">
-      <span className="post-date">
-        Posted {" "}
-        <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
-            <span className="dt-published published-date">
-              <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time> {" "}
-              (<ReactTimeAgo date={new Date(post.createdAt)} locale={languageContext} />)
-            </span>
+      {replyingToPost && 
+        <div className="boost-info">
+        💬 Replying to post by <PersonInline person={replyingToPost.authorPerson} />, 
+          <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
+          posted {" "}
+          <time dateTime={replyingToPost.createdAt}>
+            {dateFormat.format(new Date(replyingToPost.createdAt))} {" "}
+            (<ReactTimeAgo date={new Date(replyingToPost.createdAt)} locale={languageContext} />)
+          </time>
+          </Link>
+        </div>
+      }
 
-            {post.updatedAt !== post.createdAt ?
-              <span className="dt-updated updated-date">
-                , updated {" "}
-                <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time> {" "}
-                (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
+      <div className="post">
+        <span className="post-date">
+          Posted {" "}
+          <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
+              <span className="dt-published published-date">
+                <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time> {" "}
+                (<ReactTimeAgo date={new Date(post.createdAt)} locale={languageContext} />)
               </span>
-              :
-              ''
-            }
-        </Link>
-      </span>
-          
-      <span className="post-author">
-        By {" "}
-        <PersonInline person={post.authorPerson} />
-      </span>
 
-      {(post.type ?? "text") === "text" && <div className="post-text e-content" lang={post.language}>{post.text}</div>}
-      {post.type === "markdown" && <div className="post-text e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
+              {post.updatedAt !== post.createdAt ?
+                <span className="dt-updated updated-date">
+                  , updated {" "}
+                  <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time> {" "}
+                  (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
+                </span>
+                :
+                ''
+              }
+          </Link>
+        </span>
+            
+        <span className="post-author">
+          By {" "}
+          <PersonInline person={post.authorPerson} />
+        </span>
 
-      {post.boostedPosts && post.boostedPosts.length > 0 &&
-        <blockquote className="quote-boosted-posts">
-          {post.boostedPosts.map(boostedPost => 
-            <Post showStats={false} key={boostedPost.uri} post={boostedPost}  />
-          )}
-        </blockquote>
-      }
+        {(post.type ?? "text") === "text" && <div className="post-text e-content" lang={post.language}>{post.text}</div>}
+        {post.type === "markdown" && <div className="post-text e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
 
-      {showStatsForReal && 
-        <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
-          <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
-          
-          <ul aria-labelledby={htmlId+'-header'}>
-            <li><NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
-            <li><Boosts post={post} /></li>
-            <li><Reactions post={post} /></li>
-          </ul>
-        </aside>
-      }
+        {post.boostedPosts && post.boostedPosts.length > 0 &&
+          <blockquote className="quote-boosted-posts">
+            {post.boostedPosts.map(boostedPost => 
+              <Post showStats={false} key={boostedPost.uri} post={boostedPost}  />
+            )}
+          </blockquote>
+        }
+
+        {showStatsForReal && 
+          <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
+            <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
+            
+            <ul aria-labelledby={htmlId+'-header'}>
+              <li><NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
+              <li><Boosts post={post} /></li>
+              <li><Reactions post={post} /></li>
+            </ul>
+          </aside>
+        }
+      </div>
 
       {children}
     </article>

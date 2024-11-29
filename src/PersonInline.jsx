@@ -39,7 +39,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   const onHomeServer = (person.localUserId !== null); 
 
   return (
-    <span className="person-inline">
+    <span className={"person-inline " + (isYou? "is-you " : " ") + (youFollowThem? "trust-you-follow-them " : " ") + (onHomeServer? "trust-on-home-server " : " ")}>
       <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
         {person.avatar && <img className="avatar-small u-photo" src={person.avatar} alt="" />} {" "}
         <bdi className="p-name">{person.displayName}</bdi> {" "}

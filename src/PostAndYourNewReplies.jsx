@@ -11,7 +11,7 @@ import SystemNotificationArea from './SystemNotificationArea.jsx';
 import { useContext, useRef, useState } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 
-export default function PostAndReplies({post, prune}) {
+export default function PostAndYourNewReplies({post, prune}) {
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
 
@@ -28,7 +28,7 @@ export default function PostAndReplies({post, prune}) {
 
   return (
     <>
-      <Post ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
+      <Post ref={postRef} post={post} showReplyBanner={true} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
         {composingReply &&
           <div className="composing-reply">
             <PostEditor replyingTo={post.uri} onSave={post => { closeReplyNoDBRefresh({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyLink(); } } onCancel={() => setComposingReply(false)} />

@@ -335,7 +335,7 @@ export class PostsDB {
 
     const theirPosts = Object.values(this.db.get('posts'))
       // We don't want to see their replies.
-      .filter(post => peopleYouFollow.includes(post.author) && post.inReplyTo===null)
+      .filter(post => peopleYouFollow.includes(post.author))
       // Fill in the "authorPerson".
       .map(post => { return {
         ...post,
