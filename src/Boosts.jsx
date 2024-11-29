@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx'
@@ -10,11 +10,25 @@ export default function Boosts({post}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const [numBoosts, setNumBoosts] = useState(postsDB.getNumberOfBoostsOf(post.uri));
-  const [numYourBoosts, setNumYourBoosts] = useState(user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0);
+  function getNumBoosts() { return postsDB.getNumberOfBoostsOf(post.uri); }
+  function getNumYourBoosts() { return user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0; }
 
-  const [numQuoteBoosts, setNumQuoteBoosts] = useState(postsDB.getNumberOfQuoteBoostsOf(post.uri));
-  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0);
+  function getNumQuoteBoosts() { return postsDB.getNumberOfQuoteBoostsOf(post.uri); }
+  function getNumYourQuoteBoosts() { return user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0; }
+
+  const [numBoosts, setNumBoosts] = useState(getNumBoosts());
+  const [numYourBoosts, setNumYourBoosts] = useState(getNumYourBoosts());
+
+  const [numQuoteBoosts, setNumQuoteBoosts] = useState(getNumQuoteBoosts());
+  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(getNumYourQuoteBoosts());
+
+  useEffect(() => {
+    setNumBoosts(getNumBoosts());
+    setNumYourBoosts(getNumYourBoosts());
+
+    setNumQuoteBoosts(getNumQuoteBoosts());
+    setNumYourQuoteBoosts(getNumYourQuoteBoosts());
+  }, [user, setNumBoosts, setNumYourBoosts, setNumQuoteBoosts, setNumYourQuoteBoosts]);
 
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
 
