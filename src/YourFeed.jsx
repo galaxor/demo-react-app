@@ -1,14 +1,24 @@
+import { useContext } from 'react'
+
+import DatabaseContext from './DatabaseContext'
+import { PostsDB } from './logic/posts.js'
+import PostsList from './PostsList.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
+import UserContext from './UserContext.jsx'
 
 export default function YourFeed() {
+  const db = useContext(DatabaseContext);
+  const postsDB = new PostsDB(db);
+  const { user } = useContext(UserContext);
+
+  const friendsPosts = postsDB.friendsFeed(user);
+  
   return (
     <main>
       <h1 id="your-feed">Your Feed</h1>
       <SystemNotificationArea />
-      <ul aria-describedby="your-feed">
-        <li><article>Test post 1 by friend</article></li>
-        <li><article>Test post 2 by other friend</article></li>
-      </ul>
+
+      <PostsList posts={friendsPosts} />
     </main>
   );
 }

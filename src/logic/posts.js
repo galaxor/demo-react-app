@@ -43,7 +43,7 @@ export class PostsDB {
       .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
     ;
 
-    replies.sort((a, b) => a.createdAt < b.createdAt);
+    replies.sort((a, b) => a.createdAt===b.createdAt? 0 : (a.createdAt < b.createdAt? 1 : 0));
 
     return replies;
   }
@@ -90,7 +90,7 @@ export class PostsDB {
       })
     ;
 
-    posts.sort((a, b) => a.updatedAt < b.updatedAt);
+    posts.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : 0));
 
     return posts;
   }
@@ -325,6 +325,23 @@ export class PostsDB {
 
   addPost(post) {
     return this.db.set('posts', post.uri, post);
+  }
+
+  friendsFeed(user) {
+    const peopleYouFollow = this.db.get('follows')
+      .filter(([follower, followee]) => follower === user.handle)
+      .map(([follower, followee]) => followee)
+    ;
+
+    const theirPosts = Object.values(this.db.get('posts'))
+      // We don't want to see their replies.
+      .filter(post => peopleYouFollow.includes(post.author) && post.inReplyTo===null)
+      // Fill in the "authorPerson".
+      .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
+    ;
+
+    theirPosts.sort((a, b) => a.updatedAt === b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : -1));
+    return theirPosts;
   }
 }
 
