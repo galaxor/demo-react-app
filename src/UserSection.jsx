@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import UserContext from './UserContext.jsx';
 import NotificationBell from './NotificationBell.jsx';
@@ -17,12 +17,12 @@ export default function UserSection() {
         <li id="notification-bell">
           <NotificationBell />
         </li>
-        <li id="user-name">{user.avatar? 
+        <li id="user-name"><NavLink to="/profile">{user.avatar? 
           <img src={user.avatar} className="avatar-small" alt={user.avatarAltText} />
           :
           ""}
           {user.displayName}
-        </li>
+        </NavLink></li>
         </>
         :
         <li><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); setUser(User.loggedInUser()); }}>Log In</Link></li>
