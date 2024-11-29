@@ -97,7 +97,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
       />
     </div>
     <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo })}>Post</button>
-    <button onClick={() => cancelPost({ systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
+    <button onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
     </>
   );
 });
@@ -139,12 +139,16 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
   typeof onSave === "function" && onSave(newPost);
 }
 
-function cancelPost({systemNotifications, setSystemNotifications, onCancel}) {
-  setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status',
-    message: <>
-      You clicked "Cancel", so your post was not saved.
-    </>
-  }]);
+function cancelPost({editorRef, systemNotifications, setSystemNotifications, onCancel}) {
+  const currentText = editorRef.current.getMarkdown();
 
-  typeof onCancel === "function" && onCancel();
+  if (currentText === "" || confirm("Are you sure you want to cancel this post and lose what you've written?")) {
+    setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status',
+      message: <>
+        You clicked "Cancel", so your post was not saved.
+      </>
+    }]);
+
+    typeof onCancel === "function" && onCancel();
+  }
 }
