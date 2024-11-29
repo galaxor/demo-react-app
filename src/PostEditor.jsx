@@ -19,7 +19,7 @@ import {
     UndoRedo
  } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
-import { useContext, useRef } from 'react'
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef } from 'react'
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router"
 import { v4 as uuidv4 } from "uuid"
@@ -33,7 +33,9 @@ import UserContext from './UserContext.jsx'
 
 import './static/PostEditor.css'
 
-export default function PostEditor({onSave, replyingTo}) {
+const PostEditor = forwardRef(function PostEditor(props, ref) {
+  const {onSave, onCancel, replyingTo} = props;
+
   const editorRef = useRef(null);
   const db = useContext(DatabaseContext);
   const { user } = useContext(UserContext);
@@ -41,7 +43,21 @@ export default function PostEditor({onSave, replyingTo}) {
   const postsDB = new PostsDB(db);
 
   const {systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
-  
+
+  const saveButtonRef = useRef();
+
+  useImperativeHandle(ref, () => {
+    return {
+      clear() {
+        editorRef.current.setMarkdown("");
+      },
+    };
+  }, []);
+
+  // The "autofocus" prop of MDXEditor doesn't seem to be hooked up to anything, so I'll do it myself!
+  useEffect(() => {
+    editorRef.current.focus();
+  });
 
   const navigate = useNavigate();
 
@@ -80,12 +96,15 @@ export default function PostEditor({onSave, replyingTo}) {
         ]}
       />
     </div>
-    <button onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo })}>Post</button>
+    <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo })}>Post</button>
+    <button onClick={() => cancelPost({ systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
     </>
   );
-}
+});
 
-function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo }) {
+export default PostEditor;
+
+function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo  }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -117,5 +136,15 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
 
   newPost.authorPerson = peopleDB.get(user.handle);
 
-  onSave && onSave(newPost);
+  typeof onSave === "function" && onSave(newPost);
+}
+
+function cancelPost({systemNotifications, setSystemNotifications, onCancel}) {
+  setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status',
+    message: <>
+      You clicked "Cancel", so your post was not saved.
+    </>
+  }]);
+
+  typeof onCancel === "function" && onCancel();
 }
