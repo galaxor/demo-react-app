@@ -5,7 +5,7 @@ import DatabaseContext from './DatabaseContext.jsx'
 import { PostsDB } from './logic/posts.js';
 import UserContext from './UserContext.jsx';
 
-export default function Boosts({post}) {
+export default function Boosts({post, onBoost}) {
   const { user } = useContext(UserContext);
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
@@ -41,7 +41,11 @@ export default function Boosts({post}) {
       <li className={'non-quote-boosts ' + ((numYourBoosts > 0) && 'you-did-this')}>
         <NavLink className="show-post-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boosts</NavLink>
         {user? 
-          <Link to="/" onClick={e => { e.preventDefault(); clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts})}}>
+          <Link to="/" onClick={e => {
+            e.preventDefault();
+            clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
+            if (typeof onBoost === "function") { onBoost(); }
+          }}>
             <span className="icon" aria-label="Boosts">♻</span>
             <span className="total">{numBoosts}</span>
           </Link>

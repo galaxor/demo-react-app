@@ -50,15 +50,20 @@ export default function BoostsDetail() {
     setNumYourBoosts(getNumYourBoosts());
   }, [user, setNumBoosts, setNumYourBoosts]);
 
-  const boostPosts = postsDB.getBoostsOf(post.uri);
+  function getBoostPostsList() {
+    const boostPosts = postsDB.getBoostsOf(post.uri);
 
-  // We now have { handle1: boost-row-1, handle2: boost-row-2 }
-  // We want a list of the boostersPosts.
-  const boostPostsList = Object.values(boostPosts)
-    .map(row => row.boostersPost)
-  ;
+    // We now have { handle1: boost-row-1, handle2: boost-row-2 }
+    // We want a list of the boostersPosts.
+    const boostPostsList = Object.values(boostPosts)
+      .map(row => row.boostersPost)
+    ;
 
-  boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
+    boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
+    return boostPostsList;
+  }
+
+  const [boostPostsList, setBoostPostsList] = useState(getBoostPostsList());
 
   // XXX You should be able to search the list of people who boosted the post.
   // Especially since, one day, this might be paged, in case some post has like 29k boosts.
@@ -83,7 +88,13 @@ export default function BoostsDetail() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} />
-      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies} />
+      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies}
+        onBoost={() => {
+          setNumBoosts(getNumBoosts());
+          setNumYourBoosts(getNumYourBoosts());
+          setBoostPostsList(getBoostPostsList());
+        }
+      } />
 
       <h2>Boosted by {numBoosts} people</h2>
 
