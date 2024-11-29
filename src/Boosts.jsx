@@ -40,10 +40,17 @@ export default function Boosts({post}) {
       </li>
 
       <li className={'quote-boosts ' + ((numYourQuoteBoosts > 0) && 'you-did-this')}>
-        <div>
-          <span className="icon" aria-label="Quote Boosts">♻💬</span>
-          <span className="total">{numQuoteBoosts}</span>
-        </div>
+        {user?
+          <Link to={"/quote-boost/"+encodeURIComponent(post.uri)}>
+            <span className="icon" aria-label="Quote Boosts">♻💬</span>
+            <span className="total">{numQuoteBoosts}</span>
+          </Link>
+          :
+          <div>
+            <span className="icon" aria-label="Quote Boosts">♻💬</span>
+            <span className="total">{numQuoteBoosts}</span>
+          </div>
+        }
       </li>
     </ul>
     </>

@@ -321,6 +321,18 @@ export class PostsDB {
     this.db.addRow('boosts', newBoost);
   }
 
+  quoteBoost({boostersPostUri, boostedPostUri, boosterHandle}) {
+    const newBoost = {
+      booster: boosterHandle,
+      boostersPost: boostersPostUri,
+      boostedPost: boostedPostUri,
+    };
+
+    console.log("I'll be adding", newBoost);
+
+    this.db.addRow('boosts', newBoost);
+  }
+
   getQuoteBoostsOf(uri) {
     return this.db.boosts.filter(boost => boost.boostedPost === uri)
       .map(boost => { return {...boost, boostersPost: this.db.get('posts', boost.boostersPost)}; })

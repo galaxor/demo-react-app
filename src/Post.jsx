@@ -16,7 +16,12 @@ import UserContext from './UserContext.jsx'
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children} = props;
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats} = props;
+
+  console.log("This is the one", post);
+
+  // showStats defaults to true.
+  const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
 
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
@@ -24,17 +29,21 @@ const Post = forwardRef(function Post(props, ref) {
 
   const replyLinkRef = useRef(null);
 
-  useImperativeHandle(ref, () => {
-    return {
-      focusReplyLink() {
-        replyLinkRef.current.focus();
-      },
-    };
-  }, []);
+  if (typeof ref.current !== "undefined") {
+    useImperativeHandle(ref, () => {
+      return {
+        focusReplyLink() {
+          replyLinkRef.current.focus();
+        },
+      };
+    });
+  }
 
   const { user } = useContext(UserContext);
 
   const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
+
+  console.log("Is boost?", isBoostPost);
 
   // If we're drawing a normal post or a quote-boost, we want the replies to this post.
   // If we're drawing a boost-post, we want the replies to the boosted post instead.
@@ -78,7 +87,7 @@ const Post = forwardRef(function Post(props, ref) {
         <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
             <span className="dt-published published-date">
               <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time> {" "}
-              (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
+              (<ReactTimeAgo date={new Date(post.createdAt)} locale={languageContext} />)
             </span>
 
             {post.updatedAt !== post.createdAt ?
@@ -104,20 +113,22 @@ const Post = forwardRef(function Post(props, ref) {
       {post.boostedPosts && post.boostedPosts.length > 0 &&
         <blockquote className="quote-boosted-posts">
           {post.boostedPosts.map(boostedPost => 
-            <Post key={boostedPost.uri} post={boostedPost}  />
+            <Post showStats={false} key={boostedPost.uri} post={boostedPost}  />
           )}
         </blockquote>
       }
 
-      <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
-        <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
-        
-        <ul aria-labelledby={htmlId+'-header'}>
-          <li><NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
-          <li><Boosts post={post} /></li>
-          <li><Reactions post={post} /></li>
-        </ul>
-      </aside>
+      {showStatsForReal && 
+        <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
+          <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
+          
+          <ul aria-labelledby={htmlId+'-header'}>
+            <li><NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
+            <li><Boosts post={post} /></li>
+            <li><Reactions post={post} /></li>
+          </ul>
+        </aside>
+      }
 
       {children}
     </article>

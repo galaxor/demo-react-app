@@ -10,6 +10,7 @@ import PostSingle from './PostSingle.jsx'
 import ProfileBio from './ProfileBio.jsx'
 import ProfileEdit from './ProfileEdit.jsx'
 import ProfileView from './ProfileView.jsx'
+import QuoteBoost from './QuoteBoost.jsx'
 import RootFeed from './RootFeed.jsx'
 import YourFeed from './YourFeed.jsx'
 import WhoFollowsThem from './WhoFollowsThem.jsx'
@@ -104,6 +105,11 @@ const router = createBrowserRouter([
       {
         path: "/create",
         element: <CreatePost />
+      },
+      {
+        path: "/quote-boost/:postUri",
+        loader: getPostLoader(database),
+        element: <QuoteBoost />,
       },
     ],
   },

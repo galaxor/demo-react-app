@@ -34,7 +34,7 @@ import UserContext from './UserContext.jsx'
 import './static/PostEditor.css'
 
 const PostEditor = forwardRef(function PostEditor(props, ref) {
-  const {onSave, onCancel, replyingTo} = props;
+  const {onSave, onCancel, replyingTo, quotedPost} = props;
 
   const editorRef = useRef(null);
   const db = useContext(DatabaseContext);
@@ -96,7 +96,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
         ]}
       />
     </div>
-    <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo })}>Post</button>
+    <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost })}>Post</button>
     <button onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
     </>
   );
@@ -104,7 +104,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 
 export default PostEditor;
 
-function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo  }) {
+function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -128,6 +128,11 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
   };
 
   postsDB.addPost(newPost);
+
+  if (quotedPost) {
+    postsDB.quoteBoost({boostersPostUri: postUri, boostedPostUri: quotedPost.uri, boosterHandle: user.handle});
+  }
+
   setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status',
     message: <>
       Your new post was saved. <Link to={canonicalUrl}>View post.</Link>
