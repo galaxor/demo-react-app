@@ -77,7 +77,6 @@ const Post = forwardRef(function Post(props, ref) {
   }
 
   const replyingToPost = showReplyBanner && post.inReplyTo? postsDB.get(post.inReplyTo) : null;
-  console.log(replyingToPost);
 
   return (<>
     <article className="post h-entry">
