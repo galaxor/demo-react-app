@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx'
 import { PostsDB } from './logic/posts.js';
@@ -39,6 +39,7 @@ export default function Boosts({post}) {
     </span>
     <ul aria-labelledby={htmlId}>
       <li className={'non-quote-boosts ' + ((numYourBoosts > 0) && 'you-did-this')}>
+        <NavLink className="show-post-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boosts</NavLink>
         {user? 
           <Link to="/" onClick={e => { e.preventDefault(); clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts})}}>
             <span className="icon" aria-label="Boosts">♻</span>
@@ -54,6 +55,7 @@ export default function Boosts({post}) {
       </li>
 
       <li className={'quote-boosts ' + ((numYourQuoteBoosts > 0) && 'you-did-this')}>
+        <NavLink className="show-post-quote-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote Boosts</NavLink>
         {user?
           <Link to={"/quote-boost/"+encodeURIComponent(post.uri)}>
             <span className="icon" aria-label="Quote Boosts">♻💬</span>

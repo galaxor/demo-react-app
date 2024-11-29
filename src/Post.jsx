@@ -1,6 +1,6 @@
 import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
 import ReactTimeAgo from 'react-time-ago'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import Markdown from 'react-markdown'
 
 import Boosts from './Boosts.jsx'
@@ -135,7 +135,10 @@ const Post = forwardRef(function Post(props, ref) {
             <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
             
             <ul aria-labelledby={htmlId+'-header'}>
-              <li><NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  /></li>
+              <li>
+                <NavLink to={"/post/"+encodeURIComponent(post.uri)}>Replies</NavLink>
+                <NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  />
+              </li>
               <li><Boosts post={post} /></li>
               <li><Reactions post={post} /></li>
             </ul>

@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx'
 import { PostsDB } from './logic/posts.js';
@@ -44,7 +44,7 @@ export default function Reactions({post}) {
   const htmlId = encodeURIComponent(post.uri)+'-reactions';
   return (
     <>
-      <span id={htmlId} className="reactions-header">Reactions</span>
+      <NavLink id={htmlId} className="reactions-header" to={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reactions</NavLink>
       <ul aria-labelledby={htmlId}>
         {reactionTotals.map(reaction =>
           <li key={[reaction.type, reaction.unicode, reaction.reactServer, reaction.reactUrl].join('-')}>
