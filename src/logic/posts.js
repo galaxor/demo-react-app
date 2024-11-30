@@ -156,6 +156,49 @@ export class PostsDB {
     });
   }
 
+  getAllReactionsTo(postURI) {
+    const totals = Object.values(this.db.get('reactions')
+      .filter(reaction => reaction.reactingTo === postURI)
+      .reduce((reactionsList, reaction) => {
+        const key = [reaction.type, reaction.unicode, reaction.reactName, reaction.reactServer, reaction.reactURL].join(':');
+
+        if (typeof reactionsList[key] === "undefined") {
+          reactionsList[key] = {...reaction, reactors: [this.db.get('people', reaction.reactorHandle)]};
+        } else {
+          reactionsList[key].reactors.push(this.db.get('people', reaction.reactorHandle));
+          if (reaction.createdAt < reactionsList[key].createdAt) {
+            reactionsList[key].createdAt = reaction.createdAt;
+          }
+        } 
+
+        // At this point, the list is:
+        // {<key>: {type, unicode, reactName, reactServer, reactURL, altText, createdAt, reactors: [<person-object>, ...]}}
+        return reactionsList;
+      }, {}
+    ));
+
+    // At this point, the list is:
+    // [{type, unicode, reactName, reactServer, reactURL, altText, createdAt, reactors: [<person-object>, ...]}]
+
+    // For the detail view, we don't need to ensure that Likes are represented if there are 0 of them.
+
+    // We want to sort the oldest one at the top.
+    // That is, we want it in the order of "when was the first time a person used this react".
+    // Except we want likes to always be at the top.
+    totals.sort((a, b) => {
+      if (a.type === "like") { return -1; }
+      if (b.type === "like") { return 1; }
+      if (a.createdAt === b.createdAt) { return 0; }
+      if (a.createdAt > b.createdAt) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+
+    return totals;
+  }
+
   setReaction({reactorHandle, reactingTo, reaction, createdAt, newValue}) {
     this.db.delRow('reactions', dbReaction => {
       return (

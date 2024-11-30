@@ -88,7 +88,13 @@ export default function QuoteBoostsDetail() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} />
-      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies} />
+      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies}
+        onBoost={() => {
+          setNumBoosts(getNumBoosts());
+          setNumYourBoosts(getNumYourBoosts());
+          setBoostPostsList(getBoostPostsList());
+        }}
+      />
 
       <h2>Quote-Boosted by {numQuoteBoosts} people</h2>
 
