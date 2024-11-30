@@ -9,6 +9,7 @@ import ReactionGlyph from './ReactionGlyph.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx'
 
+import hashSum from 'hash-sum'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLoaderData, Link } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
@@ -106,17 +107,18 @@ export default function BoostsDetail() {
         :
         <ul className="reactions-toc">
           {reactionsList.map(reactionType => {
-            const key = [reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, reactionType.reactURL].join(':');
+            const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
 
             return (
-              <li key={key}><Link to={'#'+key}><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></Link></li>
+              <li key={key}><a href={'#'+key}><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></a></li>
             );
           })}
         </ul>
       }
 
       {reactionsList.map(reactionType => {
-        const key = [reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, reactionType.reactURL].join(':');
+        console.log(reactionType);
+        const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
         return (
           <section key={key+'-section'} id={key} aria-labelledby={key+'-header'}>
             <h3 id={key+'-header'}><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></h3>
@@ -124,7 +126,7 @@ export default function BoostsDetail() {
             <ul className="reactors" aria-labelledby={key+'-header'}>
             {reactionType.reactors.map(person => {
               return (
-                <li className="reactor"><PersonInline person={person} /></li>
+                <li key={key+':'+person.handle} className="reactor"><PersonInline person={person} /></li>
               );
             })}
             </ul>
