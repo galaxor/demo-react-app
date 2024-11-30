@@ -16,7 +16,7 @@ import UserContext from './UserContext.jsx'
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost} = props;
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -140,7 +140,7 @@ const Post = forwardRef(function Post(props, ref) {
                 <NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  />
               </li>
               <li><Boosts onBoost={onBoost} post={post} /></li>
-              <li><Reactions post={post} /></li>
+              <li><Reactions post={post} onReact={onReact} /></li>
             </ul>
           </aside>
         }

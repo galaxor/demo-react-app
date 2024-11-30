@@ -7,7 +7,7 @@ import Reaction from './Reaction.jsx';
 import ReactionsMenu from './ReactionsMenu.jsx';
 import UserContext from './UserContext.jsx';
 
-export default function Reactions({post}) {
+export default function Reactions({post, onReact}) {
   // The detail view would be drawn by the PostSingle page.
   // And maybe be given a special route.
 
@@ -53,6 +53,7 @@ export default function Reactions({post}) {
               setReactionTotals={setReactionTotals}
               yourReactions={reactionButtonStates}
               setYourReactions={setYourReactions}
+              onReact={onReact}
             />
           </li>
         )}
@@ -65,6 +66,7 @@ export default function Reactions({post}) {
               setReactionTotals={setReactionTotals}
               yourReactions={reactionButtonStates}
               setYourReactions={setYourReactions}
+              onReact={onReact}
             />
           </li>
         }

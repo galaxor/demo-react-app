@@ -10,7 +10,7 @@ import UserContext from './UserContext.jsx';
 
 import emojiData from 'emoji-datasource-twitter/emoji_pretty.json'
 
-export default function ReactionsMenu({htmlId, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions}) {
+export default function ReactionsMenu({htmlId, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, onReact}) {
   const { user, setUser } = useContext(UserContext);
   const addAReactionRef = useRef(null);
 
@@ -65,9 +65,10 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
     <Link id={htmlId} ref={addAReactionRef} onClick={e => setMenuOpen(!menuOpen)}>Add a reaction</Link>
     <EmojiPicker className="emoji-picker" open={menuOpen} 
       defaultSkinTone={typeof skinTone==="undefined"? user.skinTonePref : skinTone}
-      onEmojiClick={emoji =>
-        addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen, addAReactionRef})
-      }
+      onEmojiClick={emoji => {
+        addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen, addAReactionRef});
+        if (typeof onReact === 'function') { onReact(); }
+      }}
       onSkinToneChange={newTone => skinToneChange({newTone, user, setUser})}
       getEmojiUrl={(x) => "/emoji-datasource-twitter/twitter/64/"+x+".png"} />
     </>

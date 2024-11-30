@@ -62,7 +62,6 @@ export default function BoostsDetail() {
   }
 
   const [reactionsList, setReactionsList] = useState(postsDB.getAllReactionsTo(post.uri));
-  console.log("The List", reactionsList);
 
   // XXX You should be able to search the list of people who reacted to the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
@@ -93,8 +92,9 @@ export default function BoostsDetail() {
           setNumYourBoosts(getNumYourBoosts());
           setBoostPostsList(getBoostPostsList());
         }}
-        onReact={(reaction) => {
-          console.log("This reaction was logged", reaction);
+        onReact={() => {
+          console.log("This reaction was logged");
+          setReactionsList(postsDB.getAllReactionsTo(post.uri));
         }}
       />
 

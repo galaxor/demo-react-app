@@ -11,7 +11,7 @@ import './static/Reaction.css';
 
 // We have the State variables reactionTotals and setReactionTotals so we can
 // use them in the onClick handler to create reactions.
-export default function Reaction({post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions}) {
+export default function Reaction({post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions, onReact}) {
   const glyph = <ReactionGlyph reaction={reaction} />;
 
   const { user } = useContext(UserContext);
@@ -41,6 +41,8 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
           e.preventDefault();
           toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions,
             newValue: !didYouDoThis});
+
+          if (typeof onReact === 'function') { onReact(); }
         }
       }>
         <span className="glyph">{glyph}</span>
