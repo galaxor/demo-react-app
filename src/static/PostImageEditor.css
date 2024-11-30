@@ -1,0 +1,27 @@
+.post-image-editor {
+  label.post-image-upload {
+    display: block;
+    border: 2px solid black;
+    text-align: center;
+    align-content: center;
+
+    width: 75px;
+    height: 75px;
+  }
+
+  ul.uploaded-images img {
+    width: 250px;
+    height: 300px;
+    object-fit: contain;
+  }
+
+  /* Hide the native file input */
+  .post-image-upload-input {
+    height: 0.1px;
+    width: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+}

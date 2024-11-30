@@ -26,6 +26,7 @@ import { v4 as uuidv4 } from "uuid"
 
 import DatabaseContext from './DatabaseContext.jsx'
 import { PeopleDB } from './logic/people.js'
+import PostImageEditor from './PostImageEditor.jsx'
 import { PostsDB } from './logic/posts.js'
 import SystemNotificationsContext from './SystemNotificationsContext'
 import UserContext from './UserContext.jsx'
@@ -60,6 +61,8 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
   });
 
   const navigate = useNavigate();
+
+  const imageEditorRef = useRef();
 
   // XXX Language picker:  Do we make a custom toolbar component, or put it somewhere else?
 
@@ -96,15 +99,18 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
         ]}
       />
     </div>
-    <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost })}>Post</button>
-    <button onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
+    <PostImageEditor ref={imageEditorRef} />
+    <div className="post-finish-actions">
+      <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost, imageEditorRef })}>Post</button>
+      <button onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
+    </div>
     </>
   );
 });
 
 export default PostEditor;
 
-function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost }) {
+function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost, imageEditorRef }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -138,6 +144,9 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
       Your new post was saved. <Link to={canonicalUrl}>View post.</Link>
     </>
   }]);
+
+  const images = imageEditorRef.current;
+  postsDB.attachImages(newPost.uri, images);
 
   newPost.authorPerson = peopleDB.get(user.handle);
 

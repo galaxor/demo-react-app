@@ -315,6 +315,9 @@ class Database {
         },
       };
 
+      this.images = {
+      };
+
       // "Booster's post" has the authoritative information about the created/updated times of the boost.
       // It also may contain text.  If it does, this is a quote boost.
       // Also, a post may boost several posts simultaneously.
@@ -390,6 +393,7 @@ class Database {
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
       localStorage.setItem('boosts', JSON.stringify(this.boosts));
       localStorage.setItem('follows', JSON.stringify(this.follows));
+      localStorage.setItem('images', JSON.stringify(this.images));
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('posts', JSON.stringify(this.posts));
@@ -399,6 +403,7 @@ class Database {
       this.accounts = JSON.parse(localStorage.getItem('accounts'));
       this.boosts = JSON.parse(localStorage.getItem('boosts'));
       this.follows = JSON.parse(localStorage.getItem('follows'));
+      this.images = JSON.parse(localStorage.getItem('images'));
       this.sessions = JSON.parse(localStorage.getItem('sessions'));
       this.people = JSON.parse(localStorage.getItem('people'));
       this.posts = JSON.parse(localStorage.getItem('posts'));

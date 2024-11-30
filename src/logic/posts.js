@@ -390,5 +390,11 @@ export class PostsDB {
     theirPosts.sort((a, b) => a.updatedAt === b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : -1));
     return theirPosts;
   }
+
+  attachImages(postUri, images) {
+    // Delete the previous image attachments for this post.
+    this.db.del('images', postUri);
+    this.db.set('images', postUri, images);
+  }
 }
 
