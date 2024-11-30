@@ -4,6 +4,7 @@ import { Link, NavLink, useMatches } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import icons from './icons.js'
+import LogoutLink from './LogoutLink.jsx'
 import User from './logic/user.js';
 
 import './static/nav.css';
@@ -47,7 +48,7 @@ export default function NavigationSidebar() {
           : ''
         }
         <li>Account Settings</li>
-        <li><Link onClick={() => { setSessionId(User.logout()); setUser(null); }}>Log Out</Link></li>
+        <li><LogoutLink /></li>
         </ul>
         </>
 

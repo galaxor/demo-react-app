@@ -4,6 +4,7 @@ import { Link, NavLink, Outlet, useLoaderData } from "react-router-dom";
 import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
+import LogoutLink from './LogoutLink.jsx';
 import PersonContext from './PersonContext.jsx';
 import { PeopleDB } from './logic/people.js';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -11,7 +12,7 @@ import UserContext from './UserContext.jsx';
 
 import './static/ProfileView.css'
 
-export default function ProfileView({handle, loggedInUser }) {
+export default function ProfileView({handle, loggedInUser, children }) {
   const { user } = useContext(UserContext);
 
   const loaderData = useLoaderData();
@@ -65,6 +66,7 @@ export default function ProfileView({handle, loggedInUser }) {
       {user && !isYou && <FriendStatus person={person} />}
 
       {isYou && <Link className="edit-your-profile" to="/profile/edit">Edit Profile</Link>}
+      {isYou && <LogoutLink />}
 
       {person.avatar &&
         <>
@@ -87,6 +89,7 @@ export default function ProfileView({handle, loggedInUser }) {
         
       <PersonContext.Provider value={person}>
         <FollowInfoContext.Provider value={ { whoDoTheyFollow, whoFollowsThem } }>
+          {children? children : ''}
           <Outlet />
         </FollowInfoContext.Provider>
       </PersonContext.Provider>
