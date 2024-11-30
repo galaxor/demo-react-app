@@ -16,7 +16,7 @@ export default function NavigationSidebar() {
 
   return (
     <aside id="site-navigation">
-      <nav id="site-navigation">
+      <nav id="available-feeds">
 
       {user && <h2 id="create-a-post" className="button site-button"><NavLink to="/create">
         <FontAwesomeIcon icon={icons.penToSquare} />
@@ -25,13 +25,19 @@ export default function NavigationSidebar() {
       }
 
       <section>
-      <h2 id="available-feeds">Available Feeds</h2>
+      <h2 id="available-feeds" className="visually-hidden">Available Feeds</h2>
       <ul aria-describedby="available-feeds">
         {user ?
-          <li><NavLink className={(user && matches[matches.length-1].pathname=="/") ? 'active' : ''} to="/home">Your Feed</NavLink></li>
+          <li><NavLink className={(user && matches[matches.length-1].pathname=="/") ? 'active' : ''} to="/home">
+            <FontAwesomeIcon icon={icons.house} />
+            Your Feed
+          </NavLink></li>
           : ''
         }
-        <li><NavLink className={(!user && matches[matches.length-1].pathname=="/") ? 'active' : ''} to="/popular">Popular Posts</NavLink></li>
+        <li><NavLink className={(!user && matches[matches.length-1].pathname=="/") ? 'active' : ''} to="/popular">
+          <FontAwesomeIcon icon={icons.earthAmericas} />
+          Popular Posts
+        </NavLink></li>
       </ul>
       </section>
 

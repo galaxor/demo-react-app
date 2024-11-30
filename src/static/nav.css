@@ -1,3 +1,14 @@
 nav li a.active {
   background: #ccf;
 }
+
+nav#available-feeds {
+  ul {
+    display: flex;
+
+    li {
+      display: block;
+      font-size: 20px;
+    }
+  }
+}
