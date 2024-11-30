@@ -5,6 +5,7 @@ import Markdown from 'react-markdown'
 
 import Boosts from './Boosts.jsx'
 import DatabaseContext from './DatabaseContext'
+import ImageList from './ImageList'
 import LanguageContext from './LanguageContext.jsx'
 import NumReplies from './NumReplies.jsx'
 import PersonInline from './PersonInline.jsx'
@@ -121,6 +122,7 @@ const Post = forwardRef(function Post(props, ref) {
 
         {(post.type ?? "text") === "text" && <div className="post-text e-content" lang={post.language}>{post.text}</div>}
         {post.type === "markdown" && <div className="post-text e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
+        <ImageList post={post} />
 
         {post.boostedPosts && post.boostedPosts.length > 0 &&
           <blockquote className="quote-boosted-posts">

@@ -396,5 +396,9 @@ export class PostsDB {
     this.db.del('images', postUri);
     this.db.set('images', postUri, images);
   }
+
+  getImagesForPost(postUri) {
+    return this.db.get('images', postUri);
+  }
 }
 
