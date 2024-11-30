@@ -18,10 +18,9 @@ export default function UserSection() {
           <NotificationBell />
         </li>
         <li id="user-name"><NavLink to="/profile">{user.avatar? 
-          <img src={user.avatar} className="avatar-small" alt={user.avatarAltText} />
+          <img src={user.avatar} className="avatar-small" alt={user.displayName} />
           :
           ""}
-          <bdi>{user.displayName}</bdi>
         </NavLink></li>
         </>
         :
