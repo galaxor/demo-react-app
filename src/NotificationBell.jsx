@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import icons from './icons.js'
 
 import './static/NotificationBell.css';
 
@@ -70,7 +72,9 @@ export default function NotificationBell() {
           }
         }}
       />
-      <label htmlFor="notifications-checkbox" id="notifications-bell" ref={notificationsBoxBellRef}>🔔</label>
+      <label htmlFor="notifications-checkbox" id="notifications-bell" ref={notificationsBoxBellRef}>
+        <FontAwesomeIcon title="No new notifications" icon={icons.bell} />
+      </label>
 
       {notificationsVisible ? 
         <section id="notifications" ref={notificationsBoxRef} tabIndex="-1">
