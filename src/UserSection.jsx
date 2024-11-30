@@ -1,10 +1,11 @@
 import { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import UserContext from './UserContext.jsx';
+import icons from './icons.js'
 import NotificationBell from './NotificationBell.jsx';
-
 import User from './logic/user.js';
+import UserContext from './UserContext.jsx';
 
 export default function UserSection() {
   const {user, setUser, setSessionId} = useContext(UserContext);
@@ -24,7 +25,7 @@ export default function UserSection() {
         </NavLink></li>
         </>
         :
-        <li><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); setUser(User.loggedInUser()); }}>Log In</Link></li>
+        <li><div className="button site-button" id="login-link"><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); setUser(User.loggedInUser()); }}><FontAwesomeIcon icon={icons.doorOpen} />Log In</Link></div></li>
       }
       </ul>
     </section>

@@ -91,16 +91,22 @@ header {
   }
 }
 
+div#login-link,
 h2#create-a-post {
   position: fixed;
+  display: block;
   top: 15px;
   left: 50px;
   margin: 0;
-  font-size: 14pt;
 }
 
 div#page-body {
   padding-top: 30px;
+}
+
+.site-button {
+  font-size: 14pt;
+  font-weight: bold;
 }
 
 .button {

@@ -18,7 +18,7 @@ export default function NavigationSidebar() {
     <aside id="site-navigation">
       <nav id="site-navigation">
 
-      {user && <h2 id="create-a-post" className="button"><NavLink to="/create">
+      {user && <h2 id="create-a-post" className="button site-button"><NavLink to="/create">
         <FontAwesomeIcon icon={icons.penToSquare} />
         Create
       </NavLink></h2>
@@ -36,24 +36,7 @@ export default function NavigationSidebar() {
       </section>
 
       <section>
-      {user ?
-        <>
-        <h2 id="account">Account</h2>
-        <ul aria-describedby="account">
-        <li><NavLink to="/profile" end>Profile</NavLink></li>
-        { ['/profile', '/profile/edit'].includes(matches[matches.length-1].pathname) ?
-          <ul>
-          <li><NavLink to="/profile/edit">Edit Your Profile</NavLink></li>
-          </ul>
-          : ''
-        }
-        <li>Account Settings</li>
-        <li><LogoutLink /></li>
-        </ul>
-        </>
-
-        :
-
+      {user ?  "" :
         <>
         <h2 id="join-the-site">Join</h2>
         <ul aria-describedby="join-the-site">
