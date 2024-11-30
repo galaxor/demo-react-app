@@ -60,20 +60,21 @@ export default function NotificationBell() {
 
   return (
     <>
-      <input id="notifications-checkbox" type="checkbox"
-        ref={notificationsBoxCheckboxRef}
-        checked={notificationsVisible}
-        aria-label="No new notifications"
-        onChange={(e) => {
-          setNotificationsVisible(e.target.checked);
+      <label id="notifications-bell" ref={notificationsBoxBellRef}>
+        <input id="notifications-checkbox" type="checkbox"
+          className="visually-hidden"
+          ref={notificationsBoxCheckboxRef}
+          checked={notificationsVisible}
+          aria-label="No new notifications"
+          onChange={(e) => {
+            setNotificationsVisible(e.target.checked);
 
-          if (!e.target.checked) {
-            notificationsBoxCheckboxRef.current.focus();
-          }
-        }}
-      />
-      <label htmlFor="notifications-checkbox" id="notifications-bell" ref={notificationsBoxBellRef}>
-        <FontAwesomeIcon title="No new notifications" icon={icons.bell} />
+            if (!e.target.checked) {
+              notificationsBoxCheckboxRef.current.focus();
+            }
+          }}
+        />
+        <FontAwesomeIcon icon={icons.bell} size="xl" />
       </label>
 
       {notificationsVisible ? 
