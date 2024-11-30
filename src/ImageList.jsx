@@ -11,7 +11,7 @@ export default function ImageList({post}) {
   
   const imageBucket = postsDB.getImagesForPost(post.uri);
 
-  if (Object.keys(imageBucket).length <= 0) { return ""; }
+  if (!imageBucket || Object.keys(imageBucket).length <= 0) { return ""; }
 
   return (
     <ul className="post-images">
