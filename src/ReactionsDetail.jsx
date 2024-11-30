@@ -14,6 +14,8 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLoaderData, Link } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
+import './static/ReactionsDetail.css'
+
 export default function BoostsDetail() {
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
@@ -64,6 +66,8 @@ export default function BoostsDetail() {
 
   const [reactionsList, setReactionsList] = useState(postsDB.getAllReactionsTo(post.uri));
 
+  const [viewingReaction, setViewingReaction] = useState(document.location.hash);
+
   // XXX You should be able to search the list of people who reacted to the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
 
@@ -110,7 +114,12 @@ export default function BoostsDetail() {
             const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
 
             return (
-              <li key={key}><a href={'#'+key}><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></a></li>
+              <li key={key}
+                className={viewingReaction === '#'+key ? 'active' : ''}>
+                <a href={'#'+key} onClick={() => setViewingReaction('#'+key)}>
+                  <ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span>
+                </a>
+              </li>
             );
           })}
         </ul>
@@ -120,7 +129,9 @@ export default function BoostsDetail() {
         console.log(reactionType);
         const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
         return (
-          <section key={key+'-section'} id={key} aria-labelledby={key+'-header'}>
+          <section key={key+'-section'} id={key} aria-labelledby={key+'-header'}
+            className={viewingReaction === '#'+key ? 'active' : ''}
+          >
             <h3 id={key+'-header'}><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></h3>
 
             <ul className="reactors" aria-labelledby={key+'-header'}>
