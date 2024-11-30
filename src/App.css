@@ -45,12 +45,16 @@ header {
       li { display: block; }
       li#user-name { order: 0; }
       li#notification-bell {
-        order: 1; 
         position: absolute;
         right: 0;
 
         label:has(input:focus) {
           border: 2px solid blue;
+        }
+
+        label {
+          display: block;
+          width: 21px;
         }
       }
     }
@@ -58,11 +62,15 @@ header {
 
   a#site-logo {
     display: block;
-    order: 1;
-    width: 100%;
-    text-align: center;
+    text-align: right;
     position: absolute;
-    margin-left: auto;
-    margin-right: auto;
+    right: 30px;
+  }
+
+  section#user-section {
+    li#user-name {
+      img { display: block; }
+      bdi { display: block; }
+    }
   }
 }

@@ -21,7 +21,7 @@ export default function UserSection() {
           <img src={user.avatar} className="avatar-small" alt={user.avatarAltText} />
           :
           ""}
-          {user.displayName}
+          <bdi>{user.displayName}</bdi>
         </NavLink></li>
         </>
         :
