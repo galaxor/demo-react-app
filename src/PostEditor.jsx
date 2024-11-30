@@ -146,7 +146,6 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
   }]);
 
   const images = imageEditorRef.current.getImages();
-  console.log("Here's what I'm saving", images);
   postsDB.attachImages(newPost.uri, images);
 
   newPost.authorPerson = peopleDB.get(user.handle);

@@ -14,10 +14,13 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   useImperativeHandle(ref, () => {
     return {
       getImages() {
+        for (const fileName in uploadedImages) {
+          imageBucket.current[fileName].altText = uploadedImages[fileName].altText;
+        }
         return imageBucket.current;
       },
     };
-  }, []);
+  }, [uploadedImages]);
 
   return (
     <>
@@ -25,7 +28,18 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
       <ul className="uploaded-images">
         {Object.keys(uploadedImages).map(fileName => {
           return (
-            <li key={fileName}><img src={imageBucket.current[fileName]} /></li>
+            <li key={fileName}>
+              <img src={imageBucket.current[fileName].data} />
+              <label>Alt Text 
+                <textarea placeholder="Describe the image as if you're talking to someone who can't see it." 
+                  value={uploadedImages[fileName].altText}
+                  onChange={(e) => {
+                    const newUploadedImages = {...uploadedImages};
+                    newUploadedImages[fileName].altText = e.target.value;
+                    setUploadedImages(newUploadedImages);
+                  }} />
+                </label>
+            </li>
           );
         })}
       </ul>
@@ -48,10 +62,10 @@ function imageUpload({e, imageBucket, uploadedImages, setUploadedImages}) {
     const fileName = e.target.files[0].name;
     const newImage = reader.result;
 
-    imageBucket.current[fileName] = newImage;
+    imageBucket.current[fileName] = { data: newImage, altText: "" };
 
     const imageList = {...uploadedImages};
-    imageList[fileName] = true;
+    imageList[fileName] = { altText: "" };
     setUploadedImages(imageList);
   });
 

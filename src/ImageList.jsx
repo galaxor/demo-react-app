@@ -15,9 +15,8 @@ export default function ImageList({post}) {
 
   return (
     <ul className="post-images">
-      {Object.entries(imageBucket).map(([fileName, imageData]) => {
-        console.log("bucket item", fileName, imageData);
-        return ( <li key={fileName}><img src={imageData} /></li> );
+      {Object.entries(imageBucket).map(([fileName, {data: imageData, altText}]) => {
+        return ( <li key={fileName}><img src={imageData} alt={altText} /></li> );
       })}
     </ul>
   );
