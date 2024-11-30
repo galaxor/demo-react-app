@@ -18,7 +18,7 @@ export default function NavigationSidebar() {
       <nav id="site-navigation">
 
       {user && <h2 id="create-a-post" className="button"><NavLink to="/create">
-        <FontAwesomeIcon icon={icons.penToSquare} size="m" />
+        <FontAwesomeIcon icon={icons.penToSquare} />
         Create
       </NavLink></h2>
       }

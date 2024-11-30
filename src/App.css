@@ -36,6 +36,12 @@ img.avatar-small {
 header {
   display: flex;
   position: fixed;
+  top: 0;
+  left: 0;
+  padding: 8px 8px 0 8px;
+  height: 38px;
+  width: 100%;
+  background: var(--bg-color);
 
   section#user-section {
     position: fixed;
@@ -51,7 +57,7 @@ header {
       li#notification-bell {
         position: absolute;
         right: 15px;
-        top: 10px;
+        top: 5px;
 
         label:has(input:focus) {
           border: 2px solid blue;
