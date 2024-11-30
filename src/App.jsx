@@ -40,8 +40,10 @@ function App({db}) {
       <UserSection />
     </header>
 
-    <NavigationSidebar />
-    <Outlet />
+    <div id="page-body">
+      <NavigationSidebar />
+      <Outlet />
+    </div>
     </SystemNotificationsContext.Provider>
     </LanguageContext.Provider>
     </UserContext.Provider>

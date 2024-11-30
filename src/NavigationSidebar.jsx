@@ -1,7 +1,9 @@
 import { useContext } from 'react';
 import UserContext from './UserContext';
 import { Link, NavLink, useMatches } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import icons from './icons.js'
 import User from './logic/user.js';
 
 import './static/nav.css';
@@ -15,7 +17,11 @@ export default function NavigationSidebar() {
     <aside id="site-navigation">
       <nav id="site-navigation">
 
-      {user && <h2><NavLink to="/create">Create</NavLink></h2>}
+      {user && <h2 id="create-a-post" className="button"><NavLink to="/create">
+        <FontAwesomeIcon icon={icons.penToSquare} size="m" />
+        Create
+      </NavLink></h2>
+      }
 
       <section>
       <h2 id="available-feeds">Available Feeds</h2>

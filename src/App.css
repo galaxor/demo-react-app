@@ -1,3 +1,5 @@
+@import url("static/variables.css");
+
 .visually-hidden {
   height: 0.1px;
   width: 0.1px;
@@ -33,9 +35,11 @@ img.avatar-small {
 /* Arrange the header */
 header {
   display: flex;
+  position: fixed;
 
   section#user-section {
-    order: 0;
+    position: fixed;
+    width: 100%;
 
     ul {
       display: flex;
@@ -46,7 +50,8 @@ header {
       li#user-name { order: 0; }
       li#notification-bell {
         position: absolute;
-        right: 0;
+        right: 15px;
+        top: 10px;
 
         label:has(input:focus) {
           border: 2px solid blue;
@@ -63,14 +68,47 @@ header {
   a#site-logo {
     display: block;
     text-align: right;
-    position: absolute;
-    right: 30px;
+    position: fixed;
+    right: 33px;
+    top: 18px;
   }
 
   section#user-section {
     li#user-name {
-      img { display: block; }
       bdi { display: block; }
+      img {
+        display: block;
+        width: 30px;
+        height: 30px;
+      }
     }
+  }
+}
+
+h2#create-a-post {
+  position: fixed;
+  top: 15px;
+  left: 50px;
+  margin: 0;
+  font-size: 14pt;
+}
+
+div#page-body {
+  padding-top: 30px;
+}
+
+.button {
+  a:visited,
+  a {
+    text-decoration: none;
+    color: var(--button-fg-color);
+
+    background: var(--button-bg-color);
+    color: var(--button-fg-color);
+    border-radius: 20px;
+    padding-top: 8px;
+    padding-bottom: 5px;
+    padding-left: 1em;
+    padding-right: 1em;
   }
 }
