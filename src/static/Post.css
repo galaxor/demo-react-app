@@ -28,15 +28,24 @@ div.post {
     
     span.post-date {
       display: block;
+      order: 1;
     }
 
     span.post-author {
       display: block;
     }
-  }
 
-  .abs-date {
-    font-size: xx-small;
-    width: 15ex;
+    span.published-date {
+      text-align: right;
+
+      & > time {
+        display: block;
+      }
+
+      .abs-date {
+        font-size: xx-small;
+        width: 15ex;
+      }
+    }
   }
 }
