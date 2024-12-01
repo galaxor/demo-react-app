@@ -68,6 +68,14 @@ div.post {
 
         span.handle-and-trust {
           display: block;
+
+          span.person-inline-trust-info {
+            span.is-you {
+              font-weight: bold;
+              color: var(--text-color);
+              margin: 0 0.6ex;
+            }
+          }
         }
       }
     }
