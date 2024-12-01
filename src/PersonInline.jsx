@@ -1,8 +1,10 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import DatabaseContext from './DatabaseContext.jsx';
+import icons from './icons.js'
 import UserContext from './UserContext.jsx';
 import { PeopleDB } from './logic/people.js';
 
@@ -25,7 +27,8 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
 
-  const avatarFallbackColor = hashSum(person.handle);
+  const avatarFallbackColor = hashSum(person.handle).substring(0,6);
+  const inverseFallbackColor = (0xffffff - parseInt('0x'+avatarFallbackColor)).toString(16);
 
   // Important states to note, so the user can make decisions about how much
   // they trust this user.
@@ -47,7 +50,9 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
         {person.avatar ?
           <img className="avatar-small u-photo" src={person.avatar} alt="" />
           :
-          <span className="avatar-fallback-small" style={{backgroundColor: '#'+(avatarFallbackColor.toString())}} />
+          <span className="avatar-fallback-small" style={{backgroundColor: '#'+avatarFallbackColor}}>
+            <FontAwesomeIcon icon={icons.user} />
+          </span>
         } {" "}
         <bdi className="p-name">{person.displayName}</bdi> {" "}
         <span className="handle-inline u-impp">{person.handle}</span>

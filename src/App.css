@@ -13,6 +13,13 @@ span.avatar-fallback-large,
 span.avatar-fallback-medium,
 span.avatar-fallback-small {
   display: inline-block;
+  text-align: center;
+  color: black;
+
+  svg {
+    position: relative;
+    top: 3px;
+  }
 }
 
 
