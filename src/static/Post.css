@@ -87,6 +87,10 @@ div.post {
   }
 
   aside.post-stats {
+    .stat-destination {
+      display: block;
+    }
+
     & > ul {
       display: flex;
       flex-wrap: wrap;
@@ -105,6 +109,27 @@ div.post {
             margin-left: 0;
           }
         }
+      }
+
+      li.post-stat-replies {
+        flex: 1;
+      }
+      li.post-stat-boosts {
+        flex: 2;
+      }
+
+      ul.boosts {
+        justify-content: space-around;
+      }
+
+      a.stat-destination {
+        font-size: small;
+        display: block;
+        margin-bottom: 0.3ex;
+      }
+
+      a.stat {
+        text-decoration: none;
       }
 
       li.reactions {

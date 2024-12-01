@@ -37,11 +37,11 @@ export default function Boosts({post, onBoost}) {
     <span id={htmlId} className="boosts-header visually-hidden">
       Boosts
     </span>
-    <ul aria-labelledby={htmlId}>
-      <li className={'non-quote-boosts ' + ((numYourBoosts > 0) && 'you-did-this')}>
-        <NavLink className="show-post-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boosts</NavLink>
+    <ul className="boosts" aria-labelledby={htmlId}>
+      <li className={'non-quote-boosts ' + (numYourBoosts > 0 ? 'you-did-this' : '')}>
+        <NavLink className="stat-destination show-post-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boosts</NavLink>
         {user? 
-          <Link to="/" onClick={e => {
+          <Link to="/" className="stat" onClick={e => {
             e.preventDefault();
             clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
             if (typeof onBoost === "function") { onBoost(); }
@@ -50,7 +50,7 @@ export default function Boosts({post, onBoost}) {
             <span className="total">{numBoosts}</span>
           </Link>
           :
-          <div>
+          <div className="stat">
             <span className="icon" aria-label="Boosts">♻</span>
             <span className="total">{numBoosts}</span>
           </div>
@@ -58,15 +58,15 @@ export default function Boosts({post, onBoost}) {
           
       </li>
 
-      <li className={'quote-boosts ' + ((numYourQuoteBoosts > 0) && 'you-did-this')}>
-        <NavLink className="show-post-quote-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote Boosts</NavLink>
+      <li className={'quote-boosts ' + (numYourQuoteBoosts > 0? 'you-did-this' : '')}>
+        <NavLink className="stat-destination show-post-quote-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote Boosts</NavLink>
         {user?
-          <Link to={"/quote-boost/"+encodeURIComponent(post.uri)}>
+          <Link className="stat" to={"/quote-boost/"+encodeURIComponent(post.uri)}>
             <span className="icon" aria-label="Quote Boosts">♻💬</span>
             <span className="total">{numQuoteBoosts}</span>
           </Link>
           :
-          <div>
+          <div className="stat">
             <span className="icon" aria-label="Quote Boosts">♻💬</span>
             <span className="total">{numQuoteBoosts}</span>
           </div>
