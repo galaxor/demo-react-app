@@ -1,9 +1,11 @@
 import { useContext, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PostsDB } from './logic/posts.js';
 
 import DatabaseContext from './DatabaseContext.jsx';
+import icons from './icons.js'
 import { toggleReaction } from './toggle-reaction.js';
 import User from './logic/user.js';
 import UserContext from './UserContext.jsx';
@@ -62,7 +64,9 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
 
   return (
     <>
-    <Link id={htmlId} ref={addAReactionRef} onClick={e => setMenuOpen(!menuOpen)}>Add a reaction</Link>
+    <Link id={htmlId} ref={addAReactionRef} onClick={e => setMenuOpen(!menuOpen)}>
+      <FontAwesomeIcon title="Add a reaction" icon={icons.squarePlus} size="lg" />
+    </Link>
     <EmojiPicker className="emoji-picker" open={menuOpen} 
       defaultSkinTone={typeof skinTone==="undefined"? user.skinTonePref : skinTone}
       onEmojiClick={emoji => {

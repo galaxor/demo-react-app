@@ -58,7 +58,7 @@ export default function Reactions({post, onReact}) {
           </li>
         )}
         {user && 
-          <li>
+          <li className="add-a-reaction">
             <ReactionsMenu 
               htmlId={htmlId+'-add'}
               post={post} 
