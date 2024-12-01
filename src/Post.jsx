@@ -1,6 +1,7 @@
 import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
-import ReactTimeAgo from 'react-time-ago'
 import { Link, NavLink } from 'react-router-dom'
+import ReactTimeAgo from 'react-time-ago'
+import TimeAgo from 'javascript-time-ago'
 import Markdown from 'react-markdown'
 
 import Boosts from './Boosts.jsx'
@@ -13,6 +14,8 @@ import PostEditor from './PostEditor.jsx'
 import { PostsDB } from './logic/posts.js'
 import Reactions from './Reactions.jsx'
 import UserContext from './UserContext.jsx'
+
+import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js'
 
 import './static/Post.css'
 
@@ -49,10 +52,6 @@ const Post = forwardRef(function Post(props, ref) {
   // that for now, but one day, we'd like to expand that.  In that case, we'll
   // need some way of knowing *which* post is being boosted here.
 
-  const dateFormat = new Intl.DateTimeFormat(navigator.language, {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
-  });
-
   const htmlId = encodeURIComponent(post.uri)+'-stats';
 
   // If it's a boost, we need to draw it as a boost.
@@ -62,7 +61,7 @@ const Post = forwardRef(function Post(props, ref) {
         <div className="boost-info">
         ♻ <PersonInline person={post.authorPerson} /> boosted this at {" "}
           <time dateTime={post.updatedAt}>
-            {dateFormat.format(new Date(post.updatedAt))}
+            {fullDateTime.format(new Date(post.updatedAt))}
             (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
           </time>
         </div>
@@ -79,6 +78,9 @@ const Post = forwardRef(function Post(props, ref) {
 
   const replyingToPost = showReplyBanner && post.inReplyTo? postsDB.get(post.inReplyTo) : null;
 
+  // We're using ReactTimeAgo in the markup, but plain javascript-time-ago in the aria.
+  const timeAgo = new TimeAgo(languageContext);
+
   return (<>
     <article className="post h-entry">
       {replyingToPost && 
@@ -87,7 +89,7 @@ const Post = forwardRef(function Post(props, ref) {
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
           posted {" "}
           <time dateTime={replyingToPost.createdAt}>
-            {dateFormat.format(new Date(replyingToPost.createdAt))} {" "}
+            {fullDateTime.format(new Date(replyingToPost.createdAt))} {" "}
             (<ReactTimeAgo date={new Date(replyingToPost.createdAt)} locale={languageContext} />)
           </time>
           </Link>
@@ -95,29 +97,35 @@ const Post = forwardRef(function Post(props, ref) {
       }
 
       <div className="post">
-        <span className="post-date">
-          Posted {" "}
-          <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
-              <span className="dt-published published-date">
-                <time dateTime={post.createdAt}>{dateFormat.format(new Date(post.createdAt))}</time> {" "}
-                (<ReactTimeAgo date={new Date(post.createdAt)} locale={languageContext} />)
-              </span>
-
-              {post.updatedAt !== post.createdAt ?
-                <span className="dt-updated updated-date">
-                  , updated {" "}
-                  <time dateTime={post.updatedAt}>{dateFormat.format(new Date(post.updatedAt))}</time> {" "}
-                  (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
+        <span className="post-metadata">
+          <span className="post-date"
+            aria-label={"Posted "+timeAgo.format(new Date(post.createdAt))+", "+fullDateTime.format(new Date(post.createdAt))}>
+            <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
+                <span className="dt-published published-date">
+                  <ReactTimeAgo date={new Date(post.createdAt)} timeStyle="mini" locale={languageContext} />
+                  <div className="abs-date">
+                    <div>{dayFormat.format(new Date(post.createdAt))}</div>
+                    <div>{dateFormat.format(new Date(post.createdAt))}</div>
+                    <div>{timeFormat.format(new Date(post.createdAt))}</div>
+                  </div>
                 </span>
-                :
-                ''
-              }
-          </Link>
-        </span>
-            
-        <span className="post-author">
-          By {" "}
-          <PersonInline person={post.authorPerson} />
+
+                {post.updatedAt !== post.createdAt ?
+                  <span className="dt-updated updated-date">
+                    , updated {" "}
+                    <time dateTime={post.updatedAt}>{fullDateTime.format(new Date(post.updatedAt))}</time> {" "}
+                    <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />
+                  </span>
+                  :
+                  ''
+                }
+            </Link>
+          </span>
+              
+          <span className="post-author">
+            <span className="visually-hidden">By</span>
+            <PersonInline person={post.authorPerson} />
+          </span>
         </span>
 
         {(post.type ?? "text") === "text" && <div className="post-text e-content" lang={post.language}>{post.text}</div>}

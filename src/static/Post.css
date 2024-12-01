@@ -21,3 +21,22 @@ article.post {
   margin-left: 10px;
   padding-left: 20px;
 }
+
+div.post {
+  span.post-metadata {
+    display: flex;
+    
+    span.post-date {
+      display: block;
+    }
+
+    span.post-author {
+      display: block;
+    }
+  }
+
+  .abs-date {
+    font-size: xx-small;
+    width: 15ex;
+  }
+}
