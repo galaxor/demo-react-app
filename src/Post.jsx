@@ -142,7 +142,7 @@ const Post = forwardRef(function Post(props, ref) {
 
         {showStatsForReal && 
           <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
-            <span className="post-stats-header" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
+            <span className="post-stats-header visually-hidden" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
             
             <ul aria-labelledby={htmlId+'-header'}>
               <li>
@@ -150,7 +150,7 @@ const Post = forwardRef(function Post(props, ref) {
                 <NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  />
               </li>
               <li><Boosts onBoost={onBoost} post={post} /></li>
-              <li><Reactions post={post} onReact={onReact} /></li>
+              <li className="reactions"><Reactions post={post} onReact={onReact} /></li>
             </ul>
           </aside>
         }

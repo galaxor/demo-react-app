@@ -45,9 +45,9 @@ export default function Reactions({post, onReact}) {
   return (
     <>
       <NavLink id={htmlId} className="reactions-header" to={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reactions</NavLink>
-      <ul aria-labelledby={htmlId}>
+      <ul className="reactions" aria-labelledby={htmlId}>
         {reactionTotals.map(reaction =>
-          <li key={[reaction.type, reaction.unicode, reaction.reactServer, reaction.reactUrl].join('-')}>
+          <li className="reaction" key={[reaction.type, reaction.unicode, reaction.reactServer, reaction.reactUrl].join('-')}>
             <Reaction post={post} reaction={reaction} 
               reactionTotals={reactionTotals} 
               setReactionTotals={setReactionTotals}

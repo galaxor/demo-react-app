@@ -34,7 +34,7 @@ export default function Boosts({post, onBoost}) {
 
   return (
     <>
-    <span id={htmlId} className="boosts-header">
+    <span id={htmlId} className="boosts-header visually-hidden">
       Boosts
     </span>
     <ul aria-labelledby={htmlId}>

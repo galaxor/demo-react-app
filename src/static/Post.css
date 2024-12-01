@@ -25,7 +25,8 @@ article.post {
 div.post {
   span.post-metadata {
     display: flex;
-        justify-content: space-between;
+    justify-content: space-between;
+    margin-bottom: 0.6ex;
     
     span.post-date {
       display: block;
@@ -74,6 +75,62 @@ div.post {
               font-weight: bold;
               color: var(--text-color);
               margin: 0 0.6ex;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  aside.post-stats {
+    & > ul {
+      display: flex;
+      flex-wrap: wrap;
+      padding-left: 0;
+
+      & > li {
+        display: block;
+        margin-left: 0;
+
+        & > ul {
+          display: flex;
+          padding-left: 0;
+          
+          & > li {
+            display: block;
+            margin-left: 0;
+          }
+        }
+      }
+
+      li.reactions {
+        order: -1;
+        flex: 100%;
+        margin-bottom: 1ex;
+
+        & > ul {
+          flex-wrap: wrap;
+        }
+
+        --reaction-height: 23px;
+
+        li.reaction {
+          margin: 0 1ex 0 0;
+
+          a {
+            display: flex;
+            height: var(--reaction-height);
+            line-height: var(--reaction-height);
+
+            text-decoration: none;
+
+            .glyph {
+              margin-right: 0.6ex;
+            }
+
+            img {
+              height: var(--reaction-height);
+              object-fit: contain;
             }
           }
         }
