@@ -48,20 +48,30 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
     <span className={"person-inline " + (isYou? "is-you " : " ") + (youFollowThem? "trust-you-follow-them " : " ") + (onHomeServer? "trust-on-home-server " : " ")}>
       <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
         {person.avatar ?
-          <img className="avatar-small u-photo" src={person.avatar} alt="" />
+          <img className="avatar avatar-small u-photo" src={person.avatar} alt="" />
           :
-          <span className="avatar-fallback-small" style={{backgroundColor: '#'+avatarFallbackColor}}>
+          <span className="avatar avatar-fallback-small" style={{backgroundColor: '#'+avatarFallbackColor}}>
             <FontAwesomeIcon icon={icons.user} />
           </span>
         } {" "}
-        <bdi className="p-name">{person.displayName}</bdi> {" "}
-        <span className="handle-inline u-impp">{person.handle}</span>
+        <div className="name-handle">
+          <bdi className="p-name">{person.displayName}</bdi> {" "}
+          <span className="handle-and-trust">
+            <span className="handle-inline u-impp">{person.handle}</span>
+            <span className="person-inline-trust-info">
+              {isYou && <span className="is-you">You</span>} {" "}
+              {onHomeServer && <span className="trust-on-this-server">
+                  <FontAwesomeIcon title="From this server" icon={icons.house} />
+                </span>
+              } {" "}
+              {youFollowThem && <span className="trust-you-follow-them" aria-label="You follow them">
+                  <FontAwesomeIcon title="You follow them" icon={icons.flag} />
+                </span>
+              }
+            </span>
+          </span>
+        </div>
       </Link>
-      <span className="person-inline-trust-info">
-        {isYou && <span className="is-you">You</span>} {" "}
-        {youFollowThem && <span className="trust-you-follow-them">You follow them.</span>} {" "}
-        {onHomeServer && <span className="trust-on-this-server">From this server.</span>}
-      </span>
     </span>
   );
 }

@@ -4,7 +4,7 @@ import PostAndYourNewReplies from './PostAndYourNewReplies.jsx'
 export default function PostsList({posts}) {
   
   return (
-    <div className={"posts-list" + (posts.length > 0 || " no-posts")}>
+    <div className={"posts-list" + (posts.length === 0? " no-posts" : "")}>
       {(posts && posts.length > 0) ?
         <>
         {posts.map((post) => { 

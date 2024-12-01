@@ -53,6 +53,7 @@ img.avatar-small {
 
 /* Arrange the header */
 header {
+  z-index: 1;
   display: flex;
   position: fixed;
   top: 0;
@@ -112,6 +113,7 @@ header {
 
 div#login-link,
 h2#create-a-post {
+  z-index: 2;
   position: fixed;
   display: block;
   top: 15px;
@@ -142,4 +144,10 @@ div#page-body {
     padding-left: 1em;
     padding-right: 1em;
   }
+}
+
+main {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
