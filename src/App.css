@@ -9,7 +9,16 @@
   z-index: -1;
 }
 
+span.avatar-fallback-large,
+span.avatar-fallback-medium,
+span.avatar-fallback-small {
+  display: inline-block;
+}
 
+
+span.avatar-fallback-large,
+span.avatar-fallback-medium,
+span.avatar-fallback-small,
 img.avatar-large,
 img.avatar-medium,
 img.avatar-small {
@@ -17,19 +26,22 @@ img.avatar-small {
   border: 2px solid black;
 }
 
+span.avatar-fallback-large,
 img.avatar-large {
   width: 150px;
   height: 150px;
 }
 
+span.avatar-fallback-medium,
 img.avatar-medium {
   width: 75px;
   height: 75px;
 }
 
+span.avatar-fallback-small,
 img.avatar-small {
-  width: 40px;
-  height: 40px;
+  width: 25px;
+  height: 25px;
 }
 
 /* Arrange the header */
