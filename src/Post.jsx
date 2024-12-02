@@ -137,7 +137,7 @@ const Post = forwardRef(function Post(props, ref) {
           <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
             <span className="post-stats-header visually-hidden" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
             
-            <ul aria-labelledby={htmlId+'-header'}>
+            <ul aria-labelledby={htmlId+'-header'} className="post-stat-bar">
               <li className="post-stat post-stat-replies">
                 <NavLink className="stat-destination" to={"/post/"+encodeURIComponent(post.uri)}>Replies</NavLink>
                 <NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  />

@@ -92,16 +92,17 @@ div.post {
       display: block;
     }
 
-    & > ul {
+    ul.post-stat-bar {
       display: flex;
       flex-wrap: wrap;
       padding-left: 0;
 
-      & > li {
+      & > li.post-stat {
         display: block;
         margin-left: 0;
 
-        & > ul {
+        & > ul.reactions,
+        & > ul.boosts {
           display: flex;
           padding-left: 0;
           
@@ -125,6 +126,8 @@ div.post {
 
       a.stat {
         text-decoration: none;
+        display: block;
+        width: 100%;
       }
 
       li.reactions {
