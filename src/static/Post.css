@@ -1,5 +1,13 @@
 article.post {
   margin-top: 1em;
+
+  .time-ago {
+    font-weight: bold;
+  }
+
+  .post-stat-bar {
+    margin-left: 5ex;
+  }
 }
 
 .quote-boosted-posts {
