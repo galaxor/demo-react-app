@@ -15,7 +15,7 @@ export default function PostAndReplies({post, prune}) {
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
 
-  const postRef = useRef();
+  const postRef = useRef(null);
 
   const postsDB = new PostsDB(db);
 
