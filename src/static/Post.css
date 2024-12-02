@@ -1,3 +1,7 @@
+article.post > div.post:hover {
+  background: var(--hover-color);
+}
+
 article.post {
   margin-top: 1em;
 
