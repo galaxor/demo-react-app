@@ -1,9 +1,11 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react';
 import { Link, NavLink, Outlet, useLoaderData } from "react-router-dom";
 
 import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
+import icons from './icons.js'
 import LogoutLink from './LogoutLink.jsx';
 import PersonContext from './PersonContext.jsx';
 import { PeopleDB } from './logic/people.js';
@@ -56,17 +58,25 @@ export default function ProfileView({handle, loggedInUser, children }) {
           </a>
         }
         {" "}
-        {isYou && <span className="is-you">(You)</span>}
       </h1>
 
       <SystemNotificationArea />
 
-      {onHomeServer && <span className="trust-on-this-server">From this server.</span>} {" "}
+      {isYou || onHomeServer? 
+        <section className="trust-info">
+          {isYou && <span className="is-you">You</span>} {" "}
 
-      {user && !isYou && <FriendStatus person={person} />}
+          {onHomeServer && <span className="trust-on-this-server"><FontAwesomeIcon icon={icons.house} title="From this server" size="lg" /></span>} {" "}
+        </section>
+        : ""
+      }
 
-      {isYou && <Link className="edit-your-profile" to="/profile/edit">Edit Profile</Link>}
-      {isYou && <LogoutLink />}
+      <section className="actions">
+        {user && !isYou && <FriendStatus person={person} />}
+
+        {isYou && <span className="button"><Link className="edit-your-profile" to="/profile/edit">Edit Profile</Link></span>}
+        {isYou && <LogoutLink />}
+      </section>
 
       {person.avatar &&
         <>
