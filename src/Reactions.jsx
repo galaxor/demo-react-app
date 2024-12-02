@@ -44,7 +44,7 @@ export default function Reactions({post, onReact}) {
   const htmlId = encodeURIComponent(post.uri)+'-reactions';
   return (
     <>
-      <NavLink id={htmlId} className="reactions-header" to={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reactions</NavLink>
+      <NavLink id={htmlId} className="stat-destination reactions-header" to={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reactions</NavLink>
       <ul className="reactions" aria-labelledby={htmlId}>
         {reactionTotals.map(reaction =>
           <li className="reaction" key={[reaction.type, reaction.unicode, reaction.reactServer, reaction.reactUrl].join('-')}>
