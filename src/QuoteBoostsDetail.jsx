@@ -2,7 +2,7 @@ import { PeopleDB } from './logic/people.js';
 import { PostsDB } from './logic/posts.js';
 
 import PersonInline from './PersonInline.jsx';
-import Post from './Post.jsx';
+import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import PostsList from './PostsList.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
@@ -25,10 +25,6 @@ export default function QuoteBoostsDetail() {
 
   const peopleDB = new PeopleDB(db);
   const postsDB = new PostsDB(db);
-
-  const postRef = useRef();
-
-  const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(post.uri));
 
   // Scroll the post into view when it first becomes visible.
   const scrollHereRef = useCallback(node => {
@@ -86,13 +82,7 @@ export default function QuoteBoostsDetail() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} />
-      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies}
-        onBoost={() => {
-          setNumBoosts(getNumBoosts());
-          setNumYourBoosts(getNumYourBoosts());
-          setBoostPostsList(getBoostPostsList());
-        }}
-      />
+      <PostAndYourNewReplies post={post} />
 
       <h2>{numQuoteBoosts > 1 || numQuoteBoosts === 0? 
         <>Quote-Boosted {numQuoteBoosts} times</>
