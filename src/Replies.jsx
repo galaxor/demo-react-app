@@ -43,7 +43,7 @@ export default function Replies({postRepliedTo, prune, replies, setReplies}) {
         } else {
           return (
           <li key={'li-'+reply.uri}>
-            <PostAndReplies key={reply.uri} post={reply} />
+            <PostAndReplies key={reply.uri} post={reply} prune={prune} />
           </li>
           );
         }

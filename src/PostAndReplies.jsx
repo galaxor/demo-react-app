@@ -26,6 +26,8 @@ export default function PostAndReplies({post, prune}) {
 
   const [composingReply, setComposingReply] = useState(false);
 
+  if (post.uri === prune) { return ""; }
+
   return (
     <>
       <Post ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
@@ -36,7 +38,7 @@ export default function PostAndReplies({post, prune}) {
         }
 
         {numReplies > 0 &&
-          <Replies postRepliedTo={post} replies={replies} />
+          <Replies postRepliedTo={post} replies={replies} prune={prune} />
         }
       </Post>
     </>
