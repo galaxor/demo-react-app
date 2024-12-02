@@ -33,16 +33,10 @@ export default function PostAndReplies({post, prune}) {
   useEffect(() => {
     const postDiv = postRef.current.getPostDiv();
 
-    const clickablePosts = postDiv.querySelectorAll('article.post > div.post')
-
-    clickablePosts.forEach(node => {
-      node.addEventListener('click', clickPost);
-    });
+    postDiv.addEventListener('click', clickPost);
 
     return(() => {
-      clickablePosts.forEach(node => {
-        node.removeEventListener('click', clickPost);
-      });
+      postDiv.removeEventListener('click', clickPost);
     });
   }, [postRef]);
 

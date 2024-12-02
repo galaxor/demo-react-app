@@ -23,7 +23,7 @@ export default function Replies({postRepliedTo, prune, replies, setReplies}) {
         node.removeEventListener('click', clickPost);
       });
     });
-  }, []);
+  });
 
 
   return (
