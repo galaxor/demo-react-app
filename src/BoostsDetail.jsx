@@ -25,8 +25,6 @@ export default function BoostsDetail() {
   const peopleDB = new PeopleDB(db);
   const postsDB = new PostsDB(db);
 
-  const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(post.uri));
-
   // Scroll the post into view when it first becomes visible.
   const scrollHereRef = useCallback(node => {
     if (node) { node.scrollIntoView(); }
