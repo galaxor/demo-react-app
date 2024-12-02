@@ -9,7 +9,7 @@ import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
@@ -18,9 +18,9 @@ export default function PostSingle() {
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
 
-  const postsDB = new PostsDB(db);
+  const postsDB = useMemo(() => new PostsDB(db), [db]);
 
-  const postRef = useRef();
+  const postRef = useRef(null);
 
   const [replies, setReplies] = useState(postsDB.getRepliesTo(post.uri));
 
@@ -50,7 +50,7 @@ export default function PostSingle() {
     const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
     setNumReplies(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
     setComposingReply(false);
-  }, [post, replies, setReplies, setNumReplies, setComposingReply]);
+  }, [post, postsDB]);
 
 
   return (
