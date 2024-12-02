@@ -2,7 +2,7 @@ import { PeopleDB } from './logic/people.js';
 import { PostsDB } from './logic/posts.js';
 
 import PersonInline from './PersonInline.jsx';
-import Post from './Post.jsx';
+import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -24,8 +24,6 @@ export default function BoostsDetail() {
 
   const peopleDB = new PeopleDB(db);
   const postsDB = new PostsDB(db);
-
-  const postRef = useRef();
 
   const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(post.uri));
 
@@ -85,7 +83,7 @@ export default function BoostsDetail() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} />
-      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies}
+      <PostAndYourNewReplies post={post} 
         onBoost={() => {
           setNumBoosts(getNumBoosts());
           setNumYourBoosts(getNumYourBoosts());
