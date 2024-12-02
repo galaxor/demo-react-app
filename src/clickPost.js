@@ -11,12 +11,10 @@ export function clickPost(e) {
   
   // Is the target a child of the reply link, or the reply link itself?
   var node = e.target;
-  for ( ; node != replyLink; node = node.parentElement) { }
+  for ( ; node != replyLink && node.nodeName !== "ARTICLE"; node = node.parentElement) { }
   if (node === replyLink) {
-    console.log("Recusing B");
     return;
   } else {
-    console.log("Fire B 3", e.target.nodeName);
     var node = e.target;
     for ( ; node.nodeName !== "ARTICLE"; node = node.parentElement) { }
     node.querySelector('a.post-time').click();
