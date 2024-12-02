@@ -87,13 +87,8 @@ const Post = forwardRef(function Post(props, ref) {
     <article className="post h-entry">
       {replyingToPost && 
         <div className="boost-info">
-        💬 Replying to post by <PersonInline person={replyingToPost.authorPerson} />, 
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
-          posted {" "}
-          <time dateTime={replyingToPost.createdAt}>
-            {fullDateTime.format(new Date(replyingToPost.createdAt))} {" "}
-            (<ReactTimeAgo date={new Date(replyingToPost.createdAt)} locale={languageContext} />)
-          </time>
+            <FontAwesomeIcon icon="comment" /> Replying to <bdi>{replyingToPost.authorPerson.displayName}</bdi> 
           </Link>
         </div>
       }

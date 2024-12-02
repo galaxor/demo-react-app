@@ -39,6 +39,7 @@ div.post {
 
     span.post-author {
       display: block;
+      overflow: hidden;
     }
 
     span.published-date {
