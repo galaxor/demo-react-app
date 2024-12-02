@@ -50,9 +50,9 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
     <span className={"person-inline " + (isYou? "is-you " : " ") + (youFollowThem? "trust-you-follow-them " : " ") + (onHomeServer? "trust-on-home-server " : " ")}>
       <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
         {person.avatar ?
-          <img className="avatar avatar-small u-photo" src={person.avatar} alt="" />
+          <img className="avatar avatar-person-inline u-photo" src={person.avatar} alt="" />
           :
-          <span className="avatar avatar-fallback-small" style={{backgroundColor: '#'+avatarFallbackColor}}>
+          <span className="avatar avatar-fallback-person-inline" style={{backgroundColor: '#'+avatarFallbackColor}}>
             <FontAwesomeIcon icon={icons.user} />
           </span>
         } {" "}

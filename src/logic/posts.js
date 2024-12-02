@@ -43,7 +43,7 @@ export class PostsDB {
       .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
     ;
 
-    replies.sort((a, b) => a.createdAt===b.createdAt? 0 : (a.createdAt < b.createdAt? 1 : 0));
+    replies.sort((a, b) => a.createdAt===b.createdAt? 0 : (a.createdAt > b.createdAt? 1 : 0));
 
     return replies;
   }

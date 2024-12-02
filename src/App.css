@@ -9,6 +9,7 @@
   z-index: -1;
 }
 
+span.avatar-fallback-person-inline,
 span.avatar-fallback-large,
 span.avatar-fallback-medium,
 span.avatar-fallback-small {
@@ -23,9 +24,11 @@ span.avatar-fallback-small {
 }
 
 
+span.avatar-fallback-person-inline,
 span.avatar-fallback-large,
 span.avatar-fallback-medium,
 span.avatar-fallback-small,
+img.avatar-person-inline,
 img.avatar-large,
 img.avatar-medium,
 img.avatar-small {
@@ -43,6 +46,12 @@ span.avatar-fallback-medium,
 img.avatar-medium {
   width: 75px;
   height: 75px;
+}
+
+span.avatar-fallback-person-inline,
+img.avatar-person-inline {
+  width: 40px;
+  height: 40px;
 }
 
 span.avatar-fallback-small,
