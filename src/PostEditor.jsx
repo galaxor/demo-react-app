@@ -35,7 +35,7 @@ import UserContext from './UserContext.jsx'
 import './static/PostEditor.css'
 
 const PostEditor = forwardRef(function PostEditor(props, ref) {
-  const {onSave, onCancel, replyingTo, quotedPost} = props;
+  const {onSave, onCancel, replyingTo, quotedPost, conversationId} = props;
 
   const editorRef = useRef(null);
   const db = useContext(DatabaseContext);
@@ -101,7 +101,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     </div>
     <PostImageEditor ref={imageEditorRef} />
     <div className="post-finish-actions">
-      <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost, imageEditorRef })}>Post</button>
+      <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>Post</button>
       <button onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
     </div>
     </>
@@ -110,7 +110,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 
 export default PostEditor;
 
-function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, quotedPost, imageEditorRef }) {
+function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -129,7 +129,7 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
     deletedAt: null,
     inReplyTo: replyingTo ?? null,
     language: "", // XXX implement a language picker
-    conversationId: null,
+    conversationId: conversationId,
     local: true,
   };
 
