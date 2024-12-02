@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react';
-import { Link, NavLink, Outlet, useLoaderData } from "react-router-dom";
+import { Link, NavLink, Outlet, useLoaderData, useMatches } from "react-router-dom";
 
 import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
@@ -26,6 +26,8 @@ export default function ProfileView({handle, loggedInUser, children }) {
   } else {
     person = loadedPerson;
   }
+
+  const matches = useMatches();
 
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
@@ -89,7 +91,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       <nav className="navigation-tabs" aria-labelledby="navigation">
         <h2 id="navigation">Navigation</h2>
         <ul className="navigation-tabs" aria-labelledby="navigation">
-          <li><NavLink to={'/people/'+person.handle} end>Bio</NavLink></li>
+          <li><NavLink className={(user && matches[matches.length-1].pathname=="/profile") ? 'active' : ''} to={"/people/"+person.handle} end>Bio</NavLink></li>
           <li><NavLink to={'/people/'+person.handle+'/posts'}>Posts</NavLink></li>
           <li><NavLink to={'/people/'+person.handle+'/posts-replies'}>Posts and Replies</NavLink></li>
           <li><NavLink to={'/people/'+person.handle+'/followers'}>{whoFollowsThem.length} Followers</NavLink></li>
