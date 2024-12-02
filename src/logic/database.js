@@ -59,6 +59,7 @@ class Database {
 
           avatar: '/puppy-avatar.png',
           avatarOrig: '/puppy.jpg',
+          avatarAltText: "A cute puppy",
           avatarPosition: { x: 0.5360000000000001, y: 0.42666666666666675 },
           avatarRotate: 0,
           avatarScale: 1.5,

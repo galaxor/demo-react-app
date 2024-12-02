@@ -144,6 +144,24 @@ div#page-body {
     padding-left: 1em;
     padding-right: 1em;
   }
+
+  a:hover,
+  a:focus {
+    background: var(--button-hover-bg);
+    color: var(--button-hover-fg);
+    text-decoration: underline;
+  }
+}
+
+.logout-button a.logout {
+  background: var(--logout-button-bg-color);
+  color: var(--logout-button-fg-color);
+}
+
+.logout-button a.logout:hover,
+.logout-button a.logout:focus {
+  background: var(--logout-button-hover-bg);
+  color: var(--logout-button-hover-fg);
 }
 
 main {

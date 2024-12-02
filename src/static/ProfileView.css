@@ -3,3 +3,7 @@
     white-space: pre-line;
   }
 }
+
+section.trust-info {
+  margin-bottom: 2ex;
+}

@@ -82,7 +82,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
         <>
         <h2>Avatar</h2>
 
-        <a rel="noopener noreferrer" target="_blank" href={person.url} aria-label={person.displayName + ' ' + person.handle}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
+        <a rel="noopener noreferrer" target="_blank" href={person.url}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
         </>
       }
 

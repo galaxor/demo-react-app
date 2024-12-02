@@ -1,8 +1,16 @@
 :root {
   --text-color: black;
   --bg-color: white;
+
   --button-bg-color: #0766b9;
   --button-fg-color: white;
+  --button-hover-bg: #2786d9;
+  --button-hover-fg: white;
+  --logout-button-bg-color: #d80000;
+  --logout-button-fg-color: white;
+  --logout-button-hover-bg: #f00000;
+  --logout-button-hover-fg: white;
+
   --hover-color: #f7f7f7;
   --blockquote-color: #ccc;
 }
