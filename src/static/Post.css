@@ -183,3 +183,14 @@ div.post {
   z-index: 1;
   padding-left: 2.5px;
 }
+
+.posts-list article {
+  padding-bottom: 1em;
+  border-bottom: 1px solid black;
+  margin-bottom: 1em;
+}
+
+.posts-list article:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
