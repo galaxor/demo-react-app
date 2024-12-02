@@ -1,6 +1,7 @@
 import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
+import { useNavigate } from "react-router"
 import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
 import Markdown from 'react-markdown'
@@ -80,6 +81,8 @@ const Post = forwardRef(function Post(props, ref) {
 
   // We're using ReactTimeAgo in the markup, but plain javascript-time-ago in the aria.
   const timeAgo = new TimeAgo(languageContext);
+
+  const navigate = useNavigate();
 
   return (<>
     <article className="post h-entry">
