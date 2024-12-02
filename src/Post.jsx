@@ -12,6 +12,7 @@ import ImageList from './ImageList'
 import LanguageContext from './LanguageContext.jsx'
 import NumReplies from './NumReplies.jsx'
 import PersonInline from './PersonInline.jsx'
+import PersonName from './PersonName.jsx'
 import PostEditor from './PostEditor.jsx'
 import { PostsDB } from './logic/posts.js'
 import Reactions from './Reactions.jsx'
@@ -61,11 +62,8 @@ const Post = forwardRef(function Post(props, ref) {
     return ( <>
       <article className="post h-entry">
         <div className="boost-info">
-        ♻ <PersonInline person={post.authorPerson} /> boosted this at {" "}
-          <time dateTime={post.updatedAt}>
-            {fullDateTime.format(new Date(post.updatedAt))}
-            (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
-          </time>
+        <FontAwesomeIcon icon="repeat" /> {" "}
+          <PersonName link={true} person={post.authorPerson} /> boosted this.
         </div>
 
         <div className="boosted-posts">
@@ -88,7 +86,7 @@ const Post = forwardRef(function Post(props, ref) {
       {replyingToPost && 
         <div className="boost-info">
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
-            <FontAwesomeIcon icon="comment" /> Replying to <bdi>{replyingToPost.authorPerson.displayName}</bdi> 
+            <FontAwesomeIcon icon="comment" /> Replying to <PersonName person={replyingToPost.authorPerson.displayName} />
           </Link>
         </div>
       }

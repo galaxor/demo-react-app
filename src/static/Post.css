@@ -70,9 +70,11 @@ div.post {
         }
 
         span.handle-and-trust {
-          display: block;
+          display: flex;
 
           span.person-inline-trust-info {
+            order: -1;
+
             span.is-you {
               font-weight: bold;
               color: var(--text-color);
