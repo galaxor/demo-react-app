@@ -8,7 +8,7 @@ import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 
 export default function PostAndReplies({post, prune}) {
@@ -27,6 +27,36 @@ export default function PostAndReplies({post, prune}) {
   const [composingReply, setComposingReply] = useState(false);
 
   if (post.uri === prune) { return ""; }
+
+  function clickPost(e) {
+    // A little old-school javascript to pass the clicks to the link that goes to
+    // the post's PostSingle page.
+    if (e.target.nodeName === "A") {
+      return false;
+    } else {
+      var node = e.target;
+      for ( ; node.nodeName !== "ARTICLE"; node = node.parentElement) { }
+      node.querySelector('a.post-time').click();
+    }
+  }
+
+  // Make it so when you click a post, you go to its PostSingle page.
+  useEffect(() => {
+    const postDiv = postRef.current.getPostDiv();
+
+    console.log(postDiv);
+    const clickablePosts = postDiv.querySelectorAll('article.post > div.post')
+
+    clickablePosts.forEach(node => {
+      node.addEventListener('click', clickPost);
+    });
+
+    return(() => {
+      clickablePosts.forEach(node => {
+        node.removeEventListener('click', clickPost);
+      });
+    });
+  }, [postRef]);
 
   return (
     <>

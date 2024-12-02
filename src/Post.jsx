@@ -35,12 +35,23 @@ const Post = forwardRef(function Post(props, ref) {
 
   const replyLinkRef = useRef(null);
 
+  const postDivRef = useRef(null);
+  const childPostRef = useRef(null);
+
   if (typeof ref.current !== "undefined") {
     useImperativeHandle(ref, () => {
       return {
         focusReplyLink() {
           replyLinkRef.current.focus();
         },
+
+        getPostDiv() {
+          if (childPostRef !== null && childPostRef.current !== null) {
+            return childPostRef.current.getPostDiv();
+          } else {
+            return postDivRef.current;
+          }
+        }
       };
     });
   }
@@ -69,7 +80,7 @@ const Post = forwardRef(function Post(props, ref) {
 
         <div className="boosted-posts">
           {post.boostedPosts.map(boostedPost => 
-            <Post key={boostedPost.uri} post={boostedPost} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} />
+            <Post ref={childPostRef} key={boostedPost.uri} post={boostedPost} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} />
           )}
         </div>
         
@@ -94,7 +105,7 @@ const Post = forwardRef(function Post(props, ref) {
         </div>
       }
 
-      <div className="post">
+      <div ref={postDivRef} className="post">
         <span className="post-metadata">
           <span className="post-date"
             aria-label={post.updatedAt === post.createdAt?
