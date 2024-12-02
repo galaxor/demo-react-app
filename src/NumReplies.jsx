@@ -10,7 +10,7 @@ import UserContext from './UserContext.jsx'
 const NumReplies = forwardRef(function NumReplies(props, ref) {
   const {post, knownReplies, setComposingReply, numReplies} = props;
 
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
   const replies = knownReplies ?? postsDB.getRepliesTo(post.uri);
