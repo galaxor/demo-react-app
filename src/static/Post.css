@@ -55,35 +55,6 @@ div.post {
 
     span.post-author {
       display: block;
-
-      a.person-inline {
-        display: flex;
-        gap: 1ex;
-        text-decoration: none;
-
-        .avatar {
-          display: block;
-        }
-
-        bdi {
-          font-weight: bold;
-          display: block;
-        }
-
-        span.handle-and-trust {
-          display: flex;
-
-          span.person-inline-trust-info {
-            order: -1;
-
-            span.is-you {
-              font-weight: bold;
-              color: var(--text-color);
-              margin: 0 0.6ex;
-            }
-          }
-        }
-      }
     }
   }
 

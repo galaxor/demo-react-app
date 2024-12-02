@@ -8,6 +8,8 @@ import icons from './icons.js'
 import UserContext from './UserContext.jsx';
 import { PeopleDB } from './logic/people.js';
 
+import './static/Person.css'
+
 export default function PersonInline({person, onClick, onHover, onUnHover}) {
   // XXX I'm not implementing hover and unhover right now, so I want the linter to yell at me about it.
   // The thing is, React doesn't have a notion of "hover".  You have to use a

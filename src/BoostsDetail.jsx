@@ -96,7 +96,7 @@ export default function BoostsDetail() {
       }</h2>
 
       {numBoosts <= 0? "No boosts." :
-        <ul>
+        <ul className="boosts-detail">
         {boostPostsList.map(post => {
           const key=encodeURIComponent(post.uri);
           const authorPerson = peopleDB.get(post.author);
