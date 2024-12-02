@@ -1,4 +1,5 @@
 import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
 import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
@@ -6,6 +7,7 @@ import Markdown from 'react-markdown'
 
 import Boosts from './Boosts.jsx'
 import DatabaseContext from './DatabaseContext'
+import icons from './icons.js'
 import ImageList from './ImageList'
 import LanguageContext from './LanguageContext.jsx'
 import NumReplies from './NumReplies.jsx'
@@ -99,26 +101,24 @@ const Post = forwardRef(function Post(props, ref) {
       <div className="post">
         <span className="post-metadata">
           <span className="post-date"
-            aria-label={"Posted "+timeAgo.format(new Date(post.createdAt))+", "+fullDateTime.format(new Date(post.createdAt))}>
+            aria-label={post.updatedAt === post.createdAt?
+              "Posted "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))
+              :
+              "Updated "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))}>
             <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
                 <span className="dt-published published-date">
-                  <ReactTimeAgo date={new Date(post.createdAt)} timeStyle="mini" locale={languageContext} />
+                  <div className={"time-ago " + (post.updatedAt !== post.createdAt? "time-ago-edited" : "")}>
+                    {post.updatedAt !== post.createdAt? 
+                      <span className="post-edited"><FontAwesomeIcon icon={icons.pencil} title="Edited" />{" "}</span> : ""
+                    }
+                    <ReactTimeAgo date={new Date(post.updatedAt)} timeStyle="mini" locale={languageContext} />
+                  </div>
                   <div className="abs-date">
-                    <div>{dayFormat.format(new Date(post.createdAt))}</div>
-                    <div>{dateFormat.format(new Date(post.createdAt))}</div>
-                    <div>{timeFormat.format(new Date(post.createdAt))}</div>
+                    <div>{dayFormat.format(new Date(post.updatedAt))}</div>
+                    <div>{dateFormat.format(new Date(post.updatedAt))}</div>
+                    <div>{timeFormat.format(new Date(post.updatedAt))}</div>
                   </div>
                 </span>
-
-                {post.updatedAt !== post.createdAt ?
-                  <span className="dt-updated updated-date">
-                    , updated {" "}
-                    <time dateTime={post.updatedAt}>{fullDateTime.format(new Date(post.updatedAt))}</time> {" "}
-                    <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />
-                  </span>
-                  :
-                  ''
-                }
             </Link>
           </span>
               

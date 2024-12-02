@@ -43,10 +43,7 @@ div.post {
 
     span.published-date {
       text-align: right;
-
-      & > time {
-        display: block;
-      }
+      display: block;
 
       .abs-date {
         font-size: xx-small;
@@ -111,15 +108,9 @@ div.post {
         }
       }
 
-      li.post-stat-replies {
-        flex: 1;
-      }
-      li.post-stat-boosts {
-        flex: 2;
-      }
-
-      ul.boosts {
-        justify-content: space-around;
+      li.post-stat-replies,
+      li.non-quote-boosts {
+        margin-right: 2ex;
       }
 
       a.stat-destination {
