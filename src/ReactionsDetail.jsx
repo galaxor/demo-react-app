@@ -4,7 +4,7 @@ import { PostsDB } from './logic/posts.js';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx';
-import Post from './Post.jsx';
+import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import ReactionGlyph from './ReactionGlyph.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx'
@@ -29,40 +29,12 @@ export default function BoostsDetail() {
   const peopleDB = new PeopleDB(db);
   const postsDB = new PostsDB(db);
 
-  const postRef = useRef();
-
-  const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(post.uri));
-
-  function getNumBoosts() { return postsDB.getNumberOfBoostsOf(post.uri); }
-  function getNumYourBoosts() { return user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0; }
-  const [numBoosts, setNumBoosts] = useState(getNumBoosts());
-  const [numYourBoosts, setNumYourBoosts] = useState(getNumYourBoosts());
-
   // Scroll the post into view when it first becomes visible.
   const scrollHereRef = useCallback(node => {
     if (node) { node.scrollIntoView(); }
 
     return {current: node};
   }, []);
-
-  // Reset the boosts if you log in, so you can see if you're included among them.
-  useEffect(() => {
-    setNumBoosts(getNumBoosts());
-    setNumYourBoosts(getNumYourBoosts());
-  }, [user, setNumBoosts, setNumYourBoosts]);
-
-  function getBoostPostsList() {
-    const boostPosts = postsDB.getBoostsOf(post.uri);
-
-    // We now have { handle1: boost-row-1, handle2: boost-row-2 }
-    // We want a list of the boostersPosts.
-    const boostPostsList = Object.values(boostPosts)
-      .map(row => row.boostersPost)
-    ;
-
-    boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
-    return boostPostsList;
-  }
 
   const [reactionsList, setReactionsList] = useState(postsDB.getAllReactionsTo(post.uri));
 
@@ -91,12 +63,7 @@ export default function BoostsDetail() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} />
-      <Post ref={postRef} post={post} numReplies={numReplies} setNumReplies={setNumReplies}
-        onBoost={() => {
-          setNumBoosts(getNumBoosts());
-          setNumYourBoosts(getNumYourBoosts());
-          setBoostPostsList(getBoostPostsList());
-        }}
+      <PostAndYourNewReplies post={post}
         onReact={() => {
           setReactionsList(postsDB.getAllReactionsTo(post.uri));
         }}
