@@ -4,6 +4,8 @@ import { PostsDB } from './logic/posts.js';
 import DatabaseContext from './DatabaseContext.jsx'
 import { useContext, useEffect, useRef, useState } from 'react';
 
+import './static/Replies.css'
+
 export default function Replies({postRepliedTo, prune, replies, setReplies}) {
   const listRef = useRef(null);
 
