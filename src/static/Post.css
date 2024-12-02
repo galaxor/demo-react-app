@@ -2,6 +2,23 @@ article.post > div.post:hover {
   background: var(--hover-color);
 }
 
+article.post > div.post:has(.reactions:hover),
+article.post > div.post:has(.non-quote-boosts:hover),
+article.post > div.post:has(.quote-boosts:hover),
+article.post > div.post:has(.post-stat-replies:hover) {
+  background: var(--bg-color);
+}
+
+article.post > div.post {
+  .reactions:hover,
+  .non-quote-boosts:hover,
+  .quote-boosts:hover,
+  .post-stat-replies:hover {
+    background: var(--hover-color);
+  }
+}
+
+
 article.post {
   margin-top: 1em;
 
@@ -98,7 +115,7 @@ div.post {
 
       li.post-stat-replies,
       li.non-quote-boosts {
-        margin-right: 2ex;
+        padding-right: 2ex;
       }
 
       a.stat-destination {
