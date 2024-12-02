@@ -4,6 +4,7 @@ article.post {
 
 .quote-boosted-posts {
   padding-left: 1em;
+  padding-right: 1em;
   border: 1px solid black;
 
   & > article.post {
