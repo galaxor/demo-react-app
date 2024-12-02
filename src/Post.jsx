@@ -86,7 +86,7 @@ const Post = forwardRef(function Post(props, ref) {
       {replyingToPost && 
         <div className="boost-info">
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
-            <FontAwesomeIcon icon="comment" /> Replying to <PersonName person={replyingToPost.authorPerson.displayName} />
+            <FontAwesomeIcon icon="comment" /> Replying to <PersonName person={replyingToPost.authorPerson} />
           </Link>
         </div>
       }
