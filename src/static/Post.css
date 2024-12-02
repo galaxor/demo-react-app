@@ -2,6 +2,7 @@ article.post > div.post:hover {
   background: var(--hover-color);
 }
 
+article.post > div.post:has(span.post-author:hover),
 article.post > div.post:has(.reactions:hover),
 article.post > div.post:has(.non-quote-boosts:hover),
 article.post > div.post:has(.quote-boosts:hover),
@@ -10,6 +11,7 @@ article.post > div.post:has(.post-stat-replies:hover) {
 }
 
 article.post > div.post {
+  span.post-author:hover,
   .reactions:hover,
   .non-quote-boosts:hover,
   .quote-boosts:hover,
