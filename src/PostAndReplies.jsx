@@ -44,7 +44,6 @@ export default function PostAndReplies({post, prune}) {
   useEffect(() => {
     const postDiv = postRef.current.getPostDiv();
 
-    console.log(postDiv);
     const clickablePosts = postDiv.querySelectorAll('article.post > div.post')
 
     clickablePosts.forEach(node => {
