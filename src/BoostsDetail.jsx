@@ -12,6 +12,8 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
+import './static/BoostsDetail.css'
+
 export default function BoostsDetail() {
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
@@ -64,7 +66,7 @@ export default function BoostsDetail() {
   return (
     <>
     <main className="post-single">
-      <h1>Post by <bdi>{post.authorPerson.displayName}</bdi>,{" "}
+      <h1>Boosts for post by <bdi>{post.authorPerson.displayName}</bdi>,{" "}
         <time dateTime={post.createdAt}>
           <ReactTimeAgo date={new Date(post.createdAt)} locale={languageContext} />
         </time>
@@ -102,10 +104,11 @@ export default function BoostsDetail() {
           const authorPerson = peopleDB.get(post.author);
 
           return (
-            <li key={key}><PersonInline person={authorPerson} /> at {" "}
+            <li key={key}><PersonInline person={authorPerson} />
               <time dateTime={post.updatedAt}>
-                {dateFormat.format(new Date(post.updatedAt))}
-                (<ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />)
+                <span className="time-ago"><ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} /></span>
+                {" "} &mdash; {" "}
+                <span className="abs-date">{dateFormat.format(new Date(post.updatedAt))}</span>
               </time>
             </li>
           );
