@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx'
+import icons from './icons.js'
 import { PostsDB } from './logic/posts.js';
 import UserContext from './UserContext.jsx';
 
@@ -46,12 +48,12 @@ export default function Boosts({post, onBoost}) {
             clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
             if (typeof onBoost === "function") { onBoost(); }
           }}>
-            <span className="icon" aria-label="Boosts">♻</span>
+            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} /></span> {" "}
             <span className="total">{numBoosts}</span>
           </Link>
           :
           <div className="stat">
-            <span className="icon" aria-label="Boosts">♻</span>
+            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} /></span> {" "}
             <span className="total">{numBoosts}</span>
           </div>
         }
@@ -62,12 +64,12 @@ export default function Boosts({post, onBoost}) {
         <NavLink className="stat-destination show-post-quote-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote Boosts</NavLink>
         {user?
           <Link className="stat" to={"/quote-boost/"+encodeURIComponent(post.uri)}>
-            <span className="icon" aria-label="Quote Boosts">♻💬</span>
+            <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} /></span></span> {" "}
             <span className="total">{numQuoteBoosts}</span>
           </Link>
           :
           <div className="stat">
-            <span className="icon" aria-label="Quote Boosts">♻💬</span>
+            <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} /></span></span> {" "}
             <span className="total">{numQuoteBoosts}</span>
           </div>
         }

@@ -172,3 +172,11 @@ div.post {
     }
   }
 }
+
+.quoteboost-boost-icon {
+  color: var(--bg-color);
+  display: block;
+  position: absolute;
+  z-index: 1;
+  padding-left: 2.5px;
+}

@@ -1,7 +1,7 @@
 import { library, icon } from '@fortawesome/fontawesome-svg-core'
-import { faBell, faCamera, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faFlag, faHouse, faPencil, faPenToSquare, faSquarePlus, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faCamera, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faFlag, faHouse, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser } from '@fortawesome/free-solid-svg-icons'
 
-library.add([faBell, faCamera, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faFlag, faHouse, faPencil, faPenToSquare, faSquarePlus, faUser]);
+library.add([faBell, faCamera, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faFlag, faHouse, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser]);
 
 export default {
   bell: icon({ prefix: 'fas', iconName: 'bell' }),
@@ -14,6 +14,7 @@ export default {
   doorClosed: icon({ prefix: 'fas', iconName: 'door-closed' }),
   pencil: icon({ prefix: 'fas', iconName: 'pencil' }),
   penToSquare: icon({ prefix: 'fas', iconName: 'pen-to-square' }),
+  repeat: icon({ prefix: 'fas', iconName: 'repeat' }),
   squarePlus: icon({ prefix: 'fas', iconName: 'square-plus' }),
   user: icon({ prefix: 'fas', iconName: 'user' }),
 }
