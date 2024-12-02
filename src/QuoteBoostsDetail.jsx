@@ -63,8 +63,6 @@ export default function QuoteBoostsDetail() {
 
   const quoteBoostPostsList = getQuoteBoostPostsList();
 
-  console.log(quoteBoostPostsList);
-
   // XXX You should be able to search the list of people who boosted the post.
   // Especially since, one day, this might be paged, in case some post has like 29k boosts.
 
@@ -96,7 +94,11 @@ export default function QuoteBoostsDetail() {
         }}
       />
 
-      <h2>Quote-Boosted by {numQuoteBoosts} people</h2>
+      <h2>{numQuoteBoosts > 1 || numQuoteBoosts === 0? 
+        <>Quote-Boosted {numQuoteBoosts} times</>
+        :
+        <>Quote-Boosted {numQuoteBoosts} time</>
+      }</h2>
 
       <PostsList posts={quoteBoostPostsList} />
 

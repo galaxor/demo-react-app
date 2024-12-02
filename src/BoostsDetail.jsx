@@ -93,7 +93,11 @@ export default function BoostsDetail() {
         }
       } />
 
-      <h2>Boosted by {numBoosts} people</h2>
+      <h2>{numBoosts > 1 || numBoosts === 0 ? 
+        <>Boosted by {numBoosts} people</>
+        :
+        <>Boosted by 1 person</>
+      }</h2>
 
       {numBoosts <= 0? "No boosts." :
         <ul>

@@ -98,7 +98,6 @@ export default function BoostsDetail() {
           setBoostPostsList(getBoostPostsList());
         }}
         onReact={() => {
-          console.log("This reaction was logged");
           setReactionsList(postsDB.getAllReactionsTo(post.uri));
         }}
       />
@@ -126,7 +125,6 @@ export default function BoostsDetail() {
       }
 
       {reactionsList.map(reactionType => {
-        console.log(reactionType);
         const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
         return (
           <section key={key+'-section'} id={key} aria-labelledby={key+'-header'}
