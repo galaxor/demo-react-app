@@ -2,6 +2,7 @@ import { PostsDB } from './logic/posts.js';
 
 import { closeReply } from './closeReply.js'
 import Post from './Post.jsx';
+import PostAndReplies from './PostAndReplies.jsx';
 import PostEditor from './PostEditor.jsx';
 import Replies from './Replies.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
@@ -39,6 +40,18 @@ export default function PostSingle() {
 
     return {current: node};
   }, []);
+
+
+  // Sometimes when I click to a different post, it would keep the replies the
+  // same so the thread looked all wrong.
+  // This fixes that.
+  useEffect(() => {
+    setReplies(postsDB.getRepliesTo(post.uri));
+    const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
+    setNumReplies(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
+    setComposingReply(false);
+  }, [post, replies, setReplies, setNumReplies, setComposingReply]);
+
 
   return (
     <>
