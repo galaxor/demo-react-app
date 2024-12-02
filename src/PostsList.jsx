@@ -1,22 +1,11 @@
 import { useEffect, useRef } from 'react'
 
+import { clickPost } from './clickPost.js'
 import Post from './Post.jsx'
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx'
 
 export default function PostsList({posts}) {
   const listRef = useRef(null);
-
-  function clickPost(e) {
-    // A little old-school javascript to pass the clicks to the link that goes to
-    // the post's PostSingle page.
-    if (e.target.nodeName === "A") {
-      return false;
-    } else {
-      var node = e.target;
-      for ( ; node.nodeName !== "ARTICLE"; node = node.parentElement) { }
-      node.querySelector('a.post-time').click();
-    }
-  }
 
   // Make it so when you click a post, you go to its PostSingle page.
   useEffect(() => {
