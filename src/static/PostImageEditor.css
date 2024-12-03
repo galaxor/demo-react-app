@@ -16,10 +16,29 @@
     }
   }
 
-  ul.uploaded-images img {
-    width: 250px;
-    height: 300px;
-    object-fit: contain;
+  ul.uploaded-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 0;
+
+    li {
+      display: block;
+
+      border: 1px solid #ccc;
+      border-radius: 1ex;
+      padding: 1ex;
+
+      img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+      }
+
+      textarea {
+        height: 6em;
+      }
+    }
+
   }
 
   /* Hide the native file input */

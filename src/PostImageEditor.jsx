@@ -52,7 +52,7 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
           accept="image/*"
           onChange={(e) => imageUpload({e, imageBucket, uploadedImages, setUploadedImages})}
         />
-        <span className="icon"><FontAwesomeIcon icon={icons.camera} /></span><br />Upload Image
+        <span className="icon"><FontAwesomeIcon icon={icons.image} /></span><br />Upload Image
       </label>
     </div>
     </>
