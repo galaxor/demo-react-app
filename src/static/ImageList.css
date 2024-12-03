@@ -14,9 +14,13 @@ ul.post-images details {
   white-space: pre-line;
 
   summary {
-    text-transform: uppercase;
     font-weight: bold;  
   }
+}
+
+ul.post-images details:focus,
+ul.post-images details:hover {
+  background: var(--alt-text-hover-bg);
 }
 
 
