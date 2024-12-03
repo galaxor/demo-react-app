@@ -25,10 +25,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
       - name: Install node.
         run: sudo apt-get install nodejs
 
-      # Runs a set of commands using the runners shell
+      - name: npm install
+        run: npm install
+
       - name: Build
         run: npm run build
