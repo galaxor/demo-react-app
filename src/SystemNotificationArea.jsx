@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 
+import './static/SystemNotificationArea.css'
+
 export default function SystemNotificationArea() {
   const { systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
 

@@ -1,0 +1,29 @@
+aside#system-notifications {
+  ul {
+    padding-left: 0;
+
+    li {
+      display: block;
+
+      border: 3px solid grey;
+      border-radius: 2ex;
+      padding: 2ex;
+
+      margin-bottom: 1ex;
+
+      & > div {
+        display: flex;
+        justify-content: space-between;
+
+        & > a {
+          display: block;
+        }
+      }
+    }
+
+    li:has(div[role="status"]) {
+      background: var(--status-notification-bg);
+      border-color: var(--status-notification-border);
+    }
+  }
+}

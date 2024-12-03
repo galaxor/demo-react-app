@@ -23,4 +23,7 @@
   --alt-text-bg: #dddddd;
   --alt-text-hover-bg: #e5e5e5;
   --alt-text-color: black;
+
+  --status-notification-bg: #ccffcc;
+  --status-notification-border: #33aa33;
 }
