@@ -24,6 +24,13 @@
   --alt-text-hover-bg: #e5e5e5;
   --alt-text-color: black;
 
-  --status-notification-bg: #ccffcc;
-  --status-notification-border: #33aa33;
+  --status-success-bg: #ccffcc;
+  --status-success-border: #33aa33;
+  --status-success-hover-bg: #dfffdf;
+  --status-success-hover-border: #33aa33;
+
+  --status-warn-bg: #ffffcc;
+  --status-warn-border: #aaaa33;
+  --status-warn-hover-bg: #ffffe3;
+  --status-warn-hover-border: #aaaa33;
 }

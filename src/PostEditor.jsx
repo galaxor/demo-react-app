@@ -139,7 +139,7 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
     postsDB.quoteBoost({boostersPostUri: postUri, boostedPostUri: quotedPost.uri, boosterHandle: user.handle});
   }
 
-  setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status',
+  setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'success',
     message: <>
       Your new post was saved. <Link to={canonicalUrl}>View post.</Link>
     </>
@@ -157,7 +157,7 @@ function cancelPost({editorRef, systemNotifications, setSystemNotifications, onC
   const currentText = editorRef.current.getMarkdown();
 
   if (currentText === "" || confirm("Are you sure you want to cancel this post and lose what you've written?")) {
-    setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status',
+    setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'warn',
       message: <>
         You clicked "Cancel", so your post was not saved.
       </>

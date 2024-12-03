@@ -21,9 +21,24 @@ aside#system-notifications {
       }
     }
 
-    li:has(div[role="status"]) {
-      background: var(--status-notification-bg);
-      border-color: var(--status-notification-border);
+    li.success {
+      background: var(--status-success-bg);
+      border-color: var(--status-success-border);
+    }
+
+    li.success:hover {
+      background: var(--status-success-hover-bg);
+      border-color: var(--status-success-hover-border);
+    }
+
+    li.warn {
+      background: var(--status-warn-bg);
+      border-color: var(--status-warn-border);
+    }
+
+    li.warn:hover {
+      background: var(--status-warn-hover-bg);
+      border-color: var(--status-warn-hover-border);
     }
   }
 }

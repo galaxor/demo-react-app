@@ -10,8 +10,8 @@ export default function SystemNotificationArea() {
 
   const notifications = systemNotifications.map(item => {
     return (
-      <li key={item.uuid} className="item.level">
-        <div role={item.level == 'error'? "alert" : "status"}>
+      <li key={item.uuid} className={item.type}>
+        <div role={item.type == 'error'? "alert" : "status"}>
           <div className="message">{item.message}</div>
           <a aria-label="Close this notification"
             href=""
