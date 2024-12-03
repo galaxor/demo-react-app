@@ -84,7 +84,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       <section className="actions">
         {user && !isYou && <FriendStatus person={person} />}
 
-        {isYou && <span className="button"><Link className="edit-your-profile" to="/profile/edit">Edit Profile</Link></span>}
+        {isYou && <span className="button"><Link className="edit-your-profile" to="/profile/edit"><FontAwesomeIcon icon={icons.fileLines} />{" "}Edit Profile</Link></span>}
         {isYou && <LogoutLink />}
       </section>
 
