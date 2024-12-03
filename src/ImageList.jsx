@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext'
 import { PostsDB } from './logic/posts.js'
@@ -17,7 +18,7 @@ export default function ImageList({post}) {
     <div className="post-images">
       <ul className="post-images">
         {Object.entries(imageBucket).map(([fileName, {data: imageData, altText}]) => {
-          return ( <li key={fileName}><img src={imageData} alt={altText} /> {altText && <details><summary>Alt Text</summary>{altText}</details>}</li> );
+          return ( <li key={fileName}><Link to={imageData}><img src={imageData} alt={altText} /></Link> {altText && <details><summary>Alt Text</summary>{altText}</details>}</li> );
         })}
       </ul>
     </div>
