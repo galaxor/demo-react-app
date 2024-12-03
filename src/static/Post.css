@@ -221,3 +221,11 @@ a.stat-destination:focus {
 .post-text-text {
   white-space: pre-line;
 }
+
+.scroll-into-view {
+  position: relative;
+  top: -3em;
+  width: 1ex;
+  height: 1ex;
+  z-index: -10;
+}

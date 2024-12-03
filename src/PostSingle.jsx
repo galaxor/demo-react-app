@@ -39,7 +39,7 @@ export default function PostSingle() {
     if (node) { node.scrollIntoView(); }
 
     return {current: node};
-  }, []);
+  }, [replies]);
 
 
   // Sometimes when I click to a different post, it would keep the replies the
@@ -72,7 +72,7 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
-      <div ref={scrollHereRef} />
+      <div ref={scrollHereRef} className="scroll-into-view"></div>
       <Post ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
         {composingReply &&
           <div className="composing-reply">
