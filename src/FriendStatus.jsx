@@ -4,6 +4,8 @@ import DatabaseContext from './DatabaseContext.jsx';
 import { PeopleDB } from './logic/people.js';
 import UserContext from './UserContext.jsx';
 
+import './static/FriendStatus.css'
+
 export default function FriendStatus({person}) {
   const { user } = useContext(UserContext);
   const db = useContext(DatabaseContext);
@@ -14,11 +16,11 @@ export default function FriendStatus({person}) {
   const theyFollowYou = user? peopleDB.doesXFollowY(person.handle, user.handle) : null;
 
   return (
-    <section className="friend-status" aria-labelledby="friend-status">
-      <h2 id="friend-status">Friend Status</h2>
+    <section className="follow-status" aria-labelledby="follow-status">
+      <h2 id="follow-status" className="visually-hidden">Follow Status</h2>
 
-      <ul aria-labelledby="friend-status">
-        <li><label>
+      <ul className="follow-status" aria-labelledby="follow-status">
+        <li><label className="checkbutton">
           {(typeof youFollowThem === "undefined"? 
                 (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
                 : youFollowThem)
@@ -43,7 +45,7 @@ export default function FriendStatus({person}) {
             }} />
         </label></li>
 
-        <li><label>
+        <li><label className="checkbutton">
           {theyFollowYou ?
             <>
             <bdi>{person.displayName}</bdi> follows you 
