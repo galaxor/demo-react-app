@@ -1,4 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import icons from './icons.js'
 
 import './static/PostImageEditor.css'
 
@@ -49,7 +52,7 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
           accept="image/*"
           onChange={(e) => imageUpload({e, imageBucket, uploadedImages, setUploadedImages})}
         />
-        📷<br />Upload Image
+        <span className="icon"><FontAwesomeIcon icon={icons.camera} /></span><br />Upload Image
       </label>
     </div>
     </>
