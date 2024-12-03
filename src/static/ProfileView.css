@@ -8,6 +8,10 @@ section.trust-info {
   margin-bottom: 2ex;
 }
 
+section.actions {
+  margin-bottom: 2ex;
+}
+
 main.profile-view nav.navigation-tabs {
   position: sticky;
   top: calc(46px + 49px);
@@ -29,6 +33,14 @@ main.profile-view h1 {
 
   span.author-handle {
     font-size: 16pt;
+  }
+
+  & > a {
+    display: flex;
+
+    img {
+      margin-right: 0.8ex;
+    }
   }
 }
 

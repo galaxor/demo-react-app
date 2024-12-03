@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import hashSum from 'hash-sum'
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import Avatar from './Avatar.jsx'
 import DatabaseContext from './DatabaseContext.jsx';
 import icons from './icons.js'
 import UserContext from './UserContext.jsx';
@@ -29,9 +29,6 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
 
-  const avatarFallbackColor = hashSum(person.handle).substring(0,6);
-  const inverseFallbackColor = (0xffffff - parseInt('0x'+avatarFallbackColor)).toString(16);
-
   // Important states to note, so the user can make decisions about how much
   // they trust this user.
   // Things to note:
@@ -49,13 +46,8 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   return (
     <span className={"person-inline " + (isYou? "is-you " : " ") + (youFollowThem? "trust-you-follow-them " : " ") + (onHomeServer? "trust-on-home-server " : " ")}>
       <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
-        {person.avatar ?
-          <img className="avatar avatar-person-inline u-photo" src={person.avatar} alt="" />
-          :
-          <span className="avatar avatar-fallback-person-inline" style={{backgroundColor: '#'+avatarFallbackColor}}>
-            <FontAwesomeIcon icon={icons.user} />
-          </span>
-        } {" "}
+        <Avatar person={person} size="avatar-person-inline" />
+        {" "}
         <div className="name-handle">
           <bdi className="p-name">{person.displayName}</bdi> {" "}
           <span className="handle-and-trust">

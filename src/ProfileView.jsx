@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react';
 import { Link, NavLink, Outlet, useLoaderData, useMatches } from "react-router-dom";
 
+import Avatar from './Avatar.jsx'
 import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
@@ -51,8 +52,11 @@ export default function ProfileView({handle, loggedInUser, children }) {
       <h1>
         {person.localUserId?
           <Link className="u-url" href={'/person/'+handle}>
-            <span className="display-name p-name"><bdi>{person.displayName}</bdi></span> {" "}
-            <span className="author-handle u-impp">{person.handle}</span>
+            <Avatar person={person} size="avatar-person-inline" /> {" "}
+            <div className="name-handle">
+              <span className="display-name p-name"><bdi>{person.displayName}</bdi></span> {" "}
+              <span className="author-handle u-impp">{person.handle}</span>
+            </div>
           </Link>
           :
           <a className="u-url link-external" rel="noopener noreferrer" target="_blank" href={person.url}>
@@ -83,7 +87,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
       {person.avatar &&
         <>
-        <h2>Avatar</h2>
+        <h2 className="visually-hidden">Avatar</h2>
 
         <a rel="noopener noreferrer" target="_blank" href={person.url}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
         </>
