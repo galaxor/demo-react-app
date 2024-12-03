@@ -52,7 +52,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       <h1>
         {person.localUserId?
           <Link className="u-url" href={'/person/'+handle}>
-            <Avatar person={person} size="avatar-person-inline" /> {" "}
+            <Avatar person={person} size="person-inline" /> {" "}
             <div className="name-handle">
               <span className="display-name p-name"><bdi>{person.displayName}</bdi></span> {" "}
               <span className="author-handle u-impp">{person.handle}</span>

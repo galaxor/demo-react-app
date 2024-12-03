@@ -9,9 +9,9 @@ export default function Avatar({person, size}) {
   return (
     <>
     {person.avatar ?
-      <img className={"avatar u-photo " + size} src={person.avatar} alt="" />
+      <img className={"avatar u-photo avatar-" + size} src={person.avatar} alt="" />
       :
-      <span className={"avatar " + size} style={{backgroundColor: '#'+avatarFallbackColor}}>
+      <span className={"avatar avatar-fallback-" + size} style={{backgroundColor: '#'+avatarFallbackColor}}>
         <FontAwesomeIcon icon={icons.user} />
       </span>
     }

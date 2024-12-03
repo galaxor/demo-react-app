@@ -46,7 +46,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   return (
     <span className={"person-inline " + (isYou? "is-you " : " ") + (youFollowThem? "trust-you-follow-them " : " ") + (onHomeServer? "trust-on-home-server " : " ")}>
       <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
-        <Avatar person={person} size="avatar-person-inline" />
+        <Avatar person={person} size="person-inline" />
         {" "}
         <div className="name-handle">
           <bdi className="p-name">{person.displayName}</bdi> {" "}
