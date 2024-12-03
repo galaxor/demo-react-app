@@ -15,7 +15,7 @@ export default function PopularFeed() {
   const [postsForDisplay, setPostsForDisplay] = useState(null);
 
   if (!postsForDisplay) {
-    const postsForDisplay = popularPostsDB.get();
+    const postsForDisplay = popularPostsDB.getAll();
     setPostsForDisplay(postsForDisplay);
   }
 

@@ -36,7 +36,7 @@ export default function NavigationSidebar() {
         }
         <li><NavLink className={(!user && matches[matches.length-1].pathname=="/") ? 'active' : ''} to="/popular">
           <FontAwesomeIcon icon={icons.earthAmericas} />
-          Popular Posts
+          All Posts
         </NavLink></li>
       </ul>
       </section>
