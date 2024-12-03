@@ -217,3 +217,7 @@ a.stat-destination {
 a.stat-destination:focus {
   text-decoration: underline;
 }
+
+.post-text-text {
+  white-space: pre-line;
+}

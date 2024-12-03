@@ -299,7 +299,7 @@ class Database {
           updatedAt: "2024-11-24T13:44:31-05:00",
           sensitive: false,
           type: "text",
-          text: "If anyone knows where Bob is, please let @alice@local know!  I am addicted to their antics!",
+          text: "If anyone knows where Bob is, please let @alice@local know!\n\nI don't want their drama to stop, I am addicted to the antics of those two!",
 
           spoilerText: null,
 

@@ -135,8 +135,8 @@ const Post = forwardRef(function Post(props, ref) {
           </span>
         </span>
 
-        {(post.type ?? "text") === "text" && <div className="post-text e-content" lang={post.language}>{post.text}</div>}
-        {post.type === "markdown" && <div className="post-text e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
+        {(post.type ?? "text") === "text" && <div className="post-text post-text-text e-content" lang={post.language}>{post.text}</div>}
+        {post.type === "markdown" && <div className="post-text post-text-markdown e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
         <ImageList post={post} />
 
         {post.boostedPosts && post.boostedPosts.length > 0 &&
