@@ -1,18 +1,21 @@
+import { PostsDB } from './posts.js'
+
 class PopularPostsDB {
   db = null;
 
   constructor(db) {
     this.db = db;
+    this.postsDB = new PostsDB(db);
   }
 
   getAll() {
+
     const allPosts = Object.values(this.db.get('posts'))
       .filter(post => post.inReplyTo === null && post.text !== null)
     ;
 
     const postsForDisplay = allPosts.map(popularPost => {
-      var post = this.db.get('posts', popularPost.uri);
-      post.authorPerson = this.db.get('people', post.author);
+      const post = this.postsDB.get(popularPost.uri);
 
       return post;
     });
