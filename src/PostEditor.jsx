@@ -101,8 +101,8 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     </div>
     <PostImageEditor ref={imageEditorRef} />
     <div className="post-finish-actions">
-      <button ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>Post</button>
-      <button onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
+      <button className="button" ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>Post</button>
+      <button className="button button-cancel" onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
     </div>
     </>
   );

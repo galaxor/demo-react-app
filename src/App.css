@@ -141,6 +141,32 @@ div#page-body {
   font-weight: bold;
 }
 
+button.button {
+  text-decoration: none;
+  color: var(--button-fg-color);
+
+  background: var(--button-bg-color);
+  color: var(--button-fg-color);
+  border-radius: 20px;
+  padding-top: 8px;
+  padding-bottom: 5px;
+  padding-left: 1em;
+  padding-right: 1em;
+  border: none;
+  font-weight: bold;
+}
+
+button.button-cancel {
+  background: var(--button-cancel-bg-color);
+  color: var(--button-cancel-fg-color);
+}
+
+button.button-cancel:focus,
+button.button-cancel:hover {
+  background: var(--button-cancel-hover-bg);
+  color: var(--button-cancel-hover-fg);
+}
+
 .button {
   a:visited,
   a {

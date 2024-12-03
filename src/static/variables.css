@@ -10,6 +10,10 @@
   --logout-button-fg-color: white;
   --logout-button-hover-bg: #f00000;
   --logout-button-hover-fg: white;
+  --button-cancel-bg-color: var(--logout-button-bg-color);
+  --button-cancel-fg-color: var(--logout-button-fg-color);
+  --button-cancel-hover-bg: var(--logout-button-hover-bg);
+  --button-cancel-hover-fg: var(--logout-button-hover-fg);
 
   --hover-color: #f7f7f7;
   --active-menu-color: #ccf;
