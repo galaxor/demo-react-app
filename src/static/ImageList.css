@@ -6,6 +6,19 @@ ul.post-images:has(li:only-child) {
   }
 }
 
+ul.post-images details {
+  background: var(--alt-text-bg);
+  color: var(--alt-text-color);
+  border-radius: 1ex;
+  padding: 0 2ex;
+  white-space: pre-line;
+
+  summary {
+    text-transform: uppercase;
+    font-weight: bold;  
+  }
+}
+
 
 ul.post-images {
   padding-left: 0;
