@@ -8,6 +8,30 @@ section.trust-info {
   margin-bottom: 2ex;
 }
 
+main.profile-view nav.navigation-tabs {
+  position: sticky;
+  top: calc(46px + 49px);
+  background: white;
+  z-index: 2;
+}
+
+main.profile-view h1 {
+  position: sticky;
+  z-index: 2;
+  top: 46px;
+  font-size: 20pt;
+  background: var(--bg-color);
+
+  span.display-name,
+  span.author-handle {
+    display: block;
+  }
+
+  span.author-handle {
+    font-size: 16pt;
+  }
+}
+
 main.profile-view ul.navigation-tabs {
   padding-left: 0;
   display: flex;
@@ -28,6 +52,11 @@ main.profile-view ul.navigation-tabs {
       text-align: center;
       border-radius: 1ex 1ex 0 0;
       text-decoration: none;
+      background: var(--bg-color);
+    }
+
+    a.active {
+      background: var(--active-menu-color);
     }
 
     a.active:focus,
