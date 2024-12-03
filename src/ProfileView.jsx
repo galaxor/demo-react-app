@@ -60,8 +60,11 @@ export default function ProfileView({handle, loggedInUser, children }) {
           </Link>
           :
           <a className="u-url link-external" rel="noopener noreferrer" target="_blank" href={person.url}>
-            <span className="display-name p-name"><bdi>{person.displayName}</bdi></span>
-            <span className="author-handle u-impp">{person.handle}</span>
+            <Avatar person={person} size="person-inline" /> {" "}
+            <div className="name-handle">
+              <span className="display-name p-name"><bdi>{person.displayName}</bdi></span>
+              <span className="author-handle u-impp">{person.handle}</span>
+            </div>
           </a>
         }
         {" "}
