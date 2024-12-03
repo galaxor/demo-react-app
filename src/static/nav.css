@@ -1,5 +1,5 @@
 nav li a.active {
-  background: #ccf;
+  background: var(--active-menu-color);
 }
 
 nav#available-feeds {

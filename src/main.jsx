@@ -80,10 +80,6 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <ProfileBio />,
-          },
-          {
-            path: "/people/:handle/posts",
             element: <PostsByPerson showReplies={false} />,
           },
           {

@@ -25,7 +25,8 @@ article.post > div.post {
 
   .post-author {
     position: relative;
-    left: -18px;
+    /* Looks good on desktop, but on very narrow screens, it cuts off on the left. */
+    /* left: -18px; */
   }
 }
 

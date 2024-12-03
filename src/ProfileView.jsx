@@ -8,6 +8,7 @@ import FriendStatus from './FriendStatus.jsx';
 import icons from './icons.js'
 import LogoutLink from './LogoutLink.jsx';
 import PersonContext from './PersonContext.jsx';
+import ProfileBio from './ProfileBio.jsx';
 import { PeopleDB } from './logic/people.js';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
@@ -88,18 +89,19 @@ export default function ProfileView({handle, loggedInUser, children }) {
         </>
       }
 
-      <nav className="navigation-tabs" aria-labelledby="navigation">
-        <h2 id="navigation">Navigation</h2>
-        <ul className="navigation-tabs" aria-labelledby="navigation">
-          <li><NavLink className={(user && matches[matches.length-1].pathname=="/profile") ? 'active' : ''} to={"/people/"+person.handle} end>Bio</NavLink></li>
-          <li><NavLink to={'/people/'+person.handle+'/posts'}>Posts</NavLink></li>
-          <li><NavLink to={'/people/'+person.handle+'/posts-replies'}>Posts and Replies</NavLink></li>
-          <li><NavLink to={'/people/'+person.handle+'/followers'}>{whoFollowsThem.length} Followers</NavLink></li>
-          <li><NavLink to={'/people/'+person.handle+'/follows'}>Follows {whoDoTheyFollow.length}</NavLink></li>
-        </ul>
-      </nav>
-        
       <PersonContext.Provider value={person}>
+        <ProfileBio />
+
+        <nav className="navigation-tabs" aria-labelledby="navigation">
+          <h2 id="navigation" className="visually-hidden">Navigation</h2>
+          <ul className="navigation-tabs" aria-labelledby="navigation">
+            <li><NavLink className={(user && matches[matches.length-1].pathname=="/profile") ? 'active' : ''} to={"/people/"+person.handle} end>Posts</NavLink></li>
+            <li><NavLink to={'/people/'+person.handle+'/posts-replies'}>Posts &amp; Replies</NavLink></li>
+            <li><NavLink to={'/people/'+person.handle+'/followers'}>Followers<br />{whoFollowsThem.length}</NavLink></li>
+            <li><NavLink to={'/people/'+person.handle+'/follows'}>Follows<br />{whoDoTheyFollow.length}</NavLink></li>
+          </ul>
+        </nav>
+        
         <FollowInfoContext.Provider value={ { whoDoTheyFollow, whoFollowsThem } }>
           {children? children : ''}
           <Outlet />

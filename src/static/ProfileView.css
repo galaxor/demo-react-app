@@ -7,3 +7,38 @@
 section.trust-info {
   margin-bottom: 2ex;
 }
+
+main.profile-view ul.navigation-tabs {
+  padding-left: 0;
+  display: flex;
+
+  li {
+    display: block;
+    width: 100%;
+
+    a:not(.active) {
+      border: 1px solid var(--hover-color);
+    }
+
+    a {
+      display: block;
+      padding: 0.3ex 1ex;
+      height: 100%;
+      align-content: end;
+      text-align: center;
+      border-radius: 1ex 1ex 0 0;
+      text-decoration: none;
+    }
+
+    a.active:focus,
+    a.active:hover {
+      background: var(--active-hover-color);
+    }
+
+    a:focus,
+    a:hover {
+      text-decoration: underline;
+      background: var(--hover-color);
+    }
+  }
+}

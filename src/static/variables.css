@@ -12,5 +12,7 @@
   --logout-button-hover-fg: white;
 
   --hover-color: #f7f7f7;
+  --active-menu-color: #ccf;
+  --active-hover-color: #ddf;
   --blockquote-color: #ccc;
 }
