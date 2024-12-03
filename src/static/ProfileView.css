@@ -35,6 +35,19 @@ main.profile-view h1 {
     font-size: 14pt;
   }
 
+  div.name-handle {
+    margin-left: 1ex;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a:focus,
+  a:hover {
+    text-decoration: underline;
+  }
+
   & > a {
     display: flex;
 
