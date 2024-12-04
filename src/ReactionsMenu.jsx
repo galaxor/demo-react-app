@@ -74,10 +74,16 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
         if (typeof onReact === 'function') { onReact(); }
       }}
       onSkinToneChange={newTone => skinToneChange({newTone, user, setUser})}
-      getEmojiUrl={(x) => "/emoji-datasource-twitter/twitter/64/"+x+".png"} />
+    />
     </>
   );
 }
+
+// This is how we tell it to not use the CDN.  Unfortunately, in github pages,
+// it was not liking that we were making so many image requests, so I guess for
+// now, we'll use the CDN, and I'll put in a pull request to fix this thing up
+// to use sprite sheets.
+// getEmojiUrl={(x) => "/emoji-datasource-twitter/twitter/64/"+x+".png"} />
 
 function addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen, addAReactionRef}) {
   // construct reaction here, based on "emoji".
