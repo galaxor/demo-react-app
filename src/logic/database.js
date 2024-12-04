@@ -1,5 +1,11 @@
 class Database {
   constructor() {
+    // In case we're deployed in a subdirectory.
+    // Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.
+    // The BASE_URL here will be set by vite.config.js, either when running the dev
+    // server or building for deployment.
+    this.prefix=import.meta.env.BASE_URL.replace(/\/+$/, '');
+
     if (localStorage.getItem('accounts') == null) {
       // Initializing the database.
       this.accounts = {
@@ -21,7 +27,7 @@ class Database {
           displayName: 'Astra Underscore',
           bio: "Hello, my name is Astra! I am a trans girl from Chile born in '01 who loves computing, drawing, writing, and research!\n\n#ACAB #BlackLivesMatter\n\nI love chatting, so just DM me if you want to talk c:",
 
-          avatar: "/astra_underscore.png",
+          avatar: this.prefix+"/astra_underscore.png",
           avatarOrig: null,
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
@@ -39,7 +45,7 @@ class Database {
           displayName: 'Ash',
           bio: " darkphoenix@disaster.queer:/mnt/gay/agenda# :idle:\n everyone's favourite chaotic bi poly disaster queer (accept no substitutes) :neofox_flag_bi: :neofox_flag_polyam: :neofox_flag_nb: :neofox_flag_genderfluid: :neofox_flag_trans:\n chaotic neutral\n queer as in fuck you\n too hot to be gender solid\n \"a boy for meme purposes roughly 50% of the time\"\n \"train slut\"\n AuDHD haver (confirmed)\n just another train and computer geek really\n probably passing through your area by train at this very moment\n most certainly the best worst thing that hasn't happened to you yet\n flirting okay unless i tell you otherwise; please tell me I'm cute\n has bitten a bunch of cute entities and now some of them are mine maybe\n I supposedly run this place, mostly for myself and a few close friends like half the extended polycule\n occasionally horny but always CWed\n \n 🐣 11.01.24\n :neocat_floof_estrogen: 22.09.24\n",
 
-          avatar: '/darkphoenix.png',
+          avatar: this.prefix+'/darkphoenix.png',
           avatarOrig: null,
           avatarPosition: {x: 0, y: 0},
           avatarRotate: 0,
@@ -57,7 +63,7 @@ class Database {
           displayName: 'Test User',
           bio: "I love testing websites!",
 
-          avatar: '/puppy-avatar.png',
+          avatar: this.prefix+'/puppy-avatar.png',
           avatarOrig: '/puppy.jpg',
           avatarAltText: "A cute puppy",
           avatarPosition: { x: 0.5360000000000001, y: 0.42666666666666675 },

@@ -48,6 +48,12 @@ if (typeof timeAgoLocales[lang] === "undefined") {
 
 const database = new Database();
 
+// In case we're deployed in a subdirectory.
+// Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.
+// The BASE_URL here will be set by vite.config.js, either when running the dev
+// server or building for deployment.
+const prefix=import.meta.env.BASE_URL.replace(/\/+$/, '');
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -127,7 +133,8 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+], { basename: prefix }
+);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

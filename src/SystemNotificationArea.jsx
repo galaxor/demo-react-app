@@ -17,8 +17,6 @@ export default function SystemNotificationArea() {
     var node = e.target;
     for ( ; !((node.nodeName === "LI" && node.classList.contains("notification")) || node.nodeName === "A"); node = node.parentElement) { }
 
-    console.log(node, node.nodeName);
-
     // If the thing they clicked was a link, let that happen.
     if (node.nodeName === "A") { return; }
 
