@@ -17,12 +17,20 @@ export default function SystemNotificationArea() {
     var node = e.target;
     for ( ; !((node.nodeName === "LI" && node.classList.contains("notification")) || node.nodeName === "A"); node = node.parentElement) { }
 
-    // If the thing they clicked was a link, let that happen.
-    if (node.nodeName === "A") { return; }
+    // Find all links.
+    const links = node.querySelectorAll('a');
 
-    // Find the close link and click it.
-    const closeLink = node.querySelector('.close-notification')
-    if (closeLink) { closeLink.click(); }
+    // Is the target a child of a link, or a link itself?
+    var node = e.target;
+    const linksThatContainTarget = Array.from(links.values().filter(link => link.contains(node)));
+
+    if (linksThatContainTarget.length > 0) {
+      return;
+    } else {
+      // Find the close link and click it.
+      const closeLink = node.querySelector('.close-notification')
+      if (closeLink) { closeLink.click(); }
+    }
   }
 
   // Make it so when you click a notification, it gets dismissed.

@@ -14,7 +14,6 @@ export function clickPost(e) {
   const linksThatContainTarget = Array.from(links.values().filter(link => link.contains(node)));
 
   if (linksThatContainTarget.length > 0) {
-    console.log("So we returned");
     return;
   } else {
     var node = e.target;
