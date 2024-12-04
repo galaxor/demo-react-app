@@ -6,13 +6,15 @@ export function clickPost(e) {
   var node = e.target;
   for ( ; node.nodeName !== "ARTICLE"; node = node.parentElement) { }
 
-  // Find the reply link.
-  const replyLink = node.querySelector('a.num-replies');
+  // Find all links.
+  const links = node.querySelectorAll('a');
   
-  // Is the target a child of the reply link, or the reply link itself?
+  // Is the target a child of a link, or a link itself?
   var node = e.target;
-  for ( ; node != replyLink && node.nodeName !== "ARTICLE"; node = node.parentElement) { }
-  if (node === replyLink) {
+  const linksThatContainTarget = Array.from(links.values().filter(link => link.contains(node)));
+
+  if (linksThatContainTarget.length > 0) {
+    console.log("So we returned");
     return;
   } else {
     var node = e.target;
