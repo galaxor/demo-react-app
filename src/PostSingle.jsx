@@ -1,6 +1,7 @@
 import { PostsDB } from './logic/posts.js';
 
 import { closeReply } from './closeReply.js'
+import ReplyLevel from './ReplyLevel.jsx'
 import Post from './Post.jsx';
 import PostAndReplies from './PostAndReplies.jsx';
 import PostEditor from './PostEditor.jsx';
@@ -52,7 +53,6 @@ export default function PostSingle() {
     setComposingReply(false);
   }, [post, postsDB]);
 
-
   return (
     <>
     <main className="post-single">
@@ -73,17 +73,19 @@ export default function PostSingle() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} className="scroll-into-view"></div>
-      <Post ref={postRef} className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
-        {composingReply &&
-          <div className="composing-reply">
-            <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyLink(); } } onCancel={() => setComposingReply(false)} />
-          </div>
-        }
+          <Post ref={postRef} showReplyLevel className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
+            {composingReply &&
+              <div className="composing-reply">
+                <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyLink(); } } onCancel={() => setComposingReply(false)} />
+              </div>
+            }
 
         {numReplies > 0 &&
           <section className="replies-section" aria-labelledby="replies-section-header">
             <h2 id="replies-section-header" className="visually-hidden">Replies</h2>
-            <Replies postRepliedTo={post} replies={replies} setReplies={setReplies} />
+            <ReplyLevel post={post}>
+              <Replies postRepliedTo={post} replies={replies} setReplies={setReplies} />
+            </ReplyLevel>
           </section>
         }
 

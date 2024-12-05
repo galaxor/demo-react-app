@@ -1,6 +1,9 @@
 article.post {
   div.post {
-    width: auto;
+    width: 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 97%;
   }
 }
 
@@ -236,7 +239,7 @@ a.stat-destination:focus {
   z-index: -10;
 }
 
-article.post-single > div.post {
+div.post-single {
   border: 1px solid var(--post-single-outline-color);
   border-radius: 2ex;
   padding: 1ex;

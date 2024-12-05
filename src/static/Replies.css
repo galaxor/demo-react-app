@@ -1,3 +1,8 @@
+ul.replies {
+  margin: 0;
+  width: 100%;
+}
+
 ul.replies div.post-and-replies {
   display: flex
 }
@@ -20,11 +25,10 @@ ul.replies div.post-and-replies::before {
   height: auto;
   background: var(--blockquote-color);
   margin-right: 1.5ex;
-  margin-top: 2.5em;
 
   content: " ";
 }
 
 ul.replies div.post-and-replies:not(:has(div.post-and-replies))::before {
-  margin-bottom: 1em;
+  flex-shrink: 0;
 }

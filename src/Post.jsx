@@ -17,6 +17,7 @@ import PersonName from './PersonName.jsx'
 import PostEditor from './PostEditor.jsx'
 import { PostsDB } from './logic/posts.js'
 import Reactions from './Reactions.jsx'
+import ReplyLevel from './ReplyLevel.jsx'
 import UserContext from './UserContext.jsx'
 
 import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js'
@@ -24,7 +25,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className} = props;
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -72,7 +73,7 @@ const Post = forwardRef(function Post(props, ref) {
   // If it's a boost, we need to draw it as a boost.
   if (isBoostPost) {
     return ( <>
-      <article className={"post h-entry "+className}>
+      <article className="post h-entry">
         <div className="boost-info">
         <FontAwesomeIcon icon="repeat" /> {" "}
           <PersonName link={true} person={post.authorPerson} /> boosted this.
@@ -95,8 +96,7 @@ const Post = forwardRef(function Post(props, ref) {
 
   const navigate = useNavigate();
 
-  return (<>
-    <article className={"post h-entry "+className}>
+  const thePost = (<>
       {replyingToPost && 
         <div className="boost-info">
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
@@ -105,7 +105,7 @@ const Post = forwardRef(function Post(props, ref) {
         </div>
       }
 
-      <div ref={postDivRef} className="post">
+      <div ref={postDivRef} className={"post "+className}>
         <span className="post-metadata">
           <span className="post-date"
             aria-label={post.updatedAt === post.createdAt?
@@ -162,11 +162,20 @@ const Post = forwardRef(function Post(props, ref) {
           </aside>
         }
       </div>
+    </>
+  );
 
+  const postWithoutChildren = showReplyLevel?
+    <ReplyLevel post={post}>{thePost}</ReplyLevel>
+    :
+    <>{thePost}</>
+  ;
+
+  return (
+    <article className={"post h-entry "+className}>
+      {postWithoutChildren}
       {children}
     </article>
-
-    </>
   );
 });
 
