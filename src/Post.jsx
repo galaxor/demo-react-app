@@ -24,7 +24,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact} = props;
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -72,7 +72,7 @@ const Post = forwardRef(function Post(props, ref) {
   // If it's a boost, we need to draw it as a boost.
   if (isBoostPost) {
     return ( <>
-      <article className="post h-entry">
+      <article className={"post h-entry "+className}>
         <div className="boost-info">
         <FontAwesomeIcon icon="repeat" /> {" "}
           <PersonName link={true} person={post.authorPerson} /> boosted this.
@@ -96,7 +96,7 @@ const Post = forwardRef(function Post(props, ref) {
   const navigate = useNavigate();
 
   return (<>
-    <article className="post h-entry">
+    <article className={"post h-entry "+className}>
       {replyingToPost && 
         <div className="boost-info">
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>

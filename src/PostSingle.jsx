@@ -73,7 +73,7 @@ export default function PostSingle() {
       <SystemNotificationArea />
 
       <div ref={scrollHereRef} className="scroll-into-view"></div>
-      <Post ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
+      <Post ref={postRef} className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
         {composingReply &&
           <div className="composing-reply">
             <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyLink(); } } onCancel={() => setComposingReply(false)} />
@@ -82,14 +82,14 @@ export default function PostSingle() {
 
         {numReplies > 0 &&
           <section className="replies-section" aria-labelledby="replies-section-header">
-            <h2 id="replies-section-header">Replies</h2>
+            <h2 id="replies-section-header" className="visually-hidden">Replies</h2>
             <Replies postRepliedTo={post} replies={replies} setReplies={setReplies} />
           </section>
         }
 
         {post.conversationId &&
           <section className="thread-context" aria-labelledby="thread-context-header">
-            <h2 id="thread-context-header">Thread Context</h2>
+            <h2 id="thread-context-header" className="visually-hidden">Thread Context</h2>
             <PostAndReplies post={originatingPost} prune={post.uri} />
           </section>
         }

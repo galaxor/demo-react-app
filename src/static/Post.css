@@ -1,3 +1,9 @@
+article.post {
+  div.post {
+    width: auto;
+  }
+}
+
 article.post > div.post:hover {
   background: var(--hover-color);
 }
@@ -228,4 +234,20 @@ a.stat-destination:focus {
   width: 1ex;
   height: 1ex;
   z-index: -10;
+}
+
+article.post-single > div.post {
+  border: 1px solid var(--post-single-outline-color);
+  border-radius: 2ex;
+  padding: 1ex;
+}
+
+/* Reorder the thread to put the thread context first, then the post, then the replies. */
+article.post-single {
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+section.thread-context {
+  order: -1;
 }
