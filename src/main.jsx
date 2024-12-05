@@ -27,6 +27,8 @@ import { getPostLoader } from './logic/posts.js';
 import {
   createBrowserRouter,
   RouterProvider,
+  useNavigate,
+  useHref,
 } from "react-router-dom";
 
 import TimeAgo from 'javascript-time-ago'
@@ -137,10 +139,19 @@ const router = createBrowserRouter([
 ], { basename: prefix }
 );
 
+function CoolApp() {
+  const navigate = useNavigate();
+
+  return (
+    <NextUIProvider navigate={navigate} useHref={useHref}>
+    </NextUIProvider>
+  );
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <NextUIProvider>
-      <RouterProvider router={router} />
-    </NextUIProvider>
+    <RouterProvider router={router}>
+      <CoolApp />
+    </RouterProvider>
   </StrictMode>,
 )
