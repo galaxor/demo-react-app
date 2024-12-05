@@ -1,3 +1,4 @@
+import Dropdown from 'react-bootstrap/Dropdown';
 import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
@@ -158,6 +159,19 @@ const Post = forwardRef(function Post(props, ref) {
               </li>
               <li className="post-stat post-stat-boosts"><Boosts onBoost={onBoost} post={post} /></li>
               <li className="reactions post-stat"><Reactions post={post} onReact={onReact} /></li>
+
+              <li className="bonus-menu">
+                <Dropdown>
+                  <Dropdown.Toggle>
+                    Menu
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="hmmm">Do one thing</Dropdown.Item>
+                    <Dropdown.Item href="hmmm">Do another thing</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </li>
             </ul>
           </aside>
         }

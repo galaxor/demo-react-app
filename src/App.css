@@ -1,4 +1,5 @@
 @import url("static/variables.css");
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
 .visually-hidden {
   height: 0.1px;
