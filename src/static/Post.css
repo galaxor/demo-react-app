@@ -110,7 +110,7 @@ div.post {
 
   aside.post-stats {
     .stat-destination {
-      display: block;
+      display: inline;
     }
 
     ul.post-stat-bar {
@@ -141,7 +141,6 @@ div.post {
 
       a.stat-destination {
         font-size: small;
-        display: block;
         margin-bottom: 0.3ex;
       }
 
