@@ -158,10 +158,10 @@ const Post = forwardRef(function Post(props, ref) {
                 <NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  />
               </li>
               <li className="post-stat post-stat-boosts"><Boosts onBoost={onBoost} post={post} /></li>
-              <li className="reactions post-stat"><Reactions post={post} onReact={onReact} /></li>
               <li className="more-options-menu">
                 <PostDetailsMenu post={post} />
               </li>
+              <li className="reactions post-stat"><Reactions post={post} onReact={onReact} /></li>
             </ul>
           </aside>
         }

@@ -12,14 +12,20 @@ import { useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import icons from './icons.js'
 
+
+function getDropdownAction(originalLink) {
+  function dropdownAction(key) {
+    if (key === "open-original") {
+      if (originalLink.current) {
+        originalLink.current.click();
+      }
+    }
+  }
+}
+
 export default function PostDetailsMenu({post}) {
   const originalLink = useRef(null);
 
-  function dropdownAction(key) {
-    if (key === "open-original") {
-      originalLink.current.click();
-    }
-  }
 
   return (
     <Dropdown>
@@ -29,9 +35,9 @@ export default function PostDetailsMenu({post}) {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Post Details" variant="solid" color="primary"
-        onAction={dropdownAction}
+        onAction={getDropdownAction(originalLink)}
       >
-        <DropdownItem key="open-original"><a ref={originalLink} href={post.canonicalUrl} target="_blank">Open original post</a></DropdownItem>
+        <DropdownItem key="open-original" textValue="Open original post"><a ref={originalLink} href={post.canonicalUrl} target="_blank">Open original post</a></DropdownItem>
         <DropdownItem key="copy-link-to-original">Copy link to original post</DropdownItem>
         <DropdownItem key="reaction-details" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reaction details</DropdownItem>
         <DropdownItem key="boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boost details</DropdownItem>
