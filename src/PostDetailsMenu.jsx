@@ -37,11 +37,15 @@ export default function PostDetailsMenu({post}) {
       <DropdownMenu aria-label="Post Details" variant="solid" color="primary"
         onAction={getDropdownAction(originalLink)}
       >
-        <DropdownItem key="open-original" textValue="Open original post"><a ref={originalLink} href={post.canonicalUrl} target="_blank">Open original post</a></DropdownItem>
-        <DropdownItem key="copy-link-to-original">Copy link to original post</DropdownItem>
-        <DropdownItem key="reaction-details" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reaction details</DropdownItem>
-        <DropdownItem key="boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boost details</DropdownItem>
-        <DropdownItem key="quote-boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote boost details</DropdownItem>
+        <DropdownSection showDivider>
+          <DropdownItem key="open-original" textValue="Open original post"><a ref={originalLink} href={post.canonicalUrl} target="_blank">Open original post</a></DropdownItem>
+          <DropdownItem key="copy-link-to-original">Copy link to original post</DropdownItem>
+        </DropdownSection>
+        <DropdownSection>
+          <DropdownItem key="reaction-details" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reaction details</DropdownItem>
+          <DropdownItem key="boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boost details</DropdownItem>
+          <DropdownItem key="quote-boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote boost details</DropdownItem>
+        </DropdownSection>
       </DropdownMenu>
     </Dropdown>
   );
