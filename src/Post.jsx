@@ -15,6 +15,7 @@ import NumReplies from './NumReplies.jsx'
 import PersonInline from './PersonInline.jsx'
 import PersonName from './PersonName.jsx'
 import PostEditor from './PostEditor.jsx'
+import PostDetailsMenu from './PostDetailsMenu.jsx'
 import { PostsDB } from './logic/posts.js'
 import Reactions from './Reactions.jsx'
 import ReplyLevel from './ReplyLevel.jsx'
@@ -158,6 +159,9 @@ const Post = forwardRef(function Post(props, ref) {
               </li>
               <li className="post-stat post-stat-boosts"><Boosts onBoost={onBoost} post={post} /></li>
               <li className="reactions post-stat"><Reactions post={post} onReact={onReact} /></li>
+              <li className="more-options-menu">
+                <PostDetailsMenu post={post} />
+              </li>
             </ul>
           </aside>
         }

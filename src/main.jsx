@@ -26,6 +26,7 @@ import { getPostLoader } from './logic/posts.js';
 
 import {
   createBrowserRouter,
+  Outlet,
   RouterProvider,
   useNavigate,
   useHref,
@@ -59,80 +60,85 @@ const prefix=import.meta.env.BASE_URL.replace(/\/+$/, '');
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App db={database} />,
+    element: <CoolApp />,
     children: [
       {
         path: "/",
-        element: <RootFeed />,
-      },
-      {
-        path: "/home",
-        element: <YourFeed />,
-      },
-      {
-        path: "/popular",
-        element: <PopularFeed />,
-      },
-      {
-        path: "/profile/edit",
-        element: <ProfileEdit />,
-      },
-      {
-        path: "/profile",
-        element: <ProfileView loggedInUser={true}><ProfileBio /></ProfileView>,
-      },
-      {
-        path: "/people/:handle",
-        loader: getPersonLoader(database),
-        element: <ProfileView />,
+        element: <App db={database} />,
         children: [
           {
-            index: true,
-            element: <PostsByPerson showReplies={false} />,
+            path: "/",
+            element: <RootFeed />,
           },
           {
-            path: "/people/:handle/posts-replies",
-            element: <PostsByPerson showReplies={true} />,
+            path: "/home",
+            element: <YourFeed />,
           },
           {
-            path: "/people/:handle/followers",
-            element: <WhoFollowsThem />,
+            path: "/popular",
+            element: <PopularFeed />,
           },
           {
-            path: "/people/:handle/follows",
-            element: <WhoDoTheyFollow />,
+            path: "/profile/edit",
+            element: <ProfileEdit />,
+          },
+          {
+            path: "/profile",
+            element: <ProfileView loggedInUser={true}><ProfileBio /></ProfileView>,
+          },
+          {
+            path: "/people/:handle",
+            loader: getPersonLoader(database),
+            element: <ProfileView />,
+            children: [
+              {
+                index: true,
+                element: <PostsByPerson showReplies={false} />,
+              },
+              {
+                path: "/people/:handle/posts-replies",
+                element: <PostsByPerson showReplies={true} />,
+              },
+              {
+                path: "/people/:handle/followers",
+                element: <WhoFollowsThem />,
+              },
+              {
+                path: "/people/:handle/follows",
+                element: <WhoDoTheyFollow />,
+              },
+            ],
+          },
+          {
+            path: "/post/:postUri",
+            loader: getPostLoader(database),
+            element: <PostSingle />,
+          },
+          {
+            path: "/post/:postUri/boosts",
+            loader: getPostLoader(database),
+            element: <BoostsDetail />,
+          },
+          {
+            path: "/post/:postUri/quote-boosts",
+            loader: getPostLoader(database),
+            element: <QuoteBoostsDetail />,
+          },
+          {
+            path: "/post/:postUri/reactions",
+            loader: getPostLoader(database),
+            element: <ReactionsDetail />,
+          },
+          {
+            path: "/create",
+            element: <CreatePost />
+          },
+          {
+            path: "/quote-boost/:postUri",
+            loader: getPostLoader(database),
+            element: <QuoteBoost />,
           },
         ],
-      },
-      {
-        path: "/post/:postUri",
-        loader: getPostLoader(database),
-        element: <PostSingle />,
-      },
-      {
-        path: "/post/:postUri/boosts",
-        loader: getPostLoader(database),
-        element: <BoostsDetail />,
-      },
-      {
-        path: "/post/:postUri/quote-boosts",
-        loader: getPostLoader(database),
-        element: <QuoteBoostsDetail />,
-      },
-      {
-        path: "/post/:postUri/reactions",
-        loader: getPostLoader(database),
-        element: <ReactionsDetail />,
-      },
-      {
-        path: "/create",
-        element: <CreatePost />
-      },
-      {
-        path: "/quote-boost/:postUri",
-        loader: getPostLoader(database),
-        element: <QuoteBoost />,
       },
     ],
   },
@@ -144,6 +150,7 @@ function CoolApp() {
 
   return (
     <NextUIProvider navigate={navigate} useHref={useHref}>
+      <Outlet />
     </NextUIProvider>
   );
 }
