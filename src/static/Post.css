@@ -15,23 +15,12 @@ article.post > div.post:has(span.post-author:hover),
 article.post > div.post:has(.reactions:hover),
 article.post > div.post:has(.non-quote-boosts:hover),
 article.post > div.post:has(.quote-boosts:hover),
-article.post > div.post:has(.post-stat-replies:hover) {
+article.post > div.post:has(.post-stat-replies:hover),
+article.post > div.post:has(.more-options-menu:hover) {
   background: var(--bg-color);
 }
 
 article.post > div.post {
-  span.post-author:hover,
-  .reactions:hover,
-  .non-quote-boosts:hover,
-  .quote-boosts:hover,
-  .post-stat-replies:hover {
-    background: var(--hover-color);
-
-    a.stat-destination {
-      text-decoration: underline;
-    }
-  }
-
   .post-author {
     position: relative;
     /* Looks good on desktop, but on very narrow screens, it cuts off on the left. */
@@ -205,7 +194,7 @@ div.post {
   display: block;
   position: absolute;
   z-index: 1;
-  padding-left: 2.5px;
+  padding-left: 4px;
 }
 
 .posts-list article {

@@ -33,7 +33,7 @@ export default function PostDetailsMenu({post}) {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="bordered">
+        <Button variant="light">
           <FontAwesomeIcon icon={icons.ellipsis} title="Details" />
         </Button>
       </DropdownTrigger>

@@ -42,33 +42,33 @@ export default function Boosts({post, onBoost}) {
       Boosts
     </span>
     <ul className="boosts" aria-labelledby={htmlId}>
-      <li className={'non-quote-boosts ' + (numYourBoosts > 0 ? 'you-did-this' : '')}>
+      <li className="non-quote-boosts">
         {user? 
-          <Button variant="bordered" className="stat" onPress={e => {
+          <Button variant={numYourBoosts > 0? "flat" : "light"} className="stat" onPress={e => {
             clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
             if (typeof onBoost === "function") { onBoost(); }
           }}>
-            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} /></span> {" "}
+            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
             <span className="total">{numBoosts}</span>
           </Button>
           :
           <div className="stat">
-            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} /></span> {" "}
+            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
             <span className="total">{numBoosts}</span>
           </div>
         }
           
       </li>
 
-      <li className={'quote-boosts ' + (numYourQuoteBoosts > 0? 'you-did-this' : '')}>
+      <li className="quote-boosts">
         {user?
-            <Button variant="bordered" as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
-              <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} /></span></span> {" "}
+            <Button variant={numYourQuoteBoosts > 0? "flat" : "light"} as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
+              <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
               <span className="total">{numQuoteBoosts}</span>
             </Button>
           :
           <div className="stat">
-            <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} /></span></span> {" "}
+            <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
             <span className="total">{numQuoteBoosts}</span>
           </div>
         }

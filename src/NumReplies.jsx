@@ -26,7 +26,7 @@ const NumReplies = forwardRef(function NumReplies(props, ref) {
   }, []);
 
   const iconAndNumber = (<>
-    <span className="num-replies-icon"><FontAwesomeIcon icon={icons.comment} /></span> {" "}
+    <span className="num-replies-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span> {" "}
     <span className="num-replies-num">{numReplies ?? replies.length}</span>
   </>);
 

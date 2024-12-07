@@ -155,7 +155,7 @@ const Post = forwardRef(function Post(props, ref) {
             
             <ul aria-labelledby={htmlId+'-header'} className="post-stat-bar">
               <li className="post-stat post-stat-replies">
-                <Button ref={replyButtonRef} variant="bordered" onPress={(e) => { setComposingReply(true); }}>
+                <Button ref={replyButtonRef} variant="light" onPress={(e) => { setComposingReply(true); }}>
                   <NumReplies post={post} numReplies={numReplies} />
                 </Button>
               </li>
