@@ -38,42 +38,39 @@ export default function Boosts({post, onBoost}) {
 
   return (
     <>
-    <span id={htmlId} className="boosts-header visually-hidden">
-      Boosts
-    </span>
-    <ul className="boosts" aria-labelledby={htmlId}>
-      <li className="non-quote-boosts">
-        {user? 
-          <Button variant={numYourBoosts > 0? "flat" : "light"} className="stat" onPress={e => {
-            clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
-            if (typeof onBoost === "function") { onBoost(); }
-          }}>
-            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
-            <span className="total">{numBoosts}</span>
-          </Button>
-          :
-          <div className="stat">
-            <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
-            <span className="total">{numBoosts}</span>
-          </div>
-        }
-          
-      </li>
+    <li className="post-stat non-quote-boosts order-2">
+      {user? 
+        <Button variant={numYourBoosts > 0? "flat" : "light"} className="stat" onPress={e => {
+          clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
+          if (typeof onBoost === "function") { onBoost(); }
+        }}>
+          <span className="visually-hidden">Boost this post</span>
+          <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
+          <span className="total">{numBoosts}</span>
+        </Button>
+        :
+        <div className="stat">
+          <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
+          <span className="total">{numBoosts}</span>
+        </div>
+      }
+        
+    </li>
 
-      <li className="quote-boosts">
-        {user?
-            <Button variant={numYourQuoteBoosts > 0? "flat" : "light"} as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
-              <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
-              <span className="total">{numQuoteBoosts}</span>
-            </Button>
-          :
-          <div className="stat">
+    <li className="post-stat quote-boosts order-2">
+      {user?
+          <Button variant={numYourQuoteBoosts > 0? "flat" : "light"} as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
+            <span className="visually-hidden">Quote-boost this post</span>
             <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
             <span className="total">{numQuoteBoosts}</span>
-          </div>
-        }
-      </li>
-    </ul>
+          </Button>
+        :
+        <div className="stat">
+          <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
+          <span className="total">{numQuoteBoosts}</span>
+        </div>
+      }
+    </li>
     </>
   );
 }

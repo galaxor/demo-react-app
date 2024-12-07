@@ -81,7 +81,7 @@ export default function PostSingle() {
             }
 
         {numReplies > 0 &&
-          <section className="replies-section" aria-labelledby="replies-section-header">
+          <section className="replies-section order-2" aria-labelledby="replies-section-header">
             <h2 id="replies-section-header" className="visually-hidden">Replies</h2>
             <ReplyLevel post={post}>
               <Replies postRepliedTo={post} replies={replies} setReplies={setReplies} />
@@ -90,7 +90,7 @@ export default function PostSingle() {
         }
 
         {post.conversationId &&
-          <section className="thread-context" aria-labelledby="thread-context-header">
+          <section className="thread-context order-1" aria-labelledby="thread-context-header">
             <h2 id="thread-context-header" className="visually-hidden">Thread Context</h2>
             <PostAndReplies post={originatingPost} prune={post.uri} />
           </section>
