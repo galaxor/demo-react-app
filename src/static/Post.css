@@ -134,6 +134,7 @@ div.post {
         }
       }
 
+      li.post-stat-boosts,
       li.post-stat-replies,
       li.non-quote-boosts {
         padding-right: 2ex;

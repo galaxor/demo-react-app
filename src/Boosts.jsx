@@ -43,16 +43,14 @@ export default function Boosts({post, onBoost}) {
     </span>
     <ul className="boosts" aria-labelledby={htmlId}>
       <li className={'non-quote-boosts ' + (numYourBoosts > 0 ? 'you-did-this' : '')}>
-        <NavLink className="stat-destination show-post-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boosts</NavLink>
         {user? 
-          <Link to="/" className="stat" onClick={e => {
-            e.preventDefault();
+          <Button variant="bordered" className="stat" onPress={e => {
             clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
             if (typeof onBoost === "function") { onBoost(); }
           }}>
             <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} /></span> {" "}
             <span className="total">{numBoosts}</span>
-          </Link>
+          </Button>
           :
           <div className="stat">
             <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} /></span> {" "}
