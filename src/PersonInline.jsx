@@ -45,14 +45,14 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   const onHomeServer = (person.localUserId !== null); 
 
   return (
-    <span className={"person-inline " + (isYou? "is-you " : " ") + (youFollowThem? "trust-you-follow-them " : " ") + (onHomeServer? "trust-on-home-server " : " ")}>
-      <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
+    <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
+      <div className="flex gap-5">
         <Avatar isBordered radius="full" size="md" src={person.avatar} name={person.displayName} />
         {" "}
-        <div className="name-handle">
+        <div className="name-handle flex flex-col gap-1 items-start justify-center">
           <bdi className="p-name">{person.displayName}</bdi> {" "}
-          <span className="handle-and-trust">
-            <span className="handle-inline u-impp">{person.handle}</span>
+          <span className="handle-and-trust flex gap-1">
+            <span className="handle-inline u-impp order-2">{person.handle}</span>
             <span className="person-inline-trust-info">
               {isYou && <span className="is-you">You</span>} {" "}
               {onHomeServer && <span className="trust-on-this-server">
@@ -66,7 +66,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
             </span>
           </span>
         </div>
-      </Link>
-    </span>
+      </div>
+    </Link>
   );
 }

@@ -1,12 +1,1 @@
-ul.boosts-detail {
-  padding-left: 0;
 
-  li {
-    display: block;
-    margin-bottom: 1em;
-  }
-
-  .time-ago {
-    font-weight: bold;
-  }
-}

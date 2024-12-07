@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/button"
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card"
 import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
@@ -107,67 +108,71 @@ const Post = forwardRef(function Post(props, ref) {
         </div>
       }
 
-      <div ref={postDivRef} className={"post "+className}>
-        <span className="post-metadata">
-          <span className="post-date"
-            aria-label={post.updatedAt === post.createdAt?
-              "Posted "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))
-              :
-              "Updated "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))}>
-            <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
-                <span className="dt-published published-date">
-                  <div className={"time-ago " + (post.updatedAt !== post.createdAt? "time-ago-edited" : "")}>
-                    {post.updatedAt !== post.createdAt? 
-                      <span className="post-edited"><FontAwesomeIcon icon={icons.pencil} title="Edited" />{" "}</span> : ""
-                    }
-                    <ReactTimeAgo date={new Date(post.updatedAt)} timeStyle="mini" locale={languageContext} />
-                  </div>
-                  <div className="abs-date">
-                    <div>{dayFormat.format(new Date(post.updatedAt))}</div>
-                    <div>{dateFormat.format(new Date(post.updatedAt))}</div>
-                    <div>{timeFormat.format(new Date(post.updatedAt))}</div>
-                  </div>
-                </span>
-            </Link>
+      <Card ref={postDivRef} className={"post "+className}>
+        <CardHeader>
+          <span className="post-metadata w-full flex justify-between">
+            <span className="post-date order-1 text-right"
+              aria-label={post.updatedAt === post.createdAt?
+                "Posted "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))
+                :
+                "Updated "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))}>
+              <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
+                  <span className="dt-published published-date">
+                    <div className={"text-xl time-ago " + (post.updatedAt !== post.createdAt? "time-ago-edited" : "")}>
+                      {post.updatedAt !== post.createdAt? 
+                        <span className="post-edited"><FontAwesomeIcon icon={icons.pencil} title="Edited" />{" "}</span> : ""
+                      }
+                      <ReactTimeAgo date={new Date(post.updatedAt)} timeStyle="mini" locale={languageContext} />
+                    </div>
+                    <div className="abs-date text-xs">
+                      <div>{dayFormat.format(new Date(post.updatedAt))}</div>
+                      <div>{dateFormat.format(new Date(post.updatedAt))}</div>
+                      <div>{timeFormat.format(new Date(post.updatedAt))}</div>
+                    </div>
+                  </span>
+              </Link>
+            </span>
+                
+            <span className="post-author">
+              <span className="visually-hidden">By</span>
+              <PersonInline person={post.authorPerson} />
+            </span>
           </span>
-              
-          <span className="post-author">
-            <span className="visually-hidden">By</span>
-            <PersonInline person={post.authorPerson} />
-          </span>
-        </span>
-
-        {(post.type ?? "text") === "text" && <div className="post-text post-text-text e-content" lang={post.language}>{post.text}</div>}
-        {post.type === "markdown" && <div className="post-text post-text-markdown e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
-        <ImageList post={post} />
-
-        {post.boostedPosts && post.boostedPosts.length > 0 &&
-          <blockquote className="quote-boosted-posts">
-            {post.boostedPosts.map(boostedPost => 
-              <Post showStats={false} key={boostedPost.uri} post={boostedPost}  />
-            )}
-          </blockquote>
-        }
+        </CardHeader>
+        <CardBody>
+          {(post.type ?? "text") === "text" && <div className="post-text post-text-text e-content" lang={post.language}>{post.text}</div>}
+          {post.type === "markdown" && <div className="post-text post-text-markdown e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
+          <ImageList post={post} />
+          {post.boostedPosts && post.boostedPosts.length > 0 &&
+            <blockquote className="quote-boosted-posts">
+              {post.boostedPosts.map(boostedPost => 
+                <Post showStats={false} key={boostedPost.uri} post={boostedPost}  />
+              )}
+            </blockquote>
+          }
+        </CardBody>
 
         {showStatsForReal && 
-          <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
-            <span className="post-stats-header visually-hidden" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
-            
-            <ul aria-labelledby={htmlId+'-header'} className="post-stat-bar">
-              <li className="post-stat post-stat-replies">
-                <Button ref={replyButtonRef} variant="light" onPress={(e) => { setComposingReply(true); }}>
-                  <NumReplies post={post} numReplies={numReplies} />
-                </Button>
-              </li>
-              <li className="post-stat post-stat-boosts"><Boosts onBoost={onBoost} post={post} /></li>
-              <li className="post-stat more-options-menu">
-                <PostDetailsMenu post={post} />
-              </li>
-              <li className="reactions post-stat"><Reactions post={post} onReact={onReact} /></li>
-            </ul>
-          </aside>
+          <CardFooter>
+            <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
+              <span className="post-stats-header visually-hidden" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
+              
+              <ul aria-labelledby={htmlId+'-header'} className="post-stat-bar">
+                <li className="post-stat post-stat-replies">
+                  <Button ref={replyButtonRef} variant="light" onPress={(e) => { setComposingReply(true); }}>
+                    <NumReplies post={post} numReplies={numReplies} />
+                  </Button>
+                </li>
+                <li className="post-stat post-stat-boosts"><Boosts onBoost={onBoost} post={post} /></li>
+                <li className="post-stat more-options-menu">
+                  <PostDetailsMenu post={post} />
+                </li>
+                <li className="reactions post-stat"><Reactions post={post} onReact={onReact} /></li>
+              </ul>
+            </aside>
+          </CardFooter>
         }
-      </div>
+      </Card>
     </>
   );
 

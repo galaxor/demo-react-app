@@ -1,15 +1,1 @@
-#profile-fields {
-  display: grid;
-  grid-template-columns: 30% 70%;
-  max-width: fit-content;
-  gap: 2ex;
-  align-items: center;
-
-  .profile-field-label {
-    text-align: right;
-    font-weight: bold;
-  }
-
-}
-
 
