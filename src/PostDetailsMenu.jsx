@@ -45,6 +45,7 @@ export default function PostDetailsMenu({post}) {
           <DropdownItem key="copy-link-to-original">Copy link to original post</DropdownItem>
         </DropdownSection>
         <DropdownSection>
+          <DropdownItem key="reply-details" href={"/post/"+encodeURIComponent(post.uri)}>Go to thread</DropdownItem>
           <DropdownItem key="reaction-details" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reaction details</DropdownItem>
           <DropdownItem key="boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boost details</DropdownItem>
           <DropdownItem key="quote-boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote boost details</DropdownItem>
