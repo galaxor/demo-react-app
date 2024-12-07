@@ -12,11 +12,10 @@ export function clickPost(e) {
   // Is the target a child of a link, or a link itself?
   const linksThatContainTarget = Array.from(links.values().filter(link => link.contains(e.target)));
 
-  // Do the same thing for the "more options" menu.
-  // Also find the "more options" menu.
-  const moreOptionsMenu = node.querySelector('li.more-options-menu');
+  // Do the same thing for all the "post-stat" thingies.
+  const postStatsThatContainTarget = Array.from(node.querySelectorAll('li.post-stat').values()).filter(li => li.contains(e.target));;
 
-  if (linksThatContainTarget.length > 0 || moreOptionsMenu.contains(e.target)) {
+  if (linksThatContainTarget.length > 0 || postStatsThatContainTarget.length > 0) {
     return;
   } else {
     var node = e.target;

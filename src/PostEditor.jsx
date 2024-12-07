@@ -52,6 +52,9 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
       clear() {
         editorRef.current.setMarkdown("");
       },
+      focus() {
+        editorRef.current.focus();
+      }
     };
   }, []);
 

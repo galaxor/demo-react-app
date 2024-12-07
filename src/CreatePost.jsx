@@ -18,6 +18,7 @@ export default function CreatePost() {
         onCancel={() => {
           navigateToCreatePost(navigate);
           editorRef.current.clear();
+          editorRef.current.focus();
         }}
       />
     </main>

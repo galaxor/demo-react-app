@@ -30,11 +30,7 @@ const NumReplies = forwardRef(function NumReplies(props, ref) {
     <span className="num-replies-num">{numReplies ?? replies.length}</span>
   </>);
 
-  return (user?
-    <Link ref={replyLinkRef} className="stat num-replies" aria-label="Replies" to="/" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setComposingReply(true); }}>
-      {iconAndNumber}
-    </Link>
-    :
+  return (
     <span className="num-replies" aria-label="Replies">
       {iconAndNumber}
     </span>

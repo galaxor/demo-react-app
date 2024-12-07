@@ -1,6 +1,8 @@
+import { Button } from "@nextui-org/button"
 import { useContext, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
+import { Link as Link2 } from "@nextui-org/link"
 
 import DatabaseContext from './DatabaseContext.jsx'
 import icons from './icons.js'
@@ -61,12 +63,11 @@ export default function Boosts({post, onBoost}) {
       </li>
 
       <li className={'quote-boosts ' + (numYourQuoteBoosts > 0? 'you-did-this' : '')}>
-        <NavLink className="stat-destination show-post-quote-boosts" to={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote Boosts</NavLink>
         {user?
-          <Link className="stat" to={"/quote-boost/"+encodeURIComponent(post.uri)}>
-            <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} /></span></span> {" "}
-            <span className="total">{numQuoteBoosts}</span>
-          </Link>
+            <Button variant="bordered" as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
+              <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} /></span></span> {" "}
+              <span className="total">{numQuoteBoosts}</span>
+            </Button>
           :
           <div className="stat">
             <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} /></span></span> {" "}

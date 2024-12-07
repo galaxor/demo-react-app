@@ -7,6 +7,7 @@ import {
   DropdownSection,
 } from "@nextui-org/dropdown";
 import { Link } from 'react-router-dom'
+import { Link as Link2, LinkIcon } from "@nextui-org/link"
 import { useRef } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -14,10 +15,13 @@ import icons from './icons.js'
 
 
 function getDropdownAction(originalLink) {
-  function dropdownAction(key) {
+  return function dropdownAction(key) {
     if (key === "open-original") {
       if (originalLink.current) {
-        originalLink.current.click();
+        if (!originalLink.current.dataset.clicked) {
+          originalLink.current.click();
+        }
+        originalLink.current.dataset.clicked = false;
       }
     }
   }
@@ -26,6 +30,7 @@ function getDropdownAction(originalLink) {
 export default function PostDetailsMenu({post}) {
   const originalLink = useRef(null);
 
+  console.log(post.canonicalUrl);
 
   return (
     <Dropdown>
@@ -38,7 +43,7 @@ export default function PostDetailsMenu({post}) {
         onAction={getDropdownAction(originalLink)}
       >
         <DropdownSection showDivider>
-          <DropdownItem key="open-original" textValue="Open original post"><a ref={originalLink} href={post.canonicalUrl} target="_blank">Open original post</a></DropdownItem>
+          <DropdownItem key="open-original" textValue="Open original" endContent={<LinkIcon />}><a ref={originalLink} href={post.canonicalUrl} onClick={e => { originalLink.current.dataset.clicked=true; }} target="_blank" rel="noopener noreferrer">Open original post</a></DropdownItem>
           <DropdownItem key="copy-link-to-original">Copy link to original post</DropdownItem>
         </DropdownSection>
         <DropdownSection>

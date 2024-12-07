@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/button"
 import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
@@ -35,7 +36,7 @@ const Post = forwardRef(function Post(props, ref) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const replyLinkRef = useRef(null);
+  const replyButtonRef = useRef(null);
 
   const postDivRef = useRef(null);
   const childPostRef = useRef(null);
@@ -43,8 +44,9 @@ const Post = forwardRef(function Post(props, ref) {
   if (typeof ref.current !== "undefined") {
     useImperativeHandle(ref, () => {
       return {
-        focusReplyLink() {
-          replyLinkRef.current.focus();
+        focusReplyButton() {
+          console.log(replyButtonRef.current, replyButtonRef.current.focus);
+          replyButtonRef.current.focus();
         },
 
         getPostDiv() {
@@ -154,11 +156,12 @@ const Post = forwardRef(function Post(props, ref) {
             
             <ul aria-labelledby={htmlId+'-header'} className="post-stat-bar">
               <li className="post-stat post-stat-replies">
-                <NavLink className="stat-destination" to={"/post/"+encodeURIComponent(post.uri)}>Replies</NavLink>
-                <NumReplies ref={replyLinkRef} post={post} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}  />
+                <Button ref={replyButtonRef} variant="bordered" onPress={(e) => { setComposingReply(true); }}>
+                  <NumReplies post={post} numReplies={numReplies} />
+                </Button>
               </li>
               <li className="post-stat post-stat-boosts"><Boosts onBoost={onBoost} post={post} /></li>
-              <li className="more-options-menu">
+              <li className="post-stat more-options-menu">
                 <PostDetailsMenu post={post} />
               </li>
               <li className="reactions post-stat"><Reactions post={post} onReact={onReact} /></li>
