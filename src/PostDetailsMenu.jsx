@@ -30,8 +30,6 @@ function getDropdownAction(originalLink) {
 export default function PostDetailsMenu({post}) {
   const originalLink = useRef(null);
 
-  console.log(post.canonicalUrl);
-
   return (
     <Dropdown>
       <DropdownTrigger>

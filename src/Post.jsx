@@ -45,7 +45,6 @@ const Post = forwardRef(function Post(props, ref) {
     useImperativeHandle(ref, () => {
       return {
         focusReplyButton() {
-          console.log(replyButtonRef.current, replyButtonRef.current.focus);
           replyButtonRef.current.focus();
         },
 
