@@ -1,8 +1,9 @@
+// import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
+import {Avatar} from "@nextui-org/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import Avatar from './Avatar.jsx'
 import DatabaseContext from './DatabaseContext.jsx';
 import icons from './icons.js'
 import UserContext from './UserContext.jsx';
@@ -46,7 +47,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   return (
     <span className={"person-inline " + (isYou? "is-you " : " ") + (youFollowThem? "trust-you-follow-them " : " ") + (onHomeServer? "trust-on-home-server " : " ")}>
       <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
-        <Avatar person={person} size="person-inline" />
+        <Avatar isBordered radius="full" size="md" src={person.avatar} name={person.displayName} />
         {" "}
         <div className="name-handle">
           <bdi className="p-name">{person.displayName}</bdi> {" "}
