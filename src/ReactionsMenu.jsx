@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/button"
 import { useContext, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EmojiPicker from 'emoji-picker-react';
@@ -64,9 +65,9 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
 
   return (
     <>
-    <Link id={htmlId} ref={addAReactionRef} onClick={e => setMenuOpen(!menuOpen)}>
+    <Button size="sm" variant="light" id={htmlId} ref={addAReactionRef} onPress={e => setMenuOpen(!menuOpen)}>
       <FontAwesomeIcon title="Add a reaction" icon={icons.squarePlus} size="lg" />
-    </Link>
+    </Button>
     <EmojiPicker className="emoji-picker" open={menuOpen} 
       defaultSkinTone={typeof skinTone==="undefined"? user.skinTonePref : skinTone}
       onEmojiClick={emoji => {

@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/button"
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -36,9 +37,8 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
   // If they're not logged in, they don't get a clickable link.
   return (
     user? 
-      <Link className={'reaction ' + (didYouDoThis? 'you-did-this' : '')}
-        onClick={e => {
-          e.preventDefault();
+      <Button size="sm" className="reaction" variant={didYouDoThis? "flat" : "light"}
+        onPress={e => {
           toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions,
             newValue: !didYouDoThis});
 
@@ -47,7 +47,7 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
       }>
         <span className="glyph">{glyph}</span>
         {reaction.total && <span className="count">{reaction.total}</span>}
-      </Link>
+      </Button>
     :
       <div className="reaction">
         <span className="glyph">{glyph}</span>

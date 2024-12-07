@@ -107,6 +107,10 @@ div.post {
       flex-wrap: wrap;
       padding-left: 0;
 
+      & > li.reactions {
+        margin-top: 1em;
+      }
+
       & > li.post-stat {
         display: block;
         margin-left: 0;
