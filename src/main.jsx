@@ -20,6 +20,8 @@ import YourFeed from './YourFeed.jsx'
 import WhoFollowsThem from './WhoFollowsThem.jsx'
 import WhoDoTheyFollow from './WhoDoTheyFollow.jsx'
 
+import Test from './Test.jsx'
+
 import Database from "./logic/database.js";
 import { getPersonLoader } from './logic/people.js';
 import { getPostLoader } from './logic/posts.js';
@@ -139,6 +141,11 @@ const router = createBrowserRouter([
             element: <QuoteBoost />,
           },
         ],
+      },
+
+      {
+        path: "/test",
+        element: <Test />,
       },
     ],
   },
