@@ -1,1 +1,4 @@
-
+ul.replies {
+  padding-left: 1ex;
+  border-left: 2px solid grey;
+}

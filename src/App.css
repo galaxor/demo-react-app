@@ -153,3 +153,7 @@ main {
   margin-left: auto;
   margin-right: auto;
 }
+
+img.emoji {
+  height: 20px;
+}
