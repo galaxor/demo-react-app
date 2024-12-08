@@ -1,3 +1,5 @@
+import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
+import hashSum from 'hash-sum'
 import { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,6 +12,8 @@ import UserContext from './UserContext.jsx';
 export default function UserSection() {
   const {user, setUser, setSessionId} = useContext(UserContext);
 
+  const avatarFallbackColor = hashSum(user.handle).substring(0,6).toUpperCase();
+
   return (
     <section id="user-section">
       <ul>
@@ -19,7 +23,10 @@ export default function UserSection() {
           <NotificationBell />
         </li>
         <li id="user-name"><NavLink to="/profile">{user.avatar? 
-          <img src={user.avatar} className="avatar-small" alt={user.displayName} />
+          <Avatar isBordered radius="full" size="md" className="shrink-0" src={user.avatar} name={user.displayName} 
+            style={{'--avatar-bg': '#'+avatarFallbackColor}}
+            classNames={{base: "bg-[--avatar-bg]"}}
+          />
           :
           ""}
         </NavLink></li>

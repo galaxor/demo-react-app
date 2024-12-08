@@ -1,5 +1,4 @@
-// import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
-import {Avatar} from "@nextui-org/react";
+import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
 import { useContext, useState } from 'react';
