@@ -20,6 +20,7 @@ import {
  } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
 import { Button } from "@nextui-org/button"
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card"
 import { forwardRef, useContext, useEffect, useImperativeHandle, useRef } from 'react'
 import { Link } from "react-router-dom"
 import { useState } from "react"
@@ -84,39 +85,41 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
   return (
     <>
     <div className="post-editor">
-      <MDXEditor markdown="" ref={editorRef} autofocus
-        placeholder="What do you want to share?"
-        onChange={text => { 
-          setPostText(text);
-          setPostDisabled(isPostDisabled(text, uploadedImages));
-        }}
-        plugins={[
-          codeBlockPlugin({defaultCodeBlockLanguage: ''}),
-          codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', "": 'Text', jsx: 'JSX', ts: 'TypeScript', tsx: 'TSX' } }),
-          diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
-          listsPlugin(),
-          linkPlugin(),
-          linkDialogPlugin(),
-          toolbarPlugin({
-            toolbarClassName: "post-editor-toolbar",
-            toolbarContents: () => (
-              <>
-                <DiffSourceToggleWrapper>
-                  <UndoRedo />
-                  <BoldItalicUnderlineToggles />
-                  <CreateLink />
-                  <CodeToggle />
-                  <BlockTypeSelect />
-                  <ListsToggle />
-                  <InsertCodeBlock />
-                </DiffSourceToggleWrapper>
-              </>
-            ),
-          }),
-          quotePlugin(),
-          markdownShortcutPlugin(),
-        ]}
-      />
+      <Card>
+        <MDXEditor markdown="" ref={editorRef} autofocus
+          placeholder="What do you want to share?"
+          onChange={text => { 
+            setPostText(text);
+            setPostDisabled(isPostDisabled(text, uploadedImages));
+          }}
+          plugins={[
+            codeBlockPlugin({defaultCodeBlockLanguage: ''}),
+            codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', "": 'Text', jsx: 'JSX', ts: 'TypeScript', tsx: 'TSX' } }),
+            diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
+            listsPlugin(),
+            linkPlugin(),
+            linkDialogPlugin(),
+            toolbarPlugin({
+              toolbarClassName: "post-editor-toolbar",
+              toolbarContents: () => (
+                <>
+                  <DiffSourceToggleWrapper>
+                    <UndoRedo />
+                    <BoldItalicUnderlineToggles />
+                    <CreateLink />
+                    <CodeToggle />
+                    <BlockTypeSelect />
+                    <ListsToggle />
+                    <InsertCodeBlock />
+                  </DiffSourceToggleWrapper>
+                </>
+              ),
+            }),
+            quotePlugin(),
+            markdownShortcutPlugin(),
+          ]}
+        />
+      </Card>
     </div>
     <PostImageEditor ref={imageEditorRef} uploadedImages={uploadedImages} 
       setUploadedImages={(uI) => {
