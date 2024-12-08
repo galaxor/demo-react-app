@@ -1,11 +1,12 @@
 import { library, icon } from '@fortawesome/fontawesome-svg-core'
-import { faBell, faCamera, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faCamera, faCircleXmark, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
 
-library.add([faBell, faCamera, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark]);
+library.add([faBell, faCamera, faCircleXmark, faComment, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark]);
 
 export default {
   bell: icon({ prefix: 'fas', iconName: 'bell' }),
   camera: icon({ prefix: 'fas', iconName: 'camera' }),
+  circleXmark: icon({ prefix: 'fas', iconName: 'circle-xmark' }),
   comment: icon({ prefix: 'fas', iconName: 'comment' }),
   earthAmericas: icon({ prefix: 'fas', iconName: 'earth-americas' }),
   ellipsis: icon({ prefix: 'fas', iconName: 'ellipsis' }),

@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/button"
+import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card"
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {Textarea} from "@nextui-org/input";
@@ -6,6 +7,15 @@ import {Textarea} from "@nextui-org/input";
 import icons from './icons.js'
 
 import './static/PostImageEditor.css'
+
+function removeImageFunction({fileName, uploadedImages, setUploadedImages, imageBucket}) {
+  return () => {
+    delete imageBucket.current[fileName];
+    const newUploadedImages = {...uploadedImages};
+    delete newUploadedImages[fileName];
+    setUploadedImages(newUploadedImages);
+  };
+}
 
 const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   // When we upload an image, it goes in the image bucket.  The bucket is like:
@@ -32,22 +42,34 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   return (
     <>
     <div className="post-image-editor">
-      <ul className="uploaded-images">
-        {Object.keys(uploadedImages).map(fileName => {
-          return (
-            <li key={fileName}>
-              <img className="h-[200px]" src={imageBucket.current[fileName].data} />
-              <Textarea label="Alt text" placeholder="Describe the image as if you're talking to someone who can't see it." 
-                  value={uploadedImages[fileName].altText}
-                  onChange={(e) => {
-                    const newUploadedImages = {...uploadedImages};
-                    newUploadedImages[fileName].altText = e.target.value;
-                    setUploadedImages(newUploadedImages);
-                  }} />
-            </li>
-          );
-        })}
-      </ul>
+      {Object.keys(uploadedImages).length > 0 ?
+        <ul className="uploaded-images">
+          {Object.keys(uploadedImages).map(fileName => {
+            return (
+              <li key={fileName}>
+                <Card>
+                  <CardHeader>
+                    <Button variant="light" isIconOnly aria-label="Remove" onClick={removeImageFunction({fileName, setUploadedImages, uploadedImages, imageBucket})}>
+                      <FontAwesomeIcon icon={icons.circleXmark} size="xl" />
+                    </Button>
+                  </CardHeader>
+                  <CardBody>
+                    <img className="h-[200px] w-auto object-contain" src={imageBucket.current[fileName].data} />
+                    <Textarea label="Alt text" placeholder="Describe the image as if you're talking to someone who can't see it." 
+                        value={uploadedImages[fileName].altText}
+                        onChange={(e) => {
+                          const newUploadedImages = {...uploadedImages};
+                          newUploadedImages[fileName].altText = e.target.value;
+                          setUploadedImages(newUploadedImages);
+                        }} />
+                  </CardBody>
+                </Card>
+              </li>
+            );
+          })}
+        </ul>
+        : ""
+      }
 
       <Button className="w-[50px] h-[64px]" onPress={(e) => fileUploaderRef.current.click()}>
         <label ref={fileUploaderRef} className="post-image-upload block w-full text-wrap" tabIndex="-1">
