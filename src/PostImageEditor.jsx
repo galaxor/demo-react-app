@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/button"
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -13,6 +14,8 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   const imageBucket = useRef({});
 
   const [uploadedImages, setUploadedImages] = useState({});
+
+  const fileUploaderRef = useRef(null);
 
   useImperativeHandle(ref, () => {
     return {
@@ -47,13 +50,15 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
         })}
       </ul>
 
-      <label className="post-image-upload">
-        <input type="file" className="post-image-upload-input" name="new-image"
-          accept="image/*"
-          onChange={(e) => imageUpload({e, imageBucket, uploadedImages, setUploadedImages})}
-        />
-        <span className="icon"><FontAwesomeIcon icon={icons.image} /></span><br />Upload Image
-      </label>
+      <Button className="w-[50px] h-[64px]" onPress={(e) => fileUploaderRef.current.click()}>
+        <label ref={fileUploaderRef} className="post-image-upload block w-full text-wrap" tabIndex="-1">
+          <input type="file" className="post-image-upload-input visually-hidden" name="new-image" tabIndex="-1"
+            accept="image/*"
+            onChange={(e) => imageUpload({e, imageBucket, uploadedImages, setUploadedImages})}
+          />
+          <span className="icon"><FontAwesomeIcon icon={icons.image} /></span><br />Upload Image
+        </label>
+      </Button>
     </div>
     </>
   );
