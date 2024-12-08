@@ -1,6 +1,7 @@
 import { Button } from "@nextui-org/button"
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {Textarea} from "@nextui-org/input";
 
 import icons from './icons.js'
 
@@ -13,7 +14,7 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   // That way, we don't have to copy all the image data every time we add an image.
   const imageBucket = useRef({});
 
-  const [uploadedImages, setUploadedImages] = useState({});
+  const { uploadedImages, setUploadedImages } = props;
 
   const fileUploaderRef = useRef(null);
 
@@ -35,16 +36,14 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
         {Object.keys(uploadedImages).map(fileName => {
           return (
             <li key={fileName}>
-              <img src={imageBucket.current[fileName].data} />
-              <label>Alt Text 
-                <textarea placeholder="Describe the image as if you're talking to someone who can't see it." 
+              <img className="h-[200px]" src={imageBucket.current[fileName].data} />
+              <Textarea label="Alt text" placeholder="Describe the image as if you're talking to someone who can't see it." 
                   value={uploadedImages[fileName].altText}
                   onChange={(e) => {
                     const newUploadedImages = {...uploadedImages};
                     newUploadedImages[fileName].altText = e.target.value;
                     setUploadedImages(newUploadedImages);
                   }} />
-                </label>
             </li>
           );
         })}

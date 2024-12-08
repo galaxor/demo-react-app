@@ -19,8 +19,10 @@ import {
     UndoRedo
  } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
+import { Button } from "@nextui-org/button"
 import { forwardRef, useContext, useEffect, useImperativeHandle, useRef } from 'react'
 import { Link } from "react-router-dom"
+import { useState } from "react"
 import { useNavigate } from "react-router"
 import { v4 as uuidv4 } from "uuid"
 
@@ -34,8 +36,15 @@ import UserContext from './UserContext.jsx'
 
 import './static/PostEditor.css'
 
+// You can't post unless there's some text or at least one image.
+function isPostDisabled(postText, uploadedImages) {
+  const isPostDisabled = postText.length === 0 && Object.keys(uploadedImages).length === 0;
+  return isPostDisabled;
+}
+
 const PostEditor = forwardRef(function PostEditor(props, ref) {
   const {onSave, onCancel, replyingTo, quotedPost, conversationId} = props;
+  const [uploadedImages, setUploadedImages] = useState({});
 
   const editorRef = useRef(null);
   const db = useContext(DatabaseContext);
@@ -67,6 +76,9 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 
   const imageEditorRef = useRef();
 
+  const [ postText, setPostText ] = useState("");
+  const [ postDisabled, setPostDisabled ] = useState(true);
+
   // XXX Language picker:  Do we make a custom toolbar component, or put it somewhere else?
 
   return (
@@ -74,6 +86,10 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     <div className="post-editor">
       <MDXEditor markdown="" ref={editorRef} autofocus
         placeholder="What do you want to share?"
+        onChange={text => { 
+          setPostText(text);
+          setPostDisabled(isPostDisabled(text, uploadedImages));
+        }}
         plugins={[
           codeBlockPlugin({defaultCodeBlockLanguage: ''}),
           codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', "": 'Text', jsx: 'JSX', ts: 'TypeScript', tsx: 'TSX' } }),
@@ -102,10 +118,18 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
         ]}
       />
     </div>
-    <PostImageEditor ref={imageEditorRef} />
+    <PostImageEditor ref={imageEditorRef} uploadedImages={uploadedImages} 
+      setUploadedImages={(uI) => {
+        setPostDisabled(isPostDisabled(postText, uI));
+        setUploadedImages(uI); 
+      }}  />
     <div className="post-finish-actions">
-      <button className="button" ref={saveButtonRef} onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>Post</button>
-      <button className="button button-cancel" onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</button>
+      <Button variant="solid" color="primary" radius="full" ref={saveButtonRef}
+        isDisabled={postDisabled}
+        onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>
+          Post
+      </Button>
+      <Button variant="solid" color="danger" radius="full" onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</Button>
     </div>
     </>
   );
