@@ -3,3 +3,22 @@
   position: absolute;
   left: 28px;
 }
+
+article.post-single {
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+span.post-author {
+  overflow: hidden;
+  flex-shrink: 2
+}
+
+section.thread-context {
+  order: -1;
+}
+
+.person-inline .name-handle {
+  flex-shrink: 2;
+  overflow: hidden;
+}
