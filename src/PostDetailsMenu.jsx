@@ -15,14 +15,25 @@ import icons from './icons.js'
 
 
 function getDropdownAction(originalLink) {
-  return function dropdownAction(key) {
-    if (key === "open-original") {
+  return async function dropdownAction(key) {
+    switch(key) {
+    case "open-original":
       if (originalLink.current) {
         if (!originalLink.current.dataset.clicked) {
           originalLink.current.click();
         }
         originalLink.current.dataset.clicked = false;
       }
+      break;
+
+    case "copy-link-to-original":
+      try {
+        await navigator.clipboard.writeText(originalLink.current.href);
+        console.log("I should put a Toast for this.  Toasts aren't available in NextUI yet, so I'll use a Radix component: https://www.radix-ui.com/primitives/docs/components/toast");
+      } catch(error) {
+        console.log("Copying to clipboard", error);
+      }
+      break;
     }
   }
 }
