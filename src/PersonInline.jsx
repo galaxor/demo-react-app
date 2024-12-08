@@ -50,7 +50,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   return (
     <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
       <div className="flex gap-5">
-        <Avatar isBordered radius="full" size="md" src={person.avatar} name={person.displayName} 
+        <Avatar isBordered radius="full" size="md" className="shrink-0" src={person.avatar} name={person.displayName} 
           style={{'--avatar-bg': '#'+avatarFallbackColor}}
           classNames={{base: "bg-[--avatar-bg]"}}
         />

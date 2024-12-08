@@ -10,7 +10,6 @@ article.post-single {
 }
 
 span.post-author {
-  overflow: hidden;
   flex-shrink: 2
 }
 
