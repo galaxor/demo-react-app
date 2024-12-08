@@ -75,8 +75,8 @@ h2#create-a-post {
   z-index: 2;
   position: fixed;
   display: block;
-  top: 15px;
-  left: 50px;
+  top: 8px;
+  left: 55px;
   margin: 0;
   z-index: 12;
 }
@@ -88,66 +88,6 @@ div#page-body {
 .site-button {
   font-size: 14pt;
   font-weight: bold;
-}
-
-button.button {
-  text-decoration: none;
-  color: var(--button-fg-color);
-
-  background: var(--button-bg-color);
-  color: var(--button-fg-color);
-  border-radius: 20px;
-  padding-top: 8px;
-  padding-bottom: 5px;
-  padding-left: 1em;
-  padding-right: 1em;
-  border: none;
-  font-weight: bold;
-}
-
-button.button-cancel {
-  background: var(--button-cancel-bg-color);
-  color: var(--button-cancel-fg-color);
-}
-
-button.button-cancel:focus,
-button.button-cancel:hover {
-  background: var(--button-cancel-hover-bg);
-  color: var(--button-cancel-hover-fg);
-}
-
-.button {
-  a:visited,
-  a {
-    text-decoration: none;
-    color: var(--button-fg-color);
-
-    background: var(--button-bg-color);
-    color: var(--button-fg-color);
-    border-radius: 20px;
-    padding-top: 8px;
-    padding-bottom: 5px;
-    padding-left: 1em;
-    padding-right: 1em;
-  }
-
-  a:hover,
-  a:focus {
-    background: var(--button-hover-bg);
-    color: var(--button-hover-fg);
-    text-decoration: underline;
-  }
-}
-
-.logout-button a.logout {
-  background: var(--logout-button-bg-color);
-  color: var(--logout-button-fg-color);
-}
-
-.logout-button a.logout:hover,
-.logout-button a.logout:focus {
-  background: var(--logout-button-hover-bg);
-  color: var(--logout-button-hover-fg);
 }
 
 main {

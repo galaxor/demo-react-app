@@ -1,6 +1,8 @@
+import { Button } from "@nextui-org/button"
 import { useContext } from 'react';
 import UserContext from './UserContext';
 import { Link, NavLink, useMatches } from 'react-router-dom';
+import { Link as Link2 } from "@nextui-org/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import icons from './icons.js'
@@ -18,10 +20,13 @@ export default function NavigationSidebar() {
     <aside id="site-navigation">
       <nav id="available-feeds">
 
-      {user && <h2 id="create-a-post" className="button site-button"><NavLink to="/create">
-        <FontAwesomeIcon icon={icons.penToSquare} />
-        Create
-      </NavLink></h2>
+      {user && <h2 id="create-a-post" className="button site-button">
+        <Button as={Link2} color="primary" radius="full" href="/create" variant="solid"
+          startContent={<FontAwesomeIcon icon={icons.penToSquare} />}
+        >
+          Create
+        </Button>
+      </h2>
       }
 
       <section>
