@@ -72,13 +72,13 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
-      <div ref={scrollHereRef} className="scroll-into-view"></div>
-          <Post ref={postRef} showReplyLevel className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
+          <Post ref={postRef} showReplyLevel className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} scrollHereRef={scrollHereRef}>
             {composingReply &&
               <div className="composing-reply">
                 <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); }} />
               </div>
             }
+
 
         {numReplies > 0 &&
           <section className="replies-section order-2" aria-labelledby="replies-section-header">

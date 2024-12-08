@@ -28,7 +28,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel} = props;
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -84,7 +84,7 @@ const Post = forwardRef(function Post(props, ref) {
 
         <div className="boosted-posts">
           {post.boostedPosts.map(boostedPost => 
-            <Post ref={childPostRef} key={boostedPost.uri} post={boostedPost} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} />
+            <Post ref={childPostRef} key={boostedPost.uri} post={boostedPost} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} scrollHereRef={scrollHereRef} />
           )}
         </div>
         
@@ -110,6 +110,7 @@ const Post = forwardRef(function Post(props, ref) {
 
       <Card ref={postDivRef} className={"post "+className}>
         <CardHeader>
+          {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} className="scroll-into-view"></div> : ""}
           <span className="post-metadata w-full flex justify-between">
             <span className="post-date order-1 text-right"
               aria-label={post.updatedAt === post.createdAt?

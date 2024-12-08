@@ -21,3 +21,12 @@ section.thread-context {
   flex-shrink: 2;
   overflow: hidden;
 }
+
+.scroll-into-view {
+  position: relative;
+  top: -6em; 
+  width: 1ex;
+  height: 1ex; 
+  z-index: -1;
+  background: transparent;
+} 
