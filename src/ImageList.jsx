@@ -16,9 +16,9 @@ export default function ImageList({post}) {
 
   return (
     <div className="post-images">
-      <ul className="post-images">
+      <ul className={"post-images "+(Object.keys(imageBucket).length > 1? "grid grid-cols-2" : "")}>
         {Object.entries(imageBucket).map(([fileName, {data: imageData, altText}]) => {
-          return ( <li key={fileName}><Link to={imageData}><img src={imageData} alt={altText} /></Link> {altText && <details><summary>Alt Text</summary>{altText}</details>}</li> );
+          return ( <li key={fileName}><Link to={imageData}><img src={imageData} alt={altText} className="h-[200px] object-cover" /></Link> {altText && <details><summary>Alt Text</summary>{altText}</details>}</li> );
         })}
       </ul>
     </div>

@@ -71,7 +71,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
   // The "autofocus" prop of MDXEditor doesn't seem to be hooked up to anything, so I'll do it myself!
   useEffect(() => {
     editorRef.current.focus();
-  });
+  }, []);
 
   const navigate = useNavigate();
 
