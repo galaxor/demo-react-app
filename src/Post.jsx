@@ -133,7 +133,7 @@ const Post = forwardRef(function Post(props, ref) {
               </Link>
             </span>
                 
-            <span className="post-author">
+            <span className="post-author w-3/4">
               <span className="visually-hidden">By</span>
               <PersonInline person={post.authorPerson} />
             </span>
