@@ -62,6 +62,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     return {
       clear() {
         editorRef.current.setMarkdown("");
+        setUploadedImages({});
       },
       focus() {
         editorRef.current.focus();
