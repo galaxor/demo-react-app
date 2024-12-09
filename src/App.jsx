@@ -29,16 +29,18 @@ function App({db}) {
   // But the idea is one day this could be a state value that you can change with a drop down.
   const languageContext = navigator.language;
 
+  const [ darkMode, setDarkMode ] = useState(matchMedia('(prefers-color-scheme: dark)').matches);
+
   return (
     <>
     <DatabaseContext.Provider value={db}>
     <UserContext.Provider value={userContext}>
     <LanguageContext.Provider value={languageContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>
-    <div className="app-theme dark text-foreground bg-background">
+    <div className={"app-theme text-foreground bg-background " + (darkMode? "dark " : "")}>
       <header>
         <Logo />
-        <UserSection />
+        <UserSection darkMode={darkMode} setDarkMode={setDarkMode} />
       </header>
 
       <div id="page-body">

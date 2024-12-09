@@ -4,19 +4,20 @@ import { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import DarkModeSwitcher from './DarkModeSwitcher.jsx'
 import icons from './icons.js'
 import NotificationBell from './NotificationBell.jsx';
 import User from './logic/user.js';
 import UserContext from './UserContext.jsx';
 
-export default function UserSection() {
+export default function UserSection({darkMode, setDarkMode}) {
   const {user, setUser, setSessionId} = useContext(UserContext);
 
   const avatarFallbackColor = hashSum(user.handle).substring(0,6).toUpperCase();
 
   return (
     <section id="user-section">
-      <ul>
+      <ul className="flex item-center">
       {user ?
         <>
         <li id="notification-bell">
@@ -34,6 +35,9 @@ export default function UserSection() {
         :
         <li><div className="button site-button" id="login-link"><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); setUser(User.loggedInUser()); }}><FontAwesomeIcon icon={icons.doorOpen} />Log In</Link></div></li>
       }
+      <li id="dark-mode-switcher" className="ml-[110px]">
+        <DarkModeSwitcher darkMode={darkMode} setDarkMode={setDarkMode} />
+      </li>
       </ul>
     </section>
   );
