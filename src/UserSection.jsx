@@ -1,7 +1,9 @@
 import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
+import { Button } from "@nextui-org/button"
 import hashSum from 'hash-sum'
 import { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { Link as Link2 } from "@nextui-org/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import DarkModeSwitcher from './DarkModeSwitcher.jsx'
@@ -33,7 +35,14 @@ export default function UserSection({darkMode, setDarkMode}) {
         </NavLink></li>
         </>
         :
-        <li><div className="button site-button" id="login-link"><Link onClick={(e) => { e.preventDefault(); setSessionId(User.login()); setUser(User.loggedInUser()); }}><FontAwesomeIcon icon={icons.doorOpen} />Log In</Link></div></li>
+        <li>
+          <Button onPress={() => { setSessionId(User.login()); setUser(User.loggedInUser()); }}
+            as={Link2} radius="full" color="primary" variant="solid"
+            startContent={<FontAwesomeIcon icon={icons.doorOpen} />}
+          >
+            Log In
+          </Button>
+        </li>
       }
       <li id="dark-mode-switcher" className="ml-[110px]">
         <DarkModeSwitcher darkMode={darkMode} setDarkMode={setDarkMode} />
