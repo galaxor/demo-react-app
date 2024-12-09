@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/button"
+import {Divider} from "@nextui-org/divider";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
 import { useContext } from 'react';
@@ -90,7 +91,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
             {nameAndAvatar}
           </Link>
           :
-          <a className="u-url link-external" rel="noopener noreferrer" target="_blank" href={person.url}>
+          <a className="u-url link-external flex gap-5 items-center" rel="noopener noreferrer" target="_blank" href={person.url}>
             {nameAndAvatar}
           </a>
         }
@@ -112,6 +113,8 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
       <PersonContext.Provider value={person}>
         <ProfileBio />
+
+        <Divider className="my-4" />
 
         <nav className="navigation-tabs" aria-labelledby="navigation">
           <h2 id="navigation" className="visually-hidden">Navigation</h2>
