@@ -1,4 +1,8 @@
 import {Switch} from "@nextui-org/switch";
+import { useContext } from 'react';
+
+import User from './logic/user.js';
+import UserContext from './UserContext.jsx';
 
 
 export const MoonIcon = (props) => {
@@ -40,6 +44,8 @@ export const SunIcon = (props) => {
 };
 
 export default function DarkModeSwitcher({darkMode, setDarkMode}) {
+  const { user, setUser } = useContext(UserContext);
+
   return (
     <Switch
       color="primary"
@@ -49,7 +55,13 @@ export default function DarkModeSwitcher({darkMode, setDarkMode}) {
         !darkMode ? <SunIcon className={className} /> : <MoonIcon className={className} />
       }
 
-      onValueChange={light => { setDarkMode(!light); }}
+      onValueChange={light => {
+        if (user) {
+          setUser({...user, darkMode: !light});
+          User.setDarkMode(!light);
+        }
+        setDarkMode(!light); 
+      }}
     >
       Dark mode
     </Switch>

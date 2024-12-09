@@ -79,4 +79,8 @@ export default {
   setSkinTone: (newTone) => {
     return setProp('skinTonePref', newTone);
   },
+
+  setDarkMode: (darkMode) => {
+    return setProp('darkMode', darkMode);
+  },
 };

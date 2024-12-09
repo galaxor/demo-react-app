@@ -29,7 +29,14 @@ function App({db}) {
   // But the idea is one day this could be a state value that you can change with a drop down.
   const languageContext = navigator.language;
 
-  const [ darkMode, setDarkMode ] = useState(matchMedia('(prefers-color-scheme: dark)').matches);
+  const [ darkMode, setDarkMode ] = useState(
+    // For the initial value:
+    // First, check the user prefs:
+    user? user.darkMode :
+      // Then check localStorage
+      // Then check OS pref.
+      matchMedia('(prefers-color-scheme: dark)').matches
+  );
 
   return (
     <>
