@@ -33,7 +33,8 @@ export function TabOutPlugin() {
     <ConditionalContents options={[
       {
         when: editor => { 
-          console.log("Hihi", editor, eif, f); return true; 
+          // console.log("Hihi", editor, eif, f);
+          return true; 
         },
         contents: () => "Heeey",
       }
