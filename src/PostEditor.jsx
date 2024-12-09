@@ -34,6 +34,7 @@ import { PostsDB } from './logic/posts.js'
 import SystemNotificationsContext from './SystemNotificationsContext'
 import UserContext from './UserContext.jsx'
 
+import { tabOutPlugin, TabOutPlugin } from './editor/tabOut.jsx'
 
 import './static/PostEditor.css'
 
@@ -93,6 +94,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
             setPostDisabled(isPostDisabled(text, uploadedImages));
           }}
           plugins={[
+            tabOutPlugin(),
             codeBlockPlugin({defaultCodeBlockLanguage: ''}),
             codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', "": 'Text', jsx: 'JSX', ts: 'TypeScript', tsx: 'TSX' } }),
             diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
@@ -104,6 +106,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
               toolbarContents: () => (
                 <>
                   <DiffSourceToggleWrapper>
+                    <TabOutPlugin />
                     <UndoRedo />
                     <BoldItalicUnderlineToggles />
                     <CreateLink />
