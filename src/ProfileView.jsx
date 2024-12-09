@@ -146,10 +146,10 @@ export default function ProfileView({handle, loggedInUser, children }) {
         <nav className="navigation-tabs" aria-labelledby="navigation">
           <h2 id="navigation" className="visually-hidden">Navigation</h2>
           <Tabs selectedKey={activeTab} aria-labelledby="navigation">
-            <Tab key="posts" href={"/people/"+person.handle}>Posts</Tab>
-            <Tab key="posts-replies" href={'/people/'+person.handle+'/posts-replies'}>Posts &amp; Replies</Tab>
-            <Tab key="followers" href={'/people/'+person.handle+'/followers'}>Followers {whoFollowsThem.length}</Tab>
-            <Tab key="follows" href={'/people/'+person.handle+'/follows'}>Follows {whoDoTheyFollow.length}</Tab>
+            <Tab key="posts" href={"/people/"+person.handle} title="Posts" />
+            <Tab key="posts-replies" href={'/people/'+person.handle+'/posts-replies'} title="Posts & Replies" />
+            <Tab key="followers" href={'/people/'+person.handle+'/followers'} title={"Followers " + whoFollowsThem.length} />
+            <Tab key="follows" href={'/people/'+person.handle+'/follows'} title={"Follows "+whoDoTheyFollow.length} />
           </Tabs>
         </nav>
         
