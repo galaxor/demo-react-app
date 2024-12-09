@@ -2,7 +2,7 @@ import { Button } from "@nextui-org/button"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
 import { useContext } from 'react';
-import { Link, NavLink, Outlet, useLocation, useLoaderData, useMatches } from "react-router-dom";
+import { Link, NavLink, Outlet, Route, Routes, useLocation, useLoaderData, useMatches } from "react-router-dom";
 import { Link as Link2 } from "@nextui-org/link"
 import {Tabs, Tab} from "@nextui-org/tabs";
 
@@ -79,8 +79,10 @@ export default function ProfileView({handle, loggedInUser, children }) {
   const activeTab = ( loc.pathname.match(/^\/profile/)?
     loc.pathname.replace(/^\/profile(\/[^\/]*)?/, '$1')
     : loc.pathname.replace(/^\/people\/([^\/]*)(\/([^\/]*))?/, '$3')
-    ) || "bio"
+    ) || "posts"
   ;
+
+  console.log("TK", activeTab);
 
   return (
     <main className="h-card profile-view">
@@ -115,12 +117,12 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
         <nav className="navigation-tabs" aria-labelledby="navigation">
           <h2 id="navigation" className="visually-hidden">Navigation</h2>
-          <ul className="navigation-tabs" aria-labelledby="navigation">
-            <li><NavLink className={(user && matches[matches.length-1].pathname=="/profile") ? 'active' : ''} to={"/people/"+person.handle} end>Posts</NavLink></li>
-            <li><NavLink to={'/people/'+person.handle+'/posts-replies'}>Posts &amp; Replies</NavLink></li>
-            <li><NavLink to={'/people/'+person.handle+'/followers'}>Followers<br />{whoFollowsThem.length}</NavLink></li>
-            <li><NavLink to={'/people/'+person.handle+'/follows'}>Follows<br />{whoDoTheyFollow.length}</NavLink></li>
-          </ul>
+          <Tabs selectedKey={activeTab} aria-labelledby="navigation">
+            <Tab key="posts" href={"/people/"+person.handle}>Posts</Tab>
+            <Tab key="posts-replies" href={'/people/'+person.handle+'/posts-replies'}>Posts &amp; Replies</Tab>
+            <Tab key="followers" href={'/people/'+person.handle+'/followers'}>Followers {whoFollowsThem.length}</Tab>
+            <Tab key="follows" href={'/people/'+person.handle+'/follows'}>Follows {whoDoTheyFollow.length}</Tab>
+          </Tabs>
         </nav>
         
         <FollowInfoContext.Provider value={ { whoDoTheyFollow, whoFollowsThem } }>
