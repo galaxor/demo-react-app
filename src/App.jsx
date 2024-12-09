@@ -35,14 +35,16 @@ function App({db}) {
     <UserContext.Provider value={userContext}>
     <LanguageContext.Provider value={languageContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>
-    <header>
-      <Logo />
-      <UserSection />
-    </header>
+    <div className="text-foreground bg-background">
+      <header>
+        <Logo />
+        <UserSection />
+      </header>
 
-    <div id="page-body">
-      <NavigationSidebar />
-      <Outlet />
+      <div id="page-body">
+        <NavigationSidebar />
+        <Outlet />
+      </div>
     </div>
     </SystemNotificationsContext.Provider>
     </LanguageContext.Provider>
