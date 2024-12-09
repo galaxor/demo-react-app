@@ -28,7 +28,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef} = props;
+  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -108,7 +108,7 @@ const Post = forwardRef(function Post(props, ref) {
         </div>
       }
 
-      <Card ref={postDivRef} className={"post "+className}>
+      <Card ref={postDivRef} className={"post hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+className}>
         <CardHeader>
           {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} className="scroll-into-view"></div> : ""}
           <span className="post-metadata w-full flex justify-between">

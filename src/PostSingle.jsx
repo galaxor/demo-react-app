@@ -72,7 +72,7 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
-          <Post ref={postRef} showReplyLevel className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} scrollHereRef={scrollHereRef}>
+          <Post ref={postRef} showReplyLevel highlight className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} scrollHereRef={scrollHereRef}>
             {composingReply &&
               <div className="composing-reply">
                 <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); }} />
