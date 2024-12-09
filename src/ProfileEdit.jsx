@@ -2,6 +2,7 @@ import { useCallback, useContext, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import AvatarUpload from './AvatarUpload.jsx';
+import {Input} from "@nextui-org/input";
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
@@ -58,11 +59,10 @@ export default function ProfileEdit() {
             onChange={onAvatarChange}
           />
 
-        <label className="profile-field-label">Name</label>
-          <input name="name" ref={nameInputRef}
-            autoComplete="name"
-            defaultValue={user? user.displayName : ""}
-          />
+        <Input name="name" className="profile-field-label" label="Display Name" type="text" 
+          placeholder="Your Name" ref={nameInputRef} 
+          autoComplete="name" defaultValue={user? user.displayName : ""}
+        />
 
         <label className="profile-field-label">Bio</label>
           <textarea name="bio" ref={bioInputRef}

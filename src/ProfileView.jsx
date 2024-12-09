@@ -138,7 +138,8 @@ export default function ProfileView({handle, loggedInUser, children }) {
         <h2 className="visually-hidden">Follow Info</h2>
         {user && !isYou && <FriendStatus person={person} />}
 
-        {isYou && <Button className="edit-your-profile" to="/profile/edit" as={Link2} 
+        {isYou && <Button className="edit-your-profile" to="/profile/edit" as={Link2}
+          href="/profile/edit"
           variant="solid" color="primary" radius="full"
           startContent={<FontAwesomeIcon icon={icons.fileLines} />}>
             Edit Profile

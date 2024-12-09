@@ -51,9 +51,9 @@ export default function DarkModeSwitcher({darkMode, setDarkMode}) {
       color="primary"
       size="lg"
       isSelected={!darkMode}
-      thumbIcon={({darkMode, className}) =>
-        !darkMode ? <SunIcon className={className} /> : <MoonIcon className={className} />
-      }
+      thumbIcon={({isSelected, className}) => {
+        return isSelected ? <SunIcon className={className} /> : <MoonIcon className={className} />
+      }}
 
       onValueChange={light => {
         if (user) {
@@ -64,7 +64,7 @@ export default function DarkModeSwitcher({darkMode, setDarkMode}) {
         setDarkMode(!light); 
       }}
     >
-      Dark mode
+      {darkMode? <>Dark mode</> : <>Light mode</>}
     </Switch>
   );
 }
