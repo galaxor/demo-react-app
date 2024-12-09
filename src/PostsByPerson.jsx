@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+import {Switch} from "@nextui-org/react";
 
 import DatabaseContext from './DatabaseContext.jsx';
 import PersonContext from './PersonContext.jsx';
@@ -18,9 +19,11 @@ export default function PostsByPerson({showReplies}) {
     <section className="their-posts" aria-labelledby="their-posts">
       <h2 id="their-posts" className="text-2xl font-bold my-4">Posts by <bdi>{person.displayName}</bdi></h2>
 
-      <label className="show-boosts">Show Boosts
-        <input type="checkbox" checked={showBoosts} onChange={(e) => setShowBoosts(e.target.checked)} />
-      </label>
+      <Switch className="show-boosts mb-4"
+        isSelected={showBoosts} onValueChange={checked => setShowBoosts(checked)}
+      >
+        Show Boosts
+      </Switch>
 
       <PostsList posts={theirPosts} />
     </section>
