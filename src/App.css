@@ -1,5 +1,9 @@
 @import url("static/variables.css");
 
+html:has(.app-theme.dark) {
+  background: black;
+}
+
 .visually-hidden {
   height: 0.1px;
   width: 0.1px;

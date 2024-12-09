@@ -35,7 +35,7 @@ function App({db}) {
     <UserContext.Provider value={userContext}>
     <LanguageContext.Provider value={languageContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>
-    <div className="text-foreground bg-background">
+    <div className="app-theme dark text-foreground bg-background">
       <header>
         <Logo />
         <UserSection />
