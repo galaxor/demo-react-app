@@ -6,6 +6,14 @@ import { useContext } from 'react';
 import { Link, NavLink, Outlet, Route, Routes, useLocation, useLoaderData, useMatches } from "react-router-dom";
 import { Link as Link2 } from "@nextui-org/link"
 import {Tabs, Tab} from "@nextui-org/tabs";
+import { useDisclosure } from "@nextui-org/use-disclosure"
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
+} from "@nextui-org/modal";
 
 import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import DatabaseContext from './DatabaseContext.jsx';
@@ -55,12 +63,6 @@ export default function ProfileView({handle, loggedInUser, children }) {
   const avatarFallbackColor = hashSum(person.handle).substring(0,6).toUpperCase();
 
   const nameAndAvatar = <>
-    <Avatar isBordered radius="full" className="text-large w-[100px] h-[100px]" src={person.avatar} 
-      name={person.displayName} 
-      alt={person.avatarAltText}
-      style={{'--avatar-bg': '#'+avatarFallbackColor}}
-      classNames={{base: "bg-[--avatar-bg]"}}
-    />
     <div className="name-handle text-3xl">
       <div className="display-name p-name font-bold flex items-center"><bdi>{person.displayName}</bdi>
         {isYou || onHomeServer? 
@@ -83,11 +85,36 @@ export default function ProfileView({handle, loggedInUser, children }) {
     ) || "posts"
   ;
 
+  const avatarDisclosure = useDisclosure();
+    // It has these elements.
+    // I just didn't want such vague names in the namespace.
+    // const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
   return (
     <main className="h-card profile-view">
-      <h1 className="mb-8">
+      <h1 className="mb-8 flex gap-5 items-center">
+        <Link2 onPress={avatarDisclosure.onOpen}>
+          <Avatar isBordered radius="full" className="text-large w-[100px] h-[100px]" src={person.avatar} 
+            name={person.displayName} 
+            alt={person.avatarAltText}
+            style={{'--avatar-bg': '#'+avatarFallbackColor}}
+            classNames={{base: "bg-[--avatar-bg]"}}
+          />
+        </Link2>
+        <Modal isOpen={avatarDisclosure.isOpen} onOpenChange={avatarDisclosure.onOpenChange}>
+          <ModalContent>
+            {(onClose) => 
+              <>
+              <ModalBody>
+                <Link2 href={person.avatar} isExternal><img src={person.avatar} alt={person.avatarAltText} /></Link2>
+                {person.avatarAltText? <div className="whitespace-pre-line">{person.avatarAltText}</div> : ""}
+              </ModalBody>
+              </>
+            }
+          </ModalContent>
+        </Modal>
         {person.localUserId?
-          <Link className="u-url block flex gap-5 items-center" href={'/person/'+handle}>
+          <Link className="u-url block" href={'/person/'+handle}>
             {nameAndAvatar}
           </Link>
           :
@@ -100,7 +127,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
       <SystemNotificationArea />
 
-      <section className="actions">
+      <section className="actions mb-4">
         {user && !isYou && <FriendStatus person={person} />}
 
         {isYou && <Button className="edit-your-profile" to="/profile/edit" as={Link2} 
