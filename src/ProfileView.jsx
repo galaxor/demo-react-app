@@ -113,7 +113,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
         </Modal>
         <div className="name-and-handle flex-rows">
           {person.localUserId?
-            <Link2 className="u-url block" href={'/person/'+handle}>
+            <Link2 className="u-url block" href={'/people/'+person.handle}>
               {displayName}
             </Link2>
             :
