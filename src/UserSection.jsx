@@ -13,7 +13,7 @@ import UserContext from './UserContext.jsx';
 export default function UserSection({darkMode, setDarkMode}) {
   const {user, setUser, setSessionId} = useContext(UserContext);
 
-  const avatarFallbackColor = hashSum(user.handle).substring(0,6).toUpperCase();
+  const avatarFallbackColor = user? hashSum(user.handle).substring(0,6).toUpperCase() : "000000";
 
   return (
     <section id="user-section">

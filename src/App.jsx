@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from "react-router-dom";
 
 import Logo from './Logo.jsx';
@@ -29,14 +29,30 @@ function App({db}) {
   // But the idea is one day this could be a state value that you can change with a drop down.
   const languageContext = navigator.language;
 
+  const localStorageDarkMode = JSON.parse(localStorage.getItem('darkMode'));
+
   const [ darkMode, setDarkMode ] = useState(
     // For the initial value:
     // First, check the user prefs:
     user? user.darkMode :
       // Then check localStorage
+      typeof localStorageDarkMode !== "undefined"? localStorageDarkMode :
       // Then check OS pref.
       matchMedia('(prefers-color-scheme: dark)').matches
   );
+
+  // Keep dark mode in sync with the user, in case they log in or out.
+  useEffect(() => {
+    setDarkMode(
+      // First, check the user prefs:
+      user? user.darkMode :
+        // Then check localStorage
+        typeof localStorageDarkMode !== "undefined"? localStorageDarkMode :
+        // Then check OS pref.
+        matchMedia('(prefers-color-scheme: dark)').matches
+    );
+    
+  }, [user, setDarkMode]);
 
   return (
     <>

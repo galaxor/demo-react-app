@@ -60,6 +60,7 @@ export default function DarkModeSwitcher({darkMode, setDarkMode}) {
           setUser({...user, darkMode: !light});
           User.setDarkMode(!light);
         }
+        localStorage.setItem('darkMode', JSON.stringify(!light));
         setDarkMode(!light); 
       }}
     >
