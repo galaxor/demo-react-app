@@ -1,1 +1,3 @@
-
+main.profile-view h1 > a:hover .author-handle {
+  text-decoration: underline;
+}

@@ -1,8 +1,12 @@
+import { Button } from "@nextui-org/button"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import hashSum from 'hash-sum'
 import { useContext } from 'react';
-import { Link, NavLink, Outlet, useLoaderData, useMatches } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useLoaderData, useMatches } from "react-router-dom";
+import { Link as Link2 } from "@nextui-org/link"
+import {Tabs, Tab} from "@nextui-org/tabs";
 
-import Avatar from './Avatar.jsx'
+import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
@@ -47,24 +51,47 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
   const isYou = (user && user.handle === person.handle);
 
+  const avatarFallbackColor = hashSum(person.handle).substring(0,6).toUpperCase();
+
+  const nameAndAvatar = <>
+    <Avatar isBordered radius="full" className="text-large w-[100px] h-[100px]" src={person.avatar} 
+      name={person.displayName} 
+      alt={person.avatarAltText}
+      style={{'--avatar-bg': '#'+avatarFallbackColor}}
+      classNames={{base: "bg-[--avatar-bg]"}}
+    />
+    <div className="name-handle text-3xl">
+      <div className="display-name p-name font-bold flex items-center"><bdi>{person.displayName}</bdi>
+        {isYou || onHomeServer? 
+          <span className="trust-info ml-2">
+            {isYou && <span className="is-you">(You)</span>}
+            {onHomeServer && <span className="trust-on-this-server ml-1"><FontAwesomeIcon icon={icons.house} title="From this server" size="sm" /></span>}
+          </span>
+          : ""
+        }
+      </div>
+      <div className="author-handle u-impp text-primary">{person.handle}</div>
+    </div>
+    </>;
+
+  const loc = useLocation();
+
+  const activeTab = ( loc.pathname.match(/^\/profile/)?
+    loc.pathname.replace(/^\/profile(\/[^\/]*)?/, '$1')
+    : loc.pathname.replace(/^\/people\/([^\/]*)(\/([^\/]*))?/, '$3')
+    ) || "bio"
+  ;
+
   return (
     <main className="h-card profile-view">
-      <h1>
+      <h1 className="mb-8">
         {person.localUserId?
-          <Link className="u-url" href={'/person/'+handle}>
-            <Avatar person={person} size="person-inline" /> {" "}
-            <div className="name-handle">
-              <span className="display-name p-name"><bdi>{person.displayName}</bdi></span> {" "}
-              <span className="author-handle u-impp">{person.handle}</span>
-            </div>
+          <Link className="u-url block flex gap-5 items-center" href={'/person/'+handle}>
+            {nameAndAvatar}
           </Link>
           :
           <a className="u-url link-external" rel="noopener noreferrer" target="_blank" href={person.url}>
-            <Avatar person={person} size="person-inline" /> {" "}
-            <div className="name-handle">
-              <span className="display-name p-name"><bdi>{person.displayName}</bdi></span>
-              <span className="author-handle u-impp">{person.handle}</span>
-            </div>
+            {nameAndAvatar}
           </a>
         }
         {" "}
@@ -72,29 +99,16 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
       <SystemNotificationArea />
 
-      {isYou || onHomeServer? 
-        <section className="trust-info">
-          {isYou && <span className="is-you">You</span>} {" "}
-
-          {onHomeServer && <span className="trust-on-this-server"><FontAwesomeIcon icon={icons.house} title="From this server" size="lg" /></span>} {" "}
-        </section>
-        : ""
-      }
-
       <section className="actions">
         {user && !isYou && <FriendStatus person={person} />}
 
-        {isYou && <span className="button"><Link className="edit-your-profile" to="/profile/edit"><FontAwesomeIcon icon={icons.fileLines} />{" "}Edit Profile</Link></span>}
+        {isYou && <Button className="edit-your-profile" to="/profile/edit" as={Link2} 
+          variant="solid" color="primary" radius="full"
+          startContent={<FontAwesomeIcon icon={icons.fileLines} />}>
+            Edit Profile
+          </Button>}
         {isYou && <LogoutLink />}
       </section>
-
-      {person.avatar &&
-        <>
-        <h2 className="visually-hidden">Avatar</h2>
-
-        <a rel="noopener noreferrer" target="_blank" href={person.url}><img className="avatar-large u-photo" src={person.avatar} alt={person.avatarAltText} /></a>
-        </>
-      }
 
       <PersonContext.Provider value={person}>
         <ProfileBio />
