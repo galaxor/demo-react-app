@@ -62,18 +62,16 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
   const avatarFallbackColor = hashSum(person.handle).substring(0,6).toUpperCase();
 
-  const nameAndAvatar = <>
-    <div className="name-handle text-3xl">
-      <div className="display-name p-name font-bold flex items-center"><bdi>{person.displayName}</bdi>
-        {isYou || onHomeServer? 
-          <span className="trust-info ml-2">
-            {isYou && <span className="is-you">(You)</span>}
-            {onHomeServer && <span className="trust-on-this-server ml-1"><FontAwesomeIcon icon={icons.house} title="From this server" size="sm" /></span>}
-          </span>
-          : ""
-        }
-      </div>
-      <div className="author-handle u-impp text-primary">{person.handle}</div>
+  const displayName = <>
+    <div className="display-name text-3xl p-name font-bold flex items-center text-primary hover:underline">
+      <bdi>{person.displayName}</bdi>
+      {isYou || onHomeServer? 
+        <span className="trust-info ml-2">
+          {isYou && <span className="is-you">(You)</span>}
+          {onHomeServer && <span className="trust-on-this-server ml-1"><FontAwesomeIcon icon={icons.house} title="From this server" size="sm" /></span>}
+        </span>
+        : ""
+      }
     </div>
     </>;
 
@@ -113,16 +111,25 @@ export default function ProfileView({handle, loggedInUser, children }) {
             }
           </ModalContent>
         </Modal>
-        {person.localUserId?
-          <Link className="u-url block" href={'/person/'+handle}>
-            {nameAndAvatar}
-          </Link>
-          :
-          <a className="u-url link-external flex gap-5 items-center" rel="noopener noreferrer" target="_blank" href={person.url}>
-            {nameAndAvatar}
-          </a>
-        }
-        {" "}
+        <div className="name-and-handle flex-rows">
+          {person.localUserId?
+            <Link2 className="u-url block" href={'/person/'+handle}>
+              {displayName}
+            </Link2>
+            :
+            <a className="u-url link-external flex gap-5 items-center" rel="noopener noreferrer" target="_blank" href={person.url}>
+              {displayName}
+            </a>
+          }
+          <Link2 className="author-handle u-impp font-bold text-default-1000"
+            onPress={async () => {
+              await navigator.clipboard.writeText(person.handle);
+            }}
+          >
+            {person.handle}
+            <FontAwesomeIcon className="ml-1" icon={icons.copy} title="Copy this handle to the clipboard" />
+          </Link2>
+        </div>
       </h1>
 
       <SystemNotificationArea />
