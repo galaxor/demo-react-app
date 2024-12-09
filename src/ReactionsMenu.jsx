@@ -67,7 +67,7 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <EmojiPicker className="emoji-picker" open={true}
+        <EmojiPicker className="emoji-picker" open={true} emojiStyle="twitter"
           defaultSkinTone={typeof skinTone==="undefined"? user.skinTonePref : skinTone}
           onEmojiClick={emoji => {
             addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen});
