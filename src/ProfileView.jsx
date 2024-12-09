@@ -128,6 +128,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       <SystemNotificationArea />
 
       <section className="actions mb-4">
+        <h2 className="visually-hidden">Follow Info</h2>
         {user && !isYou && <FriendStatus person={person} />}
 
         {isYou && <Button className="edit-your-profile" to="/profile/edit" as={Link2} 
@@ -145,7 +146,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
         <nav className="navigation-tabs" aria-labelledby="navigation">
           <h2 id="navigation" className="visually-hidden">Navigation</h2>
-          <Tabs selectedKey={activeTab} aria-labelledby="navigation">
+          <Tabs size="sm" selectedKey={activeTab} aria-labelledby="navigation">
             <Tab key="posts" href={"/people/"+person.handle} title="Posts" />
             <Tab key="posts-replies" href={'/people/'+person.handle+'/posts-replies'} title="Posts & Replies" />
             <Tab key="followers" href={'/people/'+person.handle+'/followers'} title={"Followers " + whoFollowsThem.length} />

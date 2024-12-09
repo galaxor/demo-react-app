@@ -1,10 +1,12 @@
 import { useContext, useState } from 'react';
+import {Switch} from "@nextui-org/react";
 
 import DatabaseContext from './DatabaseContext.jsx';
 import { PeopleDB } from './logic/people.js';
 import UserContext from './UserContext.jsx';
 
 import './static/FriendStatus.css'
+import switchStyles from './fancy-switch-styles.js'
 
 export default function FriendStatus({person}) {
   const { user } = useContext(UserContext);
@@ -20,44 +22,47 @@ export default function FriendStatus({person}) {
       <h2 id="follow-status" className="visually-hidden">Follow Status</h2>
 
       <ul className="follow-status" aria-labelledby="follow-status">
-        <li><label className="checkbutton">
-          {(typeof youFollowThem === "undefined"? 
-                (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
-                : youFollowThem)
-            ?
-            <> You follow <bdi>{person.displayName}</bdi> </>
-            :
-            <> Follow <bdi>{person.displayName}</bdi> </>
+        <li>
+        <Switch 
+          isSelected={
+            typeof youFollowThem === "undefined"? 
+              (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
+              : youFollowThem
           }
 
-          <input type="checkbox" 
-            checked={ 
-              typeof youFollowThem === "undefined"? 
-                (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
-                : youFollowThem
+          onValueChange={checked => {
+            if (checked) { peopleDB.follow(user.handle, person.handle); }
+            else { peopleDB.unfollow(user.handle, person.handle); }
+
+            setYouFollowThem(checked);
+          }}
+
+          classNames={switchStyles}
+        >
+            {(typeof youFollowThem === "undefined"? 
+                  (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
+                  : youFollowThem)
+              ?
+              <> You follow <bdi>{person.displayName}</bdi> </>
+              :
+              <> Follow <bdi>{person.displayName}</bdi> </>
             }
+          </Switch>
+        </li>
 
-            onChange={(e) => {
-              if (e.target.checked) { peopleDB.follow(user.handle, person.handle); }
-              else { peopleDB.unfollow(user.handle, person.handle); }
-
-              setYouFollowThem(e.target.checked);
-            }} />
-        </label></li>
-
-        <li><label className="checkbutton">
-          {theyFollowYou ?
-            <>
-            <bdi>{person.displayName}</bdi> follows you 
-              <input type="checkbox" disabled={true} checked={true} />
-            </>
-            :
-            <>
-            <bdi>{person.displayName}</bdi> does not follow you 
-              <input type="checkbox" disabled={true} checked={false} />
-            </>
-          }
-        </label></li>
+        <li>
+          <Switch isDisabled={true} isSelected={theyFollowYou} classNames={switchStyles}>
+            {theyFollowYou ?
+              <>
+              <bdi>{person.displayName}</bdi> follows you 
+              </>
+              :
+              <>
+              <bdi>{person.displayName}</bdi> does not follow you 
+              </>
+            }
+          </Switch>
+        </li>
       </ul>
     </section>
   );
