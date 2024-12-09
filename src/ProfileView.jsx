@@ -82,8 +82,6 @@ export default function ProfileView({handle, loggedInUser, children }) {
     ) || "posts"
   ;
 
-  console.log("TK", activeTab);
-
   return (
     <main className="h-card profile-view">
       <h1 className="mb-8">
