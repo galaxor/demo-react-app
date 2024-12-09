@@ -16,7 +16,7 @@ export default function PostsByPerson({showReplies}) {
 
   return (
     <section className="their-posts" aria-labelledby="their-posts">
-      <h2 id="their-posts">Posts by <bdi>{person.displayName}</bdi></h2>
+      <h2 id="their-posts" className="text-2xl font-bold my-4">Posts by <bdi>{person.displayName}</bdi></h2>
 
       <label className="show-boosts">Show Boosts
         <input type="checkbox" checked={showBoosts} onChange={(e) => setShowBoosts(e.target.checked)} />

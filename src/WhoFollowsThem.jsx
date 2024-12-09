@@ -10,7 +10,7 @@ export default function WhoFollowsThem() {
 
   return (
     <section aria-labelledby="who-follows-them">
-      <h2 id="who-follows-them">
+      <h2 id="who-follows-them" className="text-2xl font-bold my-4">
         {whoFollowsThem.length === 1 ?
           <> {whoFollowsThem.length} person follows <bdi>{person.displayName}</bdi> </>
           :

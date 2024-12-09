@@ -7,7 +7,7 @@ export default function ProfileBio() {
 
   return (
     <>
-    <h2 className="text-xl font-bold">Bio</h2>
+    <h2 className="text-2xl font-bold my-4">Bio</h2>
     
     <div className="profile-bio p-note whitespace-pre-line">
       {person.bio}
