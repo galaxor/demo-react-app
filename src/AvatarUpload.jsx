@@ -242,7 +242,6 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
         max={3}
         value={avatarScale}
         setValue={setAvatarScale}
-        shiftStep={0.1}
         step={0.1}
         onChange={(e, value) => setAvatarScale(value)}
       />
@@ -271,6 +270,7 @@ function AvatarAltText({avatarAltText, setAvatarAltText}) {
         value={avatarAltText ?? ""}
         placeholder="Describe the image as if you're talking to someone who can't see it."
         onChange = {(e) => setAvatarAltText(e.target.value)}
+        className="mb-3"
     />
     </>
   );
