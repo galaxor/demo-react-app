@@ -1,6 +1,7 @@
 import AvatarEditor from 'react-avatar-editor';
 import { Button } from "@nextui-org/button"
 import {Checkbox} from "@nextui-org/checkbox";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
 import { useContext, useEffect, useRef, useState } from 'react';
 
@@ -8,6 +9,7 @@ import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import {Textarea} from "@nextui-org/input";
 import InputSlider from './InputSlider.jsx';
 
+import icons from './icons.js'
 import UserContext from './UserContext.jsx';
 
 import './static/AvatarUpload.css';
@@ -83,7 +85,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
   return (
     <div className={'avatar-editor '+(avatarOrig && !removeAvatar? 'avatar-editor-open' : '') }>
       <div id="avatar-preview" className="avatar-upload">
-        <div className="avatar-preview-bar flex gap-5 my-5 items-center">
+        <div className="avatar-preview-bar flex gap-5 my-5 items-center justify-normal">
           {avatarOrig && removeAvatar? 
             ''
             :
@@ -92,7 +94,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
               <label htmlFor="avatar-input" className="avatar-preview">
                 <Avatar isBordered radius="full" size="lg" className="shrink-0" src={avatarEdited} name="Image preview"
                   style={{'--avatar-bg': '#'+avatarFallbackColor}}
-                  classNames={{base: "bg-[--avatar-bg]"}}
+                  classNames={{base: "bg-[--avatar-bg] w-[75px] h-[75px] "}}
                 />
               </label>
               :
@@ -107,7 +109,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
                 autoComplete="photo"
                 onChange={avatarUpload}
               />
-              <Button className="w-[60px] h-[60px] text-wrap" onPress={e => fileUploadRef.current.click()}>
+              <Button className="w-[80px] h-[75px] text-wrap" onPress={e => fileUploadRef.current.click()}>
                 📷
                 <br />{avatarOrig? "Replace Image" : "Upload Image"}
               </Button>
@@ -119,7 +121,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
             <Checkbox id="remove-avatar-checkbox" ref={removeAvatarCheckboxRef} checked={removeAvatar} 
               classNames={{
                 base:
-                  "block bg-content1 w-[80px] h-auto text-center p-1 " +
+                  "block bg-content1 w-[80px] h-[75px] text-center p-1 " +
                   "hover:bg-content2 " +
                   "cursor-pointer rounded-lg border-2 border-transparent " +
                   "data-[selected=true]:border-primary"
