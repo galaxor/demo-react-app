@@ -1,8 +1,9 @@
+import { Button } from "@nextui-org/button"
+import {Input, Textarea} from "@nextui-org/input";
 import { useCallback, useContext, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import AvatarUpload from './AvatarUpload.jsx';
-import {Input} from "@nextui-org/input";
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
@@ -54,24 +55,26 @@ export default function ProfileEdit() {
     }}>
       <div id="profile-fields">
         <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
-          <AvatarUpload
-            getImageRef={avatarEditorRef}
-            onChange={onAvatarChange}
-          />
 
-        <Input name="name" className="profile-field-label" label="Display Name" type="text" 
+        <AvatarUpload
+          getImageRef={avatarEditorRef}
+          onChange={onAvatarChange}
+        />
+
+        <Input name="name" isRequired label="Display Name" type="text" 
           placeholder="Your Name" ref={nameInputRef} 
           autoComplete="name" defaultValue={user? user.displayName : ""}
         />
 
-        <label className="profile-field-label">Bio</label>
-          <textarea name="bio" ref={bioInputRef}
-            placeholder="Tell people a little about yourself."
-            defaultValue={user? user.bio : ""}
-          />
+        <Textarea name="bio" ref={bioInputRef} 
+          className="my-4"
+          label="Bio"
+          placeholder="Tell people a little about yourself." 
+          defaultValue={user? user.bio : ""}
+        />
       </div>
 
-      <button type="submit">Save your cool changes</button>
+      <Button type="submit" radius="full" color="primary">Save</Button>
     </form>
     </main>
   </>;

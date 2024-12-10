@@ -1,6 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
+import { Button } from "@nextui-org/button"
+import {Checkbox} from "@nextui-org/checkbox";
+import hashSum from 'hash-sum'
+import { useContext, useEffect, useRef, useState } from 'react';
 
+import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
+import {Textarea} from "@nextui-org/input";
 import InputSlider from './InputSlider.jsx';
 
 import UserContext from './UserContext.jsx';
@@ -19,7 +24,11 @@ export default function AvatarUpload({onChange, getImageRef}) {
   const [avatarRotate, setAvatarRotate] = useState(0);
   const [avatarScale, setAvatarScale] = useState(1);
 
+  const avatarFallbackColor = hashSum(user.handle).substring(0,6).toUpperCase();
+
   const avatarEditorRef = useRef({});
+  const fileUploadRef = useRef(null);
+  const removeAvatarCheckboxRef = useRef(null);
 
   const getImageFn = function () {
     if (avatarEditorRef && avatarEditorRef.current && avatarEditorRef.current.getImageScaledToCanvas) {
@@ -74,14 +83,17 @@ export default function AvatarUpload({onChange, getImageRef}) {
   return (
     <div className={'avatar-editor '+(avatarOrig && !removeAvatar? 'avatar-editor-open' : '') }>
       <div id="avatar-preview" className="avatar-upload">
-        <div className="avatar-preview-bar">
+        <div className="avatar-preview-bar flex gap-5 my-5 items-center">
           {avatarOrig && removeAvatar? 
             ''
             :
             <>
             {avatarOrig?
               <label htmlFor="avatar-input" className="avatar-preview">
-                <img alt="Image preview" src={avatarEdited} id="avatar-preview-img" />
+                <Avatar isBordered radius="full" size="lg" className="shrink-0" src={avatarEdited} name="Image preview"
+                  style={{'--avatar-bg': '#'+avatarFallbackColor}}
+                  classNames={{base: "bg-[--avatar-bg]"}}
+                />
               </label>
               :
               ''
@@ -89,23 +101,38 @@ export default function AvatarUpload({onChange, getImageRef}) {
 
             <label className="avatar-upload-box">
               <input type="file" id="avatar-input" className="avatar-input" name="avatar"
+                ref={fileUploadRef}
+                className="visually-hidden"
                 accept="image/*"
                 autoComplete="photo"
                 onChange={avatarUpload}
               />
-              📷<br />{avatarOrig? "Replace Image" : "Upload Image"}
+              <Button className="w-[60px] h-[60px] text-wrap" onPress={e => fileUploadRef.current.click()}>
+                📷
+                <br />{avatarOrig? "Replace Image" : "Upload Image"}
+              </Button>
             </label>
             </>
           }
 
           {avatarOrig?
-            <label className="remove-avatar">
-              <input id="remove-avatar-checkbox" type="checkbox" checked={removeAvatar}
-                onChange={(e) => {
-                  setRemoveAvatar(e.target.checked);
-                }} /> <br />
+            <Checkbox id="remove-avatar-checkbox" ref={removeAvatarCheckboxRef} checked={removeAvatar} 
+              classNames={{
+                base:
+                  "block bg-content1 w-[80px] h-auto text-center p-1 " +
+                  "hover:bg-content2 " +
+                  "cursor-pointer rounded-lg border-2 border-transparent " +
+                  "data-[selected=true]:border-primary"
+                ,
+                wrapper: "block mx-auto",
+                label: "block text-wrap text-sm",
+              }}
+              onChange={(e) => {
+                setRemoveAvatar(e.target.checked);
+              }}
+            >
               Remove Image
-            </label>
+            </Checkbox>
             :
             ''
           }
@@ -238,13 +265,11 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
 function AvatarAltText({avatarAltText, setAvatarAltText}) {
   return (
     <>
-    <label className="avatar-alt-text">Alt Text <br />
-    <textarea name="avatar-alt"
+    <Textarea name="avatar-alt" label="Alt Text"
         value={avatarAltText ?? ""}
         placeholder="Describe the image as if you're talking to someone who can't see it."
         onChange = {(e) => setAvatarAltText(e.target.value)}
     />
-    </label>
     </>
   );
 }
