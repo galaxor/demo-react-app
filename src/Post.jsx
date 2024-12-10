@@ -159,10 +159,16 @@ const Post = forwardRef(function Post(props, ref) {
               <span className="post-stats-header visually-hidden" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
               
               <ul aria-labelledby={htmlId+'-header'} className="post-stat-bar flex flex-wrap">
-                <li className="post-stat post-stat-replies order-2">
-                  <Button ref={replyButtonRef} variant="light" onPress={(e) => { setComposingReply(true); }}>
-                    <NumReplies post={post} numReplies={numReplies} />
-                  </Button>
+                <li className="post-stat post-stat-replies order-2 mr-4 h-[40px] content-center">
+                  {user?
+                    <Button ref={replyButtonRef} variant="light" onPress={(e) => { setComposingReply(true); }}>
+                      <NumReplies post={post} numReplies={numReplies} />
+                    </Button>
+                    :
+                    <div ref={replyButtonRef} variant="light">
+                      <NumReplies post={post} numReplies={numReplies} />
+                    </div>
+                  }
                 </li>
                 <Boosts onBoost={onBoost} post={post} />
                 <li className="post-stat more-options-menu order-2">

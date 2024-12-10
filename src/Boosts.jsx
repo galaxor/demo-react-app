@@ -38,7 +38,7 @@ export default function Boosts({post, onBoost}) {
 
   return (
     <>
-    <li className="post-stat non-quote-boosts order-2">
+    <li className="post-stat non-quote-boosts order-2 mr-4 h-[40px] content-center">
       {user? 
         <Button variant={numYourBoosts > 0? "flat" : "light"} className="stat" onPress={e => {
           clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
@@ -57,16 +57,16 @@ export default function Boosts({post, onBoost}) {
         
     </li>
 
-    <li className="post-stat quote-boosts order-2">
+    <li className="post-stat quote-boosts order-2 mr-4 h-[40px] content-center">
       {user?
           <Button variant={numYourQuoteBoosts > 0? "flat" : "light"} as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
             <span className="visually-hidden">Quote-boost this post</span>
-            <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
+            <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon text-background"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
             <span className="total">{numQuoteBoosts}</span>
           </Button>
         :
-        <div className="stat">
-          <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
+        <div className="stat relative">
+          <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon quoteboost-boost-icon-logged-out text-background"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
           <span className="total">{numQuoteBoosts}</span>
         </div>
       }

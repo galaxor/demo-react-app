@@ -49,8 +49,8 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
         {reaction.total && <span className="count">{reaction.total}</span>}
       </Button>
     :
-      <div className="reaction">
-        <span className="glyph">{glyph}</span>
+      <div className="reaction flex mr-2">
+        <span className="glyph mr-1">{glyph}</span>
         {reaction.total && <span className="count">{reaction.total}</span>}
       </div>
   );

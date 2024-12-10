@@ -1,7 +1,15 @@
 .quoteboost-boost-icon {
-  color: white;
   position: absolute;
   left: 28px;
+}
+
+span.quoteboost-boost-icon-logged-out {
+  position: absolute;
+  left: 5px;
+}
+
+li.post-stat {
+  position: relative;
 }
 
 article.post-single {
