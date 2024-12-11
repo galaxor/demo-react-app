@@ -119,7 +119,7 @@ export default function ProfileEdit() {
         </Button>
 
         <Modal isOpen={imageEditorDisclosure.isOpen} onOpenChange={imageEditorDisclosure.onOpenChange}
-          className={darkMode? "dark" : ""}
+          className={(darkMode? "dark" : "")+" max-h-screen overflow-y-auto"}
           >
           <ModalContent>
           { onClose => <>
