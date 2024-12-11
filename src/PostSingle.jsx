@@ -1,5 +1,6 @@
 import { PostsDB } from './logic/posts.js';
 
+import { clickPost } from './clickPost.js'
 import { closeReply } from './closeReply.js'
 import ReplyLevel from './ReplyLevel.jsx'
 import Post from './Post.jsx';
@@ -52,6 +53,23 @@ export default function PostSingle() {
     setNumReplies(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
     setComposingReply(false);
   }, [post, postsDB]);
+
+
+  // Make it so when you click a quote-boosted post, you go to its PostSingle page.
+  useEffect(() => {
+    const clickablePosts = postRef.current.getPostDiv().querySelectorAll('blockquote.quote-boosted-posts > article > div.post')
+
+    clickablePosts.forEach(node => {
+      node.addEventListener('click', clickPost);
+    });
+
+    return(() => {
+      clickablePosts.forEach(node => {
+        node.removeEventListener('click', clickPost);
+      });
+    });
+  }, []);
+
 
   return (
     <>
