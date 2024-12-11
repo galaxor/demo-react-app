@@ -14,7 +14,7 @@ import UserContext from './UserContext.jsx';
 
 import './static/AvatarUpload.css';
 
-export default function AvatarUpload({onChange, getImageRef}) {
+export default function AvatarUpload({onChange, getImageRef, darkMode}) {
   const { user } = useContext(UserContext);
 
   const [removeAvatar, setRemoveAvatar] = useState(false);
@@ -83,7 +83,7 @@ export default function AvatarUpload({onChange, getImageRef}) {
   }, [avatarOrig, avatarAltText, avatarPosition, avatarRotate, avatarScale, removeAvatar, onChange]);
 
   return (
-    <div className={'avatar-editor '+(avatarOrig && !removeAvatar? 'avatar-editor-open' : '') }>
+    <div className={'avatar-editor text-foreground bg-background '+(darkMode? 'dark ' : ' ')+(avatarOrig && !removeAvatar? 'avatar-editor-open' : '') }>
       <div id="avatar-preview" className="avatar-upload">
         <div className="avatar-preview-bar flex gap-5 my-5 items-center justify-normal">
           {avatarOrig && removeAvatar? 

@@ -8,6 +8,7 @@ import NavigationSidebar from './NavigationSidebar.jsx';
 import SystemNotificationsContext from "./SystemNotificationsContext.jsx";
 
 import DatabaseContext from "./DatabaseContext.jsx";
+import DarkModeContext from "./DarkModeContext.jsx";
 import LanguageContext from "./LanguageContext.jsx";
 import UserContext from "./UserContext.jsx";
 
@@ -58,6 +59,7 @@ function App({db}) {
     <>
     <DatabaseContext.Provider value={db}>
     <UserContext.Provider value={userContext}>
+    <DarkModeContext.Provider value={[darkMode, setDarkMode]}>
     <LanguageContext.Provider value={languageContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>
     <div className={"app-theme text-foreground bg-background " + (darkMode? "dark " : "")}>
@@ -73,6 +75,7 @@ function App({db}) {
     </div>
     </SystemNotificationsContext.Provider>
     </LanguageContext.Provider>
+    </DarkModeContext.Provider>
     </UserContext.Provider>
     </DatabaseContext.Provider>
     </>

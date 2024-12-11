@@ -4,9 +4,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
 import {Input, Textarea} from "@nextui-org/input";
 import { useCallback, useContext, useRef, useState } from 'react';
+import { useDisclosure } from "@nextui-org/use-disclosure"
 import { v4 as uuidv4 } from 'uuid';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
+} from "@nextui-org/modal";
 
 import AvatarUpload from './AvatarUpload.jsx';
+import DarkModeContext from "./DarkModeContext.jsx";
 import icons from './icons.js'
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
@@ -19,6 +28,8 @@ import './static/ProfileEdit.css';
 export default function ProfileEdit() {
   const { user, setUser } = useContext(UserContext);
   const { systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
+  const [darkMode, setDarkMode] = useContext(DarkModeContext);
+  const imageEditorDisclosure = useDisclosure();
 
   const nameInputRef = useRef(null);
   const bioInputRef = useRef(null);
@@ -60,7 +71,7 @@ export default function ProfileEdit() {
     }}>
       <div id="profile-fields">
 
-        <Button className="avatar-edit-button h-[205px] w-[210px]">
+        <Button className="avatar-edit-button h-[205px] w-[210px]" onPress={imageEditorDisclosure.onOpen}>
           <div className="avatar-edit-label text-center absolute left-[15px] z-[-1] font-bold text-lg">
             <FontAwesomeIcon icon={icons.camera} className="avatar-edit-icon h-[50px] w-[50px]" />
             <br />
@@ -73,12 +84,22 @@ export default function ProfileEdit() {
           />
         </Button>
 
-        <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
+        <Modal isOpen={imageEditorDisclosure.isOpen} onOpenChange={imageEditorDisclosure.onOpenChange}
+          className={darkMode? "dark" : ""}
+          >
+          <ModalContent>
+          { onClose => <>
+            <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
 
-        <AvatarUpload
-          getImageRef={avatarEditorRef}
-          onChange={onAvatarChange}
-        />
+            <AvatarUpload
+              darkMode={darkMode}
+              getImageRef={avatarEditorRef}
+              onChange={onAvatarChange}
+            />
+            </>
+          }
+          </ModalContent>
+        </Modal>
 
         <Input name="name" isRequired label="Display Name" type="text" 
           placeholder="Your Name" ref={nameInputRef} 
