@@ -1,1 +1,4 @@
-
+.avatar-edit-button:hover .avatar-edit-label,
+.avatar-edit-button:focus .avatar-edit-label {
+  z-index: 2;
+}

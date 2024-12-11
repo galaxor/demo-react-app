@@ -19,7 +19,7 @@ export default function InputSlider({id, name, min, max, marks, value, setValue,
   };
 
   return (
-    <div className="flex">
+    <div className="flex gap-5">
         <Slider
           label={label}
           value={typeof value === 'number' ? value : min}

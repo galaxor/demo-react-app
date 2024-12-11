@@ -63,16 +63,6 @@ header {
     top: 18px;
   }
 
-  section#user-section {
-    li#user-name {
-      bdi { display: block; }
-      img {
-        display: block;
-        width: 30px;
-        height: 30px;
-      }
-    }
-  }
 }
 
 div#login-link,

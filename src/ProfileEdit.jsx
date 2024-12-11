@@ -1,9 +1,13 @@
+import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import { Button } from "@nextui-org/button"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import hashSum from 'hash-sum'
 import {Input, Textarea} from "@nextui-org/input";
 import { useCallback, useContext, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import AvatarUpload from './AvatarUpload.jsx';
+import icons from './icons.js'
 import SystemNotificationsContext from './SystemNotificationsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
@@ -21,6 +25,7 @@ export default function ProfileEdit() {
 
   const [avatar, setAvatar] = useState(null);
   const avatarEditorRef = useRef({});
+  const avatarFallbackColor = user? hashSum(user.handle).substring(0,6).toUpperCase() : '000000';
 
   const onAvatarChange = useCallback(newAvatar => (newAvatar? setAvatar(newAvatar) : ""), []);
 
@@ -54,6 +59,20 @@ export default function ProfileEdit() {
 
     }}>
       <div id="profile-fields">
+
+        <Button className="avatar-edit-button h-[205px] w-[210px]">
+          <div className="avatar-edit-label text-center absolute left-[15px] z-[-1] font-bold text-lg">
+            <FontAwesomeIcon icon={icons.camera} className="avatar-edit-icon h-[50px] w-[50px]" />
+            <br />
+            <span style={{textShadow: "hsl(var(--nextui-background)) 0 0 5px"}}>Change Avatar Image</span>
+          </div>
+
+          <Avatar isBordered radius="full" className="shrink-0 w-[200px] h-[200px]" src={user.avatar} name={user.displayName} 
+            style={{'--avatar-bg': '#'+avatarFallbackColor}}
+            classNames={{base: "bg-[--avatar-bg]"}}
+          />
+        </Button>
+
         <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
 
         <AvatarUpload
