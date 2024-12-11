@@ -83,9 +83,9 @@ export default function AvatarUpload({onChange, getImageRef, darkMode, avatarEdi
             }
 
             <label className="avatar-upload-box">
-              <input type="file" id="avatar-input" className="avatar-input" name="avatar" tabIndex="-1"
+              <input type="file" id="avatar-input" className="avatar-input visually-hidden"
+                name="avatar" tabIndex="-1"
                 ref={fileUploadRef}
-                className="visually-hidden"
                 accept="image/*"
                 autoComplete="photo"
                 onChange={avatarUpload}
@@ -107,7 +107,7 @@ export default function AvatarUpload({onChange, getImageRef, darkMode, avatarEdi
                   "cursor-pointer rounded-lg border-2 border-transparent " +
                   "data-[selected=true]:border-primary"
                 ,
-                wrapper: "block mx-auto",
+                wrapper: "block mx-auto me-auto",
                 label: "block text-wrap text-sm",
               }}
               onChange={(e) => {

@@ -1,6 +1,7 @@
 import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import { Button } from "@nextui-org/button"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {Form} from "@nextui-org/form";
 import hashSum from 'hash-sum'
 import {Input, Textarea} from "@nextui-org/input";
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -83,13 +84,18 @@ export default function ProfileEdit() {
     }
   }, [user]);
 
+  const [nameInputValue, setNameInputValue] = useState(user? user.displayName : "");
+  const formRef = useRef(null);
+
   return <>
     <main className="profile-edit">
     <h1>Edit Your Profile</h1>
 
     <SystemNotificationArea />
-    <form id="profile-edit" onSubmit={(e) => {
+    <Form ref={formRef} id="profile-edit" className="w-full" onSubmit={(e) => {
       e.preventDefault();
+
+      console.log(nameInputRef);
 
       User.setBio(bioInputRef.current.value);
 
@@ -103,7 +109,7 @@ export default function ProfileEdit() {
       setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
 
     }}>
-      <div id="profile-fields">
+      <div id="profile-fields" className="w-full">
 
         <Button className="avatar-edit-button h-[205px] w-[210px]" onPress={imageEditorDisclosure.onOpen}>
           <div className="avatar-edit-label text-center absolute left-[15px] z-[-1] font-bold text-lg">
@@ -182,9 +188,18 @@ export default function ProfileEdit() {
           </ModalContent>
         </Modal>
 
-        <Input name="name" isRequired label="Display Name" type="text" 
+        <Input name="name" isRequired className="my-4" label="Display Name" type="text" 
           placeholder="Your Name" ref={nameInputRef} 
-          autoComplete="name" defaultValue={user? user.displayName : ""}
+          autoComplete="name"
+          value={nameInputValue}
+          onValueChange={value => setNameInputValue(value)}
+          validate={value => { 
+            if (value) { 
+              return null; 
+            } else {
+              return "Display Name is required" ;
+            }
+          }}
         />
 
         <Textarea name="bio" ref={bioInputRef} 
@@ -195,8 +210,8 @@ export default function ProfileEdit() {
         />
       </div>
 
-      <Button type="submit" radius="full" color="primary">Save</Button>
-    </form>
+      <Button type="submit" isDisabled={nameInputValue.length===0} radius="full" color="primary">Save</Button>
+    </Form>
     </main>
   </>;
 }
