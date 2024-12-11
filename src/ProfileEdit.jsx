@@ -91,21 +91,12 @@ export default function ProfileEdit() {
     <form id="profile-edit" onSubmit={(e) => {
       e.preventDefault();
 
-      // The rest of the avatar data comes through the state every time we make
-      // an update, but the cropped version, we have to ask for specifically.
-      if (avatarEditorRef && avatarEditorRef.current) {
-        const editedAvatar = avatarEditorRef.current.getImage();
-        User.setAvatar(editedAvatar);
-      }
-
-      User.setAvatarOrig(avatar.avatarOrig);
-      User.setAvatarAltText(avatar.avatarAltText);
-      User.setAvatarPosition(avatar.avatarPosition);
-      User.setAvatarRotate(avatar.avatarRotate);
-      User.setAvatarScale(avatar.avatarScale);
-
       User.setBio(bioInputRef.current.value);
 
+      // Every call to User.setWhatever changes the database and then returns a fresh copy of the user variable.
+      // But it's up to us to notify react that there's been a change.
+      // We only do that when we've done the last of the changes we want to do.
+      // We keep that fresh copy we got from the database, and setUser to it.
       const newUser = User.setName(nameInputRef.current.value);
       setUser(newUser);
 
@@ -144,13 +135,41 @@ export default function ProfileEdit() {
             </ModalBody>
 
             <ModalFooter>
-              <Button variant="solid" color="primary">
+              <Button variant="solid" color="primary" onPress={() => {
+                // The rest of the avatar data comes through the state every time we make
+                // an update, but the cropped version, we have to ask for specifically.
+                if (avatarEditorRef && avatarEditorRef.current) {
+                  const editedAvatar = avatarEditorRef.current.getImage();
+                  User.setAvatar(editedAvatar);
+                }
+
+                User.setAvatarOrig(avatar.avatarOrig);
+                User.setAvatarAltText(avatar.avatarAltText);
+                User.setAvatarPosition(avatar.avatarPosition);
+                User.setAvatarRotate(avatar.avatarRotate);
+
+                const newUser = User.setAvatarScale(avatar.avatarScale);
+
+                // Every call to User.setWhatever changes the database and then returns a fresh copy of the user variable.
+                // But it's up to us to notify react that there's been a change.
+                // We only do that when we've done the last of the changes we want to do.
+                // We keep that fresh copy we got from the database, and setUser to it.
+                setUser(newUser);
+
+                setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
+                
+
+                // The Effect will detect that the user state variable has
+                // changed and rerender this with a clean slate, so we don't
+                // have to manually run resetAvatar.
+                onClose();
+              }}>
                 Save
               </Button>
 
               <Button variant="solid" color="danger" onPress={() => { 
                 // If they haven't touched the avatar (no draft exists), let them cancel without confirming.
-                if (!avatarEditingState.avatarDraft || confirm("Cancel???")) { 
+                if (!avatarEditingState.avatarDraft || confirm("Cancel your changes to your avatar and lose your work?")) { 
                   resetAvatar();
                   onClose(); 
                 }

@@ -125,6 +125,7 @@ export default function AvatarUpload({onChange, getImageRef, darkMode, avatarEdi
       {avatarOrig && !removeAvatar ?
         <AvatarAltText
           avatarAltText={avatarAltText}
+          setAvatarDraft={setAvatarDraft}
           setAvatarAltText={(altText) => { setAvatarDraft(true); setAvatarAltText(altText); }}
         />
       :
