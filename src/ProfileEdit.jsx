@@ -3,7 +3,7 @@ import { Button } from "@nextui-org/button"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
 import {Input, Textarea} from "@nextui-org/input";
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useDisclosure } from "@nextui-org/use-disclosure"
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -39,6 +39,49 @@ export default function ProfileEdit() {
   const avatarFallbackColor = user? hashSum(user.handle).substring(0,6).toUpperCase() : '000000';
 
   const onAvatarChange = useCallback(newAvatar => (newAvatar? setAvatar(newAvatar) : ""), []);
+
+  // I copy/pasted stuff from the AvatarUpload component when I realized I needed to lift up the state.
+  // I didn't want to mess with the namespace here, so I'm making this into a function.
+  // I wanted to make sure you could close the modal and then open it back up to continue where you left off.
+  const avatarEditingState = (() => {
+    const [avatarDraft, setAvatarDraft] = useState(false);
+    const [avatarEdited, setAvatarEdited] = useState(user? user.avatar : null);
+    const [avatarOrig, setAvatarOrig] = useState(user? user.avatarOrig : null);
+    const [avatarAltText, setAvatarAltText] = useState("");
+    const [avatarPosition, setAvatarPosition] = useState({x: 0.5, y: 0.5});
+    const [avatarRotate, setAvatarRotate] = useState(0);
+    const [avatarScale, setAvatarScale] = useState(1);
+    const [removeAvatar, setRemoveAvatar] = useState(false);
+
+    return {
+      avatarDraft, setAvatarDraft,
+      avatarEdited, setAvatarEdited,
+      avatarOrig, setAvatarOrig,
+      avatarAltText, setAvatarAltText,
+      avatarPosition, setAvatarPosition,
+      avatarRotate, setAvatarRotate,
+      avatarScale, setAvatarScale,
+      removeAvatar, setRemoveAvatar,
+    };
+  })();
+
+  function resetAvatar() {
+    avatarEditingState.setAvatarDraft(false);
+    avatarEditingState.setAvatarEdited(user.avatarEdited);
+    avatarEditingState.setAvatarOrig(user.avatarOrig);
+    avatarEditingState.setAvatarAltText(user.avatarAltText);
+    avatarEditingState.setAvatarPosition(user.avatarPosition);
+    avatarEditingState.setAvatarRotate(user.avatarRotate);
+    avatarEditingState.setAvatarScale(user.avatarScale);
+  }
+
+  // When you first load the page, the previews will be empty.
+  // Load them with the saved values.
+  useEffect(() => {
+    if (user) {
+      resetAvatar();
+    }
+  }, [user]);
 
   return <>
     <main className="profile-edit">
@@ -89,13 +132,32 @@ export default function ProfileEdit() {
           >
           <ModalContent>
           { onClose => <>
-            <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
+            <ModalBody>
+              <label htmlFor="avatar-input" className="profile-field-label">Avatar</label>
 
-            <AvatarUpload
-              darkMode={darkMode}
-              getImageRef={avatarEditorRef}
-              onChange={onAvatarChange}
-            />
+              <AvatarUpload
+                darkMode={darkMode}
+                getImageRef={avatarEditorRef}
+                onChange={onAvatarChange}
+                avatarEditingState={avatarEditingState}
+              />
+            </ModalBody>
+
+            <ModalFooter>
+              <Button variant="solid" color="primary">
+                Save
+              </Button>
+
+              <Button variant="solid" color="danger" onPress={() => { 
+                // If they haven't touched the avatar (no draft exists), let them cancel without confirming.
+                if (!avatarEditingState.avatarDraft || confirm("Cancel???")) { 
+                  resetAvatar();
+                  onClose(); 
+                }
+              }}>
+                Cancel
+              </Button>
+            </ModalFooter>
             </>
           }
           </ModalContent>

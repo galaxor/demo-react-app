@@ -14,17 +14,11 @@ import UserContext from './UserContext.jsx';
 
 import './static/AvatarUpload.css';
 
-export default function AvatarUpload({onChange, getImageRef, darkMode}) {
+export default function AvatarUpload({onChange, getImageRef, darkMode, avatarEditingState}) {
+
+  const { avatarDraft, setAvatarDraft, avatarEdited, setAvatarEdited, avatarOrig, setAvatarOrig, avatarAltText, setAvatarAltText, avatarPosition, setAvatarPosition, avatarRotate, setAvatarRotate, avatarScale, setAvatarScale, removeAvatar, setRemoveAvatar } = avatarEditingState;
+
   const { user } = useContext(UserContext);
-
-  const [removeAvatar, setRemoveAvatar] = useState(false);
-
-  const [avatarEdited, setAvatarEdited] = useState(user? user.avatar : null);
-  const [avatarOrig, setAvatarOrig] = useState(user? user.avatarOrig : null);
-  const [avatarAltText, setAvatarAltText] = useState("");
-  const [avatarPosition, setAvatarPosition] = useState({x: 0.5, y: 0.5});
-  const [avatarRotate, setAvatarRotate] = useState(0);
-  const [avatarScale, setAvatarScale] = useState(1);
 
   const avatarFallbackColor = hashSum(user.handle).substring(0,6).toUpperCase();
 
@@ -49,6 +43,7 @@ export default function AvatarUpload({onChange, getImageRef, darkMode}) {
     reader.addEventListener("load", () => {
       const avatarOrig = reader.result;
 
+      setAvatarDraft(true);
       setAvatarOrig(avatarOrig);
       setAvatarPosition({x: 0, y: 0});
       setAvatarRotate(0);
@@ -57,18 +52,6 @@ export default function AvatarUpload({onChange, getImageRef, darkMode}) {
 
     reader.readAsDataURL(e.target.files[0]);
   }
-
-  // When you first load the page, the previews will be empty.
-  // Load them with the saved values.
-  useEffect(() => {
-    if (user) {
-      setAvatarOrig(user.avatarOrig);
-      setAvatarAltText(user.avatarAltText);
-      setAvatarPosition(user.avatarPosition);
-      setAvatarRotate(user.avatarRotate);
-      setAvatarScale(user.avatarScale);
-    }
-  }, [user]);
 
   // This is how we export the changes:  Let them pass us an onChange hook, and
   // then when any of these values changes, we ship it out to the hook.
@@ -91,18 +74,16 @@ export default function AvatarUpload({onChange, getImageRef, darkMode}) {
             :
             <>
             {avatarOrig?
-              <label htmlFor="avatar-input" className="avatar-preview">
-                <Avatar isBordered radius="full" size="lg" className="shrink-0" src={avatarEdited} name="Image preview"
-                  style={{'--avatar-bg': '#'+avatarFallbackColor}}
-                  classNames={{base: "bg-[--avatar-bg] w-[75px] h-[75px] "}}
-                />
-              </label>
+              <Avatar isBordered radius="full" size="lg" className="shrink-0" src={avatarEdited} name="Image preview"
+                style={{'--avatar-bg': '#'+avatarFallbackColor}}
+                classNames={{base: "bg-[--avatar-bg] w-[75px] h-[75px] "}}
+              />
               :
               ''
             }
 
             <label className="avatar-upload-box">
-              <input type="file" id="avatar-input" className="avatar-input" name="avatar"
+              <input type="file" id="avatar-input" className="avatar-input" name="avatar" tabIndex="-1"
                 ref={fileUploadRef}
                 className="visually-hidden"
                 accept="image/*"
@@ -144,7 +125,7 @@ export default function AvatarUpload({onChange, getImageRef, darkMode}) {
       {avatarOrig && !removeAvatar ?
         <AvatarAltText
           avatarAltText={avatarAltText}
-          setAvatarAltText={setAvatarAltText}
+          setAvatarAltText={(altText) => { setAvatarDraft(true); setAvatarAltText(altText); }}
         />
       :
       ""
@@ -152,6 +133,8 @@ export default function AvatarUpload({onChange, getImageRef, darkMode}) {
 
       {avatarOrig && !removeAvatar ?
         <AvatarEditorSection
+          avatarDraft={avatarDraft}
+          setAvatarDraft={setAvatarDraft}
           avatarEditorRef={avatarEditorRef}
           avatarOrig={avatarOrig}
           setAvatarOrig={setAvatarOrig}
@@ -173,7 +156,7 @@ export default function AvatarUpload({onChange, getImageRef, darkMode}) {
   );
 }
 
-function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatarScale, setAvatarScale, avatarRotate, setAvatarRotate, avatarPosition, setAvatarPosition, getImageFn, avatarEdited, setAvatarEdited}) {
+function AvatarEditorSection({avatarEditorRef, avatarDraft, setAvatarDraft, avatarOrig, setAvatarOrig, avatarScale, setAvatarScale, avatarRotate, setAvatarRotate, avatarPosition, setAvatarPosition, getImageFn, avatarEdited, setAvatarEdited}) {
   const [panFocused, setPanFocused] = useState(false);
 
   useEffect(() => {
@@ -192,6 +175,7 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
         case "ArrowRight": newAvatarPosition = {...avatarPosition, x: x+moveAmount}; break;
         }
 
+        setAvatarDraft(true);
         setAvatarPosition(newAvatarPosition);
       }
     }
@@ -201,7 +185,7 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
     }
 
     return () => window.removeEventListener('keydown', handleArrowKeys);
-  }, [avatarPosition, setAvatarPosition, panFocused]);
+  }, [avatarPosition, setAvatarPosition, setAvatarDraft, panFocused]);
 
   return (
     <div>
@@ -226,6 +210,7 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
           rotate={avatarRotate}
           position={avatarPosition}
           onPositionChange={newPos => {
+            setAvatarDraft(true);
             setAvatarPosition({...newPos});
             setAvatarEdited(getImageFn());
           }}
@@ -241,9 +226,9 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
         min={1}
         max={3}
         value={avatarScale}
-        setValue={setAvatarScale}
+        setValue={(value) => { setAvatarDraft(true); setAvatarScale(value); }}
         step={0.1}
-        onChange={(e, value) => setAvatarScale(value)}
+        onChange={(e, value) => { setAvatarDraft(true); setAvatarScale(value); }}
       />
       <InputSlider
         label="Rotate (degrees)"
@@ -253,23 +238,23 @@ function AvatarEditorSection({avatarEditorRef, avatarOrig, setAvatarOrig, avatar
         max={180}
         marks={[{value: 0, label: "0°"}]}
         value={avatarRotate}
-        setValue={setAvatarRotate}
+        setValue={value => { setAvatarDraft(true); setAvatarRotate(value); }}
         shiftStep={5}
         step={5}
-        onChange={(e, value) => setAvatarRotate(value)}
+        onChange={(e, value) => { setAvatarDraft(true); setAvatarRotate(value); }}
       />
       </div>
     </div>
   );
 }
 
-function AvatarAltText({avatarAltText, setAvatarAltText}) {
+function AvatarAltText({avatarAltText, setAvatarAltText, setAvatarDraft}) {
   return (
     <>
     <Textarea name="avatar-alt" label="Alt Text"
         value={avatarAltText ?? ""}
         placeholder="Describe the image as if you're talking to someone who can't see it."
-        onChange = {(e) => setAvatarAltText(e.target.value)}
+        onChange = {(e) => { setAvatarDraft(true); setAvatarAltText(e.target.value); }}
         className="mb-3"
     />
     </>
