@@ -100,8 +100,8 @@ export default function BoostsDetail() {
           const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
 
           return (
-            <Tab key={key} title={<><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></>}>
-              <h3 id={key+'-header'} className="my-5 text-lg font-bold"><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></h3>
+            <Tab key={key} title={<><div className="flex flex-nowrap"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{reactionType.reactors.length}</span></div></>}>
+              <h3 id={key+'-header'} className="my-5 text-lg font-bold"><div className="flex flex-nowrap items-center"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{reactionType.reactors.length}</span></div></h3>
 
               <ul className="reactors" aria-labelledby={key+'-header'}>
               {reactionType.reactors.map(person => {

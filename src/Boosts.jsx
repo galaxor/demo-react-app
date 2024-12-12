@@ -38,7 +38,7 @@ export default function Boosts({post, onBoost}) {
 
   return (
     <>
-    <li className="post-stat non-quote-boosts order-2 mr-4 h-[40px] content-center">
+    <li className="post-stat non-quote-boosts order-2 mr-1 h-[40px] content-center">
       {user? 
         <Button variant={numYourBoosts > 0? "flat" : "light"} className="stat" onPress={e => {
           clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
