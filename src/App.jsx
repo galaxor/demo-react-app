@@ -63,7 +63,7 @@ function App({db}) {
     <LanguageContext.Provider value={languageContext}>
     <SystemNotificationsContext.Provider value={systemNotificationsContext}>
     <div className={"app-theme text-foreground bg-background " + (darkMode? "dark " : "")}>
-      <header>
+      <header className="shadow-md">
         <Logo />
         <UserSection darkMode={darkMode} setDarkMode={setDarkMode} />
       </header>
