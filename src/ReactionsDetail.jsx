@@ -91,7 +91,7 @@ export default function BoostsDetail() {
 
               return reactionType.reactors.map(person => {
                 return (
-                  <li key={key+':'+person.handle} className="reactor" className="flex gap-5 items-center"><ReactionGlyph reaction={reactionType} /> <PersonInline person={person} /></li>
+                  <li key={key+':'+person.handle} className="reactor" className="flex gap-5 items-center mb-2"><ReactionGlyph reaction={reactionType} /> <PersonInline person={person} /></li>
                 );
               })
             })}
@@ -108,7 +108,7 @@ export default function BoostsDetail() {
               <ul className="reactors" aria-labelledby={key+'-header'}>
               {reactionType.reactors.map(person => {
                 return (
-                  <li key={key+':'+person.handle} className="reactor"><PersonInline person={person} /></li>
+                  <li key={key+':'+person.handle} className="reactor mb-2"><PersonInline person={person} /></li>
                 );
               })}
               </ul>
