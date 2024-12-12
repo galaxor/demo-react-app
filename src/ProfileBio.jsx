@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import PersonContext from './PersonContext.jsx';
 
 export default function ProfileBio() {
-  const person = useContext(PersonContext);
+  const { person } = useContext(PersonContext);
 
   return (
     <>

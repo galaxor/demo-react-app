@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import {Switch} from "@nextui-org/react";
 
+import PersonContext from './PersonContext.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
 import { PeopleDB } from './logic/people.js';
 import UserContext from './UserContext.jsx';
@@ -14,7 +15,7 @@ export default function FriendStatus({person}) {
 
   const peopleDB = new PeopleDB(db);
 
-  const [youFollowThem, setYouFollowThem] = useState();
+  const { youFollowThem, setYouFollowThem } = useContext(PersonContext);
   const theyFollowYou = user? peopleDB.doesXFollowY(person.handle, user.handle) : null;
 
   return (

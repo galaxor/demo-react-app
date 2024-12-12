@@ -9,7 +9,7 @@ import PostsList from './PostsList.jsx';
 export default function PostsByPerson({showReplies}) {
   const [ showBoosts, setShowBoosts ] = useState(true);
 
-  const person = useContext(PersonContext);
+  const { person } = useContext(PersonContext);
 
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);

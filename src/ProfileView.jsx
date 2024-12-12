@@ -2,7 +2,7 @@ import { Button } from "@nextui-org/button"
 import {Divider} from "@nextui-org/divider";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, NavLink, Outlet, Route, Routes, useLocation, useLoaderData, useMatches } from "react-router-dom";
 import { Link as Link2 } from "@nextui-org/link"
 import {Tabs, Tab} from "@nextui-org/tabs";
@@ -43,6 +43,8 @@ export default function ProfileView({handle, loggedInUser, children }) {
   }
 
   const matches = useMatches();
+
+  const [youFollowThem, setYouFollowThem] = useState();
 
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
@@ -134,20 +136,20 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
       <SystemNotificationArea />
 
-      <section className="actions mb-4">
-        <h2 className="visually-hidden">Follow Info</h2>
-        {user && !isYou && <FriendStatus person={person} />}
+      <PersonContext.Provider value={{person, youFollowThem, setYouFollowThem}}>
+        <section className="actions mb-4">
+          <h2 className="visually-hidden">Follow Info</h2>
+          {user && !isYou && <FriendStatus person={person} />}
 
-        {isYou && <Button className="edit-your-profile" to="/profile/edit" as={Link2}
-          href="/profile/edit"
-          variant="solid" color="primary" radius="full"
-          startContent={<FontAwesomeIcon icon={icons.fileLines} />}>
-            Edit Profile
-          </Button>}
-        {isYou && <LogoutLink />}
-      </section>
+          {isYou && <Button className="edit-your-profile" to="/profile/edit" as={Link2}
+            href="/profile/edit"
+            variant="solid" color="primary" radius="full"
+            startContent={<FontAwesomeIcon icon={icons.fileLines} />}>
+              Edit Profile
+            </Button>}
+          {isYou && <LogoutLink />}
+        </section>
 
-      <PersonContext.Provider value={person}>
         <ProfileBio />
 
         <Divider className="my-4" />

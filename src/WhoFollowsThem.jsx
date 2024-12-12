@@ -5,7 +5,7 @@ import PersonContext from './PersonContext.jsx';
 import PersonInline from './PersonInline.jsx';
 
 export default function WhoFollowsThem() {
-  const person = useContext(PersonContext);
+  const { person } = useContext(PersonContext);
   const { whoFollowsThem } = useContext(FollowInfoContext);
 
   return (
