@@ -79,7 +79,9 @@ export default function BoostsDetail() {
       {reactionsList.length <= 0?
         <> No reactions. </>
         :
-        <Tabs aria-labelledby="reactions-toc-header">
+        <Tabs aria-labelledby="reactions-toc-header" className="reactions-toc"
+          classNames={{tabList: "flex-wrap", tab: "w-auto"}}
+        >
           <Tab key="all" title="All">
             <h3 id="all-reactions" className="my-5 text-lg font-bold">All Reactions</h3>
 

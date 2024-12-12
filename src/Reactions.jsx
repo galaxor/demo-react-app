@@ -44,7 +44,7 @@ export default function Reactions({post, onReact}) {
   const htmlId = encodeURIComponent(post.uri)+'-reactions';
   return (
     <>
-      <ul className="reactions flex" aria-labelledby={htmlId}>
+      <ul className="reactions flex flex-wrap" aria-labelledby={htmlId}>
         {reactionTotals.map(reaction =>
           <li className="reaction" key={[reaction.type, reaction.unicode, reaction.reactServer, reaction.reactUrl].join('-')}>
             <Reaction post={post} reaction={reaction} 
