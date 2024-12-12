@@ -84,7 +84,7 @@ export default function QuoteBoostsDetail() {
       <div ref={scrollHereRef} />
       <PostAndYourNewReplies post={post} />
 
-      <h2>{numQuoteBoosts > 1 || numQuoteBoosts === 0? 
+      <h2 className="my-5 text-xl font-bold">{numQuoteBoosts > 1 || numQuoteBoosts === 0? 
         <>Quote-Boosted {numQuoteBoosts} times</>
         :
         <>Quote-Boosted {numQuoteBoosts} time</>

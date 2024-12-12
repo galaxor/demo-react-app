@@ -91,7 +91,7 @@ export default function BoostsDetail() {
         }
       } />
 
-      <h2>{numBoosts > 1 || numBoosts === 0 ? 
+      <h2 className="my-5 text-xl font-bold">{numBoosts > 1 || numBoosts === 0 ? 
         <>Boosted by {numBoosts} people</>
         :
         <>Boosted by 1 person</>
