@@ -157,12 +157,12 @@ export default function ProfileView({handle, loggedInUser, children }) {
           <Tabs size="sm" selectedKey={activeTab} aria-labelledby="navigation">
             <Tab key="posts" href={"/people/"+person.handle} title="Posts" />
             <Tab key="posts-replies" href={'/people/'+person.handle+'/posts-replies'} title="Posts & Replies" />
-            <Tab key="followers" href={'/people/'+person.handle+'/followers'} title={"Followers " + Object.values(whoFollowsThem).length} />
-            <Tab key="follows" href={'/people/'+person.handle+'/follows'} title={"Follows "+Object.values(whoDoTheyFollow).length} />
+            <Tab key="followers" href={'/people/'+person.handle+'/followers'} title={"Followers " + whoFollowsThem.length} />
+            <Tab key="follows" href={'/people/'+person.handle+'/follows'} title={"Follows "+whoDoTheyFollow.length} />
           </Tabs>
         </nav>
         
-        <FollowInfoContext.Provider value={ { handle: person.handle, whoDoTheyFollow, whoFollowsThem } }>
+        <FollowInfoContext.Provider value={ { whoDoTheyFollow, whoFollowsThem } }>
           {children? children : ''}
           <Outlet />
         </FollowInfoContext.Provider>
