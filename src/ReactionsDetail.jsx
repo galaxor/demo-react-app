@@ -13,6 +13,7 @@ import hashSum from 'hash-sum'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLoaderData, Link } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
+import {Tabs, Tab} from "@nextui-org/tabs";
 
 import './static/ReactionsDetail.css'
 
@@ -43,6 +44,9 @@ export default function BoostsDetail() {
   // XXX You should be able to search the list of people who reacted to the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
 
+  console.log(reactionsList);
+
+
   return (
     <>
     <main className="post-single">
@@ -69,47 +73,48 @@ export default function BoostsDetail() {
         }}
       />
 
-      <h2>Reactions</h2>
+      <h2 id="reactions-toc-header" className="my-5 text-xl font-bold">Reactions</h2>
 
       {/* Make a table of contents of the different kinds of reactions */}
       {reactionsList.length <= 0?
         <> No reactions. </>
         :
-        <ul className="reactions-toc">
-          {reactionsList.map(reactionType => {
-            const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
+        <Tabs aria-labelledby="reactions-toc-header">
+          <Tab key="all" title="All">
+            <h3 id="all-reactions" className="my-5 text-lg font-bold">All Reactions</h3>
 
-            return (
-              <li key={key}
-                className={viewingReaction === '#'+key ? 'active' : ''}>
-                <a href={'#'+key} onClick={() => setViewingReaction('#'+key)}>
-                  <ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      }
+            <ul className="reactors" aria-labelledby="all-reactions">
+            {reactionsList.map(reactionType => {
+              const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
 
-      {reactionsList.map(reactionType => {
-        const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
-        return (
-          <section key={key+'-section'} id={key} aria-labelledby={key+'-header'}
-            className={viewingReaction === '#'+key ? 'active' : ''}
-          >
-            <h3 id={key+'-header'}><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></h3>
-
-            <ul className="reactors" aria-labelledby={key+'-header'}>
-            {reactionType.reactors.map(person => {
-              return (
-                <li key={key+':'+person.handle} className="reactor"><PersonInline person={person} /></li>
-              );
+              return reactionType.reactors.map(person => {
+                return (
+                  <li key={key+':'+person.handle} className="reactor" className="flex gap-5 items-center"><ReactionGlyph reaction={reactionType} /> <PersonInline person={person} /></li>
+                );
+              })
             })}
             </ul>
-          </section>
-        );
-      })}
+          </Tab>
 
+        {reactionsList.map(reactionType => {
+          const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
+
+          return (
+            <Tab key={key} title={<><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></>}>
+              <h3 id={key+'-header'} className="my-5 text-lg font-bold"><ReactionGlyph reaction={reactionType} /> <span>{reactionType.reactors.length}</span></h3>
+
+              <ul className="reactors" aria-labelledby={key+'-header'}>
+              {reactionType.reactors.map(person => {
+                return (
+                  <li key={key+':'+person.handle} className="reactor"><PersonInline person={person} /></li>
+                );
+              })}
+              </ul>
+            </Tab>
+          );
+        })}
+        </Tabs>
+      }
     </main>
     </>
   );
