@@ -12,16 +12,16 @@ export default function WhoFollowsThem() {
   return (
     <section aria-labelledby="who-do-they-follow">
       <h2 id="who-do-they-follow" className="text-2xl font-bold my-4">
-        {whoDoTheyFollow.length === 1 ?
-          <> <bdi>{person.displayName}</bdi> follows {whoDoTheyFollow.length} person </>
+        {Object.values(whoDoTheyFollow).length === 1 ?
+          <> <bdi>{person.displayName}</bdi> follows {Object.values(whoDoTheyFollow).length} person </>
           :
-          <> <bdi>{person.displayName}</bdi> follows {whoDoTheyFollow.length} people </>
+          <> <bdi>{person.displayName}</bdi> follows {Object.values(whoDoTheyFollow).length} people </>
         }
       </h2>
 
       {whoDoTheyFollow.length > 0 ?
         <ul className="who-do-they-follow" aria-labelledby="who-do-they-follow">
-        {whoDoTheyFollow.map(personWhoIsFollowed => {
+        {Object.values(whoDoTheyFollow).map(personWhoIsFollowed => {
           return (<li key={personWhoIsFollowed.handle}><PersonInline person={personWhoIsFollowed} /></li>);
           }
         )}

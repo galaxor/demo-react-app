@@ -13,7 +13,7 @@ export class PeopleDB {
   whoFollowsThem(handle) {
     if (!handle) { throw new TypeError("We're asking who follows someone, but we don't know who someone is."); }
 
-    const followsPerson = this.db.get('follows')
+    const followsPersonList = this.db.get('follows')
       .filter(([personWhoFollows, personWhoIsFollowed]) => {
         return personWhoIsFollowed === handle;
       })
@@ -23,13 +23,18 @@ export class PeopleDB {
       })
     ;
 
+    const followsPerson = {};
+    for (const personWhoFollows of followsPersonList) {
+      followsPerson[personWhoFollows.handle] = personWhoFollows;
+    }
+
     return followsPerson;
   }
 
   whoDoTheyFollow(handle) {
     if (!handle) { throw new TypeError("We're asking who someone follows, but we don't know who someone is."); }
 
-    const followsPerson = this.db.get('follows')
+    const peopleFollowedList = this.db.get('follows')
       .filter(([personWhoFollows, personWhoIsFollowed]) => {
         return personWhoFollows === handle;
       })
@@ -39,7 +44,13 @@ export class PeopleDB {
       })
     ;
 
-    return followsPerson;
+    const peopleFollowed = {};
+
+    for (const personWhoIsFollowed of peopleFollowedList) {
+      peopleFollowed[personWhoIsFollowed.handle] = personWhoIsFollowed;
+    }
+
+    return peopleFollowed;
   }
 
   doesXFollowY(xHandle, yHandle) {

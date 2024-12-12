@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import DatabaseContext from './DatabaseContext.jsx';
 import icons from './icons.js'
+import FollowInfoContext from './FollowInfoContext.jsx';
 import UserContext from './UserContext.jsx';
 import { PeopleDB } from './logic/people.js';
 
@@ -28,6 +29,16 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   const avatarFallbackColor = hashSum(person.handle).substring(0,6).toUpperCase();
 
   const { user } = useContext(UserContext);
+
+  // If we're viewing this person in the ProfileView, we'll have a FollowInfoContext.
+  // If we have that, the FollowInfoContext will have more up-to-date information
+  // about this person's followers than the database does.  Such as, did the user just follow
+  // them?
+  // So we'll check if the person we've been asked to draw is the person from
+  // the FollowInfoContext.  If so, we'll use that info.
+  const profileFollowInfo = useContext(FollowInfoContext);
+
+  console.log(profileFollowInfo);
 
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
