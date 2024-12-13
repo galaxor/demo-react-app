@@ -1,4 +1,16 @@
-ul.replies {
-  padding-left: 1ex;
-  border-left: 2px solid grey;
+ul.replies > li ~ li {
+  display: flex;
+  width: 100%;
+
+  & > div.post-and-replies {
+    width: 100%;
+  }
+}
+
+ul.replies > li ~ li:before {
+  display: block;
+  width: 5px;
+  height: auto;
+  background: green;
+  content: " ";
 }
