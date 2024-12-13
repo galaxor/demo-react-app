@@ -6,6 +6,7 @@ import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import ReactionGlyph from './ReactionGlyph.jsx'
+import ReactionsListContext from './ReactionsListContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx'
 
@@ -15,9 +16,7 @@ import { useLoaderData, Link } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 import {Tabs, Tab} from "@nextui-org/tabs";
 
-import './static/ReactionsDetail.css'
-
-export default function ReactionsDetail() {
+export default function PostDetails({children}) {
   const dateFormat = new Intl.DateTimeFormat(navigator.language, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
   });
@@ -126,55 +125,22 @@ export default function ReactionsDetail() {
           setNumBoosts(getNumBoosts());
           setNumYourBoosts(getNumYourBoosts());
           setBoostPostsList(getBoostPostsList());
-        }
+        }}
       />
 
-// XXX This is where I put the tabs in.  But I've gotta do the thing like I did with ProfileView, where the tabs have their own URLs.
-
-      <h2 id="reactions-toc-header" className="my-5 text-xl font-bold">Reactions</h2>
-
-      {/* Make a table of contents of the different kinds of reactions */}
-      {reactionsList.length <= 0?
-        <> No reactions. </>
-        :
-        <Tabs aria-labelledby="reactions-toc-header" className="reactions-toc"
-          classNames={{tabList: "flex-wrap", tab: "w-auto"}}
-        >
-          <Tab key="all" title="All">
-            <h3 id="all-reactions" className="my-5 text-lg font-bold">All Reactions</h3>
-
-            <ul className="reactors" aria-labelledby="all-reactions">
-            {reactionsList.map(reactionType => {
-              const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
-
-              return reactionType.reactors.map(person => {
-                return (
-                  <li key={key+':'+person.handle} className="reactor" className="flex gap-5 items-center mb-2"><ReactionGlyph reaction={reactionType} /> <PersonInline person={person} /></li>
-                );
-              })
-            })}
-            </ul>
-          </Tab>
-
-        {reactionsList.map(reactionType => {
-          const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
-
-          return (
-            <Tab key={key} title={<><div className="flex flex-nowrap"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{reactionType.reactors.length}</span></div></>}>
-              <h3 id={key+'-header'} className="my-5 text-lg font-bold"><div className="flex flex-nowrap items-center"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{reactionType.reactors.length}</span></div></h3>
-
-              <ul className="reactors" aria-labelledby={key+'-header'}>
-              {reactionType.reactors.map(person => {
-                return (
-                  <li key={key+':'+person.handle} className="reactor mb-2"><PersonInline person={person} /></li>
-                );
-              })}
-              </ul>
-            </Tab>
-          );
-        })}
+      <nav className="navigation-tabs" aria-labelledby="navigation">
+        <h2 id="navigation" className="my-5 text-xl font-bold">Post Details</h2>
+        <Tabs size="sm" aria-labelledby="navigation">
+          <Tab key="reactions" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"} title="Reactions" />
+          <Tab key="boosts" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"} title="Boosts" />
+          <Tab key="quote-boosts" href={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"} title="Quote Boosts" />
         </Tabs>
-      }
+      </nav>
+    
+      <ReactionsListContext.Provider value={{reactionsList, setReactionsList}}>
+        {children}
+      </ReactionsListContext.Provider>
+
     </main>
     </>
   );

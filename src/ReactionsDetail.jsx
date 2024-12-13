@@ -1,13 +1,9 @@
-import { PeopleDB } from './logic/people.js';
-import { PostsDB } from './logic/posts.js';
-
-import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import ReactionGlyph from './ReactionGlyph.jsx'
+import ReactionsListContext from './ReactionsListContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
-import UserContext from './UserContext.jsx'
 
 import hashSum from 'hash-sum'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -24,52 +20,14 @@ export default function ReactionsDetail() {
 
   const post = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
-  const db = useContext(DatabaseContext);
-  const {user, setUser} = useContext(UserContext);
 
-  const peopleDB = new PeopleDB(db);
-  const postsDB = new PostsDB(db);
-
-  // Scroll the post into view when it first becomes visible.
-  const scrollHereRef = useCallback(node => {
-    if (node) { node.scrollIntoView(); }
-
-    return {current: node};
-  }, []);
-
-  const [reactionsList, setReactionsList] = useState(postsDB.getAllReactionsTo(post.uri));
-
-  const [viewingReaction, setViewingReaction] = useState(document.location.hash);
+  const { reactionsList, setReactionsList } = useContext(ReactionsListContext);
 
   // XXX You should be able to search the list of people who reacted to the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
 
   return (
     <>
-    <main className="post-single">
-      <h1>Post by <bdi>{post.authorPerson.displayName}</bdi>,{" "}
-        <time dateTime={post.createdAt}>
-          <ReactTimeAgo date={new Date(post.createdAt)} locale={languageContext} />
-        </time>
-        {post.updatedAt !== post.createdAt &&
-          <>
-          , updated {" "}
-            <time dateTime={post.updatedAt}>
-              <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />
-            </time>
-          </>
-        }
-      </h1>
-
-      <SystemNotificationArea />
-
-      <div ref={scrollHereRef} />
-      <PostAndYourNewReplies post={post}
-        onReact={() => {
-          setReactionsList(postsDB.getAllReactionsTo(post.uri));
-        }}
-      />
-
       <h2 id="reactions-toc-header" className="my-5 text-xl font-bold">Reactions</h2>
 
       {/* Make a table of contents of the different kinds of reactions */}
@@ -114,7 +72,6 @@ export default function ReactionsDetail() {
         })}
         </Tabs>
       }
-    </main>
     </>
   );
 }

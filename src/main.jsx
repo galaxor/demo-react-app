@@ -8,6 +8,7 @@ import BoostsDetail from './BoostsDetail.jsx'
 import CreatePost from './CreatePost.jsx'
 import PopularFeed from './PopularFeed.jsx'
 import PostsByPerson from './PostsByPerson.jsx'
+import PostDetails from './PostDetails.jsx'
 import PostSingle from './PostSingle.jsx'
 import ProfileBio from './ProfileBio.jsx'
 import ProfileEdit from './ProfileEdit.jsx'
@@ -119,17 +120,17 @@ const router = createBrowserRouter([
           {
             path: "/post/:postUri/boosts",
             loader: getPostLoader(database),
-            element: <BoostsDetail />,
+            element: <PostDetails><BoostsDetail /></PostDetails>,
           },
           {
             path: "/post/:postUri/quote-boosts",
             loader: getPostLoader(database),
-            element: <QuoteBoostsDetail />,
+            element: <PostDetails><QuoteBoostsDetail /></PostDetails>,
           },
           {
             path: "/post/:postUri/reactions",
             loader: getPostLoader(database),
-            element: <ReactionsDetail />,
+            element: <PostDetails><ReactionsDetail /></PostDetails>,
           },
           {
             path: "/create",
