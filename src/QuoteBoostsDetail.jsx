@@ -26,13 +26,6 @@ export default function QuoteBoostsDetail() {
   const peopleDB = new PeopleDB(db);
   const postsDB = new PostsDB(db);
 
-  // Scroll the post into view when it first becomes visible.
-  const scrollHereRef = useCallback(node => {
-    if (node) { node.scrollIntoView(); }
-
-    return {current: node};
-  }, []);
-
   function getNumQuoteBoosts() { return postsDB.getNumberOfQuoteBoostsOf(post.uri); }
   function getNumYourQuoteBoosts() { return user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0; }
   const [numQuoteBoosts, setNumQuoteBoosts] = useState(getNumQuoteBoosts());
@@ -64,26 +57,6 @@ export default function QuoteBoostsDetail() {
 
   return (
     <>
-    <main className="post-single">
-      <h1>Post by <bdi>{post.authorPerson.displayName}</bdi>,{" "}
-        <time dateTime={post.createdAt}>
-          <ReactTimeAgo date={new Date(post.createdAt)} locale={languageContext} />
-        </time>
-        {post.updatedAt !== post.createdAt &&
-          <>
-          , updated {" "}
-            <time dateTime={post.updatedAt}>
-              <ReactTimeAgo date={new Date(post.updatedAt)} locale={languageContext} />
-            </time>
-          </>
-        }
-      </h1>
-
-      <SystemNotificationArea />
-
-      <div ref={scrollHereRef} />
-      <PostAndYourNewReplies post={post} />
-
       <h2 className="my-5 text-xl font-bold">{numQuoteBoosts > 1 || numQuoteBoosts === 0? 
         <>Quote-Boosted {numQuoteBoosts} times</>
         :
@@ -91,8 +64,6 @@ export default function QuoteBoostsDetail() {
       }</h2>
 
       <PostsList posts={quoteBoostPostsList} />
-
-    </main>
     </>
   );
 }

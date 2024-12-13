@@ -1,5 +1,4 @@
 import { PeopleDB } from './logic/people.js';
-import { PostsDB } from './logic/posts.js';
 
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
@@ -23,10 +22,8 @@ export default function BoostsDetail() {
   const post = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
-  const {user, setUser} = useContext(UserContext);
 
   const peopleDB = new PeopleDB(db);
-  const postsDB = new PostsDB(db);
 
   const { numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts, boostPostsList, setBoostPostsList } = useContext(PostDetailsContext);
 

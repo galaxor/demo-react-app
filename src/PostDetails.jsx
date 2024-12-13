@@ -64,35 +64,6 @@ export default function PostDetails({children}) {
 
   const [boostPostsList, setBoostPostsList] = useState(getBoostPostsList());
 
-
-  // Info for the quote-boost details
-
-  function getNumQuoteBoosts() { return postsDB.getNumberOfQuoteBoostsOf(post.uri); }
-  function getNumYourQuoteBoosts() { return user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0; }
-  const [numQuoteBoosts, setNumQuoteBoosts] = useState(getNumQuoteBoosts());
-  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(getNumYourQuoteBoosts());
-
-  // Reset the boosts if you log in, so you can see if you're included among them.
-  useEffect(() => {
-    setNumQuoteBoosts(getNumQuoteBoosts());
-    setNumYourQuoteBoosts(getNumYourQuoteBoosts());
-  }, [user, setNumQuoteBoosts, setNumYourQuoteBoosts]);
-
-  function getQuoteBoostPostsList() {
-    const quoteBoostPosts = postsDB.getQuoteBoostsOf(post.uri);
-
-    // We now have { handle1: boost-row-1, handle2: boost-row-2 }
-    // We want a list of the boostersPosts.
-    const quoteBoostPostsList = Object.values(quoteBoostPosts)
-      .map(row => row.boostersPost)
-    ;
-
-    quoteBoostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
-    return quoteBoostPostsList;
-  }
-
-  const quoteBoostPostsList = getQuoteBoostPostsList();
-
   // Figure out which tab is active, based on the url.
   const loc = useLocation();
   const activeTab = loc.pathname.replace(/^\/post\/([^\/]*)(\/([^\/]*))?/, '$3');
