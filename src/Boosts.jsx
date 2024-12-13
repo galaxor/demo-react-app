@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
 import { Link as Link2 } from "@nextui-org/link"
+import LanguageContext from './LanguageContext.jsx'
 
 import DatabaseContext from './DatabaseContext.jsx'
 import icons from './icons.js'
@@ -36,6 +37,17 @@ export default function Boosts({post, onBoost}) {
 
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
 
+  const language = useContext(LanguageContext);
+  const numBoostsDisplay = Intl.NumberFormat(language, {
+    notation: "compact",
+    maximumFractionDigits: 1
+  }).format(numBoosts);
+
+  const numQuoteBoostsDisplay = Intl.NumberFormat(language, {
+    notation: "compact",
+    maximumFractionDigits: 1
+  }).format(numQuoteBoosts);
+
   return (
     <>
     <li className="post-stat non-quote-boosts order-2 mr-1 h-[40px] content-center">
@@ -46,12 +58,12 @@ export default function Boosts({post, onBoost}) {
         }}>
           <span className="visually-hidden">Boost this post</span>
           <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
-          <span className="total">{numBoosts}</span>
+          <span className="total">{numBoostsDisplay}</span>
         </Button>
         :
         <div className="stat">
           <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
-          <span className="total">{numBoosts}</span>
+          <span className="total">{numBoostsDisplay}</span>
         </div>
       }
         
@@ -62,12 +74,12 @@ export default function Boosts({post, onBoost}) {
           <Button variant={numYourQuoteBoosts > 0? "flat" : "light"} as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
             <span className="visually-hidden">Quote-boost this post</span>
             <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon text-background"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
-            <span className="total">{numQuoteBoosts}</span>
+            <span className="total">{numQuoteBoostsDisplay}</span>
           </Button>
         :
         <div className="stat relative">
           <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon quoteboost-boost-icon-logged-out text-background"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
-          <span className="total">{numQuoteBoosts}</span>
+          <span className="total">{numQuoteBoostsDisplay}</span>
         </div>
       }
     </li>
