@@ -6,13 +6,13 @@ import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import ReactionGlyph from './ReactionGlyph.jsx'
-import ReactionsListContext from './ReactionsListContext.jsx';
+import PostDetailsContext from './PostDetailsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx'
 
 import hashSum from 'hash-sum'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { useLoaderData, Link } from "react-router-dom";
+import { useLoaderData, useLocation, Link } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 import {Tabs, Tab} from "@nextui-org/tabs";
 
@@ -93,6 +93,10 @@ export default function PostDetails({children}) {
 
   const quoteBoostPostsList = getQuoteBoostPostsList();
 
+  // Figure out which tab is active, based on the url.
+  const loc = useLocation();
+  const activeTab = loc.pathname.replace(/^\/post\/([^\/]*)(\/([^\/]*))?/, '$3');
+
   // XXX You should be able to search the list of people who reacted to/boosted/quoted the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
 
@@ -130,16 +134,16 @@ export default function PostDetails({children}) {
 
       <nav className="navigation-tabs" aria-labelledby="navigation">
         <h2 id="navigation" className="my-5 text-xl font-bold">Post Details</h2>
-        <Tabs size="sm" aria-labelledby="navigation">
+        <Tabs size="sm" selectedKey={activeTab} aria-labelledby="navigation">
           <Tab key="reactions" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"} title="Reactions" />
           <Tab key="boosts" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"} title="Boosts" />
           <Tab key="quote-boosts" href={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"} title="Quote Boosts" />
         </Tabs>
       </nav>
     
-      <ReactionsListContext.Provider value={{reactionsList, setReactionsList}}>
+      <PostDetailsContext.Provider value={{reactionsList, setReactionsList, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts, boostPostsList, setBoostPostsList}}>
         {children}
-      </ReactionsListContext.Provider>
+      </PostDetailsContext.Provider>
 
     </main>
     </>

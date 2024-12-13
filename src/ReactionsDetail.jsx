@@ -2,7 +2,7 @@ import LanguageContext from './LanguageContext.jsx'
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import ReactionGlyph from './ReactionGlyph.jsx'
-import ReactionsListContext from './ReactionsListContext.jsx';
+import PostDetailsContext from './PostDetailsContext.jsx';
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 import hashSum from 'hash-sum'
@@ -21,7 +21,7 @@ export default function ReactionsDetail() {
   const post = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
 
-  const { reactionsList, setReactionsList } = useContext(ReactionsListContext);
+  const { reactionsList, setReactionsList } = useContext(PostDetailsContext);
 
   // XXX You should be able to search the list of people who reacted to the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
