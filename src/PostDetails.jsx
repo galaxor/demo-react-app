@@ -37,11 +37,64 @@ export default function ReactionsDetail() {
     return {current: node};
   }, []);
 
+
+  // Info for the reactions details.
   const [reactionsList, setReactionsList] = useState(postsDB.getAllReactionsTo(post.uri));
 
   const [viewingReaction, setViewingReaction] = useState(document.location.hash);
 
-  // XXX You should be able to search the list of people who reacted to the post.
+
+  // Info for the boost details.
+  function getNumBoosts() { return postsDB.getNumberOfBoostsOf(post.uri); }
+  function getNumYourBoosts() { return user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0; }
+  const [numBoosts, setNumBoosts] = useState(getNumBoosts());
+  const [numYourBoosts, setNumYourBoosts] = useState(getNumYourBoosts());
+
+  function getBoostPostsList() {
+    const boostPosts = postsDB.getBoostsOf(post.uri);
+
+    // We now have { handle1: boost-row-1, handle2: boost-row-2 }
+    // We want a list of the boostersPosts.
+    const boostPostsList = Object.values(boostPosts)
+      .map(row => row.boostersPost)
+    ;
+
+    boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
+    return boostPostsList;
+  }
+
+  const [boostPostsList, setBoostPostsList] = useState(getBoostPostsList());
+
+
+  // Info for the quote-boost details
+
+  function getNumQuoteBoosts() { return postsDB.getNumberOfQuoteBoostsOf(post.uri); }
+  function getNumYourQuoteBoosts() { return user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0; }
+  const [numQuoteBoosts, setNumQuoteBoosts] = useState(getNumQuoteBoosts());
+  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(getNumYourQuoteBoosts());
+
+  // Reset the boosts if you log in, so you can see if you're included among them.
+  useEffect(() => {
+    setNumQuoteBoosts(getNumQuoteBoosts());
+    setNumYourQuoteBoosts(getNumYourQuoteBoosts());
+  }, [user, setNumQuoteBoosts, setNumYourQuoteBoosts]);
+
+  function getQuoteBoostPostsList() {
+    const quoteBoostPosts = postsDB.getQuoteBoostsOf(post.uri);
+
+    // We now have { handle1: boost-row-1, handle2: boost-row-2 }
+    // We want a list of the boostersPosts.
+    const quoteBoostPostsList = Object.values(quoteBoostPosts)
+      .map(row => row.boostersPost)
+    ;
+
+    quoteBoostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
+    return quoteBoostPostsList;
+  }
+
+  const quoteBoostPostsList = getQuoteBoostPostsList();
+
+  // XXX You should be able to search the list of people who reacted to/boosted/quoted the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
 
   return (
@@ -68,7 +121,15 @@ export default function ReactionsDetail() {
         onReact={() => {
           setReactionsList(postsDB.getAllReactionsTo(post.uri));
         }}
+
+        onBoost={() => {
+          setNumBoosts(getNumBoosts());
+          setNumYourBoosts(getNumYourBoosts());
+          setBoostPostsList(getBoostPostsList());
+        }
       />
+
+// XXX This is where I put the tabs in.  But I've gotta do the thing like I did with ProfileView, where the tabs have their own URLs.
 
       <h2 id="reactions-toc-header" className="my-5 text-xl font-bold">Reactions</h2>
 
