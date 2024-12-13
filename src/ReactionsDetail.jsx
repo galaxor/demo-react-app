@@ -14,14 +14,22 @@ import {Tabs, Tab} from "@nextui-org/tabs";
 import './static/ReactionsDetail.css'
 
 export default function ReactionsDetail() {
-  const dateFormat = new Intl.DateTimeFormat(navigator.language, {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
-  });
-
   const post = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
 
   const { reactionsList, setReactionsList } = useContext(PostDetailsContext);
+
+  const language = useContext(LanguageContext);
+  const numReactionsDisplay = (numReactions) => 
+    Intl.NumberFormat(language, {
+      notation: "compact",
+      maximumFractionDigits: 1
+    }).format(numReactions);
+
+  const totalNumReactions = reactionsList
+    .map(reactionType => reactionType.reactors.length)
+    .reduce(((partialSum, numReactions) => partialSum + numReactions), 0)
+    ;
 
   // XXX You should be able to search the list of people who reacted to the post.
   // Especially since, one day, this might be paged, in case some post has like 29k reactions.
@@ -37,8 +45,8 @@ export default function ReactionsDetail() {
         <Tabs aria-labelledby="reactions-toc-header" className="reactions-toc"
           classNames={{tabList: "flex-wrap", tab: "w-auto"}}
         >
-          <Tab key="all" title="All">
-            <h3 id="all-reactions" className="my-5 text-lg font-bold">All Reactions</h3>
+          <Tab key="all" title={"All "+numReactionsDisplay(totalNumReactions)}>
+            <h3 id="all-reactions" className="my-5 text-lg font-bold">All Reactions ({totalNumReactions})</h3>
 
             <ul className="reactors" aria-labelledby="all-reactions">
             {reactionsList.map(reactionType => {
@@ -57,7 +65,7 @@ export default function ReactionsDetail() {
           const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
 
           return (
-            <Tab key={key} title={<><div className="flex flex-nowrap"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{reactionType.reactors.length}</span></div></>}>
+            <Tab key={key} title={<><div className="flex flex-nowrap"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{numReactionsDisplay(reactionType.reactors.length)}</span></div></>}>
               <h3 id={key+'-header'} className="my-5 text-lg font-bold"><div className="flex flex-nowrap items-center"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{reactionType.reactors.length}</span></div></h3>
 
               <ul className="reactors" aria-labelledby={key+'-header'}>
