@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import DatabaseContext from './DatabaseContext.jsx'
+import LanguageContext from './LanguageContext.jsx'
 import { PostsDB } from './logic/posts.js';
 import ReactionGlyph from './ReactionGlyph.jsx'
 import { toggleReaction } from './toggle-reaction.js';
@@ -34,6 +35,13 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
     : false
   ;
 
+  const language = useContext(LanguageContext);
+  const numReactionsDisplay = (numReactions) => 
+    Intl.NumberFormat(language, {
+      notation: "compact",
+      maximumFractionDigits: 1
+    }).format(numReactions);
+
   // If they're not logged in, they don't get a clickable link.
   return (
     user? 
@@ -46,12 +54,12 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
         }
       }>
         <span className="glyph">{glyph}</span>
-        {reaction.total && <span className="count">{reaction.total}</span>}
+        {reaction.total && <span className="count">{numReactionsDisplay(reaction.total)}</span>}
       </Button>
     :
       <div className="reaction flex mr-2">
         <span className="glyph mr-1">{glyph}</span>
-        {reaction.total && <span className="count">{reaction.total}</span>}
+        {reaction.total && <span className="count">{numReactionsDisplay(reaction.total)}</span>}
       </div>
   );
 }
