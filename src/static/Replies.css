@@ -1,16 +1,43 @@
-ul.replies > li ~ li {
-  display: flex;
-  width: 100%;
-
-  & > div.post-and-replies {
-    width: 100%;
-  }
+main.test {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-ul.replies > li ~ li:before {
-  display: block;
+div.post {
+  border: 1px solid black;
+  margin: 1ex;
+  padding: 1ex;
+}
+
+ul.replies > li {
+  display: flex;
+}
+
+ul.replies > li:first-child:not(:last-child):before {
+  content: " ";
+  width: 5px;
+  height: auto;
+  background: gold;
+}
+
+ul.replies > li:not(:first-child):not(:last-child):before {
+  content: " ";
   width: 5px;
   height: auto;
   background: green;
+}
+
+ul.replies > li:not(:first-child):last-child:before {
   content: " ";
+  width: 5px;
+  height: auto;
+  background: red;
+}
+
+ul.replies > li:first-child:last-child:before {
+  content: " ";
+  width: 5px;
+  height: auto;
+  background: purple;
 }
