@@ -8,8 +8,15 @@ main.test {
 a.thread-handle {
   display: block;
   width: 30px;
-  height: 30px;
+  height: auto;
   background: orange;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+a.thread-handle > svg {
+  visibility: hidden;
+  width: 30px;
 }
 
 div.post {
@@ -29,13 +36,13 @@ ul.replies > li:first-child:not(:last-child):before {
   background: gold;
 }
 ul.replies > li:first-child:not(:last-child) {
-  & > a.thread-handle {
-    content: url("/corner.svg");
+  & > a.thread-handle > svg {
+    visibility: visible;
   }
 }
 ul.replies > li:first-child:not(:last-child) {
-  & > a.thread-handle {
-    content: url("/corner.svg");
+  & > a.thread-handle > svg {
+    visibility: visible;
   }
 }
 
@@ -46,8 +53,8 @@ ul.replies > li:not(:first-child):not(:last-child):before {
   background: green;
 }
 ul.replies > li:not(:first-child):not(:last-child) {
-  & > a.thread-handle {
-    content: none;
+  & > a.thread-handle > svg {
+    visibility: hidden;
   }
 }
 
@@ -65,8 +72,8 @@ ul.replies > li:first-child:last-child:before {
   background: purple;
 }
 ul.replies > li:first-child:last-child {
-  & > a.thread-handle {
-    content: url("/corner.svg");
+  & > a.thread-handle > svg {
+    visibility: visible;
   }
 }
 

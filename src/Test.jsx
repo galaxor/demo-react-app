@@ -1,3 +1,5 @@
+import Corner from './corner-svg.jsx'
+
 export default function Test() {
   const outline = 
     { text: "Thesis",
@@ -61,7 +63,7 @@ function PostNReplies({node}) {
             {node.children.map(child => {
               return (
                 <li>
-                  <a href="/" className="thread-handle"></a>
+                  <a href="/" className="thread-handle"><Corner /></a>
                   <PostNReplies node={child} />
                 </li>
               );
