@@ -14,6 +14,14 @@ export default function Test() {
             children: [
               { text: "1",
                 children: [
+                  { text: "a",
+                    children: [
+                      { text: "i",
+                        children: [
+                        ],
+                      },
+                    ],
+                  }
                 ],
               },
               { text: "2",

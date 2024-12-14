@@ -5,6 +5,26 @@ main.test {
 
   /* The below will only apply to the test page until we're ready to deploy it to the real threads. */
 
+div.post {
+  border: 1px solid black;
+  margin-left: 0ex;
+  padding: 1ex;
+}
+
+ul.replies > li > div.post-and-replies {
+  margin-top: 2ex;
+}
+
+a.thread-handle > svg {
+  width: 30px;
+  position: relative;
+  top: -11px;
+}
+
+ul.replies > li {
+  display: flex;
+}
+
 a.thread-handle {
   display: block;
   width: 30px;
@@ -14,66 +34,16 @@ a.thread-handle {
   background-repeat: no-repeat;
 }
 
-a.thread-handle > svg {
-  visibility: hidden;
-  width: 30px;
+/* Don't draw the border-left if there's no "next" li in the list.  Don't give
+ * the impression that the thread continues beyond this. */
+ul.replies > li:last-child > a.thread-handle {
+  border-left: none;
 }
 
-div.post {
-  border: 1px solid black;
-  margin: 1ex;
-  padding: 1ex;
-}
-
-ul.replies > li {
-  display: flex;
-}
-
-ul.replies > li:first-child:not(:last-child):before {
-  content: " ";
-  width: 5px;
-  height: auto;
-  /* background: gold; */
-}
-ul.replies > li:first-child:not(:last-child) {
-  & > a.thread-handle > svg {
-    visibility: visible;
-  }
-}
-ul.replies > li:first-child:not(:last-child) {
-  & > a.thread-handle > svg {
-    visibility: visible;
-  }
-}
-
-ul.replies > li:not(:first-child):not(:last-child):before {
-  content: " ";
-  width: 5px;
-  height: auto;
-  /* background: green; */
-}
-ul.replies > li:not(:first-child):not(:last-child) {
-  & > a.thread-handle > svg {
-    visibility: hidden;
-  }
-}
-
-ul.replies > li:not(:first-child):last-child:before {
-  content: " ";
-  width: 5px;
-  height: auto;
-  /* background: red; */
-}
-
-ul.replies > li:first-child:last-child:before {
-  content: " ";
-  width: 5px;
-  height: auto;
-  /* background: purple; */
-}
 ul.replies > li:first-child:last-child {
-  & > a.thread-handle > svg {
-    visibility: visible;
+  border-left: 1px solid black;
+  & > a {
+    display: none;
   }
 }
 
