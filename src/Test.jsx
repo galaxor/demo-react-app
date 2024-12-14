@@ -14,6 +14,10 @@ export default function Test() {
                 children: [
                 ],
               },
+              { text: "2",
+                children: [
+                ],
+              },
             ],
           },
           { text: "C",
@@ -55,7 +59,12 @@ function PostNReplies({node}) {
         {node.children.length > 0?
           <ul className="replies">
             {node.children.map(child => {
-              return <li><PostNReplies node={child} /></li>;
+              return (
+                <li>
+                  <a href="/" className="thread-handle"></a>
+                  <PostNReplies node={child} />
+                </li>
+              );
             })}
           </ul>
           : ""
