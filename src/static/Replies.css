@@ -9,7 +9,7 @@ a.thread-handle {
   display: block;
   width: 30px;
   height: auto;
-  background: orange;
+  border-left: 1px solid black;
   background-position: left top;
   background-repeat: no-repeat;
 }
@@ -33,7 +33,7 @@ ul.replies > li:first-child:not(:last-child):before {
   content: " ";
   width: 5px;
   height: auto;
-  background: gold;
+  /* background: gold; */
 }
 ul.replies > li:first-child:not(:last-child) {
   & > a.thread-handle > svg {
@@ -50,7 +50,7 @@ ul.replies > li:not(:first-child):not(:last-child):before {
   content: " ";
   width: 5px;
   height: auto;
-  background: green;
+  /* background: green; */
 }
 ul.replies > li:not(:first-child):not(:last-child) {
   & > a.thread-handle > svg {
@@ -62,14 +62,14 @@ ul.replies > li:not(:first-child):last-child:before {
   content: " ";
   width: 5px;
   height: auto;
-  background: red;
+  /* background: red; */
 }
 
 ul.replies > li:first-child:last-child:before {
   content: " ";
   width: 5px;
   height: auto;
-  background: purple;
+  /* background: purple; */
 }
 ul.replies > li:first-child:last-child {
   & > a.thread-handle > svg {
