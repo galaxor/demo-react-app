@@ -7,7 +7,7 @@ main.test {
 
 div.post {
   border: 1px solid black;
-  margin-left: 0ex;
+  margin-left: 1ex;
   padding: 1ex;
 }
 
@@ -44,6 +44,13 @@ ul.replies > li:first-child:last-child {
   border-left: 1px solid black;
   & > a {
     display: none;
+  }
+
+  /* This makes it so that subsequent replies in deep reply chains don't each
+   * add a pixel of border to the left.  We're okay using the border of the first
+   * reply in the chain. */
+  & > div.post-and-replies > article > ul.replies > li:first-child:last-child {
+    border-left: none;
   }
 }
 
