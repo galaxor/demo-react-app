@@ -14,7 +14,7 @@ export default function Corner() {
      id="layer1"
      transform="translate(-59.771211,-95.805948)">
     <path
-       style={{fill:'none',stroke:'#000000','stroke-width':0.264583,'stroke-dasharray':'none'}}
+       style={{fill:'none',stroke:'currentColor','stroke-width':0.264583,'stroke-dasharray':'none'}}
        d="m 59.899327,95.838924 c 1.752449,6.808396 5.423539,10.320396 14.09396,11.979866"
        id="path1" />
   </g>

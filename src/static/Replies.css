@@ -78,20 +78,18 @@ ul.replies > li:first-child:last-child {
   }
 }
 
-/* For the post that begins the collapsed reply-chain, we want to draw a
- * little extension to connect the swooshy bit to the line that represents the
- * collapsed reply chain. */
-/*
-ul.replies > li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) > a.thread-handle {
-  display: flex;
+
+/* Hover rules */
+a.thread-handle:hover {
+  border-left: 1px solid blue;
+
+  svg {
+    color: blue;
+  }
 }
 
-ul.replies > li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) > a.thread-handle::after {
-  background: orange;
-  content: " ";
-  border-left: 1px solid black;
-  margin-top: 23px;
+ul.replies > li:has(> a:hover) > div.post-and-replies > article > div.post {
+  border-color: blue;
 }
-*/
 
 }
