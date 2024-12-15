@@ -88,7 +88,8 @@ a.thread-handle:hover {
   }
 }
 
-ul.replies > li:has(> a:hover) > div.post-and-replies > article > div.post {
+div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post 
+{
   border-color: blue;
 }
 
