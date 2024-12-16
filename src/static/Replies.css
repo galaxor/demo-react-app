@@ -125,10 +125,16 @@ li:has(> div.post-and-replies > article > ul.replies > li > a.thread-handle:hove
   }
 }
 
+/* Highlight the corner svg that leads into the post you're mousing over. */
+
 li:has(> a.thread-handle:hover) ~ li > a.thread-handle,
 li:has(~li > a.thread-handle:hover) > a.thread-handle,
 a.thread-handle:hover {
   border-color: blue;
+}
+
+a.thread-handle:hover > svg {
+  color: blue;
 }
 
 
