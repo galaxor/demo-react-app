@@ -57,16 +57,37 @@ ul.replies > li:has(div.post-and-replies > article > ul.replies > li ~ li) > div
   border-left: 1px solid black;
 }
 
-ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) > a::after {
+/* This displays the link for the collapsed reply chain. */
+a.collapsed-thread-handle {
   content: " ";
-  border-right: 1px solid black;
-  margin-top: 23px;
-  margin-bottom: 2em;
+  display: none;
+}
+
+ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) {
+  & > a.collapsed-thread-handle {
+    content: " ";
+    border-left: 1px solid black;
+    margin-top: 23px;
+    margin-bottom: 2em;
+    width: 1ex;
+  }
+
+  & > a.collapsed-thread-handle:hover {
+    border-color: blue;
+  }
+
+  & > div.post-and-replies > article > div.post {
+    margin-left: 0;
+  }
 }
 
 ul.replies > li:first-child:last-child {
   & > a {
     display: none;
+  }
+
+  & > div.post-and-replies > article > div.post {
+    margin-left: 0;
   }
 
   /* This makes it so that subsequent replies in deep reply chains don't each

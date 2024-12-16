@@ -76,6 +76,7 @@ function PostNReplies({node}) {
               return (
                 <li>
                   <a href="/" className="thread-handle"><Corner /></a>
+                  <a href="/" className="collapsed-thread-handle"></a>
                   <PostNReplies node={child} />
                 </li>
               );
