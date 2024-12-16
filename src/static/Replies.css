@@ -112,7 +112,18 @@ ul.replies > li:first-child:last-child {
 
 /* Hover rules */
 a.thread-handle svg { color: black; }
-a.thread-handle:hover svg { color: blue; }
+
+li:has(> div.post-and-replies > article > ul.replies > li > a.thread-handle:hover) {
+  /* Highlight the corner svg that leads into the thread, when the thread is hovered. */
+  & > a.thread-handle > svg {
+    color: blue;
+  }
+
+  /* If there's one of those little patches, highlight that when the thread is hovered. */
+  & > div.post-and-replies > article > div.post::before {
+    border-color: blue;
+  }
+}
 
 li:has(> a.thread-handle:hover) ~ li > a.thread-handle,
 li:has(~li > a.thread-handle:hover) > a.thread-handle,
@@ -121,7 +132,8 @@ a.thread-handle:hover {
 }
 
 
-div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post 
+div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post,
+div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post::before 
 {
   border-color: blue;
 }
