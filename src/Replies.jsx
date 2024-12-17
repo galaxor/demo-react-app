@@ -1,3 +1,4 @@
+import Corner from './corner-svg.jsx'
 import Post from './Post.jsx';
 import PostAndReplies from './PostAndReplies.jsx'
 import { PostsDB } from './logic/posts.js';
@@ -34,6 +35,8 @@ export default function Replies({postRepliedTo, prune, replies, setReplies}) {
         } else {
           return (
           <li key={'li-'+reply.uri}>
+            <a href="/" className="thread-handle"><Corner /></a>
+            <a href="/" className="collapsed-thread-handle"></a>
             <PostAndReplies key={reply.uri} post={reply} prune={prune} />
           </li>
           );

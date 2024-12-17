@@ -1,14 +1,10 @@
-main.test {
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-
-  /* The below will only apply to the test page until we're ready to deploy it to the real threads. */
-
 div.post {
-  border: 1px solid black;
   margin-left: 1ex;
-  padding: 1ex;
+  border: 1px solid transparent;
+}
+
+div.post-and-replies {
+  flex-grow: 2;
 }
 
 ul.replies > li > div.post-and-replies {
@@ -19,7 +15,13 @@ a.thread-handle > svg {
   width: 30px;
   position: relative;
   top: -11px;
-  color: black;
+  color: hsl(var(--nextui-foreground));
+}
+
+.dark a.thread-handle > svg {
+  path {
+    stroke-width: 0.8;
+  }
 }
 
 ul.replies > li {
@@ -30,7 +32,7 @@ a.thread-handle {
   display: block;
   width: 30px;
   height: auto;
-  border-left: 1px solid black;
+  border-left: 1px solid hsl(var(--nextui-foreground));
   background-position: left top;
   background-repeat: no-repeat;
 }
@@ -55,7 +57,7 @@ ul.replies > li:has(div.post-and-replies > article > ul.replies > li ~ li) > div
   position: absolute;
   left: -9px;
   top: 5px;
-  border-left: 1px solid black;
+  border-left: 1px solid hsl(var(--nextui-foreground));
 }
 
 /* This displays the link for the collapsed reply chain. */
@@ -68,22 +70,22 @@ a.collapsed-thread-handle {
 ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) {
   & > a.collapsed-thread-handle {
     content: " ";
-    border-left: 1px solid black;
+    border-left: 1px solid hsl(var(--nextui-foreground));
     margin-top: 23px;
     margin-bottom: 2em;
-    width: 1ex;
+    width: 2ex;
   }
 
   &:has(> a.collapsed-thread-handle:hover) > div.post-and-replies > article > div.post {
-    border-color: blue;
+    border: 1px solid hsl(var(--nextui-primary));
   }
 
   &:has(> a.collapsed-thread-handle:hover) > a.thread-handle > svg {
-    color: blue;
+    color: hsl(var(--nextui-primary));
   }
 
   & > a.collapsed-thread-handle:hover {
-    border-color: blue;
+    border-color: hsl(var(--nextui-primary));
   }
 
   & > div.post-and-replies > article > div.post {
@@ -111,17 +113,17 @@ ul.replies > li:first-child:last-child {
 
 
 /* Hover rules */
-a.thread-handle svg { color: black; }
+a.thread-handle svg { color: hsl(var(--nextui-foreground)); }
 
 li:has(> div.post-and-replies > article > ul.replies > li > a.thread-handle:hover) {
   /* Highlight the corner svg that leads into the thread, when the thread is hovered. */
   & > a.thread-handle > svg {
-    color: blue;
+    color: hsl(var(--nextui-primary));
   }
 
   /* If there's one of those little patches, highlight that when the thread is hovered. */
   & > div.post-and-replies > article > div.post::before {
-    border-color: blue;
+    border-color: hsl(var(--nextui-primary));
   }
 }
 
@@ -130,18 +132,18 @@ li:has(> div.post-and-replies > article > ul.replies > li > a.thread-handle:hove
 li:has(> a.thread-handle:hover) ~ li > a.thread-handle,
 li:has(~li > a.thread-handle:hover) > a.thread-handle,
 a.thread-handle:hover {
-  border-color: blue;
+  border-color: hsl(var(--nextui-primary));
 }
 
 a.thread-handle:hover > svg {
-  color: blue;
+  color: hsl(var(--nextui-primary));
 }
 
 
 div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post,
 div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post::before 
 {
-  border-color: blue;
+  border-color: hsl(var(--nextui-primary));
 }
 
 
@@ -154,17 +156,17 @@ div.post-and-replies > article::before {
   display: block;
   width: 1ex;
   height: 1ex;
-  background: black;
+  background: hsl(var(--nextui-foreground));
   border-radius: 100%;
   position: absolute;
   top: 3px;
-  left: -3px;
+  left: -5px;
+  z-index: 2;
 }
 
 /* The original position of the dots is different in the collapsed-reply-chain posts. Let's address them separately. */
 ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) div.post-and-replies > article::before {
-  left: -11px;
+  left: -20px;
 }
 
 
-}
