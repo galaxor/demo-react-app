@@ -40,7 +40,7 @@ header {
       li#user-name { order: 0; }
       li#notification-bell {
         position: absolute;
-        right: 15px;
+        right: 30px;
         top: 5px;
 
         label:has(input:focus) {
@@ -59,7 +59,7 @@ header {
     display: block;
     text-align: right;
     position: absolute;
-    right: 33px;
+    right: 50px;
     top: 18px;
   }
 
