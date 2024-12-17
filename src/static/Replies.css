@@ -18,6 +18,7 @@ a.thread-handle > svg {
   color: hsl(var(--nextui-foreground));
 }
 
+/* In dark mode, it needs to be a little thicker to appear the same */
 .dark a.thread-handle > svg {
   path {
     stroke-width: 0.8;
@@ -134,11 +135,6 @@ li:has(~li > a.thread-handle:hover) > a.thread-handle,
 a.thread-handle:hover {
   border-color: hsl(var(--nextui-primary));
 }
-
-a.thread-handle:hover > svg {
-  color: hsl(var(--nextui-primary));
-}
-
 
 div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post,
 div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post::before 
