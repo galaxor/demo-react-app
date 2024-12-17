@@ -50,7 +50,7 @@ ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > articl
 
 ul.replies > li > div.post-and-replies > article > div.post { position: relative; }
 
-ul.replies > li:has(div.post-and-replies > article > ul.replies > li ~ li) > div.post-and-replies > article > div.post::before {
+ul.replies > li:has(> div.post-and-replies > article > ul.replies > li ~ li) > div.post-and-replies > article > div.post::before {
   content: " ";
   display: block;
   width: 2em;
