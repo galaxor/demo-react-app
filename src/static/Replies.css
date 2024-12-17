@@ -144,4 +144,27 @@ div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > 
   border-color: blue;
 }
 
+
+/* Draw little dots where the posts are, to break up the thread lines a little. */
+div.post-and-replies > article {
+  position: relative;
+}
+div.post-and-replies > article::before {
+  content: " ";
+  display: block;
+  width: 1ex;
+  height: 1ex;
+  background: black;
+  border-radius: 100%;
+  position: absolute;
+  top: 3px;
+  left: -3px;
+}
+
+/* The original position of the dots is different in the collapsed-reply-chain posts. Let's address them separately. */
+ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) div.post-and-replies > article::before {
+  left: -11px;
+}
+
+
 }
