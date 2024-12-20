@@ -50,7 +50,14 @@ ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > articl
 
 ul.replies > li > div.post-and-replies > article > div.post { position: relative; }
 
-ul.replies > li:has(> div.post-and-replies > article > ul.replies > li ~ li) > div.post-and-replies > article > div.post::before {
+
+/* A post that has replies beneath it needs to draw a little patch to connect
+ * its dot to the place where the thread diverges, below the post.  It doesn't
+ * have the luxury of a thread-handle, because those are drawn by the children
+ * of the post, rather than by the post itself.
+ */
+
+ul.replies > li:has(> div.post-and-replies > article > ul.replies > li) > div.post-and-replies > article > div.post::before {
   content: " ";
   display: block;
   width: 2em;
@@ -67,50 +74,59 @@ a.collapsed-thread-handle {
   display: none;
 }
 
-/* Style collapsed thread handles */
-ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) {
+/* Identify collapsed reply chains */
+
+/* We collapse it if it has only a single reply, and that single reply doesn't have any branches inside it. */
+
+/* This identifies the first post in a reply chain (and certain subsequent
+ * ones). We have another thing that detects subsequent replies but not first
+ * ones. */
+li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child):not(:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child > div.post-and-replies > article > ul.replies > li ~ li)) {
+  &:has(> a.collapsed-thread-handle:hover) > div.post-and-replies > article > div.post {
+    border-color: hsl(var(--nextui-primary));
+  }
+
   & > a.collapsed-thread-handle {
     content: " ";
     border-left: 1px solid hsl(var(--nextui-foreground));
     margin-top: 23px;
     margin-bottom: 2em;
     width: 2ex;
+
+    &:hover {
+      border-color: hsl(var(--nextui-primary));
+    }
   }
 
-  &:has(> a.collapsed-thread-handle:hover) > div.post-and-replies > article > div.post {
-    border: 1px solid hsl(var(--nextui-primary));
-  }
-
-  &:has(> a.collapsed-thread-handle:hover) > a.thread-handle > svg {
-    color: hsl(var(--nextui-primary));
-  }
-
-  & > a.collapsed-thread-handle:hover {
-    border-color: hsl(var(--nextui-primary));
+  & > div.post-and-replies > article::before {
+    left: -20px;
   }
 
   & > div.post-and-replies > article > div.post {
     margin-left: 0;
+
+    &::before {
+      display: none;
+    }
   }
 }
 
-ul.replies > li:first-child:last-child {
-  & > a {
+/* This identifies subsequent replies in a reply chain (but not the first). */
+ul.replies > li:first-child:last-child:not(:has(> div.post-and-replies > article > ul.replies > li ~ li)) {
+
+  & > a.thread-handle {
     display: none;
   }
 
+  & > div.post-and-replies > article::before {
+    left: -20px;
+  }
+  
   & > div.post-and-replies > article > div.post {
     margin-left: 0;
   }
-
-  /* This makes it so that subsequent replies in deep reply chains don't each
-   * add a pixel of border to the left.  We're okay using the border of the first
-   * reply in the chain.
-   * This is the "collapsed reply-chain" rule */
-  & > div.post-and-replies > article > ul.replies > li:first-child:last-child {
-    border-left: none;
-  }
 }
+
 
 
 /* Hover rules */
@@ -161,8 +177,10 @@ div.post-and-replies > article::before {
 }
 
 /* The original position of the dots is different in the collapsed-reply-chain posts. Let's address them separately. */
+/*
 ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) div.post-and-replies > article::before {
   left: -20px;
 }
+*/
 
 
