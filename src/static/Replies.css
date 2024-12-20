@@ -56,7 +56,9 @@ ul.replies > li > div.post-and-replies > article > div.post { position: relative
  * have the luxury of a thread-handle, because those are drawn by the children
  * of the post, rather than by the post itself.
  */
+/* The patch also needs to be drawn if the main post is the first post in the thread. */
 
+main.post-single > article:has(> section.replies-section) > div.post::before,
 ul.replies > li:has(> div.post-and-replies > article > ul.replies > li) > div.post-and-replies > article > div.post::before {
   content: " ";
   display: block;
@@ -83,7 +85,7 @@ a.collapsed-thread-handle {
  * ones. */
 li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child):not(:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child > div.post-and-replies > article > ul.replies > li ~ li)) {
   &:has(> a.collapsed-thread-handle:hover) > div.post-and-replies > article > div.post {
-    border-color: hsl(var(--nextui-primary));
+    outline-color: hsl(var(--nextui-primary));
   }
 
   & > a.collapsed-thread-handle {
@@ -144,6 +146,16 @@ li:has(> div.post-and-replies > article > ul.replies > li > a.thread-handle:hove
   }
 }
 
+/* Also highlight the main post if it's the start of a thread, and people are
+ * hovering over the link in the replies section.  These will have a different
+ * hierarchy from posts that are together in the replies section. */
+main > article:has(> section.replies-section > ul.replies > li > a.thread-handle:hover) {
+  & > div.post,
+  & > div.post::before {
+    outline-color: hsl(var(--nextui-primary));
+  }
+}
+
 /* Highlight the corner svg that leads into the post you're mousing over. */
 
 li:has(> a.thread-handle:hover) ~ li > a.thread-handle,
@@ -152,7 +164,10 @@ a.thread-handle:hover {
   border-color: hsl(var(--nextui-primary));
 }
 
-div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post,
+div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post {
+  outline-color: hsl(var(--nextui-primary));
+}
+
 div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post::before 
 {
   border-color: hsl(var(--nextui-primary));

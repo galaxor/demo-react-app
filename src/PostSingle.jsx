@@ -2,6 +2,7 @@ import { PostsDB } from './logic/posts.js';
 
 import { clickPost } from './clickPost.js'
 import { closeReply } from './closeReply.js'
+import hashSum from 'hash-sum'
 import ReplyLevel from './ReplyLevel.jsx'
 import Post from './Post.jsx';
 import PostAndReplies from './PostAndReplies.jsx';
@@ -90,7 +91,7 @@ export default function PostSingle() {
 
       <SystemNotificationArea />
 
-          <Post ref={postRef} showReplyLevel highlight className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} scrollHereRef={scrollHereRef}>
+          <Post ref={postRef} id={hashSum(post.uri)} showReplyLevel highlight className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} scrollHereRef={scrollHereRef}>
             {composingReply &&
               <div className="composing-reply">
                 <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); }} />
