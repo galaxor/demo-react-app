@@ -91,7 +91,7 @@ li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child
     border-left: 1px solid hsl(var(--nextui-foreground));
     margin-top: 23px;
     margin-bottom: 2em;
-    width: 2ex;
+    width: 2.5ex;
 
     &:hover {
       border-color: hsl(var(--nextui-primary));
@@ -99,7 +99,7 @@ li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child
   }
 
   & > div.post-and-replies > article::before {
-    left: -20px;
+    left: -24px;
   }
 
   & > div.post-and-replies > article > div.post {
@@ -119,7 +119,7 @@ ul.replies > li:first-child:last-child:not(:has(> div.post-and-replies > article
   }
 
   & > div.post-and-replies > article::before {
-    left: -20px;
+    left: -24px;
   }
   
   & > div.post-and-replies > article > div.post {
