@@ -11,6 +11,11 @@ ul.replies > li > div.post-and-replies {
   margin-top: 2ex;
 }
 
+/* But the first post in the replies section shouldn't have the margin, for
+ * seamlessness reasons. I don't actually know why this is necessary. */
+section.replies-section > ul.replies > li > div.post-and-replies {
+}
+
 a.thread-handle > svg {
   width: 30px;
   position: relative;
@@ -62,9 +67,9 @@ ul.replies > li > div.post-and-replies > article > div.post { position: relative
  * have the luxury of a thread-handle, because those are drawn by the children
  * of the post, rather than by the post itself.
  */
-/* The patch also needs to be drawn if the main post is the first post in the thread. */
+/* The patch also needs to be drawn if the main post has replies. */
 
-main.post-single > article:has(> section.replies-section) > div.post::before,
+main.post-single > article:has(> section.replies-section) div.post-single::before,
 ul.replies > li:has(> div.post-and-replies > article > ul.replies > li) > div.post-and-replies > article > div.post::before {
   content: " ";
   display: block;
@@ -203,11 +208,6 @@ div.post-and-replies > article::before {
   z-index: 2;
 }
 
-/* The original position of the dots is different in the collapsed-reply-chain posts. Let's address them separately. */
-/*
-ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) div.post-and-replies > article::before {
-  left: -20px;
-}
-*/
 
+/* Special cases that I haven't figured out what the deal is with them yet. */
 
