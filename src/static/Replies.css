@@ -44,6 +44,29 @@ ul.replies > li:last-child > a.thread-handle {
   border-left: none;
 }
 
+/* But, we will allow there to be no "next" li if this is the post-single, and
+ * there actually is a reply section on the page. */
+article.post-single:has(section.replies-section) > ul.replies > li:last-child > a.thread-handle {
+  border-left: 1px solid hsl(var(--nextui-foreground));
+}
+
+/* Don't let there be a margin separating the post-single section from the replies section.  It should look seamless. */
+article.post-single > section.replies-section > ul.replies > li > div.post-and-replies {
+  margin-top: 0;
+
+  /* But since this situation has a special margin, that means that the little
+   * patches that we draw also have to have special placement. */
+  > article.post > div.post::before {
+    top: 21px;
+    height: calc(100% - 21px);
+  }
+
+  /* The dot also needs special placement. */
+  > article.post::before {
+    top: 21px;
+  }
+}
+
 ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) > a {
   display: flex;
 }
@@ -114,7 +137,7 @@ li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child
 }
 
 /* This identifies subsequent replies in a reply chain (but not the first). */
-ul.replies > li:first-child:last-child:not(:has(> div.post-and-replies > article > ul.replies > li ~ li)) {
+ul.replies > li:first-child:last-child:not(:has(> div.post-and-replies > article > ul.replies > li ~ li)):not(:has(div.post-single)) {
 
   & > a.thread-handle {
     display: none;
@@ -128,7 +151,6 @@ ul.replies > li:first-child:last-child:not(:has(> div.post-and-replies > article
     margin-left: 0;
   }
 }
-
 
 
 /* Hover rules */
