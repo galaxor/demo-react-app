@@ -1,3 +1,5 @@
+main.post-single { 
+
 div.post {
   margin-left: 1ex;
   border: 1px solid transparent;
@@ -211,3 +213,4 @@ div.post-and-replies > article::before {
 
 /* Special cases that I haven't figured out what the deal is with them yet. */
 
+}
