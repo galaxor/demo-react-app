@@ -21,10 +21,6 @@ span.post-author {
   flex-shrink: 2
 }
 
-section.thread-context {
-  order: -1;
-}
-
 .person-inline .name-handle {
   flex-shrink: 2;
   overflow: hidden;

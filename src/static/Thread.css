@@ -1,5 +1,14 @@
 main.thread {
 
+/*
+h1 { order: 1; }
+section.thread-context { order: 2; }
+section.main-post { order: 3; }
+section.replies { order: 4; }
+section.thread-remainder { order: 5; }
+*/
+
+/* Test stuff.  This should become obsolete. */
 .thread-line-hide {
   text-decoration: line-through;
 }

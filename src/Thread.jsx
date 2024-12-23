@@ -15,20 +15,25 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
-/**
- * inReplyTo will be [{post: (a post), drawThreadLine: String}, ...]
- * Where drawThreadLine is thread-line-show | thread-line-hide | thread-line-last.
- * Although drawThreadLine will be null now.  It will get figured out later.
- */
-function getRepliesTo(postRepliedTo, postsDB, replyChain) {
-  const threadOrder = [{inReplyTo: [...replyChain], post: postRepliedTo}];
+function getRepliesTo(postRepliedTo, postsDB) {
+  postRepliedTo.replies = postsDB.getRepliesTo(postRepliedTo.uri);
+  postRepliedTo.replies.forEach(replyPost => getRepliesTo(replyPost, postsDB));
+}
 
-  const inReplyTo = replyChain.concat({post: postRepliedTo, drawThreadLine: null});
-  
-  postsDB.getRepliesTo(postRepliedTo.uri).forEach(replyPost => {
-    threadOrder.push(... getRepliesTo(replyPost, postsDB, inReplyTo));
-  });
-  
+/**
+ * The final output of this function will be:
+ * [{inReplyTo, post}, ...]
+ *
+ * inReplyTo will be [{post, drawThreadLine: "thread-line-show"|"thread-line-hide"|"thread-line-last"}, ...]
+ * Except right now, drawThreadLine will always be null.  That will be fixed up by computeThreadHandleVisibility.
+ */
+function flattenThread(post, inReplyTo) {
+  if (typeof inReplyTo === "undefined") {
+    inReplyTo = [];
+  }
+  const threadOrder = [{post, inReplyTo: [...inReplyTo]}];
+  post.replies.forEach(replyPost => threadOrder.push(...flattenThread(replyPost, [...inReplyTo, {post, drawThreadLine: null}])));
+
   return threadOrder;
 }
 
@@ -134,7 +139,8 @@ export default function Thread() {
                           postsDB.get(mainPost.conversationId)
                           ;
   
-  const threadOrder = getRepliesTo(originatingPost, postsDB, []);
+  getRepliesTo(originatingPost, postsDB);
+  const threadOrder = flattenThread(originatingPost);
 
   computeThreadHandleVisibility(threadOrder);
   
@@ -145,7 +151,7 @@ export default function Thread() {
   // which have the main post listed among the "inReplyTo".
   const replies = threadOrder
     .slice(mainPostIndex+1)
-    .filter(({inReplyTo}) => inReplyTo.findIndex(reply => reply.uri === mainPost.uri) !== -1)
+    .filter(({inReplyTo}) => inReplyTo.findIndex(reply => reply.post.uri === mainPost.uri) !== -1)
   ;
 
   // The post that started the thread, and all posts leading up to the main post (according to thread order).
@@ -155,7 +161,7 @@ export default function Thread() {
   const threadRemainder = threadOrder.slice(mainPostIndex+1+replies.length);
 
   return <>
-    <main className="thread">
+    <main className="thread flex flex-wrap">
       <h1 id="main-post-h1">Post by <bdi>{mainPost.authorPerson.displayName}</bdi>,{" "}
         <time dateTime={mainPost.createdAt}>
           <ReactTimeAgo date={new Date(mainPost.createdAt)} locale={languageContext} />
@@ -178,7 +184,7 @@ export default function Thread() {
 
       {replies.length === 0? "" :
         <>
-        <h2 id="replies-h2">Replies</h2>
+        <h2 id="replies-h2" className="bisually-hidden">Replies</h2>
 
         <section className="replies my-2" aria-labelledby="replies-h2">
           {replies.map(({inReplyTo, post}) => {
@@ -190,7 +196,7 @@ export default function Thread() {
 
       {threadContext.length === 0? "" :
         <>
-        <h2 id="thread-context-h2">Thread Context</h2>
+        <h2 id="thread-context-h2" className="bisually-hidden">Thread Context</h2>
 
         <section className="thread-context my-2" aria-labelledby="thread-context-h2">
           {threadContext.map(({inReplyTo, post}) => {
@@ -202,7 +208,7 @@ export default function Thread() {
 
       {threadRemainder.length === 0? "" :
         <>
-        <h2 id="thread-remainder-h2">Remainder of the thread</h2>
+        <h2 id="thread-remainder-h2" className="bisually-hidden">Remainder of the thread</h2>
 
         <section className="thread-remainder border-gold border-2 border-solid my-2" aria-labelledby="thread-remainder-h2">
           {threadRemainder.map(({inReplyTo, post}) => {
