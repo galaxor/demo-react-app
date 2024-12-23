@@ -10,6 +10,7 @@ import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 import './static/Thread.css'
+import Corner from './corner-svg.jsx'
 
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
@@ -24,7 +25,7 @@ function getRepliesTo(postRepliedTo, postsDB) {
  * The final output of this function will be:
  * [{inReplyTo, post}, ...]
  *
- * inReplyTo will be [{post, drawThreadLine: "thread-line-show"|"thread-line-hide"|"thread-line-last"}, ...]
+ * inReplyTo will be [{post, drawThreadLine: "thread-line-first"|"thread-line-continue"|"thread-line-last"|"thread-line-hide"}, ...]
  * Except right now, drawThreadLine will always be null.  That will be fixed up by computeThreadHandleVisibility.
  */
 function flattenThread(post, inReplyTo) {
@@ -38,23 +39,27 @@ function flattenThread(post, inReplyTo) {
 }
 
 function ThreadedPost({post, inReplyTo, className}) {
+  const postRef = useRef(null);
+
   return (
       <article className={"post flex border-2 border-solid border-foreground "+(className ?? "")} key={post.uri}>
         <ul className="w-1/2">
-          {inReplyTo.map(({post, drawThreadLine})  => {
+          {inReplyTo.map(inReplyTo  => {
+            const postRepliedTo = inReplyTo.post;
+            const drawThreadLine = inReplyTo.drawThreadLine;
+
             return (
-            <li key={post.uri} className={drawThreadLine}>
-              {post.drawThreadLine}
-              <span>{post.authorPerson.displayName}</span>
-              <span>{post.text.substring(0, 20)}{post.text.length > 20? "..." : ""}</span>
+            <li key={postRepliedTo.uri} className={drawThreadLine}>
+              <a href={"#"+hashSum(postRepliedTo.uri)} className="thread-handle"><Corner />
+                <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
+                  {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>
+              </a>
             </li>
             );
           })}
         </ul>
 
-        <div className="border-foreground w-1/2">
-          {post.authorPerson.displayName}: {post.text}
-        </div>
+        <Post id={hashSum(post.uri)} ref={postRef} post={post} />
       </article>
   );
 }
@@ -67,7 +72,9 @@ function ThreadedPost({post, inReplyTo, className}) {
  * a post).
  * The threadOrder array will be modified.
  * threadOrder[i].inReplyTo[j].drawThreadLine will be set to one of:
- * "thread-line-show" | "thread-line-hide" | "thread-line-last".
+ * "thread-line-first" | "thread-line-continue" | "thread-line-last" | "thread-line-hide".
+ *
+ * However, "first" and "last" can be combined to get "thread-line-first thred-line-last".
  *
  * That will get added as a CSS class when the thread handles are drawn into
  * the HTML.
@@ -118,9 +125,42 @@ function computeThreadHandleVisibility(threadOrder) {
       } else {
         threadOrder[i].inReplyTo[j] = {
           ...(threadOrder[i].inReplyTo[j]),
-          drawThreadLine: "thread-line-show",
+          drawThreadLine: "thread-line-continue",
         };
       }
+    }
+  }
+
+  // Now we're going to traverse the thread in the other direction and find
+  // which post is the *first* direct reply to a particular post.
+  const firstDirectReplyTo = {};
+
+  for (var i=0; i<threadOrder.length; i++) {
+    const {inReplyTo} = threadOrder[i];
+    const directlyRepliedTo = inReplyTo[inReplyTo.length-1];
+    if (typeof directlyRepliedTo === "undefined") {
+      // If this is not in reply to anything, it must be the top post of the thread.
+      continue;
+    }
+    
+    // If this is a direct reply to something, then it's the first direct reply
+    // to it, because we're traversing thread order forward.
+    if (typeof firstDirectReplyTo[directlyRepliedTo.post.uri] === "undefined") {
+      firstDirectReplyTo[directlyRepliedTo.post.uri] = i;
+
+      // Make a new copy of "inReplyTo" to make sure writes to other instances'
+      // drawThreadLine don't mess with this one.
+
+      // This is either the first reply, or it's the first *and last* direct reply to this post.
+      const firstLast = (lastDirectReplyTo[directlyRepliedTo.post.uri] === i)?
+        "thread-line-first thread-line-last"
+        : "thread-line-first"
+      ;
+
+      threadOrder[i].inReplyTo[inReplyTo.length-1] = {
+        ...(threadOrder[i].inReplyTo[inReplyTo.length-1]),
+        drawThreadLine: firstLast,
+      };
     }
   }
 }

@@ -15,6 +15,10 @@ section {
   text-decoration: line-through;
 }
 
+.thread-line-first {
+  text-decoration: underline;
+}
+
 .thread-line-last {
   font-weight: bold;
 }
