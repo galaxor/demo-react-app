@@ -1,13 +1,64 @@
+/* In dark mode, it needs to be a little thicker to appear the same */
+.dark main.thread a.thread-handle > svg {
+  path {
+    stroke-width: 0.8;
+  }
+}
+
 main.thread {
 
+/* Reorder the page from screenreader order to visual order. */
 h1 { order: 1; }
 section.thread-context { order: 2; }
 section.main-post { order: 3; }
 section.replies { order: 4; }
 section.thread-remainder { order: 5; }
 
+article.post,
 section {
   width: 100%;
+}
+
+div.threaded-post > ul {
+  flex-shrink: 2;
+  display: flex;
+
+  a.thread-handle {
+    display: block;
+    height: 100%;
+    width: 30px;
+
+    svg {
+      width: 100%;
+    }
+  }
+
+  li.thread-line-first:not(.thread-line-last) > a.thread-handle {
+    border-left: 1px solid hsl(var(--nextui-foreground));
+    svg {
+      position: relative;
+      top: -11px;
+    }
+  }
+
+  li.thread-line-continue > a.thread-handle {
+    border-left: 1px solid hsl(var(--nextui-foreground));
+    svg { display: none; }
+  }
+
+  li.thread-line-hide > a.thread-handle {
+    svg { display: none; }
+  }
+}
+
+.thread-handle-text {
+  /* visually-hidden */
+  height: 0.1px;
+  width: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
 }
 
 /* Test stuff.  This should become obsolete. */

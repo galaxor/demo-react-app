@@ -25,7 +25,7 @@ function getRepliesTo(postRepliedTo, postsDB) {
  * The final output of this function will be:
  * [{inReplyTo, post}, ...]
  *
- * inReplyTo will be [{post, drawThreadLine: "thread-line-first"|"thread-line-continue"|"thread-line-last"|"thread-line-hide"}, ...]
+ * inReplyTo will be [{post, drawThreadLine: "thread-line-first"|"thread-line-continue"|"thread-line-branch"|"thread-line-last"|"thread-line-hide"}, ...]
  * Except right now, drawThreadLine will always be null.  That will be fixed up by computeThreadHandleVisibility.
  */
 function flattenThread(post, inReplyTo) {
@@ -42,8 +42,8 @@ function ThreadedPost({post, inReplyTo, className}) {
   const postRef = useRef(null);
 
   return (
-      <article className={"post flex border-2 border-solid border-foreground "+(className ?? "")} key={post.uri}>
-        <ul className="w-1/2">
+      <div className={"threaded-post flex "+(className ?? "")} key={post.uri}>
+        <ul>
           {inReplyTo.map(inReplyTo  => {
             const postRepliedTo = inReplyTo.post;
             const drawThreadLine = inReplyTo.drawThreadLine;
@@ -60,7 +60,7 @@ function ThreadedPost({post, inReplyTo, className}) {
         </ul>
 
         <Post id={hashSum(post.uri)} ref={postRef} post={post} />
-      </article>
+      </div>
   );
 }
 
@@ -72,7 +72,7 @@ function ThreadedPost({post, inReplyTo, className}) {
  * a post).
  * The threadOrder array will be modified.
  * threadOrder[i].inReplyTo[j].drawThreadLine will be set to one of:
- * "thread-line-first" | "thread-line-continue" | "thread-line-last" | "thread-line-hide".
+ * "thread-line-first" | "thread-line-continue" | "thread-line-branch" | "thread-line-last" | "thread-line-hide".
  *
  * However, "first" and "last" can be combined to get "thread-line-first thred-line-last".
  *
@@ -145,6 +145,13 @@ function computeThreadHandleVisibility(threadOrder) {
     
     // If this is a direct reply to something, then it's the first direct reply
     // to it, because we're traversing thread order forward.
+
+    // There are four outcomes here:
+    // * This is the first reply, but not the last reply.
+    // * This is the first reply and the last reply.
+    // * This is both the first and last reply.
+    // * This is neither the first nor the last reply, in which case it's a branch.
+
     if (typeof firstDirectReplyTo[directlyRepliedTo.post.uri] === "undefined") {
       firstDirectReplyTo[directlyRepliedTo.post.uri] = i;
 
@@ -161,6 +168,16 @@ function computeThreadHandleVisibility(threadOrder) {
         ...(threadOrder[i].inReplyTo[inReplyTo.length-1]),
         drawThreadLine: firstLast,
       };
+    } else {
+      // The first reply is known.  Is the last reply also known, and known to
+      // be something other than this post?
+      // If so, this is a branch.
+      if (lastDirectReplyTo[directlyRepliedTo.post.uri] !== i) {
+        threadOrder[i].inReplyTo[inReplyTo.length-1] = {
+          ...(threadOrder[i].inReplyTo[inReplyTo.length-1]),
+          drawThreadLine: "thread-line-branch",
+        };
+      }
     }
   }
 }
@@ -250,7 +267,7 @@ export default function Thread() {
         <>
         <h2 id="thread-remainder-h2" className="visually-hidden">Remainder of the thread</h2>
 
-        <section className="thread-remainder border-gold border-2 border-solid my-2" aria-labelledby="thread-remainder-h2">
+        <section className="thread-remainder my-2" aria-labelledby="thread-remainder-h2">
           {threadRemainder.map(({inReplyTo, post}) => {
             return <ThreadedPost key={post.uri} post={post} inReplyTo={inReplyTo} />
           })}
