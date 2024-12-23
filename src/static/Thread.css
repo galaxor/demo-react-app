@@ -1,0 +1,12 @@
+main.thread {
+
+.thread-line-hide {
+  text-decoration: line-through;
+}
+
+.thread-line-last {
+  font-weight: bold;
+}
+
+
+}
