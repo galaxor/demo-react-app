@@ -184,7 +184,7 @@ export default function Thread() {
 
       {replies.length === 0? "" :
         <>
-        <h2 id="replies-h2" className="bisually-hidden">Replies</h2>
+        <h2 id="replies-h2" className="visually-hidden">Replies</h2>
 
         <section className="replies my-2" aria-labelledby="replies-h2">
           {replies.map(({inReplyTo, post}) => {
@@ -196,7 +196,7 @@ export default function Thread() {
 
       {threadContext.length === 0? "" :
         <>
-        <h2 id="thread-context-h2" className="bisually-hidden">Thread Context</h2>
+        <h2 id="thread-context-h2" className="visually-hidden">Thread Context</h2>
 
         <section className="thread-context my-2" aria-labelledby="thread-context-h2">
           {threadContext.map(({inReplyTo, post}) => {
@@ -208,7 +208,7 @@ export default function Thread() {
 
       {threadRemainder.length === 0? "" :
         <>
-        <h2 id="thread-remainder-h2" className="bisually-hidden">Remainder of the thread</h2>
+        <h2 id="thread-remainder-h2" className="visually-hidden">Remainder of the thread</h2>
 
         <section className="thread-remainder border-gold border-2 border-solid my-2" aria-labelledby="thread-remainder-h2">
           {threadRemainder.map(({inReplyTo, post}) => {
