@@ -21,7 +21,7 @@ import ReactTimeAgo from 'react-time-ago';
  * Although drawThreadLine will be null now.  It will get figured out later.
  */
 function getRepliesTo(postRepliedTo, postsDB, replyChain) {
-  const threadOrder = [{inReplyTo: replyChain, post: postRepliedTo}];
+  const threadOrder = [{inReplyTo: [...replyChain], post: postRepliedTo}];
 
   const inReplyTo = replyChain.concat({post: postRepliedTo, drawThreadLine: null});
   
@@ -55,22 +55,19 @@ function ThreadedPost({post, inReplyTo, className}) {
 }
 
 
-export default function Thread() {
-  const mainPost = useLoaderData().post;
-  const languageContext = useContext(LanguageContext);
-  const db = useContext(DatabaseContext);
-
-  const postsDB = new PostsDB(db);
-
-  // Calculate the entire thread, from knowing the main post.
-
-  const originatingPost = (mainPost.conversationId === mainPost.uri || mainPost.conversationId === null)?
-                          mainPost :
-                          postsDB.get(mainPost.conversationId)
-                          ;
-  
-  const threadOrder = getRepliesTo(originatingPost, postsDB, []);
-
+/**
+ * At the end of this function, each post in the threadOrder will have its
+ * inReplyTo's updated, to say which thread lines to show and hide, and which
+ * to draw as the "last" post in a subthread (that is, the last direct reply to
+ * a post).
+ * The threadOrder array will be modified.
+ * threadOrder[i].inReplyTo[j].drawThreadLine will be set to one of:
+ * "thread-line-show" | "thread-line-hide" | "thread-line-last".
+ *
+ * That will get added as a CSS class when the thread handles are drawn into
+ * the HTML.
+ */
+function computeThreadHandleVisibility(threadOrder) {
   // For each post, mark the last time it was replied to directly.
     // lastDirectReplyTo will contain {postUri: index, ...}.
   const lastDirectReplyTo = {};
@@ -97,7 +94,7 @@ export default function Thread() {
     }
 
     // Now check if we should show or hide the rest of the reply lines in the reply chain.
-    for (var j=0; j<inReplyTo.length-2; j++) {
+    for (var j=0; j<=inReplyTo.length-2; j++) {
       // If the last reply is in the future, we know we must draw this line.
       // If the last reply is not in the future or the present, then we know
       // it's in the past and we should not draw the line.
@@ -121,8 +118,26 @@ export default function Thread() {
       }
     }
   }
+}
 
-  console.log(threadOrder);
+export default function Thread() {
+  const mainPost = useLoaderData().post;
+  const languageContext = useContext(LanguageContext);
+  const db = useContext(DatabaseContext);
+
+  const postsDB = new PostsDB(db);
+
+  // Calculate the entire thread, from knowing the main post.
+
+  const originatingPost = (mainPost.conversationId === mainPost.uri || mainPost.conversationId === null)?
+                          mainPost :
+                          postsDB.get(mainPost.conversationId)
+                          ;
+  
+  const threadOrder = getRepliesTo(originatingPost, postsDB, []);
+
+  computeThreadHandleVisibility(threadOrder);
+  
 
   const mainPostIndex = threadOrder.findIndex(threadedPost => threadedPost.post.uri === mainPost.uri);
 
