@@ -84,12 +84,32 @@ div.threaded-post > ul {
     }
   }
 
+  li.thread-line-branch:last-child,
+  li.thread-line-last:last-child {
+    > a.thread-handle {
+      display: flex;
+
+      &::after {
+        content: " ";
+        display: block;
+        width: 15px;
+        height: 100%;
+      }
+    }
+  }
+
   /* Collapsed threads. */
   li.thread-line-first.thread-line-last:not(.has-branch) {
-    width: 15px;
-    border-left: 1px solid hsl(var(--nextui-foreground));
+    > a.thread-handle {
+      width: 15px;
+      border-left: 1px solid hsl(var(--nextui-foreground));
 
-    svg { display: none; }
+      svg { display: none; }
+    }
+
+    &:not(.has-replies) > a.thread-handle {
+      height: calc(100% - 4em);
+    }
   }
 
   /* In order to collapse them, we take the "hidden" thread-lines, and make
