@@ -92,24 +92,11 @@ div.threaded-post > ul {
     svg { display: none; }
   }
 
-  /* In order to collapse them, we tkae the "hidden" thread-lines, and make
+  /* In order to collapse them, we take the "hidden" thread-lines, and make
    * them not take up any width, in addition to not drawing anything there. */
   li.thread-line-hide:has(+ li.thread-line-first.thread-line-last:not(.has-branch)) {
     display: none;
   }
-
-  /* Another "collapsed threads" case to catch: A thread-line-branch that is
-   * the start of a collapsed reply chain.  That should draw the patch as though
-   * it's the start of a thread. */
-  /* We're actually taking care of that code above, in the "patch" section,
-   * rather than the "collapsed threads" section. */
-
-
-  /* A first-and-last situation can be drawn in one of two ways:
-   * If it starts a subthread which does not have a branch as a direct thread descendant, then collapse it.
-   * If it starts a subthread which does have a branch as a direct thread descendant, draw it like a first.
-   */
-  /* XXX How do I detect "direct thread descendant" anymore, now that I've flattened threads? */
 }
 
 .thread-handle-text {
