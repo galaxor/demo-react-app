@@ -43,23 +43,26 @@ function ThreadedPost({post, inReplyTo, className}) {
 
   return (
       <div className={"threaded-post flex "+(className ?? "")} key={post.uri}>
-        <ul>
-          {inReplyTo.map(inReplyTo  => {
-            const postRepliedTo = inReplyTo.post;
-            const drawThreadLine = inReplyTo.drawThreadLine;
-            const hasBranch = inReplyTo.hasBranch;
-            const hasReplies = inReplyTo.hasReplies;
+        {inReplyTo.length > 0? 
+          <ul>
+            {inReplyTo.map(inReplyTo  => {
+              const postRepliedTo = inReplyTo.post;
+              const drawThreadLine = inReplyTo.drawThreadLine;
+              const hasBranch = inReplyTo.hasBranch;
+              const hasReplies = inReplyTo.hasReplies;
 
-            return (
-            <li key={postRepliedTo.uri} className={drawThreadLine + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ") }>
-              <a href={"#"+hashSum(postRepliedTo.uri)} className="thread-handle"><Corner />
-                <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
-                  {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>
-              </a>
-            </li>
-            );
-          })}
-        </ul>
+              return (
+              <li key={postRepliedTo.uri} className={drawThreadLine + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ") }>
+                <a href={"#"+hashSum(postRepliedTo.uri)} className="thread-handle"><Corner />
+                  <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
+                    {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>
+                </a>
+              </li>
+              );
+            })}
+          </ul>
+          : ""
+        }
 
         <Post id={hashSum(post.uri)} ref={postRef} post={post} />
       </div>

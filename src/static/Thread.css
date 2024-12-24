@@ -119,6 +119,28 @@ div.threaded-post > ul {
   }
 }
 
+/* Draw little dots where the posts are, to break up the thread lines a little. */
+div.threaded-post > article {
+  position: relative;
+}
+div.threaded-post > article::before {
+  content: " ";
+  display: block;
+  width: 1ex;
+  height: 1ex;
+  background: hsl(var(--nextui-foreground));
+  border-radius: 100%;
+  position: absolute;
+  top: 13px;
+  left: -19px;
+  z-index: 2;
+}
+
+/* Collapsed threads need slightly special positioning on their dots for some reason. They're off by a pixel. */
+div.threaded-post:has(> ul > li.thread-line-first.thread-line-last:not(.has-branch)) > article::before {
+  left: -18px;
+}
+
 .thread-handle-text {
   /* visually-hidden */
   height: 0.1px;
@@ -128,19 +150,5 @@ div.threaded-post > ul {
   position: absolute;
   z-index: -1;
 }
-
-/* Test stuff.  This should become obsolete. */
-.thread-line-hide {
-  text-decoration: line-through;
-}
-
-.thread-line-first {
-  text-decoration: underline;
-}
-
-.thread-line-last {
-  font-weight: bold;
-}
-
 
 }
