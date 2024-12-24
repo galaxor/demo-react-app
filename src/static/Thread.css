@@ -19,6 +19,11 @@ section {
   width: 100%;
 }
 
+article.post {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 div.threaded-post > ul {
   flex-shrink: 2;
   display: flex;
@@ -26,29 +31,85 @@ div.threaded-post > ul {
   a.thread-handle {
     display: block;
     height: 100%;
-    width: 30px;
 
     svg {
-      width: 100%;
-    }
-  }
-
-  li.thread-line-first:not(.thread-line-last) > a.thread-handle {
-    border-left: 1px solid hsl(var(--nextui-foreground));
-    svg {
+      width: 30px;
       position: relative;
       top: -11px;
     }
   }
 
+  li.thread-line-first:not(.thread-line-last) > a.thread-handle {
+    border-left: 1px solid hsl(var(--nextui-foreground));
+  }
+
   li.thread-line-continue > a.thread-handle {
+    width: 30px;
     border-left: 1px solid hsl(var(--nextui-foreground));
     svg { display: none; }
   }
 
   li.thread-line-hide > a.thread-handle {
+    width: 30px;
     svg { display: none; }
   }
+
+  li.thread-line-branch > a.thread-handle {
+    border-left: 1px solid hsl(var(--nextui-foreground));
+  }
+
+  /* In the situation where this is the first post of a subthread that has a
+   * branch, we need to draw a little "patch" for the subthread to connect to.
+   * It's not a real, full, thread handle. */
+  li.thread-line-branch.has-replies,
+  li.thread-line-first:not(.thread-line-last),
+  li.thread-line-first.thread-line-last.has-branch
+  {
+    a.thread-handle {
+      display: flex;
+    }
+
+    a.thread-handle::after {
+      content: " ";
+      display: block;
+      width: 15px;
+      height: auto;
+      border-left: 1px solid hsl(var(--nextui-foreground));
+      margin-top: 24px;
+
+      /* I don't know why I have to reposition this. Probably other borders are
+       * adding space to stuff, causing it to be off by a pixel. */
+      position: relative;
+      left: -1px;
+    }
+  }
+
+  /* Collapsed threads. */
+  li.thread-line-first.thread-line-last:not(.has-branch) {
+    width: 15px;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+
+    svg { display: none; }
+  }
+
+  /* In order to collapse them, we tkae the "hidden" thread-lines, and make
+   * them not take up any width, in addition to not drawing anything there. */
+  li.thread-line-hide:has(+ li.thread-line-first.thread-line-last:not(.has-branch)) {
+    display: none;
+  }
+
+  /* Another "collapsed threads" case to catch: A thread-line-branch that is
+   * the start of a collapsed reply chain.  That should draw the patch as though
+   * it's the start of a thread. */
+  /* We're actually taking care of that code above, in the "patch" section,
+   * rather than the "collapsed threads" section. */
+
+
+  /* A first-and-last situation can be drawn in one of two ways:
+   * If it starts a subthread which does not have a branch as a direct thread descendant, then collapse it.
+   * If it starts a subthread which does have a branch as a direct thread descendant, draw it like a first.
+   */
+  /* XXX How do I detect "direct thread descendant" anymore, now that I've flattened threads? */
 }
 
 .thread-handle-text {

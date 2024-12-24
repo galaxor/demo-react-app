@@ -47,9 +47,11 @@ function ThreadedPost({post, inReplyTo, className}) {
           {inReplyTo.map(inReplyTo  => {
             const postRepliedTo = inReplyTo.post;
             const drawThreadLine = inReplyTo.drawThreadLine;
+            const hasBranch = inReplyTo.hasBranch;
+            const hasReplies = inReplyTo.hasReplies;
 
             return (
-            <li key={postRepliedTo.uri} className={drawThreadLine}>
+            <li key={postRepliedTo.uri} className={drawThreadLine + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ") }>
               <a href={"#"+hashSum(postRepliedTo.uri)} className="thread-handle"><Corner />
                 <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
                   {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>
@@ -92,7 +94,8 @@ function computeThreadHandleVisibility(threadOrder) {
       continue;
     }
 
-    // If this is a direct reply to something, then it's the last direct reply
+    // If this is a direct reply to something, and we have no record of there
+    // being another direct reply to it, then this is the last direct reply
     // to it, because we're traversing thread order backward.
     if (typeof lastDirectReplyTo[directlyRepliedTo.post.uri] === "undefined") {
       lastDirectReplyTo[directlyRepliedTo.post.uri] = i;
@@ -103,6 +106,18 @@ function computeThreadHandleVisibility(threadOrder) {
         ...(threadOrder[i].inReplyTo[inReplyTo.length-1]),
         drawThreadLine: "thread-line-last",
       };
+    } else {
+      // If this is not the last reply to a thing, then our parent has a branch
+      // in it.  Let's note that in the level up, because that means that we
+      // won't be able to collapse the thread.
+      if (inReplyTo.length > 1) {
+        threadOrder[i].inReplyTo[inReplyTo.length-2].hasBranch = true;
+      }
+    }
+
+    // Mark if someone has replied to this post.
+    if (typeof lastDirectReplyTo[threadOrder[i].post.uri] !== "undefined") {
+      threadOrder[i].inReplyTo[inReplyTo.length-1].hasReplies = true;
     }
 
     // Now check if we should show or hide the rest of the reply lines in the reply chain.
@@ -233,7 +248,7 @@ export default function Thread() {
         }
       </h1>
 
-      <section className="main-post my-2" aria-labelledby="main-post-h1">
+      <section className="main-post" aria-labelledby="main-post-h1">
         <ThreadedPost key={threadOrder[mainPostIndex].post.uri} 
           post={threadOrder[mainPostIndex].post} 
           inReplyTo={threadOrder[mainPostIndex].inReplyTo} />
@@ -243,7 +258,7 @@ export default function Thread() {
         <>
         <h2 id="replies-h2" className="visually-hidden">Replies</h2>
 
-        <section className="replies my-2" aria-labelledby="replies-h2">
+        <section className="replies" aria-labelledby="replies-h2">
           {replies.map(({inReplyTo, post}) => {
             return <ThreadedPost key={post.uri} post={post} inReplyTo={inReplyTo} />
           })}
@@ -255,7 +270,7 @@ export default function Thread() {
         <>
         <h2 id="thread-context-h2" className="visually-hidden">Thread Context</h2>
 
-        <section className="thread-context my-2" aria-labelledby="thread-context-h2">
+        <section className="thread-context" aria-labelledby="thread-context-h2">
           {threadContext.map(({inReplyTo, post}) => {
             return <ThreadedPost key={post.uri} post={post} inReplyTo={inReplyTo} />
           })}
@@ -267,7 +282,7 @@ export default function Thread() {
         <>
         <h2 id="thread-remainder-h2" className="visually-hidden">Remainder of the thread</h2>
 
-        <section className="thread-remainder my-2" aria-labelledby="thread-remainder-h2">
+        <section className="thread-remainder" aria-labelledby="thread-remainder-h2">
           {threadRemainder.map(({inReplyTo, post}) => {
             return <ThreadedPost key={post.uri} post={post} inReplyTo={inReplyTo} />
           })}
