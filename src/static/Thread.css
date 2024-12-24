@@ -141,6 +141,19 @@ div.threaded-post:has(> ul > li.thread-line-first.thread-line-last:not(.has-bran
   left: -18px;
 }
 
+/* A special case: The very first post in the thread needs to have a special kind of line to show that it's the start. */
+section.thread-context > div.threaded-post:first-child {
+  display: flex;
+  &::before {
+    content: " ";
+    display: block;
+    width: 16px;
+    height: auto;
+    margin-top: 24px;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+  }
+}
+
 .thread-handle-text {
   /* visually-hidden */
   height: 0.1px;
