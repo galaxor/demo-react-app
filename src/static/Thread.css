@@ -142,6 +142,7 @@ div.threaded-post:has(> ul > li.thread-line-first.thread-line-last:not(.has-bran
 }
 
 /* A special case: The very first post in the thread needs to have a special kind of line to show that it's the start. */
+section.main-post > div.threaded-post:first-child:not(:has(> ul)),
 section.thread-context > div.threaded-post:first-child {
   display: flex;
   &::before {
