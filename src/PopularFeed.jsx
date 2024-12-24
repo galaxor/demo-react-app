@@ -24,7 +24,9 @@ export default function PopularFeed() {
       <h1 id="featured-feed">Popular Posts</h1>
       <SystemNotificationArea />
 
-      <PostsList posts={postsForDisplay} />
+      <div aria-role="feed">
+        <PostsList posts={postsForDisplay} />
+      </div>
     </main>
   );
 }
