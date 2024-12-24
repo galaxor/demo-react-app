@@ -38,8 +38,9 @@ function flattenThread(post, inReplyTo) {
   return threadOrder;
 }
 
-function ThreadedPost({post, inReplyTo, className}) {
+function ThreadedPost({post, inReplyTo, className, scrollRef}) {
   const postRef = useRef(null);
+  const scrollHereRef = scrollRef ?? useRef(null);
 
   return (
       <div className={"threaded-post flex "+(className ?? "")} key={post.uri}>
@@ -64,7 +65,7 @@ function ThreadedPost({post, inReplyTo, className}) {
           : ""
         }
 
-        <Post id={hashSum(post.uri)} ref={postRef} post={post} />
+        <Post id={hashSum(post.uri)} ref={postRef} post={post} scrollHereRef={scrollHereRef} />
       </div>
   );
 }
@@ -235,6 +236,9 @@ export default function Thread() {
   // The other replies to the posts earlier in the thread, which are not replies to the main post.
   const threadRemainder = threadOrder.slice(mainPostIndex+1+replies.length);
 
+  // When we first visit the page, we want to scroll to the main post that we clicked on.
+  const mainPostScrollRef = useRef(null);
+
   return <>
     <main className="thread flex flex-wrap">
       <h1 id="main-post-h1">Post by <bdi>{mainPost.authorPerson.displayName}</bdi>,{" "}
@@ -254,7 +258,8 @@ export default function Thread() {
       <section className="main-post" aria-labelledby="main-post-h1">
         <ThreadedPost key={threadOrder[mainPostIndex].post.uri} 
           post={threadOrder[mainPostIndex].post} 
-          inReplyTo={threadOrder[mainPostIndex].inReplyTo} />
+          inReplyTo={threadOrder[mainPostIndex].inReplyTo}
+          scrollRef={mainPostScrollRef} />
       </section>
 
       {replies.length === 0? "" :
