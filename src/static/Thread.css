@@ -133,9 +133,30 @@ div.threaded-post > ul {
     &::after { content: none; display: none; }
   }
 
-  /* In order to collapse them, we take the "hidden" thread-lines, and make
-   * them not take up any width, in addition to not drawing anything there. */
-  li.thread-line-hide:has(+ li.thread-line-first.thread-line-last:not(.has-branch)) {
+  /* We want to show the line going to the first post in the collapsed reply chain. */
+  li.thread-line-hide:not(:has(~ li.thread-line-continue)):not(:has(~ li.thread-line-branch)):has(~ li.thread-line-first.thread-line-last:not(.has-branch)) {
+
+    > a.thread-handle {
+      width: 15px;
+      border-left: 1px solid ;
+
+      &:hover {
+        border-color: hsl(var(--nextui-primary));
+      }
+
+      svg { display: none; }
+    }
+
+    /* But if it's the last post in the chain, put a little space on the bottom to show it's the end. */
+    &:has(~ li:not(.has-replies)) {
+      > a.thread-handle {
+        height: calc(100% - 4em);
+      }
+    }
+  }
+
+  /* We want to hide subsequent thread handles in the collapsed reply chain. */
+  li.thread-line-hide:not(:has(~ li.thread-line-continue)):not(:has(~ li.thread-line-branch)):has(~ li.thread-line-first.thread-line-last:not(.has-branch)) ~ li {
     display: none;
   }
 }

@@ -207,13 +207,13 @@ function createStylesheetsForHover(threadOrder) {
     const id = hashSum(post.uri).toString(16);
 
     // When we hover on a thread line, highlight all thread lines that go to the same post.
-    hoverRules.push(`main.thread:has(a.thread-handle[href="#p${id}"]:hover) a.thread-handle[href="#p${id}"] { border-color: hsl(var(--nextui-primary)); }`);
+    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) a.thread-handle[href="#p${id}"] { border-color: hsl(var(--nextui-primary)); }`);
 
     // When we hover on a thread line, also highlight the "patch" that hangs out next to the post that the line is going to.
-    hoverRules.push(`main.thread:has(a.thread-handle[href="#p${id}"]:hover) div.threaded-post-${id} > ul > li:last-child::after { border-color: hsl(var(--nextui-primary)); }`);
+    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) div.threaded-post-${id} > ul > li:last-child::after { border-color: hsl(var(--nextui-primary)); }`);
 
     // When we hover on a thread line, highlight the actual post that is being pointed to.
-    hoverRules.push(`main.thread:has(a.thread-handle[href="#p${id}"]:hover) div#p${id} { outline-color: hsl(var(--nextui-primary)); }`);
+    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) div#p${id} { outline-color: hsl(var(--nextui-primary)); }`);
 
   });
 
@@ -273,7 +273,7 @@ export default function Thread() {
   return <>
     <style type="text/css">{createStylesheetsForHover(threadOrder)}</style>
 
-    <main className="thread flex flex-wrap">
+    <main id="thread-main" className="thread flex flex-wrap">
       <h1 id="main-post-h1">Post by <bdi>{mainPost.authorPerson.displayName}</bdi>,{" "}
         <time dateTime={mainPost.createdAt}>
           <ReactTimeAgo date={new Date(mainPost.createdAt)} locale={languageContext} />
