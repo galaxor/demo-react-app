@@ -43,7 +43,7 @@ function ThreadedPost({post, inReplyTo, className, scrollRef}) {
   const scrollHereRef = scrollRef ?? useRef(null);
 
   return (
-      <div className={"threaded-post flex "+(className ?? "")} key={post.uri}>
+      <div className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
         {inReplyTo.length > 0? 
           <ul>
             {inReplyTo.map(inReplyTo  => {
@@ -54,7 +54,7 @@ function ThreadedPost({post, inReplyTo, className, scrollRef}) {
 
               return (
               <li key={postRepliedTo.uri} className={drawThreadLine + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ") }>
-                <a href={"#"+hashSum(postRepliedTo.uri)} className="thread-handle"><Corner />
+                <a href={"#p"+hashSum(postRepliedTo.uri).toString(16)} className="thread-handle"><Corner />
                   <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
                     {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>
                 </a>
@@ -65,7 +65,7 @@ function ThreadedPost({post, inReplyTo, className, scrollRef}) {
           : ""
         }
 
-        <Post id={hashSum(post.uri)} ref={postRef} post={post} scrollHereRef={scrollHereRef} />
+        <Post id={"p"+(hashSum(post.uri).toString(16))} ref={postRef} post={post} scrollHereRef={scrollHereRef} />
       </div>
   );
 }
@@ -201,6 +201,30 @@ function computeThreadHandleVisibility(threadOrder) {
   }
 }
 
+function createStylesheetsForHover(threadOrder) {
+  const hoverRules = [];
+  threadOrder.forEach(({post}) => {
+    const id = hashSum(post.uri).toString(16);
+
+    // When we hover on a thread line, highlight all thread lines that go to the same post.
+    hoverRules.push(`main.thread:has(a.thread-handle[href="#p${id}"]:hover) a.thread-handle[href="#p${id}"] { border-color: hsl(var(--nextui-primary)); }`);
+
+    // When we hover on a thread line, also highlight the "patch" that hangs out next to the post that the line is going to.
+    hoverRules.push(`main.thread:has(a.thread-handle[href="#p${id}"]:hover) div.threaded-post-${id} > ul > li:last-child::after { border-color: hsl(var(--nextui-primary)); }`);
+
+    // When we hover on a thread line, highlight the actual post that is being pointed to.
+    hoverRules.push(`main.thread:has(a.thread-handle[href="#p${id}"]:hover) div#p${id} { outline-color: hsl(var(--nextui-primary)); }`);
+
+  });
+
+  const firstPostId = hashSum(threadOrder[0].post.uri).toString(16);
+
+  // When we hover on a thread line going to the first post in the thread, its little "patch" should light up.
+  hoverRules.push(`main.thread:has(a.thread-handle[href="#p${firstPostId}"]:hover) div.threaded-post-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }`);
+
+  return hoverRules.join('\n');
+}
+
 export default function Thread() {
   const mainPost = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
@@ -220,7 +244,13 @@ export default function Thread() {
 
   computeThreadHandleVisibility(threadOrder);
   
+  createStylesheetsForHover(threadOrder);
 
+  // Chop the thread into the four sections:
+  // * Main post (the one you clicked on)
+  // * Replies to the main post
+  // * Thread context (stuff that comes before the main post in thread order)
+  // * Thread remainder (stuff that comes after the main post and its replies, in thread order)
   const mainPostIndex = threadOrder.findIndex(threadedPost => threadedPost.post.uri === mainPost.uri);
 
   // The replies to the main post consist of all posts after the main post,
@@ -236,10 +266,13 @@ export default function Thread() {
   // The other replies to the posts earlier in the thread, which are not replies to the main post.
   const threadRemainder = threadOrder.slice(mainPostIndex+1+replies.length);
 
+
   // When we first visit the page, we want to scroll to the main post that we clicked on.
   const mainPostScrollRef = useRef(null);
 
   return <>
+    <style type="text/css">{createStylesheetsForHover(threadOrder)}</style>
+
     <main className="thread flex flex-wrap">
       <h1 id="main-post-h1">Post by <bdi>{mainPost.authorPerson.displayName}</bdi>,{" "}
         <time dateTime={mainPost.createdAt}>

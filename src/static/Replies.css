@@ -83,6 +83,11 @@ ul.replies > li:has(> div.post-and-replies > article > ul.replies > li) > div.po
   border-left: 1px solid hsl(var(--nextui-foreground));
 }
 
+div.post {
+  outline: 1px solid transparent;
+  outline-offset: 2px;
+}
+
 /* This displays the link for the collapsed reply chain. */
 a.collapsed-thread-handle {
   content: " ";

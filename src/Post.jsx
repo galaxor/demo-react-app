@@ -108,9 +108,9 @@ const Post = forwardRef(function Post(props, ref) {
         </div>
       }
 
-      <Card id={id} ref={postDivRef} className={"post overflow-visible hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+(className ?? "")}>
+      <Card id={id.toString()} ref={postDivRef} className={"post overflow-visible hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+(className ?? "")}>
         <CardHeader>
-          {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} id={id-"-scroll-target"} className="scroll-into-view"></div> : ""}
+          {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} id={"scroll-target-"+id.toString(16)} className="scroll-into-view"></div> : ""}
           <span className="post-metadata w-full flex justify-between">
             <span className="post-date order-1 text-right"
               aria-label={post.updatedAt === post.createdAt?

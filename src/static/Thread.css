@@ -24,6 +24,10 @@ article.post {
   margin-bottom: 0.5em;
 }
 
+a.thread-handle:hover {
+  border-color: hsl(var(--nextui-primary));
+}
+
 div.threaded-post > ul {
   flex-shrink: 2;
   display: flex;
@@ -41,11 +45,17 @@ div.threaded-post > ul {
 
   li.thread-line-first:not(.thread-line-last) > a.thread-handle {
     border-left: 1px solid hsl(var(--nextui-foreground));
+    &:hover {
+      border-color: hsl(var(--nextui-primary));
+    }
   }
 
   li.thread-line-continue > a.thread-handle {
     width: 30px;
     border-left: 1px solid hsl(var(--nextui-foreground));
+    &:hover {
+      border-color: hsl(var(--nextui-primary));
+    }
     svg { display: none; }
   }
 
@@ -56,6 +66,9 @@ div.threaded-post > ul {
 
   li.thread-line-branch > a.thread-handle {
     border-left: 1px solid hsl(var(--nextui-foreground));
+    &:hover { 
+      border-color: hsl(var(--nextui-primary));
+    }
   }
 
   /* In the situation where this is the first post of a subthread that has a
@@ -69,7 +82,9 @@ div.threaded-post > ul {
       display: flex;
     }
 
-    a.thread-handle::after {
+    display: flex;
+    
+    &::after {
       content: " ";
       display: block;
       width: 15px;
@@ -86,15 +101,13 @@ div.threaded-post > ul {
 
   li.thread-line-branch:last-child,
   li.thread-line-last:last-child {
-    > a.thread-handle {
-      display: flex;
+    display: flex;
 
-      &::after {
-        content: " ";
-        display: block;
-        width: 15px;
-        height: 100%;
-      }
+    &::after {
+      content: " ";
+      display: block;
+      width: 15px;
+      height: 100%;
     }
   }
 
@@ -104,12 +117,20 @@ div.threaded-post > ul {
       width: 15px;
       border-left: 1px solid hsl(var(--nextui-foreground));
 
+      &:hover {
+        border-color: hsl(var(--nextui-primary));
+      }
+
       svg { display: none; }
     }
 
     &:not(.has-replies) > a.thread-handle {
       height: calc(100% - 4em);
     }
+
+    /* But collapsed threads already have the appropriate space drawn by the
+     * collapsed thread-handle, so we don't need the li to add extra space. */
+    &::after { content: none; display: none; }
   }
 
   /* In order to collapse them, we take the "hidden" thread-lines, and make
