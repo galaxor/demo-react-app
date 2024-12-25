@@ -232,6 +232,31 @@ export default function Thread() {
 
   const postsDB = new PostsDB(db);
 
+  const mainRef = useRef(null);
+
+  // Make it so when you click a post, you go to its PostSingle page.
+  useEffect(() => {
+    const clickablePosts = mainRef.current.querySelectorAll('article.post > div.post')
+
+    clickablePosts.forEach(node => {
+      node.addEventListener('click', clickPost);
+    });
+
+    return(() => {
+      clickablePosts.forEach(node => {
+        node.removeEventListener('click', clickPost);
+      });
+    });
+  });
+
+
+  // Scroll the post into view when it first becomes visible.
+  const mainPostScrollRef = useCallback(node => {
+    if (node) { node.scrollIntoView(); }
+
+    return {current: node};
+  }, []);
+
   // Calculate the entire thread, from knowing the main post.
 
   const originatingPost = (mainPost.conversationId === mainPost.uri || mainPost.conversationId === null)?
@@ -267,13 +292,10 @@ export default function Thread() {
   const threadRemainder = threadOrder.slice(mainPostIndex+1+replies.length);
 
 
-  // When we first visit the page, we want to scroll to the main post that we clicked on.
-  const mainPostScrollRef = useRef(null);
-
   return <>
     <style type="text/css">{createStylesheetsForHover(threadOrder)}</style>
 
-    <main id="thread-main" className="thread flex flex-wrap">
+    <main id="thread-main" ref={mainRef} className="thread flex flex-wrap">
       <h1 id="main-post-h1">Post by <bdi>{mainPost.authorPerson.displayName}</bdi>,{" "}
         <time dateTime={mainPost.createdAt}>
           <ReactTimeAgo date={new Date(mainPost.createdAt)} locale={languageContext} />

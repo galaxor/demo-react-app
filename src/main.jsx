@@ -114,12 +114,12 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "/thread/:postUri",
+            path: "/post/:postUri",
             loader: getPostLoader(database),
             element: <Thread />,
           },
           {
-            path: "/post/:postUri",
+            path: "/old-post/:postUri",
             loader: getPostLoader(database),
             element: <PostSingle />,
           },
