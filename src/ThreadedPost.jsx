@@ -29,9 +29,10 @@ export default function ThreadedPost({post, inReplyTo, className, scrollRef}) {
               const drawThreadLine = inReplyTo.drawThreadLine;
               const hasBranch = inReplyTo.hasBranch;
               const hasReplies = inReplyTo.hasReplies;
+              const collapsed = inReplyTo.collapsed;
 
               return (
-              <li key={postRepliedTo.uri} className={drawThreadLine + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ") }>
+              <li key={postRepliedTo.uri} className={drawThreadLine + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ") + (collapsed? " collapsed " : " ") }>
                 <a href={"#p"+hashSum(postRepliedTo.uri).toString(16)} className="thread-handle"><Corner />
                   <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
                     {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>

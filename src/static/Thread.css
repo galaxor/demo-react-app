@@ -43,10 +43,21 @@ div.threaded-post > ul {
     }
   }
 
-  li.thread-line-first:not(.thread-line-last) > a.thread-handle {
-    border-left: 1px solid hsl(var(--nextui-foreground));
-    &:hover {
-      border-color: hsl(var(--nextui-primary));
+  li.thread-line-first:not(.thread-line-last) {
+    display: flex;
+
+    > a.thread-handle {
+      border-left: 1px solid hsl(var(--nextui-foreground));
+      &:hover {
+        border-color: hsl(var(--nextui-primary));
+      }
+    }
+
+    &::after {
+      content: " ";
+      display: block;
+      width: 15px;
+      height: 100%;
     }
   }
 
@@ -75,7 +86,7 @@ div.threaded-post > ul {
    * branch, we need to draw a little "patch" for the subthread to connect to.
    * It's not a real, full, thread handle. */
   li.thread-line-branch.has-replies,
-  li.thread-line-first:not(.thread-line-last).has-replies,
+  li.thread-line-first.has-replies,
   li.thread-line-first.thread-line-last.has-branch
   {
     a.thread-handle {
@@ -111,61 +122,16 @@ div.threaded-post > ul {
     }
   }
 
-  /* Collapsed threads. */
-  li.thread-line-first.thread-line-last:not(.has-branch) {
-    > a.thread-handle {
-      width: 15px;
-      border-left: 1px solid hsl(var(--nextui-foreground));
-
-      &:hover {
-        border-color: hsl(var(--nextui-primary));
-      }
-
-      svg { display: none; }
-    }
-
-    &:not(.has-replies) > a.thread-handle {
-      height: calc(100% - 4em);
-    }
-
-    /* But collapsed threads already have the appropriate space drawn by the
-     * collapsed thread-handle, so we don't need the li to add extra space. */
-    &::after { content: none; display: none; }
-  }
-
-  /* We want to show the line going to the first post in the collapsed reply chain. */
-  li.thread-line-hide:not(:has(~ li.thread-line-continue)):not(:has(~ li.thread-line-branch)):has(~ li.thread-line-first.thread-line-last:not(.has-branch)) {
-
-    > a.thread-handle {
-      width: 15px;
-      border-left: 1px solid ;
-
-      &:hover {
-        border-color: hsl(var(--nextui-primary));
-      }
-
-      svg { display: none; }
-    }
-
-    /* But if it's the last post in the chain, put a little space on the bottom to show it's the end. */
-    &:has(~ li:not(.has-replies)) {
-      > a.thread-handle {
-        height: calc(100% - 4em);
-      }
-    }
-  }
-
-  /* We want to hide subsequent thread handles in the collapsed reply chain. */
-  li.thread-line-hide:not(:has(~ li.thread-line-continue)):not(:has(~ li.thread-line-branch)):has(~ li.thread-line-first.thread-line-last:not(.has-branch)) ~ li {
-    display: none;
+  li.collapsed {
+    background: orange;
   }
 }
 
 /* Draw little dots where the posts are, to break up the thread lines a little. */
-div.threaded-post > article {
+div.threaded-post > div.post-and-composing-reply > article {
   position: relative;
 }
-div.threaded-post > article::before {
+div.threaded-post > div.post-and-composing-reply > article::before {
   content: " ";
   display: block;
   width: 1ex;
@@ -176,11 +142,6 @@ div.threaded-post > article::before {
   top: 13px;
   left: -19px;
   z-index: 2;
-}
-
-/* Collapsed threads need slightly special positioning on their dots for some reason. They're off by a pixel. */
-div.threaded-post:has(> ul > li.thread-line-first.thread-line-last:not(.has-branch)) > article::before {
-  left: -18px;
 }
 
 /* A special case: The very first post in the thread needs to have a special kind of line to show that it's the start. */

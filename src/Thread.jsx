@@ -86,6 +86,25 @@ function computeThreadHandleVisibility(threadOrder) {
       }
     }
 
+    // Check if this reply line should be collapsed.
+    // It should be collapsed if this post has one reply, and that reply has
+    // zero or one reply, and its parent has 1 reply.
+
+    if (threadOrder[i].post.text === "Glerb") {
+      console.log("POST", threadOrder[i].post);
+      console.log("REPLIES", threadOrder[i].post.replies);
+      console.log("FIRSTREPLY", threadOrder[i].post.replies[0].replies);
+      console.log("FIRSTREPLY-REPLIES", threadOrder[i].post.replies[0].replies.length);
+      console.log("PARENTS-REPLIES", threadOrder[i].inReplyTo[inReplyTo.length-1].post);
+    }
+
+    if (threadOrder[i].post.replies.length === 1 
+        && [0,1].includes(threadOrder[i].post.replies[0].replies.length)
+        && (inReplyTo.length <= 1 || threadOrder[i].inReplyTo[inReplyTo.length-2].post.replies.length == 1))
+    {
+      threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = true;
+    }
+
     // Mark if someone has replied to this post.
     if (typeof lastDirectReplyTo[threadOrder[i].post.uri] !== "undefined") {
       threadOrder[i].inReplyTo[inReplyTo.length-1].hasReplies = true;
@@ -114,6 +133,15 @@ function computeThreadHandleVisibility(threadOrder) {
           drawThreadLine: "thread-line-continue",
         };
       }
+
+      // Check if this reply line should be collapsed.
+      // It should be collapsed if this post has one reply, and that reply has zero or one reply.
+      if (threadOrder[i].inReplyTo[j].post.replies.length === 1 
+          && [0,1].includes(threadOrder[i].inReplyTo[j].post.replies[0].replies.length)
+          && (j === 0 || threadOrder[i].inReplyTo[j-1].post.replies.length == 1))
+      {
+        threadOrder[i].inReplyTo[j].collapsed = true;
+      }
     }
   }
 
@@ -138,6 +166,10 @@ function computeThreadHandleVisibility(threadOrder) {
     // * This is both the first and last reply.
     // * This is neither the first nor the last reply, in which case it's a branch.
 
+    if (threadOrder[i].post.text === "florg.") {
+      console.log("PLOOP2", i, lastDirectReplyTo[directlyRepliedTo.post.uri]);
+    }
+
     if (typeof firstDirectReplyTo[directlyRepliedTo.post.uri] === "undefined") {
       firstDirectReplyTo[directlyRepliedTo.post.uri] = i;
 
@@ -158,6 +190,10 @@ function computeThreadHandleVisibility(threadOrder) {
       // The first reply is known.  Is the last reply also known, and known to
       // be something other than this post?
       // If so, this is a branch.
+      if (threadOrder[i].post.text === "florg.") {
+        console.log("PLOOP", lastDirectReplyTo[directlyRepliedTo.post.uri]);
+      }
+
       if (lastDirectReplyTo[directlyRepliedTo.post.uri] !== i) {
         threadOrder[i].inReplyTo[inReplyTo.length-1] = {
           ...(threadOrder[i].inReplyTo[inReplyTo.length-1]),
