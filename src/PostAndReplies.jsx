@@ -47,12 +47,8 @@ export default function PostAndReplies({post, id, prune}) {
         <Post id={id} ref={postRef} post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies}>
           {composingReply &&
             <div className="composing-reply">
-              <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); } } />
+              <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); } } />
             </div>
-          }
-
-          {numReplies > 0 &&
-            <Replies postRepliedTo={post} replies={replies} prune={prune} />
           }
         </Post>
       </div>

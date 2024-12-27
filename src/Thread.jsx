@@ -8,9 +8,9 @@ import PostEditor from './PostEditor.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
+import ThreadedPost from './ThreadedPost.jsx'
 
 import './static/Thread.css'
-import Corner from './corner-svg.jsx'
 
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
@@ -37,39 +37,6 @@ function flattenThread(post, inReplyTo) {
 
   return threadOrder;
 }
-
-function ThreadedPost({post, inReplyTo, className, scrollRef}) {
-  const postRef = useRef(null);
-  const scrollHereRef = scrollRef ?? useRef(null);
-
-  return (
-      <div className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
-        {inReplyTo.length > 0? 
-          <ul>
-            {inReplyTo.map(inReplyTo  => {
-              const postRepliedTo = inReplyTo.post;
-              const drawThreadLine = inReplyTo.drawThreadLine;
-              const hasBranch = inReplyTo.hasBranch;
-              const hasReplies = inReplyTo.hasReplies;
-
-              return (
-              <li key={postRepliedTo.uri} className={drawThreadLine + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ") }>
-                <a href={"#p"+hashSum(postRepliedTo.uri).toString(16)} className="thread-handle"><Corner />
-                  <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
-                    {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>
-                </a>
-              </li>
-              );
-            })}
-          </ul>
-          : ""
-        }
-
-        <Post id={"p"+(hashSum(post.uri).toString(16))} ref={postRef} post={post} scrollHereRef={scrollHereRef} />
-      </div>
-  );
-}
-
 
 /**
  * At the end of this function, each post in the threadOrder will have its
