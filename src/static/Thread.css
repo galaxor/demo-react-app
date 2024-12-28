@@ -129,6 +129,10 @@ div.threaded-post > ul {
   li.collapsed-hidden {
     background: orange;
   }
+
+  li.collapsed-last {
+    background: green;
+  }
 }
 
 /* Draw little dots where the posts are, to break up the thread lines a little. */

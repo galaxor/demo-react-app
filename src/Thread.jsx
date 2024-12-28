@@ -126,7 +126,19 @@ function computeThreadHandleVisibility(threadOrder) {
       // * If it has one reply, the reply has zero or one replies.
       && (threadOrder[i].post.replies.length === 0 || [0,1].includes(threadOrder[i].post.replies[0].replies.length)))
     {
-      threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-first';
+      // So, this is the handle that points to the first post in the
+      // collapsed reply chain.  But is it the LAST such post?
+      // If so, we should indicate the end of the collapsed reply chain.
+
+      // It's the last reply in the chain if EITHER:
+      // * This is the last post in threadOrder, OR
+      // * The next post in threadOrder does not contain a reference to the
+      //   post that this handle references.
+      if (i === threadOrder.length-1 || typeof threadOrder[i+1].inReplyTo.find(({post}) => post.uri === threadOrder[i].inReplyTo[inReplyTo.length-1].post.uri) === "undefined") {
+        threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-last';
+      } else {
+        threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-first';
+      }
     }
     
     
@@ -217,7 +229,19 @@ function computeThreadHandleVisibility(threadOrder) {
         // * If it has one reply, the reply has zero or one replies.
         && (threadOrder[i].inReplyTo[j].post.replies.length === 0 || [0,1].includes(threadOrder[i].inReplyTo[j].post.replies[0].replies.length)))
       {
-        threadOrder[i].inReplyTo[j].collapsed = 'collapsed-first';
+        // So, this is the handle that points to the first post in the
+        // collapsed reply chain.  But is it the LAST such post?
+        // If so, we should indicate the end of the collapsed reply chain.
+
+        // It's the last reply in the chain if EITHER:
+        // * This is the last post in threadOrder, OR
+        // * The next post in threadOrder does not contain a reference to the
+        //   post that this handle references.
+        if (i === threadOrder.length-1 || typeof threadOrder[i+1].inReplyTo.find(({post}) => post.uri === threadOrder[i].inReplyTo[j].post.uri) === "undefined") {
+          threadOrder[i].inReplyTo[j].collapsed = 'collapsed-last';
+        } else {
+          threadOrder[i].inReplyTo[j].collapsed = 'collapsed-first';
+        }
       }
 
     }
