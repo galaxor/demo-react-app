@@ -172,22 +172,6 @@ function computeThreadHandleVisibility(threadOrder) {
         };
       }
 
-      // XXX I actually need to detect a bunch types of things, and I need to not conflate them:
-      // 1. The handle for the FIRST post in a collapsed reply chain, when
-      //    drawn on THAT post. Draw it with a corner and a continuation patch.
-      //    To detect the handle for the FIRST post in a collapsed reply chain:
-      //     - Its parent does not exist or has more than one reply
-      //     - The post that this handle is about has zero or one reply
-      //     - If the post that this handle is about has one reply, the reply has zero or one replies.
-
-      // 2. The handle for the FIRST post in a collapsed reply chain, when
-      //    drawn on a SUBSEQUENT post.  Draw it as a continuation line.
-      // 3. The handle for the FIRST post in a collapsed reply chain, when
-      //    drawn on the LAST post in the chain.  Draw it as a continuation line
-      //    that ends early. (or maybe leave this up to CSS?)
-      // 4. The handle for SUBSEQUENT posts in the chain, when drawn on ANY
-      //    SUBSEQUENT post.  Don't display it.
-
       // Check if this reply line should be totally collapsed because it is
       // about a subsequent post in a collapsed reply chain.
       // * Its parent exists and has one reply

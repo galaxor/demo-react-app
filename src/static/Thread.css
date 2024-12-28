@@ -61,6 +61,26 @@ div.threaded-post > ul {
     }
   }
 
+  /* Collapsed reply chains. */
+  li.collapsed-last > a.thread-handle,
+  li.collapsed-first > a.thread-handle {
+    width: 15px;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+    &:hover {
+      border-color: hsl(var(--nextui-primary));
+    }
+    svg { display: none; }
+  }
+
+  /* Let them know this is the last post in the reply chain. */
+  li.collapsed-last {
+    margin-bottom: 4em;
+  }
+
+  li.collapsed-hidden > a.thread-handle {
+    display: none;
+  }
+
   li.thread-line-continue > a.thread-handle {
     width: 30px;
     border-left: 1px solid hsl(var(--nextui-foreground));
@@ -120,18 +140,6 @@ div.threaded-post > ul {
       width: 15px;
       height: 100%;
     }
-  }
-
-  li.collapsed-first {
-    background: blue;
-  }
-
-  li.collapsed-hidden {
-    background: orange;
-  }
-
-  li.collapsed-last {
-    background: green;
   }
 }
 
