@@ -86,14 +86,13 @@ function computeThreadHandleVisibility(threadOrder) {
       }
     }
 
-    // Check if this reply line should be collapsed. It should be collapsed if all of:
-    // * Its parent has one reply
+    // Check if this reply line should be totally collapsed because it is a subsequent post in a collapsed reply chain.
+    // * Its parent exists and has one reply
     // * This post has zero or one reply
     // * If it has one reply, that reply has zero or one replies.
-
     if (
-      // Check if its parent has one reply.
-      (inReplyTo.length === 0 || threadOrder[i].inReplyTo[inReplyTo.length-1].post.replies.length == 1)
+      // Its parent does not exist or has more than one reply
+      (inReplyTo.length > 0 && threadOrder[i].inReplyTo[inReplyTo.length-1].post.replies.length === 1)
 
       // Check if this post has zero or one reply
       && [0,1].includes(threadOrder[i].post.replies.length)
@@ -101,8 +100,36 @@ function computeThreadHandleVisibility(threadOrder) {
       // Check if this post's reply has zero or one replies.
       && (threadOrder[i].post.replies.length === 0 || [0,1].includes(threadOrder[i].post.replies[0].replies.length)))
     {
-      threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = true;
+      threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-hidden';
     }
+
+    // It's possible to meet the criteria for both "collapsed-hidden" and "collapsed-first".
+    // If that happens, we want "collapsed-first" to win, so let's check for that last.
+
+    // Check if this reply line should be the first in a collapsed reply chain.
+    // If it's like that, then it shouldn't be drawn like a "thread-line-continue".
+    // That is true if all of:
+    // * Its parent exists and has one reply.
+    // * Its parent's parent doesn't exist, or has more than one reply.
+    // * It has zero or one reply.
+    // * If it has one reply, the reply has zero or one replies.
+    if (
+      // * Its parent exists and has one reply.
+      (inReplyTo.length > 0 && threadOrder[i].inReplyTo[inReplyTo.length-1].post.replies.length === 1)
+
+      // * Its parent's parent doesn't exist, or has more than one reply.
+      && (inReplyTo.length < 2 || threadOrder[i].inReplyTo[inReplyTo.length-2].post.replies.length > 1)
+
+      // * It has zero or one reply.
+      && [0,1].includes(threadOrder[i].post.replies.length)
+
+      // * If it has one reply, the reply has zero or one replies.
+      && (threadOrder[i].post.replies.length === 0 || [0,1].includes(threadOrder[i].post.replies[0].replies.length)))
+    {
+      threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-first';
+    }
+    
+    
 
     // Mark if someone has replied to this post.
     if (typeof lastDirectReplyTo[threadOrder[i].post.uri] !== "undefined") {
@@ -133,14 +160,30 @@ function computeThreadHandleVisibility(threadOrder) {
         };
       }
 
-      // Check if this reply line should be collapsed. It should be collapsed if all of:
-      // * Its parent has one reply
+      // XXX I actually need to detect a bunch types of things, and I need to not conflate them:
+      // 1. The handle for the FIRST post in a collapsed reply chain, when
+      //    drawn on THAT post. Draw it with a corner and a continuation patch.
+      //    To detect the handle for the FIRST post in a collapsed reply chain:
+      //     - Its parent does not exist or has more than one reply
+      //     - The post that this handle is about has zero or one reply
+      //     - If the post that this handle is about has one reply, the reply has zero or one replies.
+
+      // 2. The handle for the FIRST post in a collapsed reply chain, when
+      //    drawn on a SUBSEQUENT post.  Draw it as a continuation line.
+      // 3. The handle for the FIRST post in a collapsed reply chain, when
+      //    drawn on the LAST post in the chain.  Draw it as a continuation line
+      //    that ends early. (or maybe leave this up to CSS?)
+      // 4. The handle for SUBSEQUENT posts in the chain, when drawn on ANY
+      //    SUBSEQUENT post.  Don't display it.
+
+      // Check if this reply line should be totally collapsed because it is
+      // about a subsequent post in a collapsed reply chain.
+      // * Its parent exists and has one reply
       // * This post has zero or one reply
       // * If it has one reply, that reply has zero or one replies.
-
       if (
-        // Check if its parent has one reply.
-        (j === 0 || threadOrder[i].inReplyTo[j-1].post.replies.length == 1)
+        // Its parent does not exist or has more than one reply
+        (j > 0 && threadOrder[i].inReplyTo[j].post.replies.length === 1)
 
         // Check if this post has zero or one reply
         && [0,1].includes(threadOrder[i].inReplyTo[j].post.replies.length)
@@ -148,8 +191,35 @@ function computeThreadHandleVisibility(threadOrder) {
         // Check if this post's reply has zero or one replies.
         && (threadOrder[i].inReplyTo[j].post.replies.length === 0 || [0,1].includes(threadOrder[i].inReplyTo[j].post.replies[0].replies.length)))
       {
-        threadOrder[i].inReplyTo[j].collapsed = true;
+        threadOrder[i].inReplyTo[j].collapsed = 'collapsed-hidden';
       }
+
+      // It's possible to meet the criteria for both "collapsed-hidden" and "collapsed-first".
+      // If that happens, we want "collapsed-first" to win, so let's check for that last.
+
+      // Check if this reply line should be the first in a collapsed reply chain.
+      // If it's like that, then it shouldn't be drawn like a "thread-line-continue".
+      // That is true if all of:
+      // * Its parent exists and has one reply.
+      // * Its parent's parent doesn't exist, or has more than one reply.
+      // * It has zero or one reply.
+      // * If it has one reply, the reply has zero or one replies.
+      if (
+        // * Its parent exists and has one reply.
+        (j > 0 && threadOrder[i].inReplyTo[j].post.replies.length === 1)
+
+        // * Its parent's parent doesn't exist, or has more than one reply.
+        && (j < 2 || threadOrder[i].inReplyTo[j-1].post.replies.length > 1)
+
+        // * It has zero or one reply.
+        && [0,1].includes(threadOrder[i].inReplyTo[j].post.replies.length)
+
+        // * If it has one reply, the reply has zero or one replies.
+        && (threadOrder[i].inReplyTo[j].post.replies.length === 0 || [0,1].includes(threadOrder[i].inReplyTo[j].post.replies[0].replies.length)))
+      {
+        threadOrder[i].inReplyTo[j].collapsed = 'collapsed-first';
+      }
+
     }
   }
 

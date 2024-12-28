@@ -122,7 +122,11 @@ div.threaded-post > ul {
     }
   }
 
-  li.collapsed {
+  li.collapsed-first {
+    background: blue;
+  }
+
+  li.collapsed-hidden {
     background: orange;
   }
 }
