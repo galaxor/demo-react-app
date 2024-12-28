@@ -1,0 +1,195 @@
+/* In dark mode, it needs to be a little thicker to appear the same */
+.dark main.thread a.thread-handle > svg {
+  path {
+    stroke-width: 0.8;
+  }
+}
+
+main.thread {
+
+/* Reorder the page from screenreader order to visual order. */
+h1 { order: 1; }
+section.thread-context { order: 2; }
+section.main-post { order: 3; }
+section.replies { order: 4; }
+section.thread-remainder { order: 5; }
+
+article.post,
+section {
+  width: 100%;
+}
+
+article.post {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+a.thread-handle:hover {
+  border-color: hsl(var(--nextui-primary));
+}
+
+div.threaded-post > ul {
+  flex-shrink: 2;
+  display: flex;
+
+  a.thread-handle {
+    display: block;
+    height: 100%;
+
+    svg {
+      width: 30px;
+      position: relative;
+      top: -11px;
+    }
+  }
+
+  li.thread-line-first:not(.thread-line-last) {
+    display: flex;
+
+    > a.thread-handle {
+      border-left: 1px solid hsl(var(--nextui-foreground));
+      &:hover {
+        border-color: hsl(var(--nextui-primary));
+      }
+    }
+
+    &::after {
+      content: " ";
+      display: block;
+      width: 15px;
+      height: 100%;
+    }
+  }
+
+  /* Collapsed reply chains. */
+  li.collapsed-last > a.thread-handle,
+  li.collapsed-first > a.thread-handle {
+    width: 15px;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+    &:hover {
+      border-color: hsl(var(--nextui-primary));
+    }
+    svg { display: none; }
+  }
+
+  /* Let them know this is the last post in the reply chain. */
+  li.collapsed-last {
+    margin-bottom: 4em;
+  }
+
+  li.collapsed-hidden > a.thread-handle {
+    display: none;
+  }
+
+  li.thread-line-continue > a.thread-handle {
+    width: 30px;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+    &:hover {
+      border-color: hsl(var(--nextui-primary));
+    }
+    svg { display: none; }
+  }
+
+  li.thread-line-hide > a.thread-handle {
+    width: 30px;
+    svg { display: none; }
+  }
+
+  li.thread-line-branch > a.thread-handle {
+    border-left: 1px solid hsl(var(--nextui-foreground));
+    &:hover { 
+      border-color: hsl(var(--nextui-primary));
+    }
+  }
+
+  /* In the situation where this is the first post of a subthread that has a
+   * branch, we need to draw a little "patch" for the subthread to connect to.
+   * It's not a real, full, thread handle. */
+  li.thread-line-branch.has-replies,
+  li.thread-line-first.has-replies,
+  li.thread-line-first.thread-line-last.has-branch
+  {
+    a.thread-handle {
+      display: flex;
+    }
+
+    display: flex;
+    
+    &::after {
+      content: " ";
+      display: block;
+      width: 15px;
+      height: auto;
+      border-left: 1px solid hsl(var(--nextui-foreground));
+      margin-top: 24px;
+
+      /* I don't know why I have to reposition this. Probably other borders are
+       * adding space to stuff, causing it to be off by a pixel. */
+      position: relative;
+      left: -1px;
+    }
+  }
+
+  li.thread-line-branch:last-child,
+  li.thread-line-last:last-child {
+    display: flex;
+
+    &::after {
+      content: " ";
+      display: block;
+      width: 15px;
+      height: 100%;
+    }
+  }
+}
+
+/* Draw little dots where the posts are, to break up the thread lines a little. */
+div.threaded-post > div.post-and-composing-reply > article {
+  position: relative;
+}
+div.threaded-post > div.post-and-composing-reply > article::before {
+  content: " ";
+  display: block;
+  width: 1ex;
+  height: 1ex;
+  background: hsl(var(--nextui-foreground));
+  border-radius: 100%;
+  position: absolute;
+  top: 13px;
+  left: -19px;
+  z-index: 2;
+}
+
+/* A special case: The very first post in the thread needs to have a special kind of line to show that it's the start. */
+section.main-post > div.threaded-post:first-child:not(:has(> ul)),
+section.thread-context > div.threaded-post:first-child {
+  display: flex;
+  &::before {
+    content: " ";
+    display: block;
+    width: 16px;
+    height: auto;
+    margin-top: 24px;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+  }
+}
+
+div.post {
+  border: 1px solid transparent;
+}
+
+section.main-post div.post {
+  border-color: hsl(var(--nextui-foreground));
+}
+
+.thread-handle-text {
+  /* visually-hidden */
+  height: 0.1px;
+  width: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+}

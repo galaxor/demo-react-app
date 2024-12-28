@@ -17,6 +17,7 @@ import QuoteBoost from './QuoteBoost.jsx'
 import QuoteBoostsDetail from './QuoteBoostsDetail.jsx'
 import ReactionsDetail from './ReactionsDetail.jsx'
 import RootFeed from './RootFeed.jsx'
+import Thread from './Thread.jsx'
 import YourFeed from './YourFeed.jsx'
 import WhoFollowsThem from './WhoFollowsThem.jsx'
 import WhoDoTheyFollow from './WhoDoTheyFollow.jsx'
@@ -114,6 +115,11 @@ const router = createBrowserRouter([
           },
           {
             path: "/post/:postUri",
+            loader: getPostLoader(database),
+            element: <Thread />,
+          },
+          {
+            path: "/old-post/:postUri",
             loader: getPostLoader(database),
             element: <PostSingle />,
           },

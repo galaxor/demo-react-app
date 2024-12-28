@@ -18,7 +18,9 @@ export default function YourFeed() {
       <h1 id="your-feed">Your Feed</h1>
       <SystemNotificationArea />
 
-      <PostsList posts={friendsPosts} />
+      <div aria-role="feed">
+        <PostsList posts={friendsPosts} />
+      </div>
     </main>
   );
 }

@@ -1,35 +1,90 @@
-import { Button } from "@nextui-org/button"
-import EmojiPicker from 'emoji-picker-react';
-import {Popover, PopoverTrigger, PopoverContent} from "@nextui-org/popover"
-import { useContext, useRef, useState, useEffect } from 'react';
+import Corner from './corner-svg.jsx'
 
-function RxnBtn() {
-  const [ menuOpen, setMenuOpen ] = useState(false);
+export default function Test() {
+  const outline = 
+    { text: "Thesis",
+      children: [
+      { text: "I",
+        children: [
+          { text: "A",
+            children: [
+            ],
+          },
+          { text: "B",
+            children: [
+              { text: "1",
+                children: [
+                  { text: "a",
+                    children: [
+                      { text: "i",
+                        children: [
+                        ],
+                      },
+                    ],
+                  }
+                ],
+              },
+              { text: "2",
+                children: [
+                ],
+              },
+            ],
+          },
+          { text: "C",
+            children: [
+            ],
+          },
+        ],
+      },
+      { text: "II",
+        children: [
+        ],
+      },
+      { text: "III",
+        children: [
+          { text: "A",
+            children: [
+            ],
+          }
+        ],
+      },
+      { text: "IV",
+        children: [
+        ],
+      },
+    ],
+  };
 
   return (
-    <Popover isOpen={menuOpen} onOpenChange={openness => { console.log("Change open to", openness); setMenuOpen(openness); }}>
-      <PopoverTrigger>
-        <Button>Hihi</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <EmojiPicker className="emoji-picker" open={true}
-          onEmojiClick={emoji => {
-            console.log("Added emoji", emoji);
-            if (typeof onReact === 'function') { onReact(); }
-          }}
-          onSkinToneChange={newTone => console.log("Changed skin tone", newTone)}
-        />
-      </PopoverContent>
-    </Popover>
+    <>
+      <main className="test">
+        <PostNReplies node={outline} />
+      </main>
+    </>
   );
 }
 
-export default function Test() {
+function PostNReplies({node}) {
+  console.log(node);
   return (
-    <>
-      <RxnBtn />
-      <RxnBtn />
-      <RxnBtn />
-    </>
+    <div className="post-and-replies">
+      <article className="post">
+        <div className="post">{node.text}</div>
+        {node.children.length > 0?
+          <ul className="replies">
+            {node.children.map(child => {
+              return (
+                <li>
+                  <a href="/" className="thread-handle"><Corner /></a>
+                  <a href="/" className="collapsed-thread-handle"></a>
+                  <PostNReplies node={child} />
+                </li>
+              );
+            })}
+          </ul>
+          : ""
+        }
+      </article>
+    </div>
   );
 }

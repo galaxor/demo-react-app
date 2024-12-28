@@ -1,4 +1,221 @@
-ul.replies {
-  padding-left: 1ex;
-  border-left: 2px solid grey;
+main.post-single { 
+
+div.post {
+  margin-left: 1ex;
+  border: 1px solid transparent;
+}
+
+div.post-and-replies {
+  flex-grow: 2;
+}
+
+ul.replies > li > div.post-and-replies {
+  margin-top: 2ex;
+}
+
+/* But the first post in the replies section shouldn't have the margin, for
+ * seamlessness reasons. I don't actually know why this is necessary. */
+section.replies-section > ul.replies > li > div.post-and-replies {
+}
+
+a.thread-handle > svg {
+  width: 30px;
+  position: relative;
+  top: -11px;
+  color: hsl(var(--nextui-foreground));
+}
+
+/* In dark mode, it needs to be a little thicker to appear the same */
+.dark a.thread-handle > svg {
+  path {
+    stroke-width: 0.8;
+  }
+}
+
+ul.replies > li {
+  display: flex;
+}
+
+a.thread-handle {
+  display: block;
+  width: 30px;
+  height: auto;
+  border-left: 1px solid hsl(var(--nextui-foreground));
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+/* Don't draw the border-left if there's no "next" li in the list.  Don't give
+ * the impression that the thread continues beyond this. */
+ul.replies > li:last-child > a.thread-handle {
+  border-left: none;
+}
+
+/* But, we will allow there to be no "next" li if this is the post-single, and
+ * there actually is a reply section on the page. */
+article.post-single:has(section.replies-section) > ul.replies > li:last-child > a.thread-handle {
+  border-left: 1px solid hsl(var(--nextui-foreground));
+}
+
+ul.replies > li:not(:first-child:last-child):has(> div.post-and-replies > article > ul.replies > li:first-child:last-child) > a {
+  display: flex;
+}
+
+ul.replies > li > div.post-and-replies > article > div.post { position: relative; }
+
+
+/* A post that has replies beneath it needs to draw a little patch to connect
+ * its dot to the place where the thread diverges, below the post.  It doesn't
+ * have the luxury of a thread-handle, because those are drawn by the children
+ * of the post, rather than by the post itself.
+ */
+/* The patch also needs to be drawn if the main post has replies. */
+
+main.post-single > article:has(> section.replies-section) div.post-single::before,
+ul.replies > li:has(> div.post-and-replies > article > ul.replies > li) > div.post-and-replies > article > div.post::before {
+  content: " ";
+  display: block;
+  width: 2em;
+  height: calc(100% - 4px);
+  position: absolute;
+  left: -9px;
+  top: 5px;
+  border-left: 1px solid hsl(var(--nextui-foreground));
+}
+
+div.post {
+  outline: 1px solid transparent;
+  outline-offset: 2px;
+}
+
+/* This displays the link for the collapsed reply chain. */
+a.collapsed-thread-handle {
+  content: " ";
+  display: none;
+}
+
+/* Identify collapsed reply chains */
+
+/* We collapse it if it has only a single reply, and that single reply doesn't have any branches inside it. */
+
+/* This identifies the first post in a reply chain (and certain subsequent
+ * ones). We have another thing that detects subsequent replies but not first
+ * ones. */
+li:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child):not(:has(> div.post-and-replies > article > ul.replies > li:first-child:last-child > div.post-and-replies > article > ul.replies > li ~ li)) {
+  &:has(> a.collapsed-thread-handle:hover) > div.post-and-replies > article > div.post {
+    outline-color: hsl(var(--nextui-primary));
+  }
+
+  & > a.collapsed-thread-handle {
+    content: " ";
+    border-left: 1px solid hsl(var(--nextui-foreground));
+    margin-top: 23px;
+    margin-bottom: 2em;
+    width: 2.5ex;
+
+    &:hover {
+      border-color: hsl(var(--nextui-primary));
+    }
+  }
+
+  & > div.post-and-replies > article::before {
+    left: -24px;
+  }
+
+  & > div.post-and-replies > article > div.post {
+    margin-left: 0;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+/* This identifies subsequent replies in a reply chain (but not the first). */
+ul.replies > li:first-child:last-child:not(:has(> div.post-and-replies > article > ul.replies > li ~ li)):not(:has(div.post-single)) {
+
+  & > a.thread-handle {
+    display: none;
+  }
+
+  & > div.post-and-replies > article::before {
+    left: -24px;
+  }
+  
+  & > div.post-and-replies > article > div.post {
+    margin-left: 0;
+  }
+}
+
+/* But it also identifies the first post in the replies section, which it should not. */
+section.replies-section > ul.replies > li:first-child:last-child:not(:has(> div.post-and-replies > article > ul.replies > li ~ li)):not(:has(div.post-single)) {
+  & > a.thread-handle {
+    display: block;
+  }
+}
+
+
+/* Hover rules */
+a.thread-handle svg { color: hsl(var(--nextui-foreground)); }
+
+li:has(> div.post-and-replies > article > ul.replies > li > a.thread-handle:hover) {
+  /* Highlight the corner svg that leads into the thread, when the thread is hovered. */
+  & > a.thread-handle > svg {
+    color: hsl(var(--nextui-primary));
+  }
+
+  /* If there's one of those little patches, highlight that when the thread is hovered. */
+  & > div.post-and-replies > article > div.post::before {
+    border-color: hsl(var(--nextui-primary));
+  }
+}
+
+/* Also highlight the main post if it's the start of a thread, and people are
+ * hovering over the link in the replies section.  These will have a different
+ * hierarchy from posts that are together in the replies section. */
+main > article:has(> section.replies-section > ul.replies > li > a.thread-handle:hover) {
+  & > div.post,
+  & > div.post::before {
+    outline-color: hsl(var(--nextui-primary));
+  }
+}
+
+/* Highlight the corner svg that leads into the post you're mousing over. */
+
+li:has(> a.thread-handle:hover) ~ li > a.thread-handle,
+li:has(~li > a.thread-handle:hover) > a.thread-handle,
+a.thread-handle:hover {
+  border-color: hsl(var(--nextui-primary));
+}
+
+div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post {
+  outline-color: hsl(var(--nextui-primary));
+}
+
+div.post-and-replies > article:has(> ul.replies > li > a.thread-handle:hover) > div.post::before 
+{
+  border-color: hsl(var(--nextui-primary));
+}
+
+
+/* Draw little dots where the posts are, to break up the thread lines a little. */
+div.post-and-replies > article {
+  position: relative;
+}
+div.post-and-replies > article::before {
+  content: " ";
+  display: block;
+  width: 1ex;
+  height: 1ex;
+  background: hsl(var(--nextui-foreground));
+  border-radius: 100%;
+  position: absolute;
+  top: 3px;
+  left: -5px;
+  z-index: 2;
+}
+
+
+/* Special cases that I haven't figured out what the deal is with them yet. */
+
 }

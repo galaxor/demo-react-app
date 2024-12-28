@@ -1,3 +1,5 @@
+import Corner from './corner-svg.jsx'
+import hashSum from 'hash-sum'
 import Post from './Post.jsx';
 import PostAndReplies from './PostAndReplies.jsx'
 import { PostsDB } from './logic/posts.js';
@@ -34,7 +36,9 @@ export default function Replies({postRepliedTo, prune, replies, setReplies}) {
         } else {
           return (
           <li key={'li-'+reply.uri}>
-            <PostAndReplies key={reply.uri} post={reply} prune={prune} />
+            <a href={"#"+hashSum(postRepliedTo.uri)} className="thread-handle"><Corner /></a>
+            <a href={"#"+hashSum(reply.uri)} className="collapsed-thread-handle"></a>
+            <PostAndReplies key={reply.uri} id={hashSum(reply.uri)} post={reply} prune={prune} />
           </li>
           );
         }

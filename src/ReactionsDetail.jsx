@@ -54,7 +54,7 @@ export default function ReactionsDetail() {
 
               return reactionType.reactors.map(person => {
                 return (
-                  <li key={key+':'+person.handle} className="reactor" className="flex gap-5 items-center mb-2"><ReactionGlyph reaction={reactionType} /> <PersonInline person={person} /></li>
+                  <li key={key+':'+person.handle} className="reactor flex gap-5 items-center mb-2"><ReactionGlyph reaction={reactionType} /> <PersonInline person={person} /></li>
                 );
               })
             })}

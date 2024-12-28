@@ -1,3 +1,4 @@
+import Corner from './corner-svg.jsx'
 import { useContext } from 'react'
 
 import DatabaseContext from './DatabaseContext.jsx'
@@ -18,6 +19,9 @@ function nextReplies(replyLevel, children) {
     return (
         <ul className="replies">
           <li>
+            <a href={"#"/*+hashSum(postRepliedTo.uri)*/} className="thread-handle"><Corner /></a>
+            <a href={"#"/*+hashSum(reply.uri)*/} className="collapsed-thread-handle"></a>
+
             <div className="post-and-replies">
               {nextReplies(replyLevel-1, children)}
             </div>

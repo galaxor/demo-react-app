@@ -28,7 +28,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post(props, ref) {
-  const {post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight} = props;
+  const {id, post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -108,9 +108,9 @@ const Post = forwardRef(function Post(props, ref) {
         </div>
       }
 
-      <Card ref={postDivRef} className={"post hover:bg-default-100 cursor-pointer "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+className}>
+      <Card id={id? id.toString() : ""} ref={postDivRef} className={"post overflow-visible hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+(className ?? "")}>
         <CardHeader>
-          {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} className="scroll-into-view"></div> : ""}
+          {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} id={"scroll-target-"+id.toString(16)} className="scroll-into-view"></div> : ""}
           <span className="post-metadata w-full flex justify-between">
             <span className="post-date order-1 text-right"
               aria-label={post.updatedAt === post.createdAt?
@@ -190,7 +190,7 @@ const Post = forwardRef(function Post(props, ref) {
   ;
 
   return (
-    <article className={"post h-entry "+className}>
+    <article className={"post h-entry "+(className ?? "")}>
       {postWithoutChildren}
       {children}
     </article>
