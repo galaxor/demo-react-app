@@ -124,7 +124,7 @@ function computeThreadHandleVisibility(threadOrder) {
       && [0,1].includes(threadOrder[i].post.replies.length)
 
       // * If it has one reply, the reply has zero or one replies.
-      && (threadOrder[i].post.replies.length === 0 || [0,1].includes(threadOrder[i].post.replies[0].replies.length)))
+      /* && (threadOrder[i].post.replies.length === 0 || [0,1].includes(threadOrder[i].post.replies[0].replies.length)) */)
     {
       // So, this is the handle that points to the first post in the
       // collapsed reply chain.  But is it the LAST such post?
@@ -211,7 +211,7 @@ function computeThreadHandleVisibility(threadOrder) {
         && [0,1].includes(threadOrder[i].inReplyTo[j].post.replies.length)
 
         // * If it has one reply, the reply has zero or one replies.
-        && (threadOrder[i].inReplyTo[j].post.replies.length === 0 || [0,1].includes(threadOrder[i].inReplyTo[j].post.replies[0].replies.length)))
+        && [0,1].includes(threadOrder[i].inReplyTo[j].post.replies[0].replies.length))
       {
         // So, this is the handle that points to the first post in the
         // collapsed reply chain.  But is it the LAST such post?
@@ -228,6 +228,16 @@ function computeThreadHandleVisibility(threadOrder) {
         }
       }
 
+      // If it would otherwise be a collapsed-first or collapsed-last, but its
+      // reply's reply has more than one reply (is a branch), then it
+      // becomes a "collapsed-hidden" instead of a "collapsed-first", because
+      // the post that branches out will hijack the collapsed reply chain.
+      if (['collapsed-first', 'collapsed-last'].includes(threadOrder[i].inReplyTo[j].collapsed)
+          && threadOrder[i].inReplyTo[j].post.replies[0].replies.length === 1
+          && threadOrder[i].inReplyTo[j].post.replies[0].replies[0].replies.length > 1) 
+      {
+        threadOrder[i].inReplyTo[j].collapsed = 'collapsed-hidden';
+      }
     }
   }
 
