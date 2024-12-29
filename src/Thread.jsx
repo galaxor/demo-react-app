@@ -350,12 +350,19 @@ export default function Thread() {
 
   // Calculate the entire thread, from knowing the main post.
 
-  const originatingPost = (mainPost.conversationId === mainPost.uri || mainPost.conversationId === null)?
-                          mainPost :
-                          postsDB.get(mainPost.conversationId)
-                          ;
+  const originatingPostInitial = useMemo(() => {
+    const originatingPost = (mainPost.conversationId === mainPost.uri || mainPost.conversationId === null)?
+                            mainPost :
+                            postsDB.get(mainPost.conversationId)
+                            ;
   
-  getRepliesTo(originatingPost, postsDB);
+    getRepliesTo(originatingPost, postsDB);
+
+    return originatingPost;
+  }, []);
+
+  const [originatingPost, setOriginatingPost] = useState(originatingPostInitial);
+
   const threadOrder = flattenThread(originatingPost);
 
   computeThreadHandleVisibility(threadOrder);
