@@ -12,6 +12,7 @@ export function flattenThread(post, inReplyTo) {
     inReplyTo = [];
   }
   const threadOrder = [{post, inReplyTo: [...inReplyTo]}];
+  if (typeof post.replies === "undefined") { post.replies = []; }
   post.replies.forEach(replyPost => threadOrder.push(...flattenThread(replyPost, [...inReplyTo, {post, drawThreadLine: null}])));
 
   return threadOrder;

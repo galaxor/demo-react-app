@@ -29,8 +29,8 @@ span.post-author {
 .scroll-into-view {
   position: relative;
   top: -6em; 
-  width: 1ex;
-  height: 1ex; 
+  width: 0.0001px;
+  height: 0.0001px; 
   z-index: -1;
   background: transparent;
 } 

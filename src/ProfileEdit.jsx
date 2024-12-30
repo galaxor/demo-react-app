@@ -95,8 +95,6 @@ export default function ProfileEdit() {
     <Form ref={formRef} id="profile-edit" className="w-full" onSubmit={(e) => {
       e.preventDefault();
 
-      console.log(nameInputRef);
-
       User.setBio(bioInputRef.current.value);
 
       // Every call to User.setWhatever changes the database and then returns a fresh copy of the user variable.

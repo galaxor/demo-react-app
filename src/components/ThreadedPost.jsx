@@ -1,14 +1,14 @@
 import hashSum from 'hash-sum'
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { closeReply } from '../include/closeReply.js'
+import { closeReplyNoDBRefresh } from '../include/closeReply.js'
 import Corner from './corner-svg.jsx'
 import DatabaseContext from '../DatabaseContext.jsx'
 import Post from '../Post.jsx';
 import PostEditor from '../PostEditor.jsx';
 import { PostsDB } from '../logic/posts.js';
 
-export default function ThreadedPost({post, inReplyTo, className, scrollRef}) {
+export default function ThreadedPost({post, inReplyTo, className, scrollRef, setReplies}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
@@ -51,7 +51,7 @@ export default function ThreadedPost({post, inReplyTo, className, scrollRef}) {
 
             {composingReply?
               <div className="composing-reply">
-                <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReply({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); } } />
+                <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={newPost => { closeReplyNoDBRefresh({post: newPost, setComposingReply, numReplies, setNumReplies, postsDB, replies: post.replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); } } />
               </div>
               : ""
             }
