@@ -1,7 +1,7 @@
 import { PostsDB } from './logic/posts.js';
 
 import { clickPost } from './clickPost.js'
-import { closeReply } from './closeReply.js'
+import { closeReply } from './include/closeReply.js'
 import hashSum from 'hash-sum'
 import ReplyLevel from './ReplyLevel.jsx'
 import Post from './Post.jsx';

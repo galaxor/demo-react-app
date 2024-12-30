@@ -1,6 +1,6 @@
 import { PostsDB } from './logic/posts.js';
 
-import { closeReplyNoDBRefresh } from './closeReply.js'
+import { closeReplyNoDBRefresh } from './include/closeReply.js'
 import Post from './Post.jsx';
 import PostEditor from './PostEditor.jsx';
 import Replies from './Replies.jsx';

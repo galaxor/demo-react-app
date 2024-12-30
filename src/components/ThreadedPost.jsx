@@ -1,12 +1,12 @@
+import hashSum from 'hash-sum'
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { closeReply } from './closeReply.js'
+import { closeReply } from '../include/closeReply.js'
 import Corner from './corner-svg.jsx'
-import DatabaseContext from './DatabaseContext.jsx'
-import hashSum from 'hash-sum'
-import Post from './Post.jsx';
-import PostEditor from './PostEditor.jsx';
-import { PostsDB } from './logic/posts.js';
+import DatabaseContext from '../DatabaseContext.jsx'
+import Post from '../Post.jsx';
+import PostEditor from '../PostEditor.jsx';
+import { PostsDB } from '../logic/posts.js';
 
 export default function ThreadedPost({post, inReplyTo, className, scrollRef}) {
   const db = useContext(DatabaseContext);

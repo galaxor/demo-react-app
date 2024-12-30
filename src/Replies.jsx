@@ -1,4 +1,4 @@
-import Corner from './corner-svg.jsx'
+import Corner from './components/corner-svg.jsx'
 import hashSum from 'hash-sum'
 import Post from './Post.jsx';
 import PostAndReplies from './PostAndReplies.jsx'

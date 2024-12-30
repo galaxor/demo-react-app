@@ -1,7 +1,7 @@
 import { PostsDB } from './logic/posts.js';
 
 import { clickPost } from './clickPost.js'
-import { closeReply } from './closeReply.js'
+import { closeReply } from './include/closeReply.js'
 import { computeCollapsedReplyChains, computeThreadHandleVisibility, createStylesheetsForHover, flattenThread } from './include/thread-gymnastics.js'
 import hashSum from 'hash-sum'
 import Post from './Post.jsx';
@@ -9,7 +9,7 @@ import PostEditor from './PostEditor.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import SystemNotificationArea from './SystemNotificationArea.jsx';
-import ThreadedPost from './ThreadedPost.jsx'
+import ThreadedPost from './components/ThreadedPost.jsx'
 
 import './static/Thread.css'
 

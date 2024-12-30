@@ -1,7 +1,7 @@
 import { PostsDB } from './logic/posts.js';
 
 import { clickPost } from './clickPost.js'
-import { closeReply } from './closeReply.js'
+import { closeReply } from './include/closeReply.js'
 import Post from './Post.jsx';
 import PostEditor from './PostEditor.jsx';
 import Replies from './Replies.jsx';

@@ -1,4 +1,4 @@
-import Corner from './corner-svg.jsx'
+import Corner from './components/corner-svg.jsx'
 import { useContext } from 'react'
 
 import DatabaseContext from './DatabaseContext.jsx'
