@@ -7,12 +7,16 @@ export function closeReply({post, setComposingReply, numReplies, setNumReplies, 
   setReplies(updatedReplies);
 }
 
-export function closeReplyNoDBRefresh({post, setComposingReply, numReplies, setNumReplies, replies, setReplies}) {
+export function closeReplyNoDBRefresh({post, setComposingReply, numReplies, setNumReplies, replies, setReplies, sortFn}) {
   setNumReplies(numReplies+1);
   setComposingReply(false);
 
   const updatedReplies = [...replies, post];
-  updatedReplies.sort((a, b) => a.createdAt < b.createdAt);
+
+  const useSortFn = sortFn ?? ( (a, b) => a.createdAt === b.createdAt? 0 : a.createdAt < b.createdAt? -1 : 1);
+  updatedReplies.sort(useSortFn);
 
   setReplies(updatedReplies);
+
+  return post;
 }

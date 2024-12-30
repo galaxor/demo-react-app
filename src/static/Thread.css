@@ -192,4 +192,10 @@ section.main-post div.post {
   z-index: -1;
 }
 
+.scroll-into-view {
+  background: blue;
+  width: 1em;
+  height: 1em;
+}
+
 }

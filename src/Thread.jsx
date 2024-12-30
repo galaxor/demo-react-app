@@ -83,10 +83,24 @@ export default function Thread() {
 
   // Scroll the post into view when it first becomes visible.
   const mainPostScrollRef = useCallback(node => {
-    if (node) { node.scrollIntoView(); }
+    if (node) { console.log("Scrolling here instead"); node.scrollIntoView(); }
 
     return {current: node};
   }, []);
+
+  // If we set a different post as the "scroll-to post", scroll to that one instead.
+  // This happens when a reply is posted.
+  const [scrollToPost, setScrollToPost] = useState(null);
+  useEffect(() => {
+    if (scrollToPost) {
+      const scrollTarget = document.getElementById("scroll-target-p"+scrollToPost);
+      if (scrollTarget) {
+        scrollTarget.scrollIntoView();
+        const divPost = scrollTarget.parentNode.parentNode;
+        divPost.focus();
+      }
+    }
+  }, [scrollToPost]);
 
   // Calculate the entire thread, from knowing the main post.
 
@@ -160,7 +174,9 @@ export default function Thread() {
           post={threadOrder[mainPostIndex].post} 
           setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics)}
           inReplyTo={threadOrder[mainPostIndex].inReplyTo}
-          scrollRef={mainPostScrollRef} />
+          scrollRef={mainPostScrollRef}
+          setScrollToPost={setScrollToPost}
+        />
       </section>
 
       {replies.length === 0? "" :

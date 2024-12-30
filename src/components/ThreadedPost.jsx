@@ -8,7 +8,7 @@ import Post from '../Post.jsx';
 import PostEditor from '../PostEditor.jsx';
 import { PostsDB } from '../logic/posts.js';
 
-export default function ThreadedPost({post, inReplyTo, className, scrollRef, setReplies}) {
+export default function ThreadedPost({post, inReplyTo, className, scrollRef, setReplies, setScrollToPost}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
@@ -51,7 +51,15 @@ export default function ThreadedPost({post, inReplyTo, className, scrollRef, set
 
             {composingReply?
               <div className="composing-reply">
-                <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={newPost => { closeReplyNoDBRefresh({post: newPost, setComposingReply, numReplies, setNumReplies, postsDB, replies: post.replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); } } />
+                <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} 
+                  onSave={newPost => { 
+                    closeReplyNoDBRefresh({post: newPost, setComposingReply, numReplies, setNumReplies, postsDB, replies: post.replies, setReplies});
+                    // postRef.current.focusReplyButton(); 
+                    if (typeof setScrollToPost !== "undefined") {
+                      setScrollToPost(hashSum(newPost.uri).toString(16));
+                    }
+                  }} 
+                  onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); } } />
               </div>
               : ""
             }
