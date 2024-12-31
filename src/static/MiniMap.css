@@ -1,5 +1,6 @@
 #minimap {
-  --thread-handle-width: 1vw;
+  --thread-handle-width: 0.8vw;
+  --collapsed-thread-handle-margin: 0.3vw;
 
   a.thread-handle > svg {
     path {
@@ -36,7 +37,7 @@
       svg {
         width: var(--thread-handle-width);
         position: relative;
-        top: -11px;
+        top: -17px;
       }
     }
 
@@ -53,7 +54,7 @@
       &::after {
         content: " ";
         display: block;
-        width: 15px;
+        width: var(--collapsed-thread-handle-margin);
         height: 100%;
       }
     }
@@ -61,7 +62,7 @@
     /* Collapsed reply chains. */
     li.collapsed-last > a.thread-handle,
     li.collapsed-first > a.thread-handle {
-      width: 15px;
+      width: var(--collapsed-thread-handle-margin);
       border-left: 1px solid hsl(var(--nextui-foreground));
       &:hover {
         border-color: hsl(var(--nextui-primary));
@@ -71,7 +72,7 @@
 
     /* Let them know this is the last post in the reply chain. */
     li.collapsed-last {
-      margin-bottom: 4em;
+      margin-bottom: 1px;
     }
 
     li.collapsed-hidden > a.thread-handle {
@@ -115,10 +116,10 @@
       &::after {
         content: " ";
         display: block;
-        width: 15px;
+        width: var(--collapsed-thread-handle-margin);
         height: auto;
         border-left: 1px solid hsl(var(--nextui-foreground));
-        margin-top: 24px;
+        margin-top: 12px;
 
         /* I don't know why I have to reposition this. Probably other borders are
          * adding space to stuff, causing it to be off by a pixel. */
@@ -134,7 +135,7 @@
       &::after {
         content: " ";
         display: block;
-        width: 15px;
+        width: var(--collapsed-thread-handle-margin);
         height: 100%;
       }
     }
