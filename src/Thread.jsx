@@ -3,6 +3,7 @@ import { PostsDB } from './logic/posts.js';
 import { clickPost } from './clickPost.js'
 import { computeCollapsedReplyChains, computeThreadHandleVisibility, createStylesheetsForHover, flattenThread } from './include/thread-gymnastics.js'
 import hashSum from 'hash-sum'
+import MiniMap from './components/MiniMap.jsx'
 import Post from './Post.jsx';
 import PostEditor from './PostEditor.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
@@ -227,5 +228,7 @@ export default function Thread() {
         </>
       }
     </main>
+
+    <MiniMap threadOrder={threadOrder} />
   </>;
 }
