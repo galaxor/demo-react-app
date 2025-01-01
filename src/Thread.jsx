@@ -84,7 +84,7 @@ export default function Thread() {
 
   // Scroll the post into view when it first becomes visible.
   const mainPostScrollRef = useCallback(node => {
-    if (node) { console.log("Scrolling here instead"); node.scrollIntoView(); }
+    if (node) { node.scrollIntoView(); }
 
     return {current: node};
   }, []);

@@ -31,28 +31,31 @@ export default function MiniMap({threadOrder}) {
 
   // Set the size of the minimap scrollbar thumb based on the viewport.
   useEffect(() => {
-    const threadMain = document.getElementById('thread-main');
-    const threadHeight = threadMain.getBoundingClientRect().height;
-    const threadTop = threadMain.offsetTop;
-
-    // Technically, we don't want the height of the actual viewport.  We want
-    // the height of the rectangle where the viewport intersects the thread.
-    const viewportTop = (window.visualViewport.pageTop < threadTop? threadTop : window.visualViewport.pageTop) - threadTop;
-    const viewportBottom = window.visualViewport.pageTop + window.visualViewport.height - threadTop;
-    const viewportHeight = viewportBottom - viewportTop;
-
-    console.log("T B H", viewportTop, viewportBottom, viewportHeight);
-
-    const minimapTop = viewportTop / threadHeight * 100;
-    const minimapHeight = viewportHeight / threadHeight * 100;
-
-    console.log(viewportTop, viewportBottom, viewportHeight);
-
+    const {top, height} = getMinimapThumbDimensions();
     const minimapThumb = document.getElementById('minimap-scrollbar-thumb');
-    // minimapThumb.style = `top: ${minimapTop}vw; height: ${minimapHeight}vw;`
-    minimapThumb.style = `top: ${minimapTop}vh; height: ${minimapHeight}vh;`
+    minimapThumb.style = `top: ${top}vh; height: ${height}vh;`;
+  });
 
-    console.log(minimapThumb.style);
+  useEffect(() => {
+    const minimapThumb = document.getElementById('minimap-scrollbar-thumb');
+    var listening = true;
+    
+    const scrollHandler = (e => {
+      if (listening) {
+        listening = false;
+        window.requestAnimationFrame(() => {
+          const {top, height} = getMinimapThumbDimensions();
+          minimapThumb.style = `top: ${top}vh; height: ${height}vh;`;
+          listening = true;
+        });
+      }
+    });
+
+    window.addEventListener("scroll", scrollHandler);
+
+    return () => {
+      window.removeEventListener("scroll", scrollHandler);
+    };
   });
 
   return (<aside id="minimap">
@@ -92,4 +95,22 @@ function MiniMapNode({post, inReplyTo}) {
   </div>
 
   </div>);
+}
+
+function getMinimapThumbDimensions() {
+  const threadMain = document.getElementById('thread-main');
+  const threadHeight = threadMain.offsetHeight;
+  const threadTop = threadMain.offsetTop;
+  const scrollY = window.scrollY;
+
+  // Technically, we don't want the height of the actual viewport.  We want
+  // the height of the rectangle where the viewport intersects the thread.
+  const viewportTop = (window.scrollY < threadTop? threadTop : window.scrollY) - threadTop;
+  const viewportBottom = window.scrollY + window.visualViewport.height - threadTop;
+  const viewportHeight = viewportBottom - viewportTop;
+
+  const minimapTop = viewportTop / threadHeight * 100;
+  const minimapHeight = viewportHeight / threadHeight * 100;
+
+  return {top: minimapTop, height: minimapHeight};
 }
