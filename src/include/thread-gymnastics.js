@@ -249,8 +249,8 @@ export function computeCollapsedReplyChains(threadOrder) {
       // * This post has zero or one reply
       // * If it has one reply, that reply has zero or one replies.
       if (
-        // Its parent does not exist or has more than one reply
-        (j > 0 && threadOrder[i].inReplyTo[j].post.replies.length === 1)
+        // Its parent exists and has one reply
+        (j > 0 && threadOrder[i].inReplyTo[j-1].post.replies.length === 1)
 
         // Check if this post has zero or one reply
         && [0,1].includes(threadOrder[i].inReplyTo[j].post.replies.length)
@@ -267,16 +267,12 @@ export function computeCollapsedReplyChains(threadOrder) {
       // Check if this reply line should be the first in a collapsed reply chain.
       // If it's like that, then it shouldn't be drawn like a "thread-line-continue".
       // That is true if all of:
-      // * Its parent exists and has one reply.
-      // * Its parent's parent doesn't exist, or has more than one reply.
+      // * Its parent doesn't exist, or exists and has more than one reply.
       // * It has zero or one reply.
       // * If it has one reply, the reply has zero or one replies.
       if (
-        // * Its parent exists and has one reply.
-        (j > 0 && threadOrder[i].inReplyTo[j].post.replies.length === 1)
-
-        // * Its parent's parent doesn't exist, or has more than one reply.
-        && (j < 2 || threadOrder[i].inReplyTo[j-1].post.replies.length > 1)
+        // * Its parent doesn't exist, or exists and has more than one reply.
+        (j === 0 || threadOrder[i].inReplyTo[j-1].post.replies.length > 1)
 
         // * It has zero or one reply.
         && [0,1].includes(threadOrder[i].inReplyTo[j].post.replies.length)
