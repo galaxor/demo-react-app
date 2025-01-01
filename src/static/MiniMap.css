@@ -30,6 +30,7 @@
   div.minimap-post {
     border: 1px solid hsl(var(--nextui-foreground));
     border-radius: 1ex;
+    width: 100%;
 
     .avatar {
       display: block;
