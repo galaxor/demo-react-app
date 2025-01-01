@@ -36,6 +36,7 @@ export default function MiniMap({threadOrder}) {
     minimapThumb.style = `top: ${top}vh; height: ${height}vh;`;
   });
 
+  // Set up the scroll handler so that the thumb can follow your scrolling.
   useEffect(() => {
     const minimapThumb = document.getElementById('minimap-scrollbar-thumb');
     var listening = true;
@@ -58,7 +59,16 @@ export default function MiniMap({threadOrder}) {
     };
   });
 
+  // Set up a media query so that the minimap is only shown if the thread is larger than the viewport.
+  useEffect(() => {
+    const threadMain = document.getElementById('thread-main');
+    const threadHeight = threadMain.getBoundingClientRect().height;
+    const styleNode = document.getElementById('minimap-styles');
+    styleNode.innerText = `@media (min-height: ${threadHeight}px) { aside#minimap { display: none; } }`;
+  });
+
   return (<aside id="minimap">
+    <style id="minimap-styles" type="text/css"></style>
     <div id="minimap-scrollbar-thumb"></div>
     {threadOrder.map(({post, inReplyTo}) => {
       return <MiniMapNode key={post.uri} post={post} inReplyTo={inReplyTo} />
