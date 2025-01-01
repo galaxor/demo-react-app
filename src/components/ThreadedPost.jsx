@@ -21,7 +21,7 @@ export default function ThreadedPost({post, inReplyTo, className, scrollRef, set
   
 
   return (
-      <div className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
+      <div id={"threaded-post-"+hashSum(post.uri).toString(16)} className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
         {inReplyTo.length > 0? 
           <ul>
             {inReplyTo.map(inReplyTo  => {
