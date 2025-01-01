@@ -7,6 +7,8 @@ import Corner from './corner-svg.jsx'
 import '../static/MiniMap.css'
 
 export default function MiniMap({threadOrder}) {
+
+  // Set the heights of the minimap posts based on the heights of the real posts.
   useEffect(() => {
     const threadMain = document.getElementById('thread-main');
     const threadHeight = threadMain.getBoundingClientRect().height;
@@ -22,12 +24,39 @@ export default function MiniMap({threadOrder}) {
     for (const minimapPost of document.getElementById('minimap').children) {
       const hash = minimapPost.id.substring('minimap-'.length);
       const height = postHeights[hash];
-      console.log(height, threadHeight, "height: "+(height/threadHeight * 100)+"%;");
       minimapPost.style = "height: "+(height/threadHeight * 100)+"%;";
     }
   });
 
+
+  // Set the size of the minimap scrollbar thumb based on the viewport.
+  useEffect(() => {
+    const threadMain = document.getElementById('thread-main');
+    const threadHeight = threadMain.getBoundingClientRect().height;
+    const threadTop = threadMain.offsetTop;
+
+    // Technically, we don't want the height of the actual viewport.  We want
+    // the height of the rectangle where the viewport intersects the thread.
+    const viewportTop = (window.visualViewport.pageTop < threadTop? threadTop : window.visualViewport.pageTop) - threadTop;
+    const viewportBottom = window.visualViewport.pageTop + window.visualViewport.height - threadTop;
+    const viewportHeight = viewportBottom - viewportTop;
+
+    console.log("T B H", viewportTop, viewportBottom, viewportHeight);
+
+    const minimapTop = viewportTop / threadHeight * 100;
+    const minimapHeight = viewportHeight / threadHeight * 100;
+
+    console.log(viewportTop, viewportBottom, viewportHeight);
+
+    const minimapThumb = document.getElementById('minimap-scrollbar-thumb');
+    // minimapThumb.style = `top: ${minimapTop}vw; height: ${minimapHeight}vw;`
+    minimapThumb.style = `top: ${minimapTop}vh; height: ${minimapHeight}vh;`
+
+    console.log(minimapThumb.style);
+  });
+
   return (<aside id="minimap">
+    <div id="minimap-scrollbar-thumb"></div>
     {threadOrder.map(({post, inReplyTo}) => {
       return <MiniMapNode key={post.uri} post={post} inReplyTo={inReplyTo} />
     })}
