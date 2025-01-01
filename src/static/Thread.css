@@ -161,7 +161,8 @@ div.threaded-post > div.post-and-composing-reply > article::before {
 }
 
 /* A special case: The very first post in the thread needs to have a special kind of line to show that it's the start. */
-section.main-post > div.threaded-post:first-child:not(:has(> ul)),
+/* (This doesn't show if there are no replies) */
+&:has(section.replies) > section.main-post > div.threaded-post:first-child:not(:has(> ul)),
 section.thread-context > div.threaded-post:first-child {
   display: flex;
   &::before {
@@ -172,6 +173,12 @@ section.thread-context > div.threaded-post:first-child {
     margin-top: 24px;
     border-left: 1px solid hsl(var(--nextui-foreground));
   }
+}
+
+/* Don't draw the dot if there are no replies */
+&:not(:has(section.replies)) > section.main-post div.post-and-composing-reply > article::before {
+  content: "";
+  display: none;
 }
 
 div.post {
