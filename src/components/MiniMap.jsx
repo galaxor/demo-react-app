@@ -118,7 +118,9 @@ export default function MiniMap({threadOrder}) {
     minimap.addEventListener("pointerdown", pointerDownFn);
 
     return () => {
-      minimap.removeEventListener("pointerdown", pointerDownFn);
+      if (typeof minimap !== "undefined") {
+        minimap.removeEventListener("pointerdown", pointerDownFn);
+      }
     };
   });
   
