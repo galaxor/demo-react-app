@@ -36,18 +36,20 @@ export default function MiniMap({threadOrder}) {
     minimapThumb.style = `top: ${top}vh; height: ${height}vh;`;
   });
 
+  var scrollHandlerEnabled = true;
+
   // Set up the scroll handler so that the thumb can follow your scrolling.
   useEffect(() => {
     const minimapThumb = document.getElementById('minimap-scrollbar-thumb');
-    var listening = true;
     
     const scrollHandler = (e => {
-      if (listening) {
-        listening = false;
+      if (scrollHandlerEnabled) {
+        console.log("It sounded enabled to me, I dunno.");
+        scrollHandlerEnabled = false;
         window.requestAnimationFrame(() => {
           const {top, height} = getMinimapThumbDimensions();
           minimapThumb.style = `top: ${top}vh; height: ${height}vh;`;
-          listening = true;
+          scrollHandlerEnabled = true;
         });
       }
     });
@@ -77,12 +79,14 @@ export default function MiniMap({threadOrder}) {
     });
 
     const pointerDownFn = (e => {
+      if (e.button > 0) { return; }
+
       e.preventDefault();
 
-      if (e.button !== 0) { return; }
-
       window.addEventListener("pointermove", pointerMoveFn);
-      window.addEventListener("pointerup", () => { window.removeEventListener("pointermove", pointerMoveFn); });
+      window.addEventListener("pointerup", () => {
+        window.removeEventListener("pointermove", pointerMoveFn); 
+      });
 
       minimapScroll(e.clientY);
     });
@@ -172,10 +176,11 @@ function minimapScroll(pointerY) {
     : window.visualViewport.height - thumbHeight
   ;
 
-  const newThumbTopPct = newThumbTop2 / minimap.offsetHeight * 100;
-
   const newScrollPos = newThumbTop2 / minimap.offsetHeight * threadHeight + threadMain.offsetTop;
   window.scrollTo({top: newScrollPos, behavior: "smooth"});
 
-  minimapThumb.style.top = `${newThumbTopPct}vh`;
+  // We're not going to change the thumb in the DOM.  We'll just do the
+  // scrolling and then let the scroll handler follow it and redraw the DOM.
+  // const newThumbTopPct = newThumbTop2 / minimap.offsetHeight * 100;
+  // minimapThumb.style.top = `${newThumbTopPct}vh`;
 }
