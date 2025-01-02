@@ -44,7 +44,6 @@ export default function MiniMap({threadOrder}) {
     
     const scrollHandler = (e => {
       if (scrollHandlerEnabled) {
-        console.log("It sounded enabled to me, I dunno.");
         scrollHandlerEnabled = false;
         window.requestAnimationFrame(() => {
           const {top, height} = getMinimapThumbDimensions();
@@ -87,10 +86,7 @@ export default function MiniMap({threadOrder}) {
       styleRules.push(`body:has(div#${minimapPost.id}:hover) #p${hash} { background: hsl(var(--nextui-default-100)); }`);
     }
 
-    console.log(styleRules.join("\n"));
-
     styleNode.innerText = styleRules.join(" ");
-    console.log(styleNode);
   });
 
   // Set it up so you can click on the minimap to insta-scroll to that area,
