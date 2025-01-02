@@ -62,11 +62,35 @@ export default function MiniMap({threadOrder}) {
   });
 
   // Set up a media query so that the minimap is only shown if the thread is larger than the viewport.
+  // Also set it up so if you hover over a post in real life, it highlights it in the minimap.
   useEffect(() => {
     const threadMain = document.getElementById('thread-main');
     const threadHeight = threadMain.getBoundingClientRect().height;
     const styleNode = document.getElementById('minimap-styles');
-    styleNode.innerText = `@media (height >= ${threadHeight}px) { aside#minimap { display: none; } }`;
+
+
+    // If you hover over a post in real life, highlight it on the minimap too.
+    // And when you hover over a minimap post, it should highlight the real post.
+    const styleRules = [
+      `@media (height >= ${threadHeight}px) { aside#minimap { display: none; } }`,
+    ];
+
+    const minimap = document.getElementById('minimap');
+    for (const minimapPost of minimap.children) {
+      // There's a couple things other than posts in here.
+      if (minimapPost.tagName !== "DIV" || minimapPost.id === "minimap-scrollbar-thumb") { continue; }
+
+      // The rest is posts.
+      const hash = minimapPost.id.substring('minimap-'.length);
+
+      styleRules.push(`body:has(div#p${hash}:hover) #${minimapPost.id} { background: hsl(var(--nextui-default-300)); }`);
+      styleRules.push(`body:has(div#${minimapPost.id}:hover) #p${hash} { background: hsl(var(--nextui-default-100)); }`);
+    }
+
+    console.log(styleRules.join("\n"));
+
+    styleNode.innerText = styleRules.join(" ");
+    console.log(styleNode);
   });
 
   // Set it up so you can click on the minimap to insta-scroll to that area,

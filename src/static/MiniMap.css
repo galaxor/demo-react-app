@@ -13,8 +13,12 @@
     left: 0;
     width: 100%;
     border: 2px solid hsl(var(--nextui-secondary));
-    background: hsl(var(--nextui-secondary) / 0.5);
+    background: hsl(var(--nextui-secondary) / 0.3);
     z-index: 3;
+
+    /* The thumb covers up the mini-posts. But we don't want it to block hovering over the mini-posts. */
+    /* See: https://stackoverflow.com/questions/9738984/css-hover-passes-through-elements-to-activate-hover-on-covered-element */
+    pointer-events: none;
   }
 
   a.thread-handle > svg {
@@ -29,7 +33,10 @@
   height: calc(100vh - var(--header-height));
   width: 200px;
   overflow: hidden;
-  border: 1px solid hsl(var(--nextui-foreground));
+
+  /* I'm pretty sure I don't want a border around the minimap, but not 100%
+   * sure.  I'll keep this here to remind me that I'm still thinking about it. */
+  /* border: 1px solid hsl(var(--nextui-foreground)); */
 
   div.minimap-post {
     border: 1px solid hsl(var(--nextui-foreground));
@@ -41,6 +48,10 @@
       width: auto;
       height: 100%;
     }
+  }
+
+  div.minimap-threaded-post:hover {
+    background: hsl(var(--nextui-default-300)); 
   }
 
   div.minimap-threaded-post > ul {
