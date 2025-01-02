@@ -64,42 +64,26 @@ export default function MiniMap({threadOrder}) {
     const threadMain = document.getElementById('thread-main');
     const threadHeight = threadMain.getBoundingClientRect().height;
     const styleNode = document.getElementById('minimap-styles');
-    styleNode.innerText = `@media (min-height: ${threadHeight}px) { aside#minimap { display: none; } }`;
+    styleNode.innerText = `@media (height >= ${threadHeight}px) { aside#minimap { display: none; } }`;
   });
 
   // Set it up so you can click on the minimap to insta-scroll to that area,
   // and it'll keep following your mouse until you release the button.
   useEffect(() => {
-    const threadMain = document.getElementById('thread-main');
-    const threadHeight = threadMain.getBoundingClientRect().height;
-    const minimap = document.getElementById('minimap');
-    const minimapThumb = document.getElementById('minimap-scrollbar-thumb');
-    const thumbHeight = minimapThumb.offsetHeight;
+    const pointerMoveFn = (e => {
+      window.requestAnimationFrame(() => {
+        minimapScroll(e.clientY);
+      });
+    });
 
     const pointerDownFn = (e => {
       e.preventDefault();
 
-      console.log(e.button);
       if (e.button !== 0) { return; }
 
-      // Set the middle of the thumb to be at the height you clicked.
-      const newThumbTop = (e.clientY - minimap.offsetTop - (thumbHeight / 2)) < 0 ? 
-        0
-        : (e.clientY - minimap.offsetTop - (thumbHeight / 2))
-      ;
+      // window.addEventListener("pointermove", pointerMoveFn);
 
-      // Make sure it can't go below the screen.
-      const newThumbTop2 = newThumbTop <= (window.visualViewport.height - thumbHeight)? 
-        newThumbTop
-        : window.visualViewport.height - thumbHeight
-      ;
-
-      const newThumbTopPct = newThumbTop2 / minimap.offsetHeight * 100;
-
-      const newScrollPos = newThumbTop2 / minimap.offsetHeight * threadHeight + threadMain.offsetTop;
-      window.scrollTo({top: newScrollPos, behavior: "smooth"});
-
-      minimapThumb.style.top = `${newThumbTopPct}vh`;
+      minimapScroll(e.clientY);
     });
 
     minimap.addEventListener("pointerdown", pointerDownFn);
@@ -166,4 +150,31 @@ function getMinimapThumbDimensions() {
   const minimapHeight = viewportHeight / threadHeight * 100;
 
   return {top: minimapTop, height: minimapHeight};
+}
+
+function minimapScroll(pointerY) {
+  const threadMain = document.getElementById('thread-main');
+  const threadHeight = threadMain.getBoundingClientRect().height;
+  const minimap = document.getElementById('minimap');
+  const minimapThumb = document.getElementById('minimap-scrollbar-thumb');
+  const thumbHeight = minimapThumb.offsetHeight;
+
+  // Set the middle of the thumb to be at the height you clicked.
+  const newThumbTop = (pointerY - minimap.offsetTop - (thumbHeight / 2)) < 0 ? 
+    0
+    : (pointerY - minimap.offsetTop - (thumbHeight / 2))
+  ;
+
+  // Make sure it can't go below the screen.
+  const newThumbTop2 = newThumbTop <= (window.visualViewport.height - thumbHeight)? 
+    newThumbTop
+    : window.visualViewport.height - thumbHeight
+  ;
+
+  const newThumbTopPct = newThumbTop2 / minimap.offsetHeight * 100;
+
+  const newScrollPos = newThumbTop2 / minimap.offsetHeight * threadHeight + threadMain.offsetTop;
+  window.scrollTo({top: newScrollPos, behavior: "smooth"});
+
+  minimapThumb.style.top = `${newThumbTopPct}vh`;
 }

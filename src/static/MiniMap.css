@@ -1,3 +1,7 @@
+@media (width < 600px) {
+  aside#minimap { display: none; }
+}
+
 #minimap {
   --thread-handle-width: 0.8vw;
   --collapsed-thread-handle-margin: 0.3vw;
