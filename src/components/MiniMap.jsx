@@ -81,7 +81,8 @@ export default function MiniMap({threadOrder}) {
 
       if (e.button !== 0) { return; }
 
-      // window.addEventListener("pointermove", pointerMoveFn);
+      window.addEventListener("pointermove", pointerMoveFn);
+      window.addEventListener("pointerup", () => { window.removeEventListener("pointermove", pointerMoveFn); });
 
       minimapScroll(e.clientY);
     });
