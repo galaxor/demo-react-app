@@ -27,7 +27,6 @@ function $createSpoilerNode(text: string) {
 
 
 function $isSpoilerNode(node: LexicalNode | null | undefined): node is SpoilerNode {
-    const bad = ohYesImBad;
   return node instanceof SpoilerNode;
 }
 
@@ -40,6 +39,7 @@ const MdastSpoilerVisitor: MdastImportVisitor<MdastSpoilerNode> = {
 
 const LexicalSpoilerVisitor: LexicalExportVisitor<SpoilerNode, MdastSpoilerNode> = { 
   testLexicalNode: $isSpoilerNode,
+  priority: 100,
   visitLexicalNode: ({ lexicalNode, mdastParent, actions }) => {
     const textContent = lexicalNode.getTextContent();
     const spoiler: MdastSpoilerNode = { type: 'spoiler', value: textContent }
