@@ -2,7 +2,7 @@ import { realmPlugin } from '@mdxeditor/editor'
 import {EditorConfig, TextNode} from 'lexical';
 import {SpoilerNode as MdastSpoilerNode, spoilerFromMarkdown, spoilerToMarkdown} from 'mdast-util-inline-spoiler'
 import { spoilerSyntax, spoilerHtml } from "micromark-extension-inline-spoiler";
-import { addActivePlugin$, addExportVisitor$, addImportVisitor$, addLexicalNode$, addMdastExtension$, addSyntaxExtension$, addToMarkdownExtension$ } from '@mdxeditor/editor'
+import { addActivePlugin$, addExportVisitor$, addImportVisitor$, addLexicalNode$, addMdastExtension$, addSyntaxExtension$, addToMarkdownExtension$, LexicalExportVisitor, MdastImportVisitor } from '@mdxeditor/editor'
 
 
 class SpoilerNode extends TextNode {
@@ -16,10 +16,8 @@ class SpoilerNode extends TextNode {
 
   createDOM(config: EditorConfig): HTMLElement {
     const textNode = super.createDOM(config);
-    const span = document.createElement('span');
-    span.className = 'spoiler';
-    span.appendChild(textNode);
-    return span;
+    textNode.className = 'spoiler';
+    return textNode;
   }
 }
 
@@ -29,6 +27,7 @@ function $createSpoilerNode(text: string) {
 
 
 function $isSpoilerNode(node: LexicalNode | null | undefined): node is SpoilerNode {
+    const bad = ohYesImBad;
   return node instanceof SpoilerNode;
 }
 
@@ -61,7 +60,7 @@ export const spoilerPlugin = realmPlugin({
       [addImportVisitor$]: [MdastSpoilerVisitor],
       [addLexicalNode$]: SpoilerNode,
       [addExportVisitor$]: LexicalSpoilerVisitor,
-      [addToMarkdownExtension$]: spoilerToMarkdown,
+      [addToMarkdownExtension$]: spoilerToMarkdown(),
     });
   }
 });

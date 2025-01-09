@@ -2,6 +2,8 @@ import {
   MDXEditor,
 } from '@mdxeditor/editor'
 
+import { useEffect, useRef } from 'react'
+
 import {micromark} from 'micromark'
 import { fromMarkdown } from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
@@ -41,11 +43,20 @@ export default function Test() {
     extensions: [gfmStrikethroughToMarkdown({}), spoilerToMarkdown({})],
   })
 
+  const mdxRef = useRef(null);
+
+  useEffect(() => {
+    document.getElementById('victory').innerText = mdxRef.current.getMarkdown();
+  });
+
   return <>
     {asHtml} {"\n"} {roundTrip}
     <MDXEditor 
+      ref={mdxRef}
       markdown={testText}
       plugins={[spoilerPlugin()]}
     />
+
+    <div id="victory"></div>
   </>;
 }
