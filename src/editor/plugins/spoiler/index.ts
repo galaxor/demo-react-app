@@ -4,6 +4,8 @@ import {SpoilerNode as MdastSpoilerNode, spoilerFromMarkdown, spoilerToMarkdown}
 import { spoilerSyntax, spoilerHtml } from "micromark-extension-inline-spoiler";
 import { addActivePlugin$, addExportVisitor$, addImportVisitor$, addLexicalNode$, addMdastExtension$, addSyntaxExtension$, addToMarkdownExtension$, LexicalExportVisitor, MdastImportVisitor } from '@mdxeditor/editor'
 
+import './spoiler.css'
+
 
 class SpoilerNode extends ElementNode {
   __text: string;

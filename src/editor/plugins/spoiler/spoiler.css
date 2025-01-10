@@ -1,0 +1,6 @@
+.mdxeditor {
+  .spoiler {
+    background: hsl(var(--nextui-foreground));
+    color: hsl(var(--nextui-background));
+  }
+}
