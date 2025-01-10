@@ -1,6 +1,11 @@
 import {
   MDXEditor,
+  toolbarPlugin,
+    BoldItalicUnderlineToggles, 
+    CodeToggle,
+    markdownShortcutPlugin,
 } from '@mdxeditor/editor'
+import '@mdxeditor/editor/style.css'
 
 import { useEffect, useRef } from 'react'
 
@@ -17,12 +22,6 @@ import { spoilerFromMarkdown, spoilerToMarkdown } from 'mdast-util-inline-spoile
 import { spoilerPlugin } from './editor/plugins/spoiler/index.ts'
 
 const testText = "`hello` ||hello|| ~~hello~~";
-
-function Test2() {
-  return (
-    <MDXEditor markdown={testText} />
-  );
-}
 
 export default function Test() {
   const output = micromark(testText, {
@@ -51,11 +50,24 @@ export default function Test() {
 
   return <>
     {asHtml} {"\n"} {roundTrip}
+    <div className="border-1 border-color-black">
     <MDXEditor 
       ref={mdxRef}
       markdown={testText}
-      plugins={[spoilerPlugin()]}
+      plugins={[
+        spoilerPlugin(),
+        toolbarPlugin({
+          toolbarClassName: "post-editor-toolbar",
+          toolbarContents: () => (
+            <>
+              <BoldItalicUnderlineToggles />
+              <CodeToggle />
+            </>
+          ),
+        }),
+      ]}
     />
+    </div>
 
     <div id="victory"></div>
   </>;
