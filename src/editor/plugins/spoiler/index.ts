@@ -1,13 +1,28 @@
 import { realmPlugin } from '@mdxeditor/editor'
-import {EditorConfig, TextNode} from 'lexical';
+import {EditorConfig, ElementNode} from 'lexical';
 import {SpoilerNode as MdastSpoilerNode, spoilerFromMarkdown, spoilerToMarkdown} from 'mdast-util-inline-spoiler'
 import { spoilerSyntax, spoilerHtml } from "micromark-extension-inline-spoiler";
 import { addActivePlugin$, addExportVisitor$, addImportVisitor$, addLexicalNode$, addMdastExtension$, addSyntaxExtension$, addToMarkdownExtension$, LexicalExportVisitor, MdastImportVisitor } from '@mdxeditor/editor'
 
 
-class SpoilerNode extends TextNode {
+class SpoilerNode extends ElementNode {
+  __text: string;
+
   static getType(): string {
     return 'spoiler';
+  }
+
+  getTextContent(): string {
+    return this.__text;
+  }
+
+  isInline(): boolean {
+    return true;
+  }
+
+  constructor(text: string = '', key?: NodeKey) {
+    super(key);
+    this.__text = text;
   }
 
   static clone(node: SpoilerNode): SpoilerNode {
@@ -15,9 +30,10 @@ class SpoilerNode extends TextNode {
   }
 
   createDOM(config: EditorConfig): HTMLElement {
-    const textNode = super.createDOM(config);
-    textNode.className = 'spoiler';
-    return textNode;
+    const element = document.createElement('span');
+    element.className = 'spoiler';
+    element.appendChild(document.createTextNode(this.__text));
+    return element;
   }
 }
 
@@ -39,7 +55,6 @@ const MdastSpoilerVisitor: MdastImportVisitor<MdastSpoilerNode> = {
 
 const LexicalSpoilerVisitor: LexicalExportVisitor<SpoilerNode, MdastSpoilerNode> = { 
   testLexicalNode: $isSpoilerNode,
-  priority: 100,
   visitLexicalNode: ({ lexicalNode, mdastParent, actions }) => {
     const textContent = lexicalNode.getTextContent();
     const spoiler: MdastSpoilerNode = { type: 'spoiler', value: textContent }
