@@ -23,8 +23,9 @@ export class PostsDB {
       .filter(boostRow => boostRow.boostersPost === uri)
       .map(boostedPostRow => {
         const boostedPost = this.db.get('posts', boostedPostRow.boostedPost);
+        const version = this.db.get('postVersions', boostedPostRow.boostedPost)[boostedPost['updatedAt']];
         boostedPost.authorPerson = this.db.get('people', boostedPost.author);
-        return boostedPost;
+        return {...boostedPost, ...version};
       })
     ;
   }
@@ -33,14 +34,18 @@ export class PostsDB {
     const post = this.db.get('posts', uri);
     post.authorPerson = this.db.get('people', post.author);
     post.boostedPosts = this.getBoostedPosts(uri);
+    const version = this.db.get('postVersions', uri)[post.updatedAt];
 
-    return post;
+    return {...post, ...version};
   }
 
   getRepliesTo(uri) {
     const replies = Object.values(this.db.get('posts'))
       .filter(post => post.inReplyTo === uri)
-      .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
+      .map(post => {
+        const version = this.db.get('postVersions', uri)[post.updatedAt];
+        return {...post, ...version, authorPerson: this.db.get('people', post.author)}; 
+      })
     ;
 
     replies.sort((a, b) => a.createdAt===b.createdAt? 0 : (a.createdAt > b.createdAt? 1 : 0));
@@ -61,8 +66,10 @@ export class PostsDB {
     const posts = Object.entries(this.db.get('posts'))
       .filter(([postURI, post]) => (post.author === handle) && (showReplies || post.inReplyTo === null) )
       .map(([postURI, post]) => { 
+        const version = this.db.get('postVersions', post.uri)[post.updatedAt];
         const newPost = {
           ...post,
+          ...version,
           authorPerson: this.db.get('people', post.author),
           boostedPosts: this.db.get('boosts').filter(boost => boost.booster === handle && boost.boostersPost === post.uri)
         }; 
@@ -231,7 +238,9 @@ export class PostsDB {
     return this.db.get('boosts')
       .filter(row => row.boostedPost===uri)
       .reduce((mostRecentByEachPerson, boost) => {
-        const boostersPost = this.db.get('posts', boost.boostersPost);
+        const boostersPostWithoutText = this.db.get('posts', boost.boostersPost);
+        const version = this.db.get('postVersions', boostersPostWithoutText.uri)[boostersPostWithoutText.updatedAt];
+        const boostersPost = {...boostersPostWithoutText, ...version};
 
         // If it's a quote-boost, make no changes.
         if (boostersPost.text !== null) { return mostRecentByEachPerson; }
@@ -283,9 +292,14 @@ export class PostsDB {
     const by = options? options.by : undefined;
 
     return this.db.get('boosts')
-      .filter(row => row.boostedPost===uri && (!by || by===row.booster) 
-        // Make sure they're quote-boosts
-        && this.db.get('posts', row.boostersPost).text !== null)
+      .filter(row => {
+        const boostersPost = this.get(row.boostersPost);
+
+        return row.boostedPost===uri && (!by || by===row.booster) 
+          // Make sure they're quote-boosts
+          && boostersPost.text !== null
+        ;
+      })
       .length
     ;
   }
@@ -295,7 +309,7 @@ export class PostsDB {
     // Don't touch quote-boosts.
     const boostsToRemove = this.db.get('boosts')
       .filter(boost => {
-        const boostersPost = this.db.get('posts', boost.boostersPost);
+        const boostersPost = this.get( boost.boostersPost);
         if (boost.booster === boosterHandle && boost.boostedPost === boostedPostUri && boostersPost.text === null) {
           return true;
         } else {
@@ -327,17 +341,26 @@ export class PostsDB {
       author: boosterHandle,
       createdAt: createdAt,
       updatedAt: createdAt,
-      sensitive: false,
-      text: null,
-      spoilerText: null,
       deletedAt: null,
       inReplyTo: null,
       canonicalUrl: null,
-      language: null, // There's no text, so I don't know what to put here.  Null?
       conversationId: null,
       local: true,
     };
     this.db.set('posts', newPostUri, newBoostersPost);
+
+    const newBoostersPostVersion = {
+      [createdAt]: {
+        uri: newPostUri,
+        updatedAt: createdAt,
+        sensitive: false,
+        spoilerText: null,
+        language: null, // There's no text, so I don't know what to put here.  Null?
+        type: "text",
+        text: null,
+      },
+    };
+    this.db.set('postVersions', newPostUri, newBoostersPostVersion);
 
     const newBoost = {
       booster: boosterHandle,
@@ -367,7 +390,28 @@ export class PostsDB {
   }
 
   addPost(post) {
-    return this.db.set('posts', post.uri, post);
+    const postVersion = {
+      [post.updatedAt]: {
+        uri: post.uri,
+        updatedAt: post.updatedAt,
+        sensitive: post.sensitive,
+        spoilerText: post.spoilerText,
+        language: post.language,
+        type: post.type,
+        text: post.text,
+      },
+    };
+
+    const newPost = post;
+    delete newPost.sensitive;
+    delete newPost.spoilerText;
+    delete newPost.language;
+    delete newPost.type;
+    delete newPost.text;
+
+    this.db.set('posts', post.uri, newPost);
+    this.db.set('postVersions', post.uri, postVersion);
+    return this.get(post.uri);
   }
 
   friendsFeed(user) {
@@ -379,12 +423,16 @@ export class PostsDB {
     const theirPosts = Object.values(this.db.get('posts'))
       // We don't want to see their replies.
       .filter(post => peopleYouFollow.includes(post.author))
-      // Fill in the "authorPerson".
-      .map(post => { return {
-        ...post,
-        authorPerson: this.db.get('people', post.author),
-        boostedPosts: this.getBoostedPosts(post.uri)
-      }; })
+      // Fill in the "authorPerson" and the version stuff.
+      .map(post => {
+        const version = this.db.get('postVersions', post.uri)[post.updatedAt];
+        return {
+          ...post,
+          ...version,
+          authorPerson: this.db.get('people', post.author),
+          boostedPosts: this.getBoostedPosts(post.uri)
+        };
+      })
     ;
 
     theirPosts.sort((a, b) => a.updatedAt === b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : -1));

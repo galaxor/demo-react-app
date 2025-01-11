@@ -160,27 +160,110 @@ class Database {
         ['@jasper.shadow@solarpunk', '@alice@local'],
       ];
 
+      this.postVersions = {
+        "@alice@local/a-cool-article": {
+          "2024-11-21T14:46:26-05:00": {
+            uri: "@alice@local/a-cool-article",
+            updatedAt: "2024-11-21T14:46:26-05:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            type: "text",
+            text: "This is my post about stuff.",
+          },
+        },
+
+        "@alice@local/has-anyone-seen-bob": {
+          "2024-11-24T13:41:26-05:00": {
+            uri: "@alice@local/has-anyone-seen-bob",
+            updatedAt: "2024-11-24T13:41:26-05:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            type: "text",
+            text: "I've been trying to reach Bob.  I have a message to send him.  Has anyone seen him?  Feel free to boost for reach.",
+          }
+        },
+
+        "https://wetdry.world/@astra_underscore/113522617022220742": {
+          "2024-11-21T02:32:00-04:00": {
+            uri: "https://wetdry.world/@astra_underscore/113522617022220742",
+            updatedAt: "2024-11-21T02:32:00-04:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            type: "text",
+            text: "robot girl that goes woop woop! woop woop! terrain! terrain! pull up! pull up! while tumbling down a flight of stairs",
+          },
+          "2024-11-21T02:34:00-04:00": {
+            uri: "https://wetdry.world/@astra_underscore/113522617022220742",
+            updatedAt: "2024-11-21T02:34:00-04:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            type: "text",
+            text: "robot girl that goes \"woop woop! woop woop! terrain! terrain! pull up! pull up!\" while tumbling down a flight of stairs",
+          },
+        },
+
+        "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl": {
+          "2024-11-21T07:37:00+01:00": {
+            uri: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
+            updatedAt: "2024-11-21T07:37:00+01:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            type: "text",
+            text: "@astra_underscore@wetdry.world i can hear this in my brain",
+          }
+        },
+
+        "testuser@local/same": {
+          "2024-11-23T00:50:00-05:00": {
+            uri: "testuser@local/same",
+            updatedAt: "2024-11-23T00:50:00-05:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            type: "text",
+            text: "@darkphoenix@not.an.evilcyberhacker.net same",
+          }
+        },
+
+        "@cfur@corporate/boost-a-cool-article": {
+          "2024-11-24T12:16:31-05:00": {
+            uri: "@cfur@corporate/boost-a-cool-article",
+            updatedAt: "2024-11-24T12:16:31-05:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            text: null,
+          }
+        },
+
+        "@cfur@corporate/help-alice-find-bob": {
+          "2024-11-24T13:44:31-05:00": {
+            uri: "@cfur@corporate/help-alice-find-bob",
+            updatedAt: "2024-11-24T13:44:31-05:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            type: "text",
+            text: "If anyone knows where Bob is, please let @alice@local know!\n\nI don't want their drama to stop, I am addicted to the antics of those two!",
+          },
+        },
+      };
+
       this.posts = {
         "@alice@local/a-cool-article": {
           uri: "@alice@local/a-cool-article",
           author: "@alice@local",
           createdAt: "2024-11-21T14:46:26-05:00",
           updatedAt: "2024-11-21T14:46:26-05:00",
-          sensitive: false,
-          type: "text",
-          text: "This is my post about stuff.",
-
-          spoilerText: null,
-
           deletedAt: null,
-
           inReplyTo: null, // URI of post that this is replying to
-
           canonicalUrl: null,
-
-          language: "en-US",
           conversationId: null,
-
           local: true,
         },
 
@@ -189,21 +272,10 @@ class Database {
           author: "@alice@local",
           createdAt: "2024-11-24T13:41:26-05:00",
           updatedAt: "2024-11-24T13:41:26-05:00",
-          sensitive: false,
-          type: "text",
-          text: "I've been trying to reach Bob.  I have a message to send him.  Has anyone seen him?  Feel free to boost for reach.",
-
-          spoilerText: null,
-
           deletedAt: null,
-
           inReplyTo: null, // URI of post that this is replying to
-
           canonicalUrl: null,
-
-          language: "en-US",
           conversationId: null,
-
           local: true,
         },
 
@@ -212,21 +284,11 @@ class Database {
           author: "@astra_underscore@wetdry.world",
           createdAt: "2024-11-21T02:30:00-04:00",
           updatedAt: "2024-11-21T02:34:00-04:00",
-          sensitive: false,
-          type: "text",
-          text: "robot girl that goes \"woop woop! woop woop! terrain! terrain! pull up! pull up!\" while tumbling down a flight of stairs",
-
-          spoilerText: null,
-
           deletedAt: null,
-
           inReplyTo: null, // URI of post that this is replying to
-
           canonicalUrl: "https://wetdry.world/@astra_underscore/113522617022220742",
-
           language: "en-US",
           conversationId: null,
-
           local: false,
         },
 
@@ -235,21 +297,10 @@ class Database {
           author: "@darkphoenix@not.an.evilcyberhacker.net",
           createdAt: "2024-11-21T07:37:00+01:00",
           updatedAt: "2024-11-21T07:37:00+01:00",
-          sensitive: false,
-          type: "text",
-          text: "@astra_underscore@wetdry.world i can hear this in my brain",
-
-          spoilerText: null,
-
           deletedAt: null,
-
           inReplyTo: "https://wetdry.world/@astra_underscore/113522617022220742",
-
           canonicalUrl: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
-
-          language: "en-US",
           conversationId: "https://wetdry.world/@astra_underscore/113522617022220742",
-
           local: false,
         },
 
@@ -259,20 +310,10 @@ class Database {
           createdAt: "2024-11-23T00:50:00-05:00",
           updatedAt: "2024-11-23T00:50:00-05:00",
           sensitive: false,
-          type: "text",
-          text: "@darkphoenix@not.an.evilcyberhacker.net same",
-
-          spoilerText: null,
-
           deletedAt: null,
-
           inReplyTo: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
-
           canonicalUrl: "testuser@local/same",
-
-          language: "en-US",
           conversationId: "https://wetdry.world/@astra_underscore/113522617022220742",
-
           local: true,
         },
 
@@ -281,20 +322,10 @@ class Database {
           author: "@cfur@corporate",
           createdAt: "2024-11-24T12:16:31-05:00",
           updatedAt: "2024-11-24T12:16:31-05:00",
-          sensitive: false,
-          text: null,
-
-          spoilerText: null,
-
           deletedAt: null,
-
           inReplyTo: null,
-
           canonicalUrl: "@cfur@corporate/boost-a-cool-article",
-
-          language: "en-US",
           conversationId: "@alice@local/a-cool-article",
-
           local: false,
         },
 
@@ -303,21 +334,10 @@ class Database {
           author: "@cfur@corporate",
           createdAt: "2024-11-24T13:44:31-05:00",
           updatedAt: "2024-11-24T13:44:31-05:00",
-          sensitive: false,
-          type: "text",
-          text: "If anyone knows where Bob is, please let @alice@local know!\n\nI don't want their drama to stop, I am addicted to the antics of those two!",
-
-          spoilerText: null,
-
           deletedAt: null,
-
           inReplyTo: null,
-
           canonicalUrl: "@cfur@corporate/help-alice-find-bob",
-
-          language: "en-US",
           conversationId: null,
-
           local: false,
         },
       };
@@ -404,6 +424,7 @@ class Database {
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('posts', JSON.stringify(this.posts));
+      localStorage.setItem('postVersions', JSON.stringify(this.postVersions));
       localStorage.setItem('popularPosts', JSON.stringify(this.popularPosts));
       localStorage.setItem('reactions', JSON.stringify(this.reactions));
     } else {
@@ -414,6 +435,7 @@ class Database {
       this.sessions = JSON.parse(localStorage.getItem('sessions'));
       this.people = JSON.parse(localStorage.getItem('people'));
       this.posts = JSON.parse(localStorage.getItem('posts'));
+      this.postVersions = JSON.parse(localStorage.getItem('postVersions'));
       this.popularPosts = JSON.parse(localStorage.getItem('popularPosts'));
       this.reactions = JSON.parse(localStorage.getItem('reactions'));
     }
