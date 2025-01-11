@@ -43,7 +43,7 @@ export class PostsDB {
     const replies = Object.values(this.db.get('posts'))
       .filter(post => post.inReplyTo === uri)
       .map(post => {
-        const version = this.db.get('postVersions', uri)[post.updatedAt];
+        const version = this.db.get('postVersions', post.uri)[post.updatedAt];
         return {...post, ...version, authorPerson: this.db.get('people', post.author)}; 
       })
     ;
