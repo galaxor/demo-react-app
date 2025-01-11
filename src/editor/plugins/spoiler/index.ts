@@ -1,31 +1,53 @@
 import { realmPlugin } from '@mdxeditor/editor'
-import {EditorConfig, TextNode} from 'lexical';
+import {ElementNode, $createTextNode, Spread, SerializedElementNode, LexicalNode} from 'lexical';
 import {SpoilerNode as MdastSpoilerNode, spoilerFromMarkdown, spoilerToMarkdown} from 'mdast-util-inline-spoiler'
-import { spoilerSyntax, spoilerHtml } from "micromark-extension-inline-spoiler";
+import { spoilerSyntax } from "micromark-extension-inline-spoiler";
 import { addActivePlugin$, addExportVisitor$, addImportVisitor$, addLexicalNode$, addMdastExtension$, addSyntaxExtension$, addToMarkdownExtension$, LexicalExportVisitor, MdastImportVisitor } from '@mdxeditor/editor'
 
-import './spoiler.css'
+export type SerializedSpoilerNode = Spread<
+  {
+    test?: string,
+  },
+  SerializedElementNode
+>;
 
-
-class SpoilerNode extends TextNode {
+class SpoilerNode extends ElementNode {
   static getType(): string {
     return 'spoiler';
   }
 
-  static clone(node: SpoilerNode): SpoilerNode {
-    return new SpoilerNode(node.__text, node.__key);
+  isInline(): boolean {
+    return true;
   }
 
-  createDOM(config: EditorConfig): HTMLElement {
+  static clone(node: SpoilerNode): SpoilerNode {
+    return new SpoilerNode(node.__key);
+  }
+
+  createDOM(): HTMLElement {
     const element = document.createElement('span');
     element.className = 'spoiler';
-    element.appendChild(document.createTextNode(this.__text));
     return element;
+  }
+
+  updateDOM(): boolean {
+    // Returning false tells Lexical that this node does not need its
+    // DOM element replacing with a new copy from createDOM.
+    return false;
+  }
+
+  exportJSON(): SerializedSpoilerNode {
+    return {...super.exportJSON(), test:'test'};
+  }
+
+  static importJSON(_: SerializedSpoilerNode): SpoilerNode {
+    return $createSpoilerNode();
   }
 }
 
-function $createSpoilerNode(text: string) {
-  return new SpoilerNode(text);
+
+function $createSpoilerNode() {
+  return new SpoilerNode();
 }
 
 
@@ -36,7 +58,10 @@ function $isSpoilerNode(node: LexicalNode | null | undefined): node is SpoilerNo
 const MdastSpoilerVisitor: MdastImportVisitor<MdastSpoilerNode> = {
   testNode: 'spoiler',
   visitNode({ mdastNode, actions }) {
-    actions.addAndStepInto($createSpoilerNode(mdastNode.value))
+    const spoilerNode = $createSpoilerNode();
+    const text = $createTextNode(mdastNode.value);
+    spoilerNode.append(text);
+    actions.addAndStepInto(spoilerNode)
   }
 }
 
@@ -59,7 +84,7 @@ export const spoilerPlugin = realmPlugin({
     realm.pubIn({
       [addActivePlugin$]: 'spoiler',
       [addMdastExtension$]: spoilerFromMarkdown,
-      [addSyntaxExtension$]: spoilerSyntax(),
+      [addSyntaxExtension$]: spoilerSyntax({}),
       [addImportVisitor$]: [MdastSpoilerVisitor],
       [addLexicalNode$]: SpoilerNode,
       [addExportVisitor$]: LexicalSpoilerVisitor,

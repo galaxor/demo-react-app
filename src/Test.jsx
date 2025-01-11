@@ -20,6 +20,7 @@ import { spoilerSyntax, spoilerHtml } from "micromark-extension-inline-spoiler";
 import { spoilerFromMarkdown, spoilerToMarkdown } from 'mdast-util-inline-spoiler'
 
 import { spoilerPlugin } from './editor/plugins/spoiler/index.ts'
+import './editor/plugins/spoiler/spoiler.css'
 
 const testText = "`hello` ||hello|| ~~hello~~";
 
