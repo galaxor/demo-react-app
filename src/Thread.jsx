@@ -22,24 +22,22 @@ function getRepliesTo(postRepliedTo, postsDB) {
   postRepliedTo.replies.forEach(replyPost => getRepliesTo(replyPost, postsDB));
 }
 
-function threadGymnasticsFn(setOriginatingPost, setThreadOrder) {
-  return originatingPost => {
-    const threadOrder = flattenThread(originatingPost);
+function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
+  const threadOrder = flattenThread(originatingPost);
 
-    computeThreadHandleVisibility(threadOrder);
+  computeThreadHandleVisibility(threadOrder);
 
-    // Now collapse some reply chains so we don't have to indent if single posts reply to single posts.
-    computeCollapsedReplyChains(threadOrder);
+  // Now collapse some reply chains so we don't have to indent if single posts reply to single posts.
+  computeCollapsedReplyChains(threadOrder);
 
-    setOriginatingPost({...originatingPost});
+  setOriginatingPost({...originatingPost});
 
-    setThreadOrder(threadOrder);
-  }
+  setThreadOrder(threadOrder);
 }
 
 function findPost(uri, haystack) {
   if (haystack.uri === uri) { return haystack; }
-  for (reply of haystack.replies) {
+  for (const reply of haystack.replies) {
     const foundPost = findPost(uri, reply);
     if (foundPost !== null) { return foundPost; }
   }
@@ -47,13 +45,13 @@ function findPost(uri, haystack) {
   return null;
 }
 
-function setRepliesFn(post, originatingPost, threadGymnastics) {
+function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
   return replies => {
     // Find the post we're meant to add to, inside the originatingPost.
     const addToPost = findPost(post.uri, originatingPost);
     addToPost.replies = replies;
 
-    threadGymnastics(originatingPost);
+    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
   }
 }
 
@@ -109,8 +107,6 @@ export default function Thread() {
 
   const [threadOrder, setThreadOrder] = useState(null);
 
-  const threadGymnastics = threadGymnasticsFn(setOriginatingPost, setThreadOrder);
-
   if (threadOrder === null) {
     const originatingPost = (mainPost.conversationId === mainPost.uri || !mainPost.conversationId)?
                             mainPost :
@@ -119,7 +115,7 @@ export default function Thread() {
   
     getRepliesTo(originatingPost, postsDB);
 
-    threadGymnastics(originatingPost);
+    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
 
     // When we do the thread gymnastics, it sets threadOrder, which redraws the page.
     // On the first go-through, it'll try to draw the page with threadOrder set
@@ -151,7 +147,6 @@ export default function Thread() {
   // The other replies to the posts earlier in the thread, which are not replies to the main post.
   const threadRemainder = threadOrder.slice(mainPostIndex+1+replies.length);
 
-
   return <>
     <style type="text/css">{createStylesheetsForHover(threadOrder)}</style>
 
@@ -173,7 +168,7 @@ export default function Thread() {
       <section className="main-post" aria-labelledby="main-post-h1">
         <ThreadedPost key={threadOrder[mainPostIndex].post.uri} 
           post={threadOrder[mainPostIndex].post} 
-          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics)}
+          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
           inReplyTo={threadOrder[mainPostIndex].inReplyTo}
           scrollRef={mainPostScrollRef}
           setScrollToPost={setScrollToPost}
@@ -190,7 +185,7 @@ export default function Thread() {
               <ThreadedPost key={post.uri}
                 post={post} 
                 inReplyTo={inReplyTo}
-                setReplies={setRepliesFn(post, originatingPost, setOriginatingPost)}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
               />
             );
           })}
@@ -208,7 +203,7 @@ export default function Thread() {
               <ThreadedPost key={post.uri}
                 post={post} 
                 inReplyTo={inReplyTo}
-                setReplies={setRepliesFn(post, originatingPost, setOriginatingPost)}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
               />
             );
           })}
