@@ -132,6 +132,7 @@
      * It's not a real, full, thread handle. */
     li.thread-line-branch.has-replies,
     li.thread-line-first.has-replies,
+    li.thread-line-last.has-replies,
     li.thread-line-first.thread-line-last.has-branch
     {
       a.thread-handle {
