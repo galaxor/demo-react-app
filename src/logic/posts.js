@@ -402,7 +402,7 @@ export class PostsDB {
       },
     };
 
-    const newPost = post;
+    const newPost = {... post};
     delete newPost.sensitive;
     delete newPost.spoilerText;
     delete newPost.language;
