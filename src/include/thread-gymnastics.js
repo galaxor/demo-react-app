@@ -148,6 +148,10 @@ export function computeThreadHandleVisibility(threadOrder) {
   }
 }
 
+function findPostInThreadOrder(uri, inverseThreadOrder) {
+  return inverseThreadOrder[uri];
+}
+
 /**
  * In computeThreadHandleVisibility, we computed what the thread would look
  * like if we just drew it out as the thread is laid out -- Every time there's
@@ -181,8 +185,11 @@ export function computeThreadHandleVisibility(threadOrder) {
  *
  */
 export function computeCollapsedReplyChains(threadOrder) {
-  // For each post, mark the last time it was replied to directly.
-    // lastDirectReplyTo will contain {postUri: index, ...}.
+  const inverseThreadOrder = {};
+  for (var i=0; i<threadOrder.length-1; i++) {
+    inverseThreadOrder[threadOrder[i].post.uri] = i;
+  }
+
   for (var i=threadOrder.length-1; i>=0; i--) {
     const {inReplyTo} = threadOrder[i];
 
@@ -240,6 +247,48 @@ export function computeCollapsedReplyChains(threadOrder) {
         threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-first';
       }
     }
+
+    // This might be a "collapse hijack" situation.  That is, if this post's
+    // parent has only one reply, but this post has multiple replies (a
+    // branch), then this post can be drawn collapsed, but it will "hijack" the
+    // collapsed reply line.  When it hijacks the collapsed line, then, when we
+    // are drawing that exact post (the one with the branch), we still draw the
+    // parent's collapsed reply line, not this post's reply line.  But on
+    // subsequent posts, we don't draw this posts's parent's collapsed reply
+    // line.  We draw this post's collapsed reply line.  This post has
+    // "hijacked" the collapsed reply line.
+    // Right now, we're checking for the situation where this is the post that
+    // has the branch.  This should be the start of a hijack chain if:
+    // * The parent has one reply.
+    // * This post has more than one reply.
+    if (i > 0 && threadOrder[i].inReplyTo[inReplyTo.length-1].post.replies.length === 1
+        && threadOrder[i].post.replies.length > 1)
+    {
+      threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-first';
+    }
+
+    if (threadOrder[i].post.text === "beep 5") {
+      console.log("beep 5");
+    }
+
+    // If the post's parent is a collapsed thread hijacker, then we should
+    // politely continue that hijack.
+    if (i > 0) {
+      const parentUri = threadOrder[i].inReplyTo[inReplyTo.length-1].post.uri;
+      const parentInThreadOrder = findPostInThreadOrder(parentUri, inverseThreadOrder);
+      const parentPost = threadOrder[parentInThreadOrder];
+      console.log(parentPost.post.text);
+      if (i > 1 && parentPost.inReplyTo[parentPost.inReplyTo.length-1].post.replies.length === 1
+          && parentPost.post.replies.length > 1
+          // Also make sure the post pointed to by this handle doesn't have multiple replies.
+          && threadOrder[i].post.replies.length < 2)
+      {
+        threadOrder[i].inReplyTo[inReplyTo.length-1].collapsed = 'collapsed-first';
+      }
+    }
+    
+
+    const startsOfCollapsedChains = [];
     
     // Now check if we should show or hide the rest of the reply lines in the reply chain.
     for (var j=0; j<=inReplyTo.length-2; j++) {
@@ -293,17 +342,64 @@ export function computeCollapsedReplyChains(threadOrder) {
         } else {
           threadOrder[i].inReplyTo[j].collapsed = 'collapsed-first';
         }
+        startsOfCollapsedChains.push(j);
       }
 
-      // If it would otherwise be a collapsed-first or collapsed-last, but its
-      // reply's reply has more than one reply (is a branch), then it
-      // becomes a "collapsed-hidden" instead of a "collapsed-first", because
-      // the post that branches out will hijack the collapsed reply chain.
-      if (['collapsed-first', 'collapsed-last'].includes(threadOrder[i].inReplyTo[j].collapsed)
-          && threadOrder[i].inReplyTo[j].post.replies[0].replies.length === 1
-          && threadOrder[i].inReplyTo[j].post.replies[0].replies[0].replies.length > 1) 
+      // This might be a "collapse hijack" situation.  That is, if this post's
+      // parent has only one reply, but this post has multiple replies (a
+      // branch), then this post can be drawn collapsed, but it will "hijack" the
+      // collapsed reply line.  When it hijacks the collapsed line, then, when we
+      // are drawing that exact post (the one with the branch), we still draw the
+      // parent's collapsed reply line, not this post's reply line.  But on
+      // subsequent posts, we don't draw this posts's parent's collapsed reply
+      // line.  We draw this post's collapsed reply line.  This post has
+      // "hijacked" the collapsed reply line.
+      // Right now, we're checking for the situation where this is not the post that
+      // has the branch.  This is later in the chain.
+      // This reply handle points to the parent of a post that starts a
+      // hijacked collapsed reply chain if:
+      // * This handle's post has one reply.
+      // * The handle that points to the child of this handle points to a post
+      //   that has more than one reply.
+
+      // Whenever we identify a collapsed-first (or collpased-last), above, we
+      // add it to a list of collapsed threads. The thing we add to the list is
+      // j, the index that the collapsed-first was at.
+      // When we find we need to do a hijack, we go to the last entry in the collapsed
+      // threads list, and we find the index it points to, and I go back into the
+      // inReplyTo, and set its collapsed field to collapsed-hidden.
+
+      // XXX, I wrote this comment here in the second section where I check the j's,
+      // but I also need it up above in the i section.  The hijack code up there
+      // doesn't change history because it only works with the single parent.
+      // We might not have to adjust it because of the way this code "peeks"
+      // ahead, with its j+1.
+      if (threadOrder[i].inReplyTo[j].post.replies.length === 1
+          && j < threadOrder[i].inReplyTo.length
+          && threadOrder[i].inReplyTo[j+1].post.replies.length > 1)
       {
+        // This handle points to the first post of a hijacked collapsed reply chain.
+        // This is where the hijack occurs.  Don't point to its parent; point to it.
+        // So, this is the handle pointing to the parent, so it shoudld be hidden.
         threadOrder[i].inReplyTo[j].collapsed = 'collapsed-hidden';
+      }
+
+      // Now we check for the situation where this is not the post that has the
+      // branch.  This is later in the chain. This reply handle points to the
+      // post that starts a hijacked collapsed reply chain if:
+      // * This handle's post's parent has one reply.
+      // * This handle's post has more than one reply.
+      if (j > 0 && threadOrder[i].inReplyTo[j-1].post.replies.length === 1
+          && threadOrder[i].inReplyTo[j].post.replies.length > 1)
+      {
+        delete threadOrder[i].inReplyTo[j].collapsed;
+
+        // Now we have to turn the previous start of the collapsed reply chain
+        // into a "hidden".  This is the hijack.
+        if (startsOfCollapsedChains.length > 0) {
+          const toHijack = startsOfCollapsedChains[startsOfCollapsedChains.length-1];
+          inReplyTo[toHijack].collapsed = 'collapsed-hidden';
+        }
       }
     }
   }
