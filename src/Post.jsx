@@ -27,7 +27,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 
 import './static/Post.css'
 
-const Post = forwardRef(function Post(props, ref) {
+const Post = forwardRef(function Post2(props, ref) {
   const {id, post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight} = props;
 
   // showStats defaults to true.
@@ -42,7 +42,7 @@ const Post = forwardRef(function Post(props, ref) {
   const postDivRef = useRef(null);
   const childPostRef = useRef(null);
 
-  if (typeof ref.current !== "undefined") {
+  if (ref !== null && typeof ref.current !== "undefined") {
     useImperativeHandle(ref, () => {
       return {
         focusReplyButton() {
