@@ -30,10 +30,52 @@ function computeThread(threadOrder) {
 
   const threadHandles = [];
   for (var i=0; i<threadOrder.length; i++) {
+    // The two questions are:  What's now?  What's next?
+
+    // What's now?
+    // Most of the time, we just believe what the last post told us was next.
+    // (We can't do that in the first post, though).
     if (i===0) {
-      // This is the first post in the thread.
       threadOrder[i].threadHandles = [{pointsTo: 0, glyph: 'first-post'}];
-      threadHandles = [{pointsTo: 0, glyph: 'post-in-chain'}];
+    } else {
+      threadOrder[i].threadHandles = [...threadHandles];
+    }
+
+    // What's next?
+    if (i > 0 && threadHandles[threadHandles.length-1].glyph === 'start-branch') {
+      // Our parent told us that we were the first post in a branch.  We've
+      // drawn the 'start-branch' glyph.  Now, the size of threadHandles will
+      // be expanded.  The next post will have one thread line pointing to our
+      // parent, and one thread line pointing to us.
+      threadHandles[threadHandles.length-1] = {pointsTo: i-1, glyph: 'continuance'};
+
+      // But the thread line pointing to us:  What glyph does it use?
+      if (threadOrder[i].post.replies.length === 1) {
+        // If we have one reply, it's a post-in-chain.
+        threadHandles.push({pointsTo: i, glyph: 'post-in-chain'});
+      } else if (threadOrder[i].post.replies.length > 1) {
+        // We have multiple replies.  That means this glyph should be either
+        // 'start-branch', 'branch-singleton'.  It should be 'start-branch' if
+        // our first reply has replies of its own, and 'branch-singleton' if
+        // not.
+        if (threadOrder[i+1].post.replies.length > 0) {
+          threadOrder.push({pointsTo: i, glyph: 'start-branch'});
+        } else {
+          threadOrder.push({pointsTo: i, glyph: 'branch-singleton'});
+        }
+      }
+    } else if (i > 0 && threadHandles[threadHandles.length-1].glyph === 'branch-singleton') {
+      // The next post after a branch singleton.
+      // Since we're a branch-singleton, we know we don't have replies,
+      // meaning that the next post is either another reply to our parent, or
+      // we're outdenting.
+      // If it's another reply to our parent, then it might be a
+      // 'start-branch', a 'branch-singleton', or a 'post-in-chain'.
+    }
+
+
+    if (threadOrder[i].post.replies === 1) {
+      threadHandles.push({pointsTo: i, glyph: 'post-in-chain'});
     } else if (threadOrder[i].post.replies.length > 1) {
       // We're starting a branch.  There's a few different ways this could go:
       // If this is the last direct reference to its parent, let's just take over the thread line.
@@ -42,38 +84,6 @@ function computeThread(threadOrder) {
       const pointingToUri = threadOrder[pointingTo].post.uri;
       const lastDirectReferenceToParent = lastDirectReference[pointingToUri];
 
-      if (lastDirectReferenceToParent > i) {
-        // This is not the last post to reply directly to this post's parent.
-        // That means this post can't take over the thread line, it needs to
-        // create a new thread line which will indent.
-        threadOrder[i].threadHandles = [
-          ...threadHandles.slice(0, threadHandles.length-1),
-          {pointsTo: threadHandles[threadHandles.length-1].pointsTo,
-           glyph: 'post-in-chain',
-          }
-        ];
-
-        // Now, the next post needs its orders of what the thread handles are.
-        threadHandles.push({pointsTo: i, glyph: 'start-branch'});
-      } else {
-        // This is the last post to reply directly to this post's parent.
-        // That means this post can take over the thread line, and doesn't need
-        // to branch or indent.
-        threadOrder[i].threadHandles = [
-          ...threadHandles.slice(0, threadHandles.length-1),
-          {
-            pointsTo: i,
-            glyph: 'post-in-chain',
-          },
-        ];
-
-        // Now, the next post needs its orders of what the thread handles are.
-        lastThreadHandles = [...threadHandles];
-        threadHandles.pop();
-        threadHandles.push(i);
-      }
-    } else {
-      // Was our parent a branch?
     } else {
       // We are not a branch.  There are a few different ways to not be a branch.
       // We could be a "post-in-chain", a "branch-singleton", a
