@@ -37,6 +37,7 @@ function computeThread(threadOrder) {
     // (We can't do that in the first post, though).
     if (i===0) {
       threadOrder[i].threadHandles = [{pointsTo: 0, glyph: 'first-post'}];
+      threadHandles.push({pointsTo: 0, glyph: 'continuance'});
     } else {
       threadOrder[i].threadHandles = [...threadHandles];
     }
@@ -80,7 +81,7 @@ function computeThread(threadOrder) {
       // We're starting a branch.  There's a few different ways this could go:
       // If this is the last direct reference to its parent, let's just take over the thread line.
       // Otherwise, create a new thread line.
-      const pointingTo = threadHandles[threadHandles.length-1];
+      const pointingTo = threadHandles[threadHandles.length-1].pointsTo;
       const pointingToUri = threadOrder[pointingTo].post.uri;
       const lastDirectReferenceToParent = lastDirectReference[pointingToUri];
 
@@ -101,7 +102,7 @@ function computeThread(threadOrder) {
 export default function Test({db}) {
   const postsDB = new PostsDB(db);
   
-  const originatingPost = postsDB.get('@testuser@local/c6006c83-e886-4cef-a970-ae4cfdb21fb7');
+  const originatingPost = postsDB.get('@testuser@local/3c5ae400-7bbe-4d73-b690-5267b3fa3826');
   getRepliesTo(originatingPost, postsDB);
 
   const threadOrder = flattenThread(originatingPost);
