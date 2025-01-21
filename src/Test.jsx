@@ -25,8 +25,17 @@ function findLastDirectReference(threadOrder) {
   return lastDirectReference;
 }
 
+function inverseThreadOrder(threadOrder) {
+  const uriToThreadOrder = [];
+  for (var i=0; i<threadOrder.length; i++) {
+    uriToThreadOrder[threadOrder[i].post.uri] = i;
+  }
+  return uriToThreadOrder;
+}
+
 function computeThread(threadOrder) {
   const lastDirectReference = findLastDirectReference(threadOrder);
+  const uriToThreadOrder = inverseThreadOrder(threadOrder);
 
   const threadHandles = [];
   for (var i=0; i<threadOrder.length; i++) {
@@ -47,15 +56,15 @@ function computeThread(threadOrder) {
     } else if (inReplyTo[inReplyTo.length-1].post.replies.length > 1 && threadOrder[i].post.replies.length === 0) {
       threadOrder[i].threadHandles = [...threadHandles];
       threadOrder[i].threadHandles.pop();
-      threadOrder[i].threadHandles.push({pointsTo: i-1, glyph: 'branch-singleton'});
+      threadOrder[i].threadHandles.push({pointsTo: uriToThreadOrder[threadOrder[i].post.inReplyTo], glyph: 'branch-singleton'});
     } else if (inReplyTo[inReplyTo.length-1].post.replies.length > 1 && threadOrder[i].post.replies.length > 0) {
       threadOrder[i].threadHandles = [...threadHandles];
       threadOrder[i].threadHandles.pop();
-      threadOrder[i].threadHandles.push({pointsTo: i-1, glyph: 'start-branch'});
+      threadOrder[i].threadHandles.push({pointsTo: uriToThreadOrder[threadOrder[i].post.inReplyTo], glyph: 'start-branch'});
 
       // Hijack the thread line, for future posts. It now points to us.
       threadHandles.pop();
-      threadHandles.push({pointsTo: i-1, glyph: 'continuance'});
+      threadHandles.push({pointsTo: uriToThreadOrder[threadOrder[i].post.inReplyTo], glyph: 'continuance'});
 
       // And the branch should also have a thread line that points to us.
       threadHandles.push({pointsTo: i, glyph: 'continuance'});
