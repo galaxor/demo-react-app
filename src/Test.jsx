@@ -87,6 +87,24 @@ function computeThread(threadOrder) {
     } while (keepGoing && threadHandles.length > 0);
   }
 
+  // I'm going to take another pass, to make sure that ends-of-subthreads are
+  // marked the way I want them to be.  We could have done this logic above,
+  // but I wanted that logic to be clear to understand and I thought adding
+  // this complication would make it more difficult to read, so I separated it
+  // into this section.
+  // What we're doing here is that branch-singleton's may be
+  // branch-singleton-end's if they have no replies.  And post-in-chain's may
+  // be post-in-chain-end's if they have no replies.
+  for (var i=0; i<threadOrder.length; i++) {
+    if (threadOrder[i].post.replies.length === 0) {
+      if (threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph === 'branch-singleton') {
+        threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph = 'branch-singleton-end';
+      } else if (threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph === 'post-in-chain') {
+        threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph = 'post-in-chain-end';
+      }
+    }
+  }
+
   console.log(threadOrder);
 }
 
