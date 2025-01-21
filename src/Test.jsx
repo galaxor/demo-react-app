@@ -55,7 +55,7 @@ function computeThread(threadOrder) {
 
       // Hijack the thread line, for future posts. It now points to us.
       threadHandles.pop();
-      threadHandles.push({pointsTo: i, glyph: 'continuance'});
+      threadHandles.push({pointsTo: i-1, glyph: 'continuance'});
 
       // And the branch should also have a thread line that points to us.
       threadHandles.push({pointsTo: i, glyph: 'continuance'});
@@ -63,14 +63,19 @@ function computeThread(threadOrder) {
       console.log("Woops, what's this situation?  What should I do?");
     }
 
-    for (const myThreadLeaderIndex = threadHandles[threadHandles.length-1].pointsTo,
-         myThreadLeader = threadOrder[myThreadLeaderIndex]
-        ; lastDirectReference[myThreadLeader.uri] === i
-        ; )
-    {
-      threadHandles.pop();
-    }
 
+    var keepGoing;
+    do {
+      keepGoing = false;
+      const myThreadLeaderIndex = threadHandles[threadHandles.length-1].pointsTo;
+      const myThreadLeader = threadOrder[myThreadLeaderIndex];
+      if (lastDirectReference[myThreadLeader.post.uri] === i) {
+        console.log(i, "Jettisoning", [...threadHandles]);
+        keepGoing = true;
+        const floop = threadHandles.pop();
+        console.log("jettisoned", floop);
+      }
+    } while (keepGoing && threadHandles.length > 0);
   }
 
   console.log(threadOrder);
@@ -86,5 +91,15 @@ export default function Test({db}) {
   const threadOrder = flattenThread(originatingPost);
   computeThread(threadOrder);
 
-  return (<>Check the console.</>);
+  return (<>
+    {threadOrder.map(threadedPost => {
+      return (<div className="flex">
+        {threadedPost.threadHandles.map(threadHandle => {
+          return <span>{threadHandle.glyph}({threadOrder[threadHandle.pointsTo].post.text}) {" "}</span>;
+        })}
+        <span>:: {threadedPost.post.text}</span>
+      </div>
+      );
+    })}
+  </>);
 }
