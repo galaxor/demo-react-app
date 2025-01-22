@@ -43,6 +43,49 @@ div.threaded-post > ul {
     }
   }
 
+  li.first-post,
+  li.post-in-chain,
+  li.post-in-chain-end,
+  li.continuance {
+    svg { display: none; }
+
+    display: block;
+    width: 16px;
+    height: auto;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+  }
+
+  li.first-post {
+    margin-top: 24px;
+  }
+
+  li.continuance {
+    width: 30px;
+  }
+
+  li.post-in-chain-end {
+    margin-bottom: 4em;
+  }
+
+  li.start-branch {
+    display: flex;
+    width: 45px;
+    height: auto;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+
+    &::after {
+      content: " ";
+      display: block;
+      width: 16px;
+      height: auto;
+      margin-top: 24px;
+      border-left: 1px solid hsl(var(--nextui-foreground));
+    }
+  }
+
+
+  /* -- */
+
   li.thread-line-first:not(.thread-line-last) {
     display: flex;
 
