@@ -8,7 +8,7 @@ import Post from '../Post.jsx';
 import PostEditor from '../PostEditor.jsx';
 import { PostsDB } from '../logic/posts.js';
 
-export default function ThreadedPost({post, inReplyTo, className, scrollRef, setReplies, setScrollToPost}) {
+export default function ThreadedPost({post, threadHandles, className, scrollRef, setReplies, setScrollToPost}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
@@ -22,20 +22,14 @@ export default function ThreadedPost({post, inReplyTo, className, scrollRef, set
 
   return (
       <div id={"threaded-post-"+hashSum(post.uri).toString(16)} className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
-        {inReplyTo.length > 0? 
+        {threadHandles.length > 0? 
           <ul>
-            {inReplyTo.map(inReplyTo  => {
-              const postRepliedTo = inReplyTo.post;
-              const drawThreadLine = inReplyTo.drawThreadLine;
-              const hasBranch = inReplyTo.hasBranch;
-              const hasReplies = inReplyTo.hasReplies;
-              const collapsed = inReplyTo.collapsed;
-
+            {threadHandles.map(threadHandle  => {
               return (
-              <li key={postRepliedTo.uri} className={(collapsed? collapsed : drawThreadLine) + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ")}>
-                <a href={"#p"+hashSum(postRepliedTo.uri).toString(16)} className="thread-handle"><Corner />
-                  <span className="thread-handle-text">Replying to {postRepliedTo.authorPerson.displayName}: {" "}
-                    {postRepliedTo.text.substring(0, 30)}{postRepliedTo.text.length > 30? "..." : ""}</span>
+              <li key={threadHandle.pointsToPost.uri} className={threadHandle.glyph}>
+                <a href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner />
+                  <span className="thread-handle-text">Replying to {threadHandle.pointsToPost.authorPerson.displayName}: {" "}
+                    {threadHandle.pointsToPost.text.substring(0, 30)}{threadHandle.pointsToPost.text.length > 30? "..." : ""}</span>
                 </a>
               </li>
               );
