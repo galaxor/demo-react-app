@@ -67,6 +67,15 @@ div.threaded-post > ul {
     margin-bottom: 4em;
   }
 
+  li.branch-singleton {
+    width: 45px;
+    border-left: 1px solid hsl(var(--nextui-foreground));
+  }
+
+  li.branch-singleton-end {
+    width: 45px;
+  }
+
   li.start-branch {
     display: flex;
     width: 45px;
