@@ -138,48 +138,20 @@ export function computeThread(threadOrder) {
       console.warn("Found an unimplemented threading situation.");
     }
 
+    // Is this the end of the subthread?
+    // It is if there are no replies to this post and no further replies to whatever we're replying to.
+    if (threadOrder[i].post.replies.length === 0
+        && lastDirectReference[threadOrder[i].post.inReplyTo] === i)
+    {
+      // Outdent.
+      threadHandles.pop();
 
-    // This is how we detect the end of a subthread.  When we hit the end of a
-    // subthread, we outdent (by popping things off threadHandles).
-    var keepGoing;
-    do {
-      keepGoing = false;
-
-      // We outdent if this post was the last one that directly replied to the
-      // post that started this branch:  The branch is over.
-      const myThreadLeaderIndex = threadHandles[threadHandles.length-1].pointsTo;
-      const myThreadLeader = threadOrder[myThreadLeaderIndex];
-      if (lastDirectReference[myThreadLeader.post.uri] === i) {
-        threadHandles.pop();
-
-        // If we popped something, see if there's more to pop.  Like, maybe we
-        // have to outdent by two or more!
-        keepGoing = true;
+      // Also, change branch-singleton to branch-singleton-end, and post-in-chain to post-in-chain-end.
+      if (threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph === 'branch-singleton') {
+        threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph = 'branch-singleton-end';
+      } else if (threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph === 'post-in-chain') {
+        threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph = 'post-in-chain-end';
       }
-    } while (keepGoing && threadHandles.length > 0);
-  }
-
-  // I'm going to take another pass, to make sure that ends-of-subthreads are
-  // marked the way I want them to be.  We could have done this logic above,
-  // but I wanted that logic to be clear to understand and I thought adding
-  // this complication would make it more difficult to read, so I separated it
-  // into this section.
-  // What we're doing here is that branch-singleton's may be
-  // branch-singleton-end's if they have no replies.  And post-in-chain's may
-  // be post-in-chain-end's if they have no replies.
-  for (var i=0; i<threadOrder.length; i++) {
-    const threadHandles = threadOrder[i].threadHandles;
-    const directlyRepliesToIndex = threadHandles[threadHandles.length-1].pointsTo;
-    const directlyRepliesToUri = threadOrder[directlyRepliesToIndex].post.uri;
-
-    if (threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph === 'branch-singleton'
-        && lastDirectReference[directlyRepliesToUri] === i)
-    {
-      threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph = 'branch-singleton-end';
-    } else if (threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph === 'post-in-chain'
-               && threadOrder[i].post.replies.length === 0) 
-    {
-      threadOrder[i].threadHandles[threadOrder[i].threadHandles.length-1].glyph = 'post-in-chain-end';
     }
   }
 
