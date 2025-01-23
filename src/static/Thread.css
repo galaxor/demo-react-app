@@ -49,37 +49,38 @@ div.threaded-post > ul {
   li.continuance {
     svg { display: none; }
 
-    display: block;
-    width: 16px;
-    height: auto;
-    border-left: 1px solid hsl(var(--nextui-foreground));
+    a {
+      display: block;
+      width: 16px;
+      border-left: 1px solid hsl(var(--nextui-foreground));
+    }
   }
 
-  li.first-post {
+  li.first-post a {
     margin-top: 24px;
   }
 
-  li.continuance {
+  li.continuance a {
     width: 30px;
   }
 
-  li.post-in-chain-end {
+  li.post-in-chain-end a {
+    height: calc(100% - 4em);
     margin-bottom: 4em;
   }
 
-  li.branch-singleton {
+  li.branch-singleton a {
     width: 45px;
     border-left: 1px solid hsl(var(--nextui-foreground));
   }
 
-  li.branch-singleton-end {
+  li.branch-singleton-end a {
     width: 45px;
   }
 
-  li.start-branch {
+  li.start-branch a {
     display: flex;
     width: 45px;
-    height: auto;
     border-left: 1px solid hsl(var(--nextui-foreground));
 
     &::after {
