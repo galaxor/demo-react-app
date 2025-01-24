@@ -1,7 +1,7 @@
 import { PostsDB } from './logic/posts.js';
 
 import { clickPost } from './clickPost.js'
-import { computeCollapsedReplyChains, computeThreadHandleVisibility, createStylesheetsForHover, flattenThread } from './include/thread-gymnastics.js'
+import { computeThread, createStylesheetsForHover, flattenThread, getRepliesTo } from './include/thread-gymnastics.js'
 import hashSum from 'hash-sum'
 import MiniMap from './components/MiniMap.jsx'
 import Post from './Post.jsx';
@@ -17,29 +17,19 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
-function getRepliesTo(postRepliedTo, postsDB) {
-  postRepliedTo.replies = postsDB.getRepliesTo(postRepliedTo.uri);
-  postRepliedTo.replies.forEach(replyPost => getRepliesTo(replyPost, postsDB));
-}
+function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
+  const threadOrder = flattenThread(originatingPost);
 
-function threadGymnasticsFn(setOriginatingPost, setThreadOrder) {
-  return originatingPost => {
-    const threadOrder = flattenThread(originatingPost);
+  computeThread(threadOrder);
 
-    computeThreadHandleVisibility(threadOrder);
+  setOriginatingPost({...originatingPost});
 
-    // Now collapse some reply chains so we don't have to indent if single posts reply to single posts.
-    computeCollapsedReplyChains(threadOrder);
-
-    setOriginatingPost({...originatingPost});
-
-    setThreadOrder(threadOrder);
-  }
+  setThreadOrder(threadOrder);
 }
 
 function findPost(uri, haystack) {
   if (haystack.uri === uri) { return haystack; }
-  for (reply of haystack.replies) {
+  for (const reply of haystack.replies) {
     const foundPost = findPost(uri, reply);
     if (foundPost !== null) { return foundPost; }
   }
@@ -47,13 +37,13 @@ function findPost(uri, haystack) {
   return null;
 }
 
-function setRepliesFn(post, originatingPost, threadGymnastics) {
+function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
   return replies => {
     // Find the post we're meant to add to, inside the originatingPost.
     const addToPost = findPost(post.uri, originatingPost);
     addToPost.replies = replies;
 
-    threadGymnastics(originatingPost);
+    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
   }
 }
 
@@ -109,8 +99,6 @@ export default function Thread() {
 
   const [threadOrder, setThreadOrder] = useState(null);
 
-  const threadGymnastics = threadGymnasticsFn(setOriginatingPost, setThreadOrder);
-
   if (threadOrder === null) {
     const originatingPost = (mainPost.conversationId === mainPost.uri || !mainPost.conversationId)?
                             mainPost :
@@ -119,7 +107,7 @@ export default function Thread() {
   
     getRepliesTo(originatingPost, postsDB);
 
-    threadGymnastics(originatingPost);
+    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
 
     // When we do the thread gymnastics, it sets threadOrder, which redraws the page.
     // On the first go-through, it'll try to draw the page with threadOrder set
@@ -151,7 +139,6 @@ export default function Thread() {
   // The other replies to the posts earlier in the thread, which are not replies to the main post.
   const threadRemainder = threadOrder.slice(mainPostIndex+1+replies.length);
 
-
   return <>
     <style type="text/css">{createStylesheetsForHover(threadOrder)}</style>
 
@@ -173,8 +160,8 @@ export default function Thread() {
       <section className="main-post" aria-labelledby="main-post-h1">
         <ThreadedPost key={threadOrder[mainPostIndex].post.uri} 
           post={threadOrder[mainPostIndex].post} 
-          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics)}
-          inReplyTo={threadOrder[mainPostIndex].inReplyTo}
+          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
+          threadHandles={threadOrder[mainPostIndex].threadHandles}
           scrollRef={mainPostScrollRef}
           setScrollToPost={setScrollToPost}
         />
@@ -185,12 +172,12 @@ export default function Thread() {
         <h2 id="replies-h2" className="visually-hidden">Replies</h2>
 
         <section className="replies" aria-labelledby="replies-h2">
-          {replies.map(({inReplyTo, post}) => {
+          {replies.map(({threadHandles, post}) => {
             return (
               <ThreadedPost key={post.uri}
                 post={post} 
-                inReplyTo={inReplyTo}
-                setReplies={setRepliesFn(post, originatingPost, setOriginatingPost)}
+                threadHandles={threadHandles}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
               />
             );
           })}
@@ -203,12 +190,12 @@ export default function Thread() {
         <h2 id="thread-context-h2" className="visually-hidden">Thread Context</h2>
 
         <section className="thread-context" aria-labelledby="thread-context-h2">
-          {threadContext.map(({inReplyTo, post}) => {
+          {threadContext.map(({threadHandles, post}) => {
             return (
               <ThreadedPost key={post.uri}
                 post={post} 
-                inReplyTo={inReplyTo}
-                setReplies={setRepliesFn(post, originatingPost, setOriginatingPost)}
+                threadHandles={threadHandles}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
               />
             );
           })}
@@ -221,8 +208,8 @@ export default function Thread() {
         <h2 id="thread-remainder-h2" className="visually-hidden">Remainder of the thread</h2>
 
         <section className="thread-remainder" aria-labelledby="thread-remainder-h2">
-          {threadRemainder.map(({inReplyTo, post}) => {
-            return <ThreadedPost key={post.uri} post={post} inReplyTo={inReplyTo} />
+          {threadRemainder.map(({threadHandles, post}) => {
+            return <ThreadedPost key={post.uri} post={post} inReplyTo={threadHandles} />
           })}
         </section>
         </>
