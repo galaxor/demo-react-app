@@ -121,27 +121,31 @@
   }
 
   /* Draw little dots where the posts are, to break up the thread lines a little. */
+  /* Maybe no dots. The size of the posts in the minimap scales, and the dots get out of scale easily. 
   div.minimap-threaded-post > div.minimap-post {
     position: relative;
   }
   div.minimap-threaded-post > div.minimap-post::before {
     content: " ";
     display: block;
-    width: 5%;
-    height: 10%;
+    width: 6px;
+    height: 6px;
     background: hsl(var(--nextui-foreground));
     border-radius: 100%;
     position: absolute;
-    top: 33%;
+    top: 20px;
     left: -19px;
     z-index: 2;
   }
+  */
 
   /* Don't draw the dot if there are no replies */
+  /* We're not doing dots.
   &:not(:has(section.replies)) > section.main-post div.minimap-post::before {
     content: "";
     display: none;
   }
+  */
 
   div.post {
     border: 1px solid transparent;
