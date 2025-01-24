@@ -184,10 +184,13 @@ export function createStylesheetsForHover(threadOrder) {
     hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) a.thread-handle[href="#p${id}"] { border-color: hsl(var(--nextui-primary)); }`);
 
     // When we hover on a thread line, highlight the "corner" piece on the final post of the thread.
-    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) li.thread-line-last a.thread-handle[href="#p${id}"] svg { color: hsl(var(--nextui-primary)); }`);
+    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) li.branch-singleton-end a.thread-handle[href="#p${id}"] svg { color: hsl(var(--nextui-primary)); }`);
+
+    // When we hover on a thread line, highlight the "corner" piece on all the branch-singletons in that thread.
+    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) li.branch-singleton a.thread-handle[href="#p${id}"] svg { color: hsl(var(--nextui-primary)); }`);
 
     // When we hover on a thread line, also highlight the "patch" that hangs out next to the post that the line is going to.
-    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) div.threaded-post-${id} > ul > li:last-child::after { border-color: hsl(var(--nextui-primary)); }`);
+    hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) div.threaded-post-${id} > ul > li:last-child > a::after { border-color: hsl(var(--nextui-primary)); }`);
 
     // When we hover on a thread line, highlight the actual post that is being pointed to.
     hoverRules.push(`main#thread-main.thread:has(a.thread-handle[href="#p${id}"]:hover) div#p${id} { outline-color: hsl(var(--nextui-primary)); }`);
