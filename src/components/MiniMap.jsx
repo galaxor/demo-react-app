@@ -124,26 +124,22 @@ export default function MiniMap({threadOrder}) {
   return (<aside id="minimap">
     <style id="minimap-styles" type="text/css"></style>
     <div id="minimap-scrollbar-thumb"></div>
-    {threadOrder.map(({post, inReplyTo}) => {
-      return <MiniMapNode key={post.uri} post={post} inReplyTo={inReplyTo} />
+    {threadOrder.map(({post, threadHandles}) => {
+      return <MiniMapNode key={post.uri} post={post} threadHandles={threadHandles} />
     })}
   </aside>);
 }
 
-function MiniMapNode({post, inReplyTo}) {
+function MiniMapNode({post, threadHandles}) {
   const avatarFallbackColor = hashSum(post.authorPerson.handle).substring(0,6).toUpperCase();
 
   return (<div id={"minimap-"+hashSum(post.uri).toString(16)} className="minimap-threaded-post flex">
-  {inReplyTo.length > 0? 
+  {threadHandles.length > 0? 
     <ul>
-      {inReplyTo.map(inReplyTo  => {
-        const {drawThreadLine, hasBranch, hasReplies, collapsed} = inReplyTo;
-        const postRepliedTo = inReplyTo.post;
-
+      {threadHandles.map(threadHandle  => {
         return (
-        <li key={postRepliedTo.uri} className={(collapsed? collapsed : drawThreadLine) + (hasBranch? " has-branch " : " ") + (hasReplies? " has-replies " : " ")}>
-          <a href={"#p"+hashSum(postRepliedTo.uri).toString(16)} className="thread-handle"><Corner />
-          </a>
+        <li key={threadHandle.pointsToPost.uri} className={threadHandle.glyph}>
+          <a href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner /></a>
         </li>
         );
       })}

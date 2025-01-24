@@ -23,7 +23,7 @@
 
   a.thread-handle > svg {
     path {
-      stroke-width: 2;
+      stroke-width: 0.5;
     }
   }
 
@@ -55,6 +55,7 @@
   }
 
   div.minimap-threaded-post > ul {
+    flex-shrink: 2;
     display: flex;
 
     a.thread-handle {
@@ -62,110 +63,92 @@
       height: 100%;
 
       svg {
-        width: var(--thread-handle-width);
+        width: 30px;
         position: relative;
-        top: -17px;
+        top: -11px;
       }
     }
 
-    li.thread-line-first:not(.thread-line-last) {
-      display: flex;
+    li.first-post,
+    li.post-in-chain,
+    li.post-in-chain-end,
+    li.continuance {
+      svg { display: none; }
 
-      > a.thread-handle {
+      a {
+        display: block;
+        width: 16px;
         border-left: 1px solid hsl(var(--nextui-foreground));
-        &:hover {
-          border-color: hsl(var(--nextui-primary));
-        }
-      }
-
-      &::after {
-        content: " ";
-        display: block;
-        width: var(--collapsed-thread-handle-margin);
-        height: 100%;
       }
     }
 
-    /* Collapsed reply chains. */
-    li.collapsed-last > a.thread-handle,
-    li.collapsed-first > a.thread-handle {
-      width: var(--collapsed-thread-handle-margin);
+    li.first-post a {
+      margin-top: 24px;
+    }
+
+    li.continuance a {
+      width: 30px;
+    }
+
+    li.post-in-chain-end a {
+      height: calc(75%);
+      margin-bottom: 25%;
+    }
+
+    li.branch-singleton a {
+      width: 45px;
       border-left: 1px solid hsl(var(--nextui-foreground));
-      &:hover {
-        border-color: hsl(var(--nextui-primary));
-      }
-      svg { display: none; }
     }
 
-    /* Let them know this is the last post in the reply chain. */
-    li.collapsed-last {
-      margin-bottom: 1px;
+    li.branch-singleton-end a {
+      width: 45px;
     }
 
-    li.collapsed-hidden > a.thread-handle {
-      display: none;
-    }
-
-    li.thread-line-continue > a.thread-handle {
-      width: var(--thread-handle-width);
-      border-left: 1px solid hsl(var(--nextui-foreground));
-      &:hover {
-        border-color: hsl(var(--nextui-primary));
-      }
-      svg { display: none; }
-    }
-
-    li.thread-line-hide > a.thread-handle {
-      width: var(--thread-handle-width);
-      svg { display: none; }
-    }
-
-    li.thread-line-branch > a.thread-handle {
-      border-left: 1px solid hsl(var(--nextui-foreground));
-      &:hover { 
-        border-color: hsl(var(--nextui-primary));
-      }
-    }
-
-    /* In the situation where this is the first post of a subthread that has a
-     * branch, we need to draw a little "patch" for the subthread to connect to.
-     * It's not a real, full, thread handle. */
-    li.thread-line-branch.has-replies,
-    li.thread-line-first.has-replies,
-    li.thread-line-last.has-replies,
-    li.thread-line-first.thread-line-last.has-branch
-    {
-      a.thread-handle {
-        display: flex;
-      }
-
+    li.start-branch a {
       display: flex;
-      
+      width: 45px;
+      border-left: 1px solid hsl(var(--nextui-foreground));
+
       &::after {
         content: " ";
         display: block;
-        width: var(--collapsed-thread-handle-margin);
+        width: 16px;
         height: auto;
+        margin-top: 24px;
         border-left: 1px solid hsl(var(--nextui-foreground));
-        margin-top: 12px;
-
-        /* I don't know why I have to reposition this. Probably other borders are
-         * adding space to stuff, causing it to be off by a pixel. */
-        position: relative;
-        left: -1px;
-      }
-    }
-
-    li.thread-line-branch:last-child,
-    li.thread-line-last:last-child {
-      display: flex;
-
-      &::after {
-        content: " ";
-        display: block;
-        width: var(--collapsed-thread-handle-margin);
-        height: 100%;
       }
     }
   }
+
+  /* Draw little dots where the posts are, to break up the thread lines a little. */
+  div.minimap-threaded-post > div.post-and-composing-reply > article {
+    position: relative;
+  }
+  div.ninimap-threaded-post > div.post-and-composing-reply > article::before {
+    content: " ";
+    display: block;
+    width: 1ex;
+    height: 1ex;
+    background: hsl(var(--nextui-foreground));
+    border-radius: 100%;
+    position: absolute;
+    top: 13px;
+    left: -19px;
+    z-index: 2;
+  }
+
+  /* Don't draw the dot if there are no replies */
+  &:not(:has(section.replies)) > section.main-post div.post-and-composing-reply > article::before {
+    content: "";
+    display: none;
+  }
+
+  div.post {
+    border: 1px solid transparent;
+  }
+
+  section.main-post div.post {
+    border-color: hsl(var(--nextui-foreground));
+  }
+
 }
