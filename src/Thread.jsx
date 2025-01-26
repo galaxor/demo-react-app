@@ -209,7 +209,11 @@ export default function Thread() {
 
         <section className="thread-remainder" aria-labelledby="thread-remainder-h2">
           {threadRemainder.map(({threadHandles, post}) => {
-            return <ThreadedPost key={post.uri} post={post} inReplyTo={threadHandles} />
+            return (
+              <ThreadedPost key={post.uri} post={post} threadHandles={threadHandles}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
+               />
+            );
           })}
         </section>
         </>
