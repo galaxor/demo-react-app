@@ -112,7 +112,7 @@ div.threaded-post > div.post-and-composing-reply > article::before {
 }
 
 /* Don't draw the dot if there are no replies */
-&:not(:has(section.replies)) > section.main-post div.post-and-composing-reply > article::before {
+&:not(:has(section.replies)):not(:has(section.thread-context)):not(:has(section.thread-remainder)) > section.main-post div.post-and-composing-reply > article::before {
   content: "";
   display: none;
 }
