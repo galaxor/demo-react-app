@@ -6,16 +6,18 @@ import {
   DropdownItem,
   DropdownSection,
 } from "@nextui-org/dropdown";
+import { useDisclosure } from "@nextui-org/use-disclosure"
 import { Link } from 'react-router-dom'
 import { Link as Link2, LinkIcon } from "@nextui-org/link"
 import { useContext, useRef } from 'react'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import DeletePostModal from './components/DeletePostModal.jsx'
 import icons from './icons.js'
 import UserContext from './UserContext.jsx'
 
 
-function getDropdownAction(originalLink) {
+function getDropdownAction(originalLink, deleteModalOnOpen) {
   return async function dropdownAction(key) {
     switch(key) {
     case "open-original":
@@ -37,7 +39,7 @@ function getDropdownAction(originalLink) {
       break;
 
     case "delete-post":
-      alert("In a perfect world, your post would be deleted.");
+      deleteModalOnOpen();
       break;
     }
   }
@@ -46,8 +48,18 @@ function getDropdownAction(originalLink) {
 export default function PostDetailsMenu({post}) {
   const originalLink = useRef(null);
   const { user } = useContext(UserContext);
+  const {
+    isOpen: deleteModalIsOpen,
+    onOpen: deleteModalOnOpen,
+    onOpenChange: deleteModalOnOpenChange,
+  } = useDisclosure();
 
-  return (
+  return (<>
+    {(typeof user !== "undefined" && post.authorPerson.handle === user.handle)?
+      <DeletePostModal isOpen={deleteModalIsOpen} onOpen={deleteModalOnOpen} onOpenChange={deleteModalOnOpenChange} post={post} />
+      : ""
+    }
+
     <Dropdown>
       <DropdownTrigger>
         <Button variant="light">
@@ -55,7 +67,7 @@ export default function PostDetailsMenu({post}) {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Post Details" variant="solid" color="primary"
-        onAction={getDropdownAction(originalLink)}
+        onAction={getDropdownAction(originalLink, deleteModalOnOpen)}
       >
       {(typeof user !== "undefined" && post.authorPerson.handle === user.handle)?
         <DropdownSection showDivider>
@@ -76,5 +88,6 @@ export default function PostDetailsMenu({post}) {
         </DropdownSection>
       </DropdownMenu>
     </Dropdown>
+    </>
   );
 }
