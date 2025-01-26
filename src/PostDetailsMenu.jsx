@@ -35,6 +35,10 @@ function getDropdownAction(originalLink) {
         console.log("Copying to clipboard", error);
       }
       break;
+
+    case "delete-post":
+      alert("In a perfect world, your post would be deleted.");
+      break;
     }
   }
 }
@@ -55,7 +59,7 @@ export default function PostDetailsMenu({post}) {
       >
       {(typeof user !== "undefined" && post.authorPerson.handle === user.handle)?
         <DropdownSection showDivider>
-          <DropdownItem key="delete-post" textValue="Delete Post" onClick={e => alert("I would delete this.")}>Delete Post</DropdownItem>
+          <DropdownItem key="delete-post" textValue="Delete Post" className="text-danger">Delete Post</DropdownItem>
         </DropdownSection>
         :
         ""
