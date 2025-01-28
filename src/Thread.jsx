@@ -47,6 +47,24 @@ function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPos
   }
 }
 
+function onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
+  return () => {
+    if (originatingPost.uri === post.uri) {
+      
+    }
+    const postsParent = findPost(post.inReplyTo, originatingPost);
+
+    // XXX Decide whether to just delete the post, or to show it as a
+    // tombstone.  Show it as a tombstone if it has replies.
+    const index = postsParent.replies.findIndex(reply => reply.uri === post.uri);
+
+    // Remove the deleted post.
+    postsParent.replies = [...postsParent.replies.slice(0, index), ...postsParent.replies.slice(index+1)];
+
+    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
+  };
+}
+
 export default function Thread() {
   const mainPost = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
@@ -160,6 +178,7 @@ export default function Thread() {
       <section className="main-post" aria-labelledby="main-post-h1">
         <ThreadedPost key={threadOrder[mainPostIndex].post.uri} 
           post={threadOrder[mainPostIndex].post} 
+          onDelete={onDeleteFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
           setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
           threadHandles={threadOrder[mainPostIndex].threadHandles}
           scrollRef={mainPostScrollRef}
@@ -177,6 +196,7 @@ export default function Thread() {
               <ThreadedPost key={post.uri}
                 post={post} 
                 threadHandles={threadHandles}
+                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
                 setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
               />
             );
@@ -194,6 +214,7 @@ export default function Thread() {
             return (
               <ThreadedPost key={post.uri}
                 post={post} 
+                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
                 threadHandles={threadHandles}
                 setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
               />
@@ -210,7 +231,10 @@ export default function Thread() {
         <section className="thread-remainder" aria-labelledby="thread-remainder-h2">
           {threadRemainder.map(({threadHandles, post}) => {
             return (
-              <ThreadedPost key={post.uri} post={post} threadHandles={threadHandles}
+              <ThreadedPost key={post.uri} 
+                post={post} 
+                threadHandles={threadHandles}
+                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
                 setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
                />
             );

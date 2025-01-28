@@ -28,7 +28,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post2(props, ref) {
-  const {id, post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight} = props;
+  const {id, post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete} = props;
 
   // showStats defaults to true.
   const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
@@ -172,7 +172,7 @@ const Post = forwardRef(function Post2(props, ref) {
                 </li>
                 <Boosts onBoost={onBoost} post={post} />
                 <li className="post-stat more-options-menu order-2">
-                  <PostDetailsMenu post={post} />
+                  <PostDetailsMenu post={post} onDelete={onDelete} />
                 </li>
                 <li className="reactions post-stat order-1 w-full"><Reactions post={post} onReact={onReact} /></li>
               </ul>

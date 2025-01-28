@@ -8,7 +8,7 @@ import Post from '../Post.jsx';
 import PostEditor from '../PostEditor.jsx';
 import { PostsDB } from '../logic/posts.js';
 
-export default function ThreadedPost({post, threadHandles, className, scrollRef, setReplies, setScrollToPost}) {
+export default function ThreadedPost({post, threadHandles, className, scrollRef, setReplies, setScrollToPost, onDelete}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
@@ -41,7 +41,9 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
         <div className="post-and-composing-reply w-full">
           <Post id={"p"+(hashSum(post.uri).toString(16))} ref={postRef} post={post} scrollHereRef={scrollHereRef}
             composingReply={composingReply} setComposingReply={setComposingReply} 
-            numReplies={numReplies} setNumReplies={setNumReplies}>
+            numReplies={numReplies} setNumReplies={setNumReplies}
+            onDelete={onDelete}
+          >
 
             {composingReply?
               <div className="composing-reply">

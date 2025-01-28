@@ -9,14 +9,24 @@ import {
 import {useContext} from 'react'
 
 import DarkModeContext from "../DarkModeContext.jsx";
+import DatabaseContext from '../DatabaseContext'
+import { PostsDB } from '../logic/posts.js'
 
-function deletePost(post, onClose) {
-  alert("Not implemented");
+function deletePost(postsDB, post, onClose, onDelete) {
+  postsDB.deletePost(post.uri);
+
   onClose();
+
+  if (typeof onDelete === "function") {
+    onDelete();
+  }
 }
 
-export default function DeletePostModal({isOpen, onOpen, onOpenChange, post}) {
+export default function DeletePostModal({isOpen, onOpen, onOpenChange, post, onDelete}) {
   const [darkMode, setDarkMode] = useContext(DarkModeContext);
+  const db = useContext(DatabaseContext);
+  const postsDB = new PostsDB(db);
+
   return (
     <>
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} className={(darkMode? "dark" : "")}>
@@ -27,7 +37,7 @@ export default function DeletePostModal({isOpen, onOpen, onOpenChange, post}) {
           <ModalBody className="text-foreground">Are you sure you want to delete the post?</ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={onClose}>Cancel</Button>
-            <Button color="danger" onPress={e => deletePost(post, onClose)}>Delete</Button>
+            <Button color="danger" onPress={e => deletePost(postsDB, post, onClose, onDelete)}>Delete</Button>
           </ModalFooter>
           </>);
         }}

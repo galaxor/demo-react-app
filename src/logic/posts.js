@@ -39,6 +39,12 @@ export class PostsDB {
     return {...post, ...version};
   }
 
+  deletePost(uri) {
+    const post = this.db.get('posts', uri);
+    post.deletedAt = new Date();
+    this.db.set('posts', uri, post);
+  }
+
   getRepliesTo(uri) {
     const replies = Object.values(this.db.get('posts'))
       .filter(post => post.inReplyTo === uri)

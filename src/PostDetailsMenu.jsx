@@ -45,7 +45,7 @@ function getDropdownAction(originalLink, deleteModalOnOpen) {
   }
 }
 
-export default function PostDetailsMenu({post}) {
+export default function PostDetailsMenu({post, onDelete}) {
   const originalLink = useRef(null);
   const { user } = useContext(UserContext);
   const {
@@ -56,7 +56,7 @@ export default function PostDetailsMenu({post}) {
 
   return (<>
     {(typeof user !== "undefined" && post.authorPerson.handle === user.handle)?
-      <DeletePostModal isOpen={deleteModalIsOpen} onOpen={deleteModalOnOpen} onOpenChange={deleteModalOnOpenChange} post={post} />
+      <DeletePostModal isOpen={deleteModalIsOpen} onOpen={deleteModalOnOpen} onOpenChange={deleteModalOnOpenChange} post={post} onDelete={onDelete} />
       : ""
     }
 
