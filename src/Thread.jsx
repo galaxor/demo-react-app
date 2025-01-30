@@ -24,8 +24,6 @@ function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
 
   setOriginatingPost({...originatingPost});
 
-  console.log(threadOrder);
-
   setThreadOrder(threadOrder);
 }
 
