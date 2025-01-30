@@ -22,21 +22,23 @@ export class PostsDB {
     return this.db.get('boosts')
       .filter(boostRow => boostRow.boostersPost === uri)
       .map(boostedPostRow => {
-        const boostedPost = this.db.get('posts', boostedPostRow.boostedPost);
-        const version = this.db.get('postVersions', boostedPostRow.boostedPost)[boostedPost['updatedAt']];
-        boostedPost.authorPerson = this.db.get('people', boostedPost.author);
-        return {...boostedPost, ...version};
+        const boostedPost = this.get(boostedPostRow.boostedPost);
+        return {...boostedPost};
       })
     ;
   }
 
   get(uri) {
     const post = this.db.get('posts', uri);
-    post.authorPerson = this.db.get('people', post.author);
-    post.boostedPosts = this.getBoostedPosts(uri);
-    const version = this.db.get('postVersions', uri)[post.updatedAt];
 
-    return {...post, ...version};
+    if (post.deletedAt === null) {
+      post.authorPerson = this.db.get('people', post.author);
+      post.boostedPosts = this.getBoostedPosts(uri);
+      const version = this.db.get('postVersions', uri)[post.updatedAt];
+      return {...post, ...version};
+    } else {
+      return this.db.nullPost();
+    }
   }
 
   deletePost(uri) {
@@ -49,8 +51,12 @@ export class PostsDB {
     const replies = Object.values(this.db.get('posts'))
       .filter(post => post.inReplyTo === uri)
       .map(post => {
-        const version = this.db.get('postVersions', post.uri)[post.updatedAt];
-        return {...post, ...version, authorPerson: this.db.get('people', post.author)}; 
+        if (post.deletedAt === null) {
+          const version = this.db.get('postVersions', post.uri)[post.updatedAt];
+          return {...post, ...version, authorPerson: this.db.get('people', post.author)}; 
+        } else {
+          return { ...this.db.nullPost(), inReplyTo: uri };
+        }
       })
     ;
 

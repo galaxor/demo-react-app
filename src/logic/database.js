@@ -441,6 +441,51 @@ class Database {
     }
   }
 
+  nullPerson() {
+    return {
+      localUserId: null,
+      handle: null,
+      url: null,
+      displayName: null,
+      bio: null,
+      avatar: null,
+      avatarOrig: null,
+      avatarPosition: {x: 0, y: 0},
+      avatarRotate: 0,
+      avatarScale: 1,
+      skinTonePref: "neutral",
+    };
+  }
+
+  nullVersion() {
+    return {
+      uri: "@alice@local/a-cool-article",
+      updatedAt: "1970-01-01T00:00:00Z",
+      sensitive: false,
+      spoilerText: null,
+      language: null,
+      type: "text",
+      text: null,
+    };
+  }
+
+  nullPost() {
+    return {
+      uri: null,
+      author: null,
+      createdAt: "1970-01-01T00:00:00Z",
+      updatedAt: null,
+      deletedAt: "1970-01-01T00:00:00Z",
+      inReplyTo: null, // URI of post that this is replying to
+      canonicalUrl: null,
+      conversationId: null,
+      local: false,
+      authorPerson: this.nullPerson(),
+
+      ...this.nullVersion(),
+    };
+  }
+
   get(table, key) {
     if (typeof key === "undefined") {
       return JSON.parse(JSON.stringify(this[table]));

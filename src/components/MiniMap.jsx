@@ -148,10 +148,14 @@ function MiniMapNode({post, threadHandles}) {
   }
 
   <div className="minimap-post">
-    <Avatar isBordered radius="full" src={post.authorPerson.avatar} name={post.authorPerson.displayName} 
-      style={{'--avatar-bg': '#'+avatarFallbackColor}}
-      classNames={{base: "avatar bg-[--avatar-bg]"}}
-    />
+    {post.deletedAt === null?
+      <Avatar isBordered radius="full" src={post.authorPerson.avatar} name={post.authorPerson.displayName} 
+        style={{'--avatar-bg': '#'+avatarFallbackColor}}
+        classNames={{base: "avatar bg-[--avatar-bg]"}}
+      />
+      :
+      <Avatar isBordered radius="full" />
+    }
   </div>
 
   </div>);

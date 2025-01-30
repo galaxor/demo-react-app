@@ -21,6 +21,7 @@ import PostDetailsMenu from './PostDetailsMenu.jsx'
 import { PostsDB } from './logic/posts.js'
 import Reactions from './Reactions.jsx'
 import ReplyLevel from './ReplyLevel.jsx'
+import TombstonePost from './components/TombstonePost.jsx'
 import UserContext from './UserContext.jsx'
 
 import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js'
@@ -31,7 +32,7 @@ const Post = forwardRef(function Post2(props, ref) {
   const {id, post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete} = props;
 
   // showStats defaults to true.
-  const showStatsForReal = (typeof showStats === "undefined")? true : showStats;
+  const showStatsForReal = ((typeof showStats === "undefined")? true : showStats) && post.deletedAt === null;
 
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
@@ -99,7 +100,8 @@ const Post = forwardRef(function Post2(props, ref) {
 
   const navigate = useNavigate();
 
-  const thePost = (<>
+  const thePost = post.deletedAt !== null? <TombstonePost/>
+    :(<>
       {replyingToPost && 
         <div className="boost-info">
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
