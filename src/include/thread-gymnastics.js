@@ -124,16 +124,31 @@ export function computeThread(threadOrder) {
 
     } else if (inReplyTo[inReplyTo.length-1].post.replies.length > 1 && threadOrder[i].post.replies.length > 0) {
       // This is a branch off a previous post, and it does start its own subthread.
-      threadOrder[i].threadHandles = [...threadHandles];
-      threadOrder[i].threadHandles.pop();
-      threadOrder[i].threadHandles.push({pointsTo: uriToThreadOrder[threadOrder[i].post.inReplyTo], glyph: 'start-branch'});
 
-      // Hijack the thread line, for future posts. It now points to us.
-      threadHandles.pop();
-      threadHandles.push({pointsTo: uriToThreadOrder[threadOrder[i].post.inReplyTo], glyph: 'continuance'});
+      // If there's no further replies to the post that this is replying to, we should become a collapsed thread.
+      const inReplyToPost = inReplyTo[inReplyTo.length-1].post;
+      const lastReplyToParent = inReplyToPost.replies[inReplyToPost.replies.length-1];
+      if (lastReplyToParent.uri === threadOrder[i].post.uri) {
+        // This is the last reply to our parent post. Become a collapsed thread.
+        threadOrder[i].threadHandles = [...threadHandles];
+        threadOrder[i].threadHandles.pop();
+        threadOrder[i].threadHandles.push({pointsTo: threadHandles[threadHandles.length-1].pointsTo, glyph: 'post-in-chain'});
 
-      // And the branch should also have a thread line that points to us.
-      threadHandles.push({pointsTo: i, glyph: 'continuance'});
+      } else {
+        // There are further replies to our parent post. This should indent and start a branch.
+
+        threadOrder[i].threadHandles = [...threadHandles];
+        threadOrder[i].threadHandles.pop();
+
+        threadOrder[i].threadHandles.push({pointsTo: uriToThreadOrder[threadOrder[i].post.inReplyTo], glyph: 'start-branch'});
+
+        // Hijack the thread line, for future posts. It now points to us.
+        threadHandles.pop();
+        threadHandles.push({pointsTo: uriToThreadOrder[threadOrder[i].post.inReplyTo], glyph: 'continuance'});
+
+        // And the branch should also have a thread line that points to us.
+        threadHandles.push({pointsTo: i, glyph: 'continuance'});
+      }
     } else {
       console.warn("Found an unimplemented threading situation.");
     }
