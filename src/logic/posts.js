@@ -255,9 +255,7 @@ export class PostsDB {
     return this.db.get('boosts')
       .filter(row => row.boostedPost===uri)
       .reduce((mostRecentByEachPerson, boost) => {
-        const boostersPostWithoutText = this.db.get('posts', boost.boostersPost);
-        const version = this.db.get('postVersions', boostersPostWithoutText.uri)[boostersPostWithoutText.updatedAt];
-        const boostersPost = {...boostersPostWithoutText, ...version};
+        const boostersPost = this.get(boost.boostersPost);
 
         // If it's a quote-boost, make no changes.
         if (boostersPost.text !== null) { return mostRecentByEachPerson; }
@@ -285,7 +283,7 @@ export class PostsDB {
     return Object.keys(this.db.get('boosts')
       .filter(row => row.boostedPost===uri && (!by || by===row.booster))
       .reduce((mostRecentByEachPerson, boost) => {
-        const boostersPost = this.db.get('posts', boost.boostersPost);
+        const boostersPost = this.get(boost.boostersPost);
 
         // If it's a quote-boost, make no changes.
         if (boostersPost.text !== null) { return mostRecentByEachPerson; }
