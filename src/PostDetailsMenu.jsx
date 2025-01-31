@@ -55,7 +55,7 @@ export default function PostDetailsMenu({post, onDelete}) {
   } = useDisclosure();
 
   return (<>
-    {(typeof user !== "undefined" && post.authorPerson.handle === user.handle)?
+    {(user !== null && post.authorPerson.handle === user.handle)?
       <DeletePostModal isOpen={deleteModalIsOpen} onOpen={deleteModalOnOpen} onOpenChange={deleteModalOnOpenChange} post={post} onDelete={onDelete} />
       : ""
     }
@@ -69,7 +69,7 @@ export default function PostDetailsMenu({post, onDelete}) {
       <DropdownMenu aria-label="Post Details" variant="solid" color="primary"
         onAction={getDropdownAction(originalLink, deleteModalOnOpen)}
       >
-      {(typeof user !== "undefined" && post.authorPerson.handle === user.handle)?
+      {(user !== null && post.authorPerson.handle === user.handle)?
         <DropdownSection showDivider>
           <DropdownItem key="delete-post" textValue="Delete Post" className="text-danger">Delete Post</DropdownItem>
         </DropdownSection>
