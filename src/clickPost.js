@@ -20,6 +20,9 @@ export function clickPost(e) {
   } else {
     var node = e.target;
     for ( ; node.nodeName !== "ARTICLE"; node = node.parentElement) { }
-    node.querySelector('a.post-time').click();
+    const linkToClick = node.querySelector('a.post-time');
+    if (linkToClick !== null) {
+      linkToClick.click();
+    }
   }
 }
