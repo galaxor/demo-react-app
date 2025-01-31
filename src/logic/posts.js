@@ -48,6 +48,10 @@ export class PostsDB {
   }
 
   getRepliesTo(uri) {
+    if (uri === null) {
+      return [];
+    }
+
     const replies = Object.values(this.db.get('posts'))
       .filter(post => post.inReplyTo === uri)
       .map(post => {
@@ -55,7 +59,7 @@ export class PostsDB {
           const version = this.db.get('postVersions', post.uri)[post.updatedAt];
           return {...post, ...version, authorPerson: this.db.get('people', post.author)}; 
         } else {
-          return { ...this.db.nullPost(), inReplyTo: uri };
+          return { ...this.db.nullPost(), uri: post.uri, inReplyTo: uri };
         }
       })
     ;
@@ -68,6 +72,7 @@ export class PostsDB {
   getNumRepliesTo(uri) {
     const replies = Object.values(this.db.get('posts'))
       .filter(post => post.inReplyTo === uri)
+      .filter(post => post.deletedAt === null)
       .map(post => { return {...post, authorPerson: this.db.get('people', post.author)}; })
     ;
 

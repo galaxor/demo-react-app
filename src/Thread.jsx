@@ -18,13 +18,17 @@ import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
 
 function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
-  const threadOrder = flattenThread(originatingPost);
+  const threadOrder1 = flattenThread(originatingPost);
+
+  const threadOrder = threadOrder1.filter(threadedPost => threadedPost.post.deletedAt === null || threadedPost.post.replies.length > 0);
 
   computeThread(threadOrder);
 
   setOriginatingPost({...originatingPost});
 
   setThreadOrder(threadOrder);
+
+  console.log(threadOrder);
 }
 
 function findPost(uri, haystack) {

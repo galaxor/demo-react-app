@@ -4,8 +4,10 @@ import hashSum from 'hash-sum'
  * Given an initial post, load all the replies of the entire thread starting at that post.
  */
 export function getRepliesTo(postRepliedTo, postsDB) {
-  postRepliedTo.replies = postsDB.getRepliesTo(postRepliedTo.uri);
-  postRepliedTo.replies.forEach(replyPost => getRepliesTo(replyPost, postsDB));
+  const replies = postsDB.getRepliesTo(postRepliedTo.uri);
+  replies.forEach(replyPost => getRepliesTo(replyPost, postsDB));
+
+  postRepliedTo.replies = replies.filter(replyPost => replyPost.deletedAt === null || replyPost.replies.length > 0);
 }
 
 /**

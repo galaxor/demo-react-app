@@ -459,7 +459,7 @@ class Database {
 
   nullVersion() {
     return {
-      uri: "@alice@local/a-cool-article",
+      uri: null,
       updatedAt: "1970-01-01T00:00:00Z",
       sensitive: false,
       spoilerText: null,

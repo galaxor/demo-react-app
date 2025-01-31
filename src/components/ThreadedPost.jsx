@@ -29,7 +29,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
               <li key={threadHandle.pointsToPost.uri} className={threadHandle.glyph}>
                 <a href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner />
                   <span className="thread-handle-text">Replying to {threadHandle.pointsToPost.authorPerson.displayName}: {" "}
-                    {threadHandle.pointsToPost.text.substring(0, 30)}{threadHandle.pointsToPost.text.length > 30? "..." : ""}</span>
+                    {(threadHandle.pointsToPost.text ?? "").substring(0, 30)}{(threadHandle.pointsToPost.text ?? "").length > 30? "..." : ""}</span>
                 </a>
               </li>
               );
