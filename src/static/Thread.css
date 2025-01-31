@@ -111,10 +111,16 @@ div.threaded-post > div.post-and-composing-reply > article::before {
   z-index: 2;
 }
 
-/* Don't draw the dot if there are no replies */
-&:not(:has(section.replies)):not(:has(section.thread-context)):not(:has(section.thread-remainder)) > section.main-post div.post-and-composing-reply > article::before {
-  content: "";
-  display: none;
+/* Don't draw the threading stuff if there are no replies */
+&:not(:has(section.replies)):not(:has(section.thread-context)):not(:has(section.thread-remainder)) > section.main-post {
+  div.post-and-composing-reply > article::before {
+    content: "";
+    display: none;
+  }
+
+  li.first-post {
+    display: none;
+  }
 }
 
 div.post {
