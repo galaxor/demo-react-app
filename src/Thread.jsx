@@ -27,8 +27,6 @@ function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
   setOriginatingPost({...originatingPost});
 
   setThreadOrder(threadOrder);
-
-  console.log(threadOrder);
 }
 
 function findPost(uri, haystack) {
