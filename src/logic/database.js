@@ -252,6 +252,17 @@ class Database {
             text: "If anyone knows where Bob is, please let @alice@local know!\n\nI don't want their drama to stop, I am addicted to the antics of those two!",
           },
         },
+
+        "@mittens@kittens/sayori-dating-zoning": {
+          "2024-01-30T22:16:00-05:00": {
+            uri: "@mittens@kittens/sayori-dating-zoning",
+            updatedAt: "2024-01-30T22:16:00-05:00",
+            sensitive: false,
+            spoilerText: null,
+            language: "en-US",
+            text: "Hee hee.",
+          },
+        },
       };
 
       this.posts = {
@@ -340,9 +351,27 @@ class Database {
           conversationId: null,
           local: false,
         },
+
+        "@mittens@kittens/sayori-dating-zoning": {
+          uri: "@mittens@kittens/sayori-dating-zoning",
+          author: "@mittens@kittens",
+          createdAt: "2024-01-30T22:16:00-05:00",
+          updatedAt: "2024-01-30T22:16:00-05:00",
+          deletedAt: null,
+          inReplyTo: null,
+          canonicalUrl: "https://kittens.example.org/@mittens/sayori-dating-zoning",
+          conversationId: null,
+          local: false,
+        },
       };
 
       this.images = {
+        "@mittens@kittens/sayori-dating-zoning": {
+          "sayori-dating-zoning.png": {
+            data: "/sayori-dating-zoning.png",
+            altText: "Drake meme format, but with Sayori.\n\"Dating\": Sayori says no way.\n\"Rezoning your bed for higher occupancy\": Sayori says yes way, with fingerguns.",
+          },
+        },
       };
 
       // "Booster's post" has the authoritative information about the created/updated times of the boost.
