@@ -11,7 +11,8 @@ class PopularPostsDB {
   getAll() {
 
     const allPosts = Object.values(this.db.get('posts'))
-      .filter(post => post.inReplyTo === null && post.text !== null)
+      .map(post => { return {...post, ... this.db.get('postVersions', post.uri)[post.updatedAt]}; })
+      .filter(post => post.inReplyTo === null && post.text !== null && post.deletedAt === null)
     ;
 
     const postsForDisplay = allPosts.map(popularPost => {
