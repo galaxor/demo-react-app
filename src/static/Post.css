@@ -12,6 +12,11 @@ li.post-stat {
   position: relative;
 }
 
+ul:not(.editable) > li.post-stat:not(.more-options-menu) {
+  margin-right: 3ex;
+  margin-left: 3ex;
+}
+
 article.post-single {
   display: grid;
   grid-template-columns: 100%;
