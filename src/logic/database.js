@@ -366,10 +366,19 @@ class Database {
       };
 
       this.images = {
+        "5717c8b809d31df4dc8296ba2f3a9abde3b05b8742697be50cf834c5b37323b4": {
+          data: "/sayori-dating-zoning.png",
+        },
+      };
+
+      this.imageVersions = {
         "@mittens@kittens/sayori-dating-zoning": {
-          "sayori-dating-zoning.png": {
-            data: "/sayori-dating-zoning.png",
-            altText: "Drake meme format, but with Sayori.\n\"Dating\": Sayori says no way.\n\"Rezoning your bed for higher occupancy\": Sayori says yes way, with fingerguns.",
+          "2024-01-30T22:16:00-05:00": {
+            "sayori-dating-zoning.png": {
+              image: "5717c8b809d31df4dc8296ba2f3a9abde3b05b8742697be50cf834c5b37323b4",
+              altText: "Drake meme format, but with Sayori.\n\"Dating\": Sayori says no way.\n\"Rezoning your bed for higher occupancy\": Sayori says yes way, with fingerguns.",
+              altTextLang: "en-US",
+            },
           },
         },
       };
@@ -450,6 +459,7 @@ class Database {
       localStorage.setItem('boosts', JSON.stringify(this.boosts));
       localStorage.setItem('follows', JSON.stringify(this.follows));
       localStorage.setItem('images', JSON.stringify(this.images));
+      localStorage.setItem('imageVersions', JSON.stringify(this.imageVersions));
       localStorage.setItem('sessions', JSON.stringify(this.sessions));
       localStorage.setItem('people', JSON.stringify(this.people));
       localStorage.setItem('posts', JSON.stringify(this.posts));
@@ -461,6 +471,7 @@ class Database {
       this.boosts = JSON.parse(localStorage.getItem('boosts'));
       this.follows = JSON.parse(localStorage.getItem('follows'));
       this.images = JSON.parse(localStorage.getItem('images'));
+      this.imageVersions = JSON.parse(localStorage.getItem('imageVersions'));
       this.sessions = JSON.parse(localStorage.getItem('sessions'));
       this.people = JSON.parse(localStorage.getItem('people'));
       this.posts = JSON.parse(localStorage.getItem('posts'));

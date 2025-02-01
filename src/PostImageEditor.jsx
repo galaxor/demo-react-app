@@ -32,6 +32,7 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
     return {
       getImages() {
         for (const fileName in uploadedImages) {
+          imageBucket.current[fileName].altTextLang = uploadedImages[fileName].altTextLang;
           imageBucket.current[fileName].altText = uploadedImages[fileName].altText;
         }
         return imageBucket.current;
@@ -60,6 +61,8 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
                         onChange={(e) => {
                           const newUploadedImages = {...uploadedImages};
                           newUploadedImages[fileName].altText = e.target.value;
+                          // XXX intl
+                          newUploadedImages[fileName].altTextLang = 'en-US';
                           setUploadedImages(newUploadedImages);
                         }} />
                   </CardBody>
@@ -91,10 +94,11 @@ function imageUpload({e, imageBucket, uploadedImages, setUploadedImages}) {
     const fileName = e.target.files[0].name;
     const newImage = reader.result;
 
-    imageBucket.current[fileName] = { data: newImage, altText: "" };
+    // XXX intl
+    imageBucket.current[fileName] = { data: newImage, altText: "", altTextLang: "en-US" };
 
     const imageList = {...uploadedImages};
-    imageList[fileName] = { altText: "" };
+    imageList[fileName] = { altText: "", altTextLang: "en-US" };
     setUploadedImages(imageList);
   });
 

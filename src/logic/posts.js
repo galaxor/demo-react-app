@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import sha256 from '../include/sha256.js'
 
 export function getPostLoader(db) {
   return ({params}) => {
@@ -454,14 +455,37 @@ export class PostsDB {
     return theirPosts;
   }
 
-  attachImages(postUri, images) {
+  async attachImages(postUri, images, updatedAt) {
+    for (const fileName in images) {
+      const image = images[fileName];
+      const imageHash = await sha256(image.data);
+      this.db.set('images', imageHash, {data: image.data});
+      delete images[fileName].data;
+      images[fileName].image = imageHash;
+    }
+
     // Delete the previous image attachments for this post.
-    this.db.del('images', postUri);
-    this.db.set('images', postUri, images);
+    const dbImages = this.db.get('imageVersions', postUri) ?? {};
+    dbImages[updatedAt] = images;
+    this.db.set('imageVersions', postUri, dbImages);
   }
 
   getImagesForPost(postUri) {
-    return this.db.get('images', postUri);
+    const {updatedAt, deletedAt} = this.db.get('posts', postUri);
+    if (deletedAt !== null) {
+      return {};
+    }
+
+    const imageVersions = this.db.get('imageVersions', postUri);
+    if (typeof imageVersions === "undefined") {
+      return {};
+    }
+    const imageVersion = imageVersions[updatedAt];
+    for (const fileName in imageVersion) {
+      imageVersion[fileName].data = this.db.get('images', imageVersion.image)[imageVersion[fileName].image].data;
+    }
+    
+    return imageVersion;
   }
 }
 

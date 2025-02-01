@@ -133,10 +133,10 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     <div className="post-finish-actions">
       <Button variant="solid" color="primary" radius="full" ref={saveButtonRef}
         isDisabled={postDisabled}
-        onClick={() => savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>
+        onPress={async () => await savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>
           Post
       </Button>
-      <Button variant="solid" color="danger" radius="full" onClick={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</Button>
+      <Button variant="solid" color="danger" radius="full" onPress={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</Button>
     </div>
     </>
   );
@@ -144,7 +144,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 
 export default PostEditor;
 
-function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef }) {
+async function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -180,7 +180,7 @@ function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSyste
   }]);
 
   const images = imageEditorRef.current.getImages();
-  postsDB.attachImages(newPost.uri, images);
+  await postsDB.attachImages(newPost.uri, images, createdAt);
 
   newPost.authorPerson = peopleDB.get(user.handle);
 
