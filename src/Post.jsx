@@ -160,7 +160,7 @@ const Post = forwardRef(function Post2(props, ref) {
             <aside id={htmlId} className="post-stats" aria-labelledby={htmlId+'-header'}>
               <span className="post-stats-header visually-hidden" id={htmlId+'-header'}>Stats {user && <> and Actions </>}</span>
               
-              <ul aria-labelledby={htmlId+'-header'} className="post-stat-bar flex flex-wrap">
+              <ul aria-labelledby={htmlId+'-header'} className={"post-stat-bar flex flex-wrap " + ((user === null)? "" : "editable")}>
                 <li className="post-stat post-stat-replies order-2 mr-1 h-[40px] content-center">
                   {user?
                     <Button ref={replyButtonRef} variant="light" onPress={(e) => { setComposingReply(true); }}>
