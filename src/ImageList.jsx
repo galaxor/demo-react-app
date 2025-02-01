@@ -28,20 +28,20 @@ export default function ImageList({post}) {
   return (
     <div className="post-images">
       <ul className={"post-images "+(Object.keys(imageBucket).length > 1? "grid grid-cols-2" : "")}>
-        {Object.entries(imageBucket).map(([fileName, {data: imageData, altText}]) => {
-          return ( <li key={fileName}><ClickableImage fileName={fileName} imageData={imageData} altText={altText} darkMode={darkMode} /></li> );
+        {Object.entries(imageBucket).map(([fileName, {data: imageData, altText, altTextLang}]) => {
+          return ( <li key={fileName}><ClickableImage fileName={fileName} imageData={imageData} altTextLang={altTextLang} altText={altText} darkMode={darkMode} /></li> );
         })}
       </ul>
     </div>
   );
 }
 
-function ClickableImage({fileName, imageData, altText, darkMode}) {
+function ClickableImage({fileName, imageData, altText, altTextLang, darkMode}) {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   return (
     <>
     <Link2 onPress={onOpen}>
-      <img src={imageData} alt={altText} className="h-[200px] object-cover" />
+      <img src={imageData} lang={altTextLang} alt={altText} className="h-[200px] object-cover" />
     </Link2> 
 
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}
@@ -51,8 +51,8 @@ function ClickableImage({fileName, imageData, altText, darkMode}) {
         {(onClose) => 
           <>
           <ModalBody>
-            <Link2 href={imageData} isExternal><img src={imageData} alt={altText} /></Link2>
-            {altText? <div className="whitespace-pre-line">{altText}</div> : ""}
+            <Link2 href={imageData} isExternal><img src={imageData} lang={altTextLang} alt={altText} /></Link2>
+            {altText? <div className="whitespace-pre-line" lang={altTextLang}>{altText}</div> : ""}
           </ModalBody>
           </>
         }
