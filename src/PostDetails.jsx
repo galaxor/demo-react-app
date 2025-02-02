@@ -7,7 +7,6 @@ import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import ReactionGlyph from './ReactionGlyph.jsx'
 import PostDetailsContext from './PostDetailsContext.jsx';
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx'
 
 import hashSum from 'hash-sum'
@@ -87,8 +86,6 @@ export default function PostDetails({children}) {
           </>
         }
       </h1>
-
-      <SystemNotificationArea />
 
       <div ref={scrollHereRef} />
       <PostAndYourNewReplies post={post}

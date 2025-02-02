@@ -3,7 +3,6 @@ import { useContext } from 'react'
 import DatabaseContext from './DatabaseContext'
 import { PostsDB } from './logic/posts.js'
 import PostsList from './PostsList.jsx'
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx'
 
 export default function YourFeed() {
@@ -16,7 +15,6 @@ export default function YourFeed() {
   return (
     <main>
       <h1 id="your-feed">Your Feed</h1>
-      <SystemNotificationArea />
 
       <div role="feed">
         <PostsList posts={friendsPosts} />

@@ -6,7 +6,6 @@ import PostEditor from './PostEditor.jsx';
 import Replies from './Replies.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 import { useContext, useRef, useState } from 'react';
 import ReactTimeAgo from 'react-time-ago';

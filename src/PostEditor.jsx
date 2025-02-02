@@ -25,13 +25,13 @@ import { forwardRef, useContext, useEffect, useImperativeHandle, useRef } from '
 import { Link } from "react-router-dom"
 import { useState } from "react"
 import { useNavigate } from "react-router"
+import { toast } from 'react-toastify'
 import { v4 as uuidv4 } from "uuid"
 
 import DatabaseContext from './DatabaseContext.jsx'
 import { PeopleDB } from './logic/people.js'
 import PostImageEditor from './PostImageEditor.jsx'
 import { PostsDB } from './logic/posts.js'
-import SystemNotificationsContext from './SystemNotificationsContext'
 import UserContext from './UserContext.jsx'
 
 import { tabOutPlugin, TabOutPlugin } from './editor/tabOut.jsx'
@@ -53,8 +53,6 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
   const { user } = useContext(UserContext);
   const peopleDB = new PeopleDB(db);
   const postsDB = new PostsDB(db);
-
-  const {systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
 
   const saveButtonRef = useRef();
 
@@ -133,10 +131,10 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     <div className="post-finish-actions">
       <Button variant="solid" color="primary" radius="full" ref={saveButtonRef}
         isDisabled={postDisabled}
-        onPress={async () => await savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>
+        onPress={async () => await savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>
           Post
       </Button>
-      <Button variant="solid" color="danger" radius="full" onPress={() => cancelPost({ editorRef, systemNotifications, setSystemNotifications, onCancel })}>Cancel</Button>
+      <Button variant="solid" color="danger" radius="full" onPress={() => cancelPost({ editorRef, onCancel })}>Cancel</Button>
     </div>
     </>
   );
@@ -144,7 +142,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 
 export default PostEditor;
 
-async function savePost({ user, peopleDB, postsDB, text, systemNotifications, setSystemNotifications, onSave, replyingTo, conversationId, quotedPost, imageEditorRef }) {
+async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, conversationId, quotedPost, imageEditorRef }) {
   const postId = uuidv4();
   const postUri = user.handle+'/'+uuidv4();
   const createdAt = new Date().toISOString();
@@ -173,11 +171,7 @@ async function savePost({ user, peopleDB, postsDB, text, systemNotifications, se
     postsDB.quoteBoost({boostersPostUri: postUri, boostedPostUri: quotedPost.uri, boosterHandle: user.handle});
   }
 
-  setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'success',
-    message: <>
-      Your new post was saved. <Link to={canonicalUrl}>View post.</Link>
-    </>
-  }]);
+  toast(<>Your new post was saved. <Link to={canonicalUrl}>View post.</Link></>, {type: 'success'});
 
   const images = imageEditorRef.current.getImages();
   await postsDB.attachImages(newPost.uri, images, createdAt);
@@ -187,15 +181,11 @@ async function savePost({ user, peopleDB, postsDB, text, systemNotifications, se
   typeof onSave === "function" && onSave(newPost);
 }
 
-function cancelPost({editorRef, systemNotifications, setSystemNotifications, onCancel}) {
+function cancelPost({editorRef, onCancel}) {
   const currentText = editorRef.current.getMarkdown();
 
   if (currentText === "" || confirm("Are you sure you want to cancel this post and lose what you've written?")) {
-    setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'warn',
-      message: <>
-        You clicked "Cancel", so your post was not saved.
-      </>
-    }]);
+    toast(<>You clicked "Cancel", so your post was not saved.</>, {type: 'warning'});
 
     typeof onCancel === "function" && onCancel();
   }

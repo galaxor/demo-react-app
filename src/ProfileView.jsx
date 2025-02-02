@@ -24,7 +24,6 @@ import LogoutLink from './LogoutLink.jsx';
 import PersonContext from './PersonContext.jsx';
 import ProfileBio from './ProfileBio.jsx';
 import { PeopleDB } from './logic/people.js';
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
 
 import './static/ProfileView.css'
@@ -133,8 +132,6 @@ export default function ProfileView({handle, loggedInUser, children }) {
           </Link2>
         </div>
       </h1>
-
-      <SystemNotificationArea />
 
       <PersonContext.Provider value={{person, youFollowThem, setYouFollowThem}}>
         <section className="actions mb-4">

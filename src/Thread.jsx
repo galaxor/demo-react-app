@@ -8,7 +8,6 @@ import Post from './Post.jsx';
 import PostEditor from './PostEditor.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 import ThreadedPost from './components/ThreadedPost.jsx'
 
 import './static/Thread.css'
@@ -167,6 +166,7 @@ export default function Thread() {
         <time dateTime={mainPost.createdAt}>
           <ReactTimeAgo date={new Date(mainPost.createdAt)} locale={languageContext} />
         </time>
+
         {mainPost.updatedAt !== mainPost.createdAt &&
           <>
           , updated {" "}

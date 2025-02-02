@@ -10,7 +10,6 @@ import PostEditor from './PostEditor.jsx';
 import Replies from './Replies.jsx';
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
@@ -88,8 +87,6 @@ export default function PostSingle() {
           </>
         }
       </h1>
-
-      <SystemNotificationArea />
 
           <Post ref={postRef} id={hashSum(post.uri)} showReplyLevel highlight className="post-single" post={post} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} scrollHereRef={scrollHereRef}>
             {composingReply &&

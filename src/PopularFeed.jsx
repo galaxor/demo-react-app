@@ -1,7 +1,5 @@
 import { useContext, useState } from 'react';
 
-import SystemNotificationArea from './SystemNotificationArea.jsx';
-
 import DatabaseContext from './DatabaseContext.jsx';
 
 import PopularPostsDB from './logic/popularPosts.js';
@@ -22,7 +20,6 @@ export default function PopularFeed() {
   return (
     <main>
       <h1 id="featured-feed">Popular Posts</h1>
-      <SystemNotificationArea />
 
       <div role="feed">
         <PostsList posts={postsForDisplay} />

@@ -4,7 +4,6 @@ import { useLoaderData } from 'react-router-dom'
 
 import Post from './Post.jsx';
 import PostEditor from './PostEditor.jsx';
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 export default function QuoteBoost() {
   const { post } = useLoaderData();
@@ -16,8 +15,6 @@ export default function QuoteBoost() {
   return <>
     <main>
       <h1>Quote boost</h1>
-
-      <SystemNotificationArea />
 
       <PostEditor quotedPost={post} onSave={post => navigate(post.canonicalUrl)} onCancel={() => navigate(-1)} />
 

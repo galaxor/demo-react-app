@@ -5,7 +5,6 @@ import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import PostDetailsContext from './PostDetailsContext.jsx'
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx'
 
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';

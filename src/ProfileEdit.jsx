@@ -4,9 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {Form} from "@nextui-org/form";
 import hashSum from 'hash-sum'
 import {Input, Textarea} from "@nextui-org/input";
+import { toast } from 'react-toastify'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useDisclosure } from "@nextui-org/use-disclosure"
-import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from "react-router"
 import {
   Modal,
   ModalContent,
@@ -18,8 +19,6 @@ import {
 import AvatarUpload from './AvatarUpload.jsx';
 import DarkModeContext from "./DarkModeContext.jsx";
 import icons from './icons.js'
-import SystemNotificationsContext from './SystemNotificationsContext.jsx';
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 import UserContext from './UserContext.jsx';
 
 import User from './logic/user.js';
@@ -28,9 +27,9 @@ import './static/ProfileEdit.css';
 
 export default function ProfileEdit() {
   const { user, setUser } = useContext(UserContext);
-  const { systemNotifications, setSystemNotifications } = useContext(SystemNotificationsContext);
   const [darkMode, setDarkMode] = useContext(DarkModeContext);
   const imageEditorDisclosure = useDisclosure();
+  const navigate = useNavigate();
 
   const nameInputRef = useRef(null);
   const bioInputRef = useRef(null);
@@ -91,7 +90,6 @@ export default function ProfileEdit() {
     <main className="profile-edit">
     <h1>Edit Your Profile</h1>
 
-    <SystemNotificationArea />
     <Form ref={formRef} id="profile-edit" className="w-full" onSubmit={(e) => {
       e.preventDefault();
 
@@ -104,8 +102,8 @@ export default function ProfileEdit() {
       const newUser = User.setName(nameInputRef.current.value);
       setUser(newUser);
 
-      setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
-
+      toast("Profile Updated", {type: 'success'});
+      navigate("/profile");
     }}>
       <div id="profile-fields" className="w-full">
 
@@ -160,7 +158,7 @@ export default function ProfileEdit() {
                 // We keep that fresh copy we got from the database, and setUser to it.
                 setUser(newUser);
 
-                setSystemNotifications([...systemNotifications, {uuid: uuidv4(), type: 'status', message: "Profile Updated"}]);
+                toast("Profile Updated", {type: 'success'});
                 
 
                 // The Effect will detect that the user state variable has

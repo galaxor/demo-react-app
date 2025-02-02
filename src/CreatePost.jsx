@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { useNavigate } from "react-router"
 
 import PostEditor from './PostEditor.jsx';
-import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 export default function CreatePost() {
   const navigate = useNavigate();
@@ -11,8 +10,6 @@ export default function CreatePost() {
   return (
     <main className="create-post">
       <h1>Create a Post</h1>
-
-      <SystemNotificationArea />
 
       <PostEditor ref={editorRef} onSave={post => navigateToNewPost(post, navigate) }
         onCancel={() => {

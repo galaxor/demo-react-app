@@ -4,8 +4,7 @@ import { Outlet } from "react-router-dom";
 import Logo from './Logo.jsx';
 import UserSection from './UserSection.jsx';
 import NavigationSidebar from './NavigationSidebar.jsx';
-
-import SystemNotificationsContext from "./SystemNotificationsContext.jsx";
+import SystemNotificationArea from './SystemNotificationArea.jsx';
 
 import DatabaseContext from "./DatabaseContext.jsx";
 import DarkModeContext from "./DarkModeContext.jsx";
@@ -17,9 +16,6 @@ import User from './logic/user.js';
 
 function App({db}) {
   const [user, setUser] = useState(User.loggedInUser());
-
-  const [systemNotifications, setSystemNotifications] = useState([]);
-  const systemNotificationsContext = {systemNotifications: systemNotifications, setSystemNotifications: setSystemNotifications};
 
   const [sessionId, setSessionId] = useState(null);
 
@@ -61,7 +57,7 @@ function App({db}) {
     <UserContext.Provider value={userContext}>
     <DarkModeContext.Provider value={[darkMode, setDarkMode]}>
     <LanguageContext.Provider value={languageContext}>
-    <SystemNotificationsContext.Provider value={systemNotificationsContext}>
+    <SystemNotificationArea />
     <div className={"app-theme text-foreground bg-background " + (darkMode? "dark " : "")}>
       <header className="page-header shadow-md">
         <Logo />
@@ -73,7 +69,6 @@ function App({db}) {
         <Outlet />
       </div>
     </div>
-    </SystemNotificationsContext.Provider>
     </LanguageContext.Provider>
     </DarkModeContext.Provider>
     </UserContext.Provider>
