@@ -1,10 +1,12 @@
 /* In dark mode, it needs to be a little thicker to appear the same */
+.dark article.post-and-your-new-replies > svg,
 .dark main.thread a.thread-handle > svg {
   path {
     stroke-width: 0.8;
   }
 }
 
+article.post-and-your-new-replies,
 main.thread {
 
 /* Reorder the page from screenreader order to visual order. */
@@ -111,18 +113,6 @@ div.threaded-post > div.post-and-composing-reply > article::before {
   z-index: 2;
 }
 
-/* Don't draw the threading stuff if there are no replies */
-&:not(:has(section.replies)):not(:has(section.thread-context)):not(:has(section.thread-remainder)) > section.main-post {
-  div.post-and-composing-reply > article::before {
-    content: "";
-    display: none;
-  }
-
-  li.first-post {
-    display: none;
-  }
-}
-
 div.post {
   border: 1px solid transparent;
 }
@@ -142,3 +132,18 @@ section.main-post div.post {
 }
 
 }
+
+/* Don't draw the threading stuff if there are no replies */
+
+article.post-and-your-new-replies:not(:has(div.reply)),
+main.thread:not(:has(section.replies)):not(:has(section.thread-context)):not(:has(section.thread-remainder)) > section.main-post {
+  div.post-and-composing-reply > article::before {
+    content: "";
+    display: none;
+  }
+
+  li.first-post {
+    display: none;
+  }
+}
+

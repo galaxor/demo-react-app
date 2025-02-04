@@ -35,18 +35,25 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact}) {
 
   return (
     <>
-      <div className="post-and-your-new-replies">
-      {threadOrder.map(({threadHandles, post}) => {
-        return (
-          <ThreadedPost key={post.uri}
-            post={post} 
-            threadHandles={threadHandles}
-            onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
-            setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
-          />
-        );
-      })}
-      </div>
+      <article className="post-and-your-new-replies">
+        <ThreadedPost key={post.uri}
+          post={post} 
+          threadHandles={threadOrder[0].threadHandles}
+          onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+          setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+        />
+        {threadOrder.slice(1).map(({threadHandles, post}) => {
+          return (
+            <ThreadedPost key={post.uri}
+              className="reply"
+              post={post} 
+              threadHandles={threadHandles}
+              onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+              setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+            />
+          );
+        })}
+      </article>
     </>
   );
 }
