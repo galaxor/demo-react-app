@@ -86,8 +86,6 @@ export default function Thread() {
     return "";
   }
 
-  createStylesheetsForHover(threadOrder);
-
   // Chop the thread into the four sections:
   // * Main post (the one you clicked on)
   // * Replies to the main post

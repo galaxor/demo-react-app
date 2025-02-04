@@ -10,6 +10,7 @@ import { createStylesheetsForHover, threadGymnastics, onDeleteFn, setRepliesFn, 
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 
+import hashSum from 'hash-sum'
 import { useContext, useRef, useState } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 
@@ -33,9 +34,12 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact}) {
     return "";
   }
 
+  createStylesheetsForHover(threadOrder, hashSum(post.uri).toString(16));
+
   return (
     <>
-      <article className="post-and-your-new-replies">
+      <article className={`post-and-your-new-replies post-and-your-new-replies-${hashSum(post.uri).toString(16)}`}>
+        <style type="text/css">{createStylesheetsForHover(threadOrder, '.post-and-your-new-replies-'+hashSum(post.uri).toString(16))}</style>
         <ThreadedPost key={post.uri}
           post={post} 
           threadHandles={threadOrder[0].threadHandles}
