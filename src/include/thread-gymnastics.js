@@ -1,5 +1,17 @@
 import hashSum from 'hash-sum'
 
+export function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
+  const threadOrder1 = flattenThread(originatingPost);
+
+  const threadOrder = threadOrder1.filter(threadedPost => threadedPost.post.deletedAt === null || threadedPost.post.replies.length > 0);
+
+  computeThread(threadOrder);
+
+  setOriginatingPost({...originatingPost});
+
+  setThreadOrder(threadOrder);
+}
+
 /**
  * Given an initial post, load all the replies of the entire thread starting at that post.
  */
@@ -220,4 +232,44 @@ export function createStylesheetsForHover(threadOrder) {
   hoverRules.push(`main.thread:has(a.thread-handle[href="#p${firstPostId}"]:hover) div.threaded-post-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }`);
 
   return hoverRules.join('\n');
+}
+
+// These functions are required in order to allow replies and post-deleting.
+
+export function onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
+  return () => {
+    if (originatingPost.uri === post.uri) {
+      
+    }
+    const postsParent = findPost(post.inReplyTo, originatingPost);
+
+    // XXX Decide whether to just delete the post, or to show it as a
+    // tombstone.  Show it as a tombstone if it has replies.
+    const index = postsParent.replies.findIndex(reply => reply.uri === post.uri);
+
+    // Remove the deleted post.
+    postsParent.replies = [...postsParent.replies.slice(0, index), ...postsParent.replies.slice(index+1)];
+
+    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
+  };
+}
+
+export function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
+  return replies => {
+    // Find the post we're meant to add to, inside the originatingPost.
+    const addToPost = findPost(post.uri, originatingPost);
+    addToPost.replies = replies;
+
+    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
+  }
+}
+
+export function findPost(uri, haystack) {
+  if (haystack.uri === uri) { return haystack; }
+  for (const reply of haystack.replies) {
+    const foundPost = findPost(uri, reply);
+    if (foundPost !== null) { return foundPost; }
+  }
+
+  return null;
 }

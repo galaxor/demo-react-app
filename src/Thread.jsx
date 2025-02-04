@@ -1,7 +1,7 @@
 import { PostsDB } from './logic/posts.js';
 
 import { clickPost } from './clickPost.js'
-import { computeThread, createStylesheetsForHover, flattenThread, getRepliesTo } from './include/thread-gymnastics.js'
+import { createStylesheetsForHover, threadGymnastics, onDeleteFn, getRepliesTo, setRepliesFn, findPost } from './include/thread-gymnastics.js'
 import hashSum from 'hash-sum'
 import MiniMap from './components/MiniMap.jsx'
 import Post from './Post.jsx';
@@ -15,56 +15,6 @@ import './static/Thread.css'
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import ReactTimeAgo from 'react-time-ago';
-
-function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
-  const threadOrder1 = flattenThread(originatingPost);
-
-  const threadOrder = threadOrder1.filter(threadedPost => threadedPost.post.deletedAt === null || threadedPost.post.replies.length > 0);
-
-  computeThread(threadOrder);
-
-  setOriginatingPost({...originatingPost});
-
-  setThreadOrder(threadOrder);
-}
-
-function findPost(uri, haystack) {
-  if (haystack.uri === uri) { return haystack; }
-  for (const reply of haystack.replies) {
-    const foundPost = findPost(uri, reply);
-    if (foundPost !== null) { return foundPost; }
-  }
-
-  return null;
-}
-
-function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
-  return replies => {
-    // Find the post we're meant to add to, inside the originatingPost.
-    const addToPost = findPost(post.uri, originatingPost);
-    addToPost.replies = replies;
-
-    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
-  }
-}
-
-function onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
-  return () => {
-    if (originatingPost.uri === post.uri) {
-      
-    }
-    const postsParent = findPost(post.inReplyTo, originatingPost);
-
-    // XXX Decide whether to just delete the post, or to show it as a
-    // tombstone.  Show it as a tombstone if it has replies.
-    const index = postsParent.replies.findIndex(reply => reply.uri === post.uri);
-
-    // Remove the deleted post.
-    postsParent.replies = [...postsParent.replies.slice(0, index), ...postsParent.replies.slice(index+1)];
-
-    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
-  };
-}
 
 export default function Thread() {
   const mainPost = useLoaderData().post;

@@ -4,6 +4,9 @@ import { closeReplyNoDBRefresh } from './include/closeReply.js'
 import Post from './Post.jsx';
 import PostEditor from './PostEditor.jsx';
 import Replies from './Replies.jsx';
+import ThreadedPost from './components/ThreadedPost.jsx'
+import { createStylesheetsForHover, threadGymnastics, onDeleteFn, setRepliesFn, findPost } from './include/thread-gymnastics.js'
+
 import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 
@@ -18,26 +21,32 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact}) {
 
   const postsDB = new PostsDB(db);
 
+  const [threadOrder, setThreadOrder] = useState(null);
+
   const [replies, setReplies] = useState([]);
 
   const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
   const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
 
-  const [composingReply, setComposingReply] = useState(false);
+  if (threadOrder === null) {
+    threadGymnastics(post, () => {}, setThreadOrder);
+    return "";
+  }
 
   return (
     <>
-      <Post ref={postRef} post={post} showReplyBanner={true} composingReply={composingReply} setComposingReply={setComposingReply} numReplies={numReplies} setNumReplies={setNumReplies} onBoost={onBoost} onReact={onReact}>
-        {composingReply &&
-          <div className="composing-reply">
-            <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} onSave={post => { closeReplyNoDBRefresh({post, setComposingReply, numReplies, setNumReplies, postsDB, replies, setReplies}); postRef.current.focusReplyButton(); } } onCancel={() => { postRef.current.focusReplyButton(); setComposingReply(false); }} />
-          </div>
-        }
-
-        {numReplies > 0 &&
-          <Replies postRepliedTo={post} replies={replies} />
-        }
-      </Post>
+      <div className="post-and-your-new-replies">
+      {threadOrder.map(({threadHandles, post}) => {
+        return (
+          <ThreadedPost key={post.uri}
+            post={post} 
+            threadHandles={threadHandles}
+            onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+            setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+          />
+        );
+      })}
+      </div>
     </>
   );
 }
