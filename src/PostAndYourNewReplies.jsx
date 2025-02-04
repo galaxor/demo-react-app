@@ -42,14 +42,14 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact}) {
           onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
           setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
         />
-        {threadOrder.slice(1).map(({threadHandles, post}) => {
+        {threadOrder.slice(1).map(({threadHandles, post: replyPost}) => {
           return (
-            <ThreadedPost key={post.uri}
+            <ThreadedPost key={replyPost.uri}
               className="reply"
-              post={post} 
+              post={replyPost} 
               threadHandles={threadHandles}
-              onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
-              setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+              onDelete={onDeleteFn(replyPost, post, threadGymnastics, () => {}, setThreadOrder)}
+              setReplies={setRepliesFn(replyPost, post, threadGymnastics, () => {}, setThreadOrder)}
             />
           );
         })}
