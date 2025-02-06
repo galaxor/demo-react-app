@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 import { Link as Link2, LinkIcon } from "@nextui-org/link"
 import { useContext, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { toast } from 'react-toastify'
 
 import DeletePostModal from './components/DeletePostModal.jsx'
 import icons from './icons.js'
@@ -32,9 +33,10 @@ function getDropdownAction(originalLink, deleteModalOnOpen) {
     case "copy-link-to-original":
       try {
         await navigator.clipboard.writeText(originalLink.current.href);
-        console.log("I should put a Toast for this.  Toasts aren't available in NextUI yet, so I'll use a Radix component: https://www.radix-ui.com/primitives/docs/components/toast");
+        toast("URL copied to clipboard", {type: 'info'});
       } catch(error) {
-        console.log("Copying to clipboard", error);
+        console.log("Error copying to clipboard", error);
+        toast("Could not copy URL to clipboard", {type: 'error'});
       }
       break;
 
