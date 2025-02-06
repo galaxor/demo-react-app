@@ -24,6 +24,12 @@ main.thread {
   }
 }
 
+@media (width < 600px) {
+  div.threaded-post > ul:has(> li) {
+    display: none;
+  }
+}
+
 /* Reorder the page from screenreader order to visual order. */
 h1 { order: 1; }
 section.thread-context { order: 2; }
