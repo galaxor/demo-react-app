@@ -27,10 +27,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
             {threadHandles.map(threadHandle  => {
               return (
               <li key={threadHandle.pointsToPost.uri} className={threadHandle.glyph}>
-                <a href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner />
-                  <span className="thread-handle-text">Replying to {threadHandle.pointsToPost.authorPerson.displayName}: {" "}
-                    {(threadHandle.pointsToPost.text ?? "").substring(0, 30)}{(threadHandle.pointsToPost.text ?? "").length > 30? "..." : ""}</span>
-                </a>
+                <a href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner /></a>
               </li>
               );
             })}
@@ -40,6 +37,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
 
         <div className="post-and-composing-reply w-full">
           <Post id={"p"+(hashSum(post.uri).toString(16))} ref={postRef} post={post} scrollHereRef={scrollHereRef}
+            showReplyBanner={true}
             composingReply={composingReply} setComposingReply={setComposingReply} 
             numReplies={numReplies} setNumReplies={setNumReplies}
             onDelete={onDelete}

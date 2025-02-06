@@ -5,12 +5,13 @@ html:has(.app-theme.dark) {
 }
 
 .visually-hidden {
-  height: 0.1px;
-  width: 0.1px;
-  opacity: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
   overflow: hidden;
   position: absolute;
-  z-index: -1;
+  white-space: nowrap;
+  width: 1px;
 }
 
 /* Arrange the header */
