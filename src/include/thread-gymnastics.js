@@ -227,6 +227,9 @@ export function createStylesheetsForHover(threadOrder, topPost) {
     // When we hover on a thread line, highlight the actual post that is being pointed to.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div#p${id} { outline-color: hsl(var(--nextui-primary)); }}}`);
 
+    // The "Replying to..." text should highlight the post that's being replied to.
+    const uri=`/post/${encodeURIComponent(post.uri)}`;
+    hoverRules.push(`${stylesheetTop} { &:has(.boost-info a[href="${uri}"]:hover), &:has(.boost-info a[href="${uri}"]:focus), &:has(.boost-info a[href="${uri}"]:active) { div#p${id} { outline-color: hsl(var(--nextui-primary)); }}}`);
   });
 
   const firstPostId = hashSum(threadOrder[0].post.uri).toString(16);
