@@ -121,13 +121,15 @@ export default function MiniMap({threadOrder}) {
   });
   
 
-  return (<aside id="minimap">
-    <style id="minimap-styles" type="text/css"></style>
-    <div id="minimap-scrollbar-thumb"></div>
-    {threadOrder.map(({post, threadHandles}) => {
-      return <MiniMapNode key={post.uri} post={post} threadHandles={threadHandles} />
-    })}
-  </aside>);
+  return (<>
+    <aside id="minimap">
+      <style id="minimap-styles" type="text/css"></style>
+      <div id="minimap-scrollbar-thumb"></div>
+      {threadOrder.map(({post, threadHandles}) => {
+        return <MiniMapNode key={post.uri} post={post} threadHandles={threadHandles} />
+      })}
+    </aside>
+  </>);
 }
 
 function MiniMapNode({post, threadHandles}) {

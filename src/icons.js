@@ -1,9 +1,10 @@
 import { library, icon } from '@fortawesome/fontawesome-svg-core'
-import { faBell, faCamera, faCircleXmark, faComment, faCopy, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faBell, faCamera, faCircleXmark, faComment, faCopy, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
 
-library.add([faBell, faCamera, faCircleXmark, faComment, faCopy, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark]);
+library.add([faBars, faBell, faCamera, faCircleXmark, faComment, faCopy, faDoorOpen, faDoorClosed, faEarthAmericas, faEllipsis, faFileLines, faFlag, faHouse, faImage, faPencil, faPenToSquare, faRepeat, faSquarePlus, faUser, faXmark]);
 
 export default {
+  bars: icon({ prefix: 'fas', iconName: 'bars' }),
   bell: icon({ prefix: 'fas', iconName: 'bell' }),
   camera: icon({ prefix: 'fas', iconName: 'camera' }),
   circleXmark: icon({ prefix: 'fas', iconName: 'circle-xmark' }),
