@@ -1,1 +1,16 @@
+@media (width < 600px) {
+  #site-navigation {
+    background: green;
+    display: flex;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    padding: 8px 8px 0 8px;
+    height: 3em;
+    width: 100vw;
+    background-color: hsl(var(--nextui-background));
+    z-index: 11;
 
+    box-shadow: 0px 5px 5px 0px var(--header-shadow-color);
+  }
+}

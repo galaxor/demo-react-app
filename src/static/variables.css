@@ -1,3 +1,9 @@
 :root { 
   --header-height: 50px;
+  --header-shadow-color: #ccc;
+
+  .dark {
+    --header-shadow-color: #333;
+  }
+
 }
