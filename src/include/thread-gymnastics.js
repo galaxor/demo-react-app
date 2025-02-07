@@ -230,11 +230,11 @@ export function createStylesheetsForHover(threadOrder, topPost) {
 
     // When we hover on a thread line, also highlight the "patch" that hangs out next to the post that the line is going to.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div.threaded-post-${id} > ul > li:last-child > a::after { border-color: hsl(var(--nextui-primary)); }}}`);
-    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div.minimap-${id} > ul > li:last-child > div.thread-handle::after { border-color: hsl(var(--nextui-primary)) }}}`);
+    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div#minimap-${id} > ul > li:last-child > div.thread-handle::after { border-color: hsl(var(--nextui-primary)) }}}`);
 
     // When we hover on a thread line, highlight the actual post that is being pointed to.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div#p${id} { outline-color: hsl(var(--nextui-primary)); }}}`);
-    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div.minimap-${id} { background-color: hsl(var(--nextui-primary)); }}}`);
+    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div#minimap-${id} { background-color: hsl(var(--nextui-primary-100)); }}}`);
 
     // The "Replying to..." text should highlight the post that's being replied to.
     const uri=`/post/${encodeURIComponent(post.uri)}`;
