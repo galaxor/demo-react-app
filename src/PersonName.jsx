@@ -21,7 +21,7 @@ export default function PersonName({person, link}) {
       <bdi>{person.displayName}</bdi> 
 
       <span className="person-inline-trust-info">
-        {isYou && <span className="is-you">You</span>} {" "}
+        {isYou && <span className="is-you mx-1">(You)</span>} {" "}
         {onHomeServer && <span className="trust-on-this-server">
             <FontAwesomeIcon title="From this server" icon={icons.house} />
           </span>
