@@ -212,20 +212,29 @@ export function createStylesheetsForHover(threadOrder, topPost) {
   threadOrder.forEach(({post}) => {
     const id = hashSum(post.uri).toString(16);
 
+    // Each of the following has two rules:  One that lights up things in the
+    // main thread, and one that does the same thing on the minimap, if things
+    // on the main thread are hovered.
+
     // When we hover on a thread line, highlight all thread lines that go to the same post.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { a.thread-handle[href="#p${id}"] { border-color: hsl(var(--nextui-primary)); }}}`);
+    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { #minimap div.thread-handle[data-href="#p${id}"] { border-color: hsl(var(--nextui-primary)); }}}`);
 
     // When we hover on a thread line, highlight the "corner" piece on the final post of the thread.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { li.branch-singleton-end a.thread-handle[href="#p${id}"] svg { color: hsl(var(--nextui-primary)); }}}`);
+    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { #minimap li.branch-singleton-end div.thread-handle[data-href="#p${id}"] svg { color: hsl(var(--nextui-primary)); }}}`);
 
     // When we hover on a thread line, highlight the "corner" piece on all the branch-singletons in that thread.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { li.branch-singleton a.thread-handle[href="#p${id}"] svg { color: hsl(var(--nextui-primary)); }}}`);
+    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { li.branch-singleton div.thread-handle[data-href="#p${id}"] svg { color: hsl(var(--nextui-primary)); }}}`);
 
     // When we hover on a thread line, also highlight the "patch" that hangs out next to the post that the line is going to.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div.threaded-post-${id} > ul > li:last-child > a::after { border-color: hsl(var(--nextui-primary)); }}}`);
+    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div.minimap-${id} > ul > li:last-child > div.thread-handle::after { border-color: hsl(var(--nextui-primary)) }}}`);
 
     // When we hover on a thread line, highlight the actual post that is being pointed to.
     hoverRules.push(`${stylesheetTop} { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div#p${id} { outline-color: hsl(var(--nextui-primary)); }}}`);
+    hoverRules.push(`body:has(${stylesheetTop}) { &:has(a.thread-handle[href="#p${id}"]:hover), &:has(a.thread-handle[href="#p${id}"]:focus), &:has(a.thread-handle[href="#p${id}"]:active) { div.minimap-${id} { background-color: hsl(var(--nextui-primary)); }}}`);
 
     // The "Replying to..." text should highlight the post that's being replied to.
     const uri=`/post/${encodeURIComponent(post.uri)}`;
@@ -236,6 +245,7 @@ export function createStylesheetsForHover(threadOrder, topPost) {
 
   // When we hover on a thread line going to the first post in the thread, its little "patch" should light up.
   hoverRules.push(`main.thread { &:has(a.thread-handle[href="#p${firstPostId}"]:hover), &:has(a.thread-handle[href="#p${firstPostId}"]:focus), &:has(a.thread-handle[href="#p${firstPostId}"]:active) { div.threaded-post-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }}}`);
+  hoverRules.push(`body:has(main.thread) { &:has(a.thread-handle[href="#p${firstPostId}"]:hover), &:has(a.thread-handle[href="#p${firstPostId}"]:focus), &:has(a.thread-handle[href="#p${firstPostId}"]:active) { div.p-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }}}`);
 
   return hoverRules.join('\n');
 }

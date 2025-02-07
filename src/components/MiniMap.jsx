@@ -139,7 +139,7 @@ function MiniMapNode({post, threadHandles}) {
       {threadHandles.map(threadHandle  => {
         return (
         <li key={threadHandle.pointsToPost.uri} className={threadHandle.glyph}>
-          <a href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner /></a>
+          <div data-href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner /></div>
         </li>
         );
       })}
@@ -147,7 +147,7 @@ function MiniMapNode({post, threadHandles}) {
     : ""
   }
 
-  <div className="minimap-post">
+  <div className={`minimap-post p${hashSum(post.uri).toString(16)}`}>
     {post.deletedAt === null?
       <Avatar isBordered radius="full" src={post.authorPerson.avatar} name={post.authorPerson.displayName} 
         style={{'--avatar-bg': '#'+avatarFallbackColor}}

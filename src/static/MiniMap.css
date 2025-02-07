@@ -21,7 +21,7 @@
     pointer-events: none;
   }
 
-  a.thread-handle > svg {
+  div.thread-handle > svg {
     path {
       stroke-width: 0.5;
     }
@@ -58,7 +58,7 @@
     flex-shrink: 2;
     display: flex;
 
-    a.thread-handle {
+    div.thread-handle {
       display: block;
       height: 100%;
 
@@ -75,36 +75,36 @@
     li.continuance {
       svg { display: none; }
 
-      a {
+      div.thread-handle {
         display: block;
         width: 16px;
         border-left: 1px solid hsl(var(--nextui-foreground));
       }
     }
 
-    li.first-post a {
+    li.first-post div.thread-handle {
       margin-top: 24px;
     }
 
-    li.continuance a {
+    li.continuance div.thread-handle {
       width: 30px;
     }
 
-    li.post-in-chain-end a {
+    li.post-in-chain-end div.thread-handle {
       height: calc(75%);
       margin-bottom: 25%;
     }
 
-    li.branch-singleton a {
+    li.branch-singleton div.thread-handle {
       width: 45px;
       border-left: 1px solid hsl(var(--nextui-foreground));
     }
 
-    li.branch-singleton-end a {
+    li.branch-singleton-end div.thread-handle {
       width: 45px;
     }
 
-    li.start-branch a {
+    li.start-branch div {
       display: flex;
       width: 45px;
       border-left: 1px solid hsl(var(--nextui-foreground));
