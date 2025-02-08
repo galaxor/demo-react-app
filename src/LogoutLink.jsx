@@ -11,7 +11,7 @@ export default function LogoutLink({}) {
   const { user, setUser, setSessionId } = useContext(UserContext);
 
   return (
-    <Button as={Link2} className="logout" onClick={() => { setSessionId(User.logout()); setUser(null); }} href="/"
+    <Button as={Link2} className="logout" onPress={() => { setSessionId(User.logout()); setUser(null); }} href="/"
       startContent={<FontAwesomeIcon icon={icons.doorClosed} />}
       variant="solid" color="danger" radius="full"
     >

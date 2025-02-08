@@ -50,7 +50,7 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
               <li key={fileName}>
                 <Card>
                   <CardHeader>
-                    <Button variant="light" isIconOnly aria-label="Remove" onClick={removeImageFunction({fileName, setUploadedImages, uploadedImages, imageBucket})}>
+                    <Button variant="light" isIconOnly aria-label="Remove" onPress={removeImageFunction({fileName, setUploadedImages, uploadedImages, imageBucket})}>
                       <FontAwesomeIcon icon={icons.circleXmark} size="xl" />
                     </Button>
                   </CardHeader>
