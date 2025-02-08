@@ -82,7 +82,7 @@ export default function MiniMap({threadOrder}) {
       // The rest is posts.
       const hash = minimapPost.id.substring('minimap-'.length);
 
-      styleRules.push(`body:has(div#p${hash}:hover) #${minimapPost.id} { background: hsl(var(--nextui-default-300)); }`);
+      styleRules.push(`body:has(#threaded-post-${hash}:hover) #${minimapPost.id} { background: hsl(var(--nextui-default-300)); }`);
       styleRules.push(`body:has(div#${minimapPost.id}:hover) #p${hash} { background: hsl(var(--nextui-default-100)); }`);
     }
 
