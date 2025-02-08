@@ -10,6 +10,8 @@ export function threadGymnastics(originatingPost, setOriginatingPost, setThreadO
   setOriginatingPost({...originatingPost});
 
   setThreadOrder(threadOrder);
+
+  return threadOrder;
 }
 
 /**
@@ -241,11 +243,18 @@ export function createStylesheetsForHover(threadOrder, topPost) {
     hoverRules.push(`${stylesheetTop} { &:has(.boost-info a[href="${uri}"]:hover), &:has(.boost-info a[href="${uri}"]:focus), &:has(.boost-info a[href="${uri}"]:active) { div#p${id} { outline-color: hsl(var(--nextui-primary)); }}}`);
   });
 
-  const firstPostId = hashSum(threadOrder[0].post.uri).toString(16);
+  // threadOrder.length will be 0 the first time we draw the thread because we
+  // always draw threads in two steps:
+  // Once with no posts loaded and once with the posts loaded.
+  // Why do we do this?  I don't think we have a good reason.  I think I was
+  // confused about how useState worked.  We should probably fix that.
+  if (threadOrder.length > 0) {
+    const firstPostId = hashSum(threadOrder[0].post.uri).toString(16);
 
-  // When we hover on a thread line going to the first post in the thread, its little "patch" should light up.
-  hoverRules.push(`main.thread { &:has(a.thread-handle[href="#p${firstPostId}"]:hover), &:has(a.thread-handle[href="#p${firstPostId}"]:focus), &:has(a.thread-handle[href="#p${firstPostId}"]:active) { div.threaded-post-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }}}`);
-  hoverRules.push(`body:has(main.thread) { &:has(a.thread-handle[href="#p${firstPostId}"]:hover), &:has(a.thread-handle[href="#p${firstPostId}"]:focus), &:has(a.thread-handle[href="#p${firstPostId}"]:active) { div.p-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }}}`);
+    // When we hover on a thread line going to the first post in the thread, its little "patch" should light up.
+    hoverRules.push(`main.thread { &:has(a.thread-handle[href="#p${firstPostId}"]:hover), &:has(a.thread-handle[href="#p${firstPostId}"]:focus), &:has(a.thread-handle[href="#p${firstPostId}"]:active) { div.threaded-post-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }}}`);
+    hoverRules.push(`body:has(main.thread) { &:has(a.thread-handle[href="#p${firstPostId}"]:hover), &:has(a.thread-handle[href="#p${firstPostId}"]:focus), &:has(a.thread-handle[href="#p${firstPostId}"]:active) { div.p-${firstPostId}::before { border-color: hsl(var(--nextui-primary)); }}}`);
+  }
 
   return hoverRules.join('\n');
 }

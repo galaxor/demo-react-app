@@ -22,19 +22,14 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact}) {
 
   const postsDB = new PostsDB(db);
 
-  const [threadOrder, setThreadOrder] = useState(null);
+  const [threadOrder, setThreadOrder] = useState(threadGymnastics(post, () => {}, () => {}));
 
   const [replies, setReplies] = useState([]);
 
   const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
   const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
 
-  if (threadOrder === null) {
-    threadGymnastics(post, () => {}, setThreadOrder);
-    return "";
-  }
-
-  createStylesheetsForHover(threadOrder, hashSum(post.uri).toString(16));
+  const passThreadHandles = (typeof threadOrder[0] === "undefined")? [] : threadOrder[0].threadHandles;
 
   return (
     <>
@@ -42,7 +37,7 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact}) {
         <style type="text/css">{createStylesheetsForHover(threadOrder, '.post-and-your-new-replies-'+hashSum(post.uri).toString(16))}</style>
         <ThreadedPost key={post.uri}
           post={post} 
-          threadHandles={threadOrder[0].threadHandles}
+          threadHandles={passThreadHandles}
           onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
           setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
         />
