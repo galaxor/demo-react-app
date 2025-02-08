@@ -28,7 +28,7 @@ export default function PostsList({posts}) {
         <>
         {posts.map((post) => { 
             return (
-              <PostAndYourNewReplies key={post.uri} post={post} />
+              <PostAndYourNewReplies key={post.uri} post={post} isMainPost={true} />
             );
           })}
         </>

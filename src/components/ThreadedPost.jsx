@@ -8,7 +8,7 @@ import Post from '../Post.jsx';
 import PostEditor from '../PostEditor.jsx';
 import { PostsDB } from '../logic/posts.js';
 
-export default function ThreadedPost({post, threadHandles, className, scrollRef, setReplies, setScrollToPost, onDelete}) {
+export default function ThreadedPost({post, threadHandles, className, scrollRef, setReplies, setScrollToPost, onDelete, isMainPost}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
@@ -41,6 +41,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
             composingReply={composingReply} setComposingReply={setComposingReply} 
             numReplies={numReplies} setNumReplies={setNumReplies}
             onDelete={onDelete}
+            isMainPost={isMainPost}
           >
 
             {composingReply?
