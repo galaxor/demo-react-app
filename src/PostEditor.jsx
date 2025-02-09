@@ -141,7 +141,10 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     <section>
     <h2>The Post You're Quoting</h2>
 
-    <Post post={quotedPost} showStats={false} />
+    {quotedPost? 
+      <Post post={quotedPost} showStats={false} />
+      : ""
+    }
 
     </section>
     </>
