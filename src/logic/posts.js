@@ -471,7 +471,6 @@ export class PostsDB {
       images[fileName].image = imageHash;
     }
 
-    // Delete the previous image attachments for this post.
     const dbImages = this.db.get('imageVersions', postUri) ?? {};
     dbImages[updatedAt] = images;
     this.db.set('imageVersions', postUri, dbImages);

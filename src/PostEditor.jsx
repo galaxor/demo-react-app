@@ -47,13 +47,17 @@ function isPostDisabled(postText, uploadedImages) {
 
 const PostEditor = forwardRef(function PostEditor(props, ref) {
   const {onSave, onCancel, replyingTo, quotedPost, conversationId, editingPost} = props;
-  const [uploadedImages, setUploadedImages] = useState({});
+
+  const db = useContext(DatabaseContext);
+  const postsDB = new PostsDB(db);
+  const peopleDB = new PeopleDB(db);
+
+  const [uploadedImages, setUploadedImages] = useState(
+    editingPost? postsDB.getImagesForPost(editingPost.uri) ?? {} : {}
+  );
 
   const editorRef = useRef(null);
-  const db = useContext(DatabaseContext);
   const { user } = useContext(UserContext);
-  const peopleDB = new PeopleDB(db);
-  const postsDB = new PostsDB(db);
 
   const saveButtonRef = useRef();
 
@@ -195,7 +199,7 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
   }
 
   const images = imageEditorRef.current.getImages();
-  await postsDB.attachImages(newPost.uri, images, createdAt);
+  await postsDB.attachImages(newPost.uri, images, updatedAt);
 
   newPost.authorPerson = peopleDB.get(user.handle);
 

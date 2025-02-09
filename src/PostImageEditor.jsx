@@ -22,9 +22,10 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   //  { "filename": dataUrl, ... }
   // The state is just a list of pointers to the bucket.
   // That way, we don't have to copy all the image data every time we add an image.
-  const imageBucket = useRef({});
-
   const { uploadedImages, setUploadedImages } = props;
+
+  const imageBucket = useRef(uploadedImages);
+
 
   const fileUploaderRef = useRef(null);
 
