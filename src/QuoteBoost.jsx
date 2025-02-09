@@ -17,13 +17,6 @@ export default function QuoteBoost() {
       <h1>Quote boost</h1>
 
       <PostEditor quotedPost={post} onSave={post => navigate(post.canonicalUrl)} onCancel={() => navigate(-1)} />
-
-      <section>
-      <h2>The Post You're Quoting</h2>
-
-      <Post ref={quotedPostRef} post={post} showStats={false} />
-
-      </section>
     </main>
   </>
   ;

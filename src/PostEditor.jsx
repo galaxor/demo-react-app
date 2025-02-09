@@ -138,15 +138,15 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
       <Button variant="solid" color="danger" radius="full" onPress={() => cancelPost({ editorRef, onCancel })}>Cancel</Button>
     </div>
 
-    <section>
-    <h2>The Post You're Quoting</h2>
-
     {quotedPost? 
+      <section>
+      <h2>The Post You're Quoting</h2>
+
       <Post post={quotedPost} showStats={false} />
+      </section>
       : ""
     }
 
-    </section>
     </>
   );
 });
