@@ -45,7 +45,7 @@ function isPostDisabled(postText, uploadedImages) {
 }
 
 const PostEditor = forwardRef(function PostEditor(props, ref) {
-  const {onSave, onCancel, replyingTo, quotedPost, conversationId} = props;
+  const {onSave, onCancel, replyingTo, quotedPost, conversationId, editingPost} = props;
   const [uploadedImages, setUploadedImages] = useState({});
 
   const editorRef = useRef(null);
@@ -86,7 +86,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     <>
     <div className="post-editor">
       <Card>
-        <MDXEditor markdown="" ref={editorRef} autofocus
+        <MDXEditor markdown={editingPost? editingPost.text : ""} ref={editorRef} autofocus
           placeholder="What do you want to share?"
           onChange={text => { 
             setPostText(text);
@@ -131,7 +131,7 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
     <div className="post-finish-actions">
       <Button variant="solid" color="primary" radius="full" ref={saveButtonRef}
         isDisabled={postDisabled}
-        onPress={async () => await savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), onSave, replyingTo, conversationId, quotedPost, imageEditorRef })}>
+        onPress={async () => await savePost({ user, peopleDB, postsDB, text: editorRef.current.getMarkdown(), onSave, replyingTo, conversationId, quotedPost, imageEditorRef, editingPost })}>
           Post
       </Button>
       <Button variant="solid" color="danger" radius="full" onPress={() => cancelPost({ editorRef, onCancel })}>Cancel</Button>
@@ -142,10 +142,11 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 
 export default PostEditor;
 
-async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, conversationId, quotedPost, imageEditorRef }) {
-  const postId = uuidv4();
-  const postUri = user.handle+'/'+uuidv4();
-  const createdAt = new Date().toISOString();
+async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, conversationId, quotedPost, imageEditorRef, editingPost }) {
+  const postId = editingPost? null : uuidv4();
+  const postUri = editingPost? editingPost.uri : user.handle+'/'+uuidv4();
+  const updatedAt = new Date().toISOString();
+  const createdAt = editingPost? editingPost.createdAt : updatedAt;
   const canonicalUrl = "/post/"+encodeURIComponent(postUri);
 
   const newPost = {
@@ -153,7 +154,7 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
     canonicalUrl: canonicalUrl,
     author: user.handle,
     createdAt: createdAt,
-    updatedAt: createdAt,
+    updatedAt: updatedAt,
     sensitive: false,
     type: "markdown",
     text: text,
@@ -165,13 +166,21 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
     local: true,
   };
 
-  postsDB.addPost(newPost);
+  if (editingPost) {
+    postsDB.updatePost(newPost);
+  } else {
+    postsDB.addPost(newPost);
+  }
 
-  if (quotedPost) {
+  if (quotedPost && !editingPost) {
     postsDB.quoteBoost({boostersPostUri: postUri, boostedPostUri: quotedPost.uri, boosterHandle: user.handle});
   }
 
-  toast(<>Your new post was saved. <Link to={canonicalUrl}>View post.</Link></>, {type: 'success'});
+  if (editingPost) {
+    toast(<>Your edits to this post were saved. <Link to={canonicalUrl}>View post.</Link></>, {type: 'success'});
+  } else {
+    toast(<>Your new post was saved. <Link to={canonicalUrl}>View post.</Link></>, {type: 'success'});
+  }
 
   const images = imageEditorRef.current.getImages();
   await postsDB.attachImages(newPost.uri, images, createdAt);

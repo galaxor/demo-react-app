@@ -16,6 +16,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
   const scrollHereRef = scrollRef ?? useRef(null);
 
   const [composingReply, setComposingReply] = useState(false);
+  const [editingPost, setEditingPost] = useState(false);
 
   const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(post.uri));
   
@@ -39,6 +40,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
           <Post id={"p"+(hashSum(post.uri).toString(16))} ref={postRef} post={post} scrollHereRef={scrollHereRef}
             showReplyBanner={true}
             composingReply={composingReply} setComposingReply={setComposingReply} 
+            editingPost={editingPost} setEditingPost={setEditingPost}
             numReplies={numReplies} setNumReplies={setNumReplies}
             onDelete={onDelete}
             isMainPost={isMainPost}
@@ -47,6 +49,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
             {composingReply?
               <div className="composing-reply">
                 <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} 
+                  editingPost={post}
                   onSave={newPost => { 
                     closeReplyNoDBRefresh({post: newPost, setComposingReply, numReplies, setNumReplies, postsDB, replies: post.replies, setReplies});
                     // postRef.current.focusReplyButton(); 

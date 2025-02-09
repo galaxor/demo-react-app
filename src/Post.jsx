@@ -29,7 +29,9 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post2(props, ref) {
-  const {id, post, composingReply, setComposingReply, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete, isMainPost} = props;
+  const {id, post: postPassedIn, composingReply, setComposingReply, editingPost, setEditingPost, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete, isMainPost} = props;
+
+  const [post, setPost] = useState(postPassedIn);
 
   // showStats defaults to true.
   const showStatsForReal = ((typeof showStats === "undefined")? true : showStats) && post.deletedAt === null;
@@ -110,6 +112,16 @@ const Post = forwardRef(function Post2(props, ref) {
         </div>
       }
 
+      {editingPost?
+        <PostEditor 
+          editingPost={post}
+          quotedPost={post.boostedPosts && post.boostedPosts.length > 0? post.boostedPosts[0] : undefined}
+          onSave={newPost => { setEditingPost(false); setPost(newPost); }}
+          onCancel={() => setEditingPost(false)}
+          replyingTo={post.inReplyTo} 
+          conversationId={post.conversationId}
+        />
+      :
       <Card id={id? id.toString() : ""} ref={postDivRef} className={"post overflow-visible hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+(className ?? "")}>
         <CardHeader>
           {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} id={"scroll-target-"+id.toString(16)} className="scroll-into-view"></div> : ""}
@@ -174,7 +186,7 @@ const Post = forwardRef(function Post2(props, ref) {
                 </li>
                 <Boosts onBoost={onBoost} post={post} />
                 <li className="post-stat more-options-menu order-2">
-                  <PostDetailsMenu post={post} onDelete={onDelete} />
+                  <PostDetailsMenu post={post} onDelete={onDelete} editingPost={editingPost} setEditingPost={setEditingPost} />
                 </li>
                 <li className="reactions post-stat order-1 w-full"><Reactions post={post} onReact={onReact} /></li>
               </ul>
@@ -182,6 +194,7 @@ const Post = forwardRef(function Post2(props, ref) {
           </CardFooter>
         }
       </Card>
+      }
     </>
   );
 

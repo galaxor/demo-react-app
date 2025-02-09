@@ -426,7 +426,14 @@ export class PostsDB {
     delete newPost.text;
 
     this.db.set('posts', post.uri, newPost);
-    this.db.set('postVersions', post.uri, postVersion);
+    const oldVersions = this.db.get('postVersions', post.uri);
+    this.db.set('postVersions', post.uri, {...oldVersions, ...postVersion});
+    return this.get(post.uri);
+  }
+
+  updatePost(post) {
+    // It looks like we can just use addPost, in the current database implementation.
+    this.addPost(post);
     return this.get(post.uri);
   }
 

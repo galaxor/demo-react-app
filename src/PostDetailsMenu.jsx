@@ -18,7 +18,7 @@ import icons from './icons.js'
 import UserContext from './UserContext.jsx'
 
 
-function getDropdownAction(originalLink, deleteModalOnOpen) {
+function getDropdownAction(originalLink, deleteModalOnOpen, setEditingPost) {
   return async function dropdownAction(key) {
     switch(key) {
     case "open-original":
@@ -40,6 +40,10 @@ function getDropdownAction(originalLink, deleteModalOnOpen) {
       }
       break;
 
+    case "edit-post":
+      setEditingPost(true);
+      break;
+
     case "delete-post":
       deleteModalOnOpen();
       break;
@@ -47,7 +51,7 @@ function getDropdownAction(originalLink, deleteModalOnOpen) {
   }
 }
 
-export default function PostDetailsMenu({post, onDelete}) {
+export default function PostDetailsMenu({post, onDelete, editingPost, setEditingPost}) {
   const originalLink = useRef(null);
   const { user } = useContext(UserContext);
   const {
@@ -69,11 +73,13 @@ export default function PostDetailsMenu({post, onDelete}) {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Post Details" variant="solid" color="primary"
-        onAction={getDropdownAction(originalLink, deleteModalOnOpen)}
+        onAction={getDropdownAction(originalLink, deleteModalOnOpen, setEditingPost)}
+        disabledKeys={[editingPost? 'edit-post' : '']}
       >
       {(user !== null && post.authorPerson.handle === user.handle)?
         <DropdownSection showDivider>
-          <DropdownItem key="delete-post" textValue="Delete Post" className="text-danger">Delete Post</DropdownItem>
+         <DropdownItem key="edit-post" textValue="Edit Post">Edit Post</DropdownItem>
+         <DropdownItem key="delete-post" textValue="Delete Post" className="text-danger">Delete Post</DropdownItem>
         </DropdownSection>
         :
         ""
