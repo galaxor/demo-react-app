@@ -31,6 +31,7 @@ import { v4 as uuidv4 } from "uuid"
 import DatabaseContext from './DatabaseContext.jsx'
 import { PeopleDB } from './logic/people.js'
 import PostImageEditor from './PostImageEditor.jsx'
+import Post from './Post.jsx';
 import { PostsDB } from './logic/posts.js'
 import UserContext from './UserContext.jsx'
 
@@ -136,6 +137,13 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
       </Button>
       <Button variant="solid" color="danger" radius="full" onPress={() => cancelPost({ editorRef, onCancel })}>Cancel</Button>
     </div>
+
+    <section>
+    <h2>The Post You're Quoting</h2>
+
+    <Post post={quotedPost} showStats={false} />
+
+    </section>
     </>
   );
 });
@@ -164,6 +172,7 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
     language: "", // XXX implement a language picker
     conversationId: conversationId,
     local: true,
+    boostedPosts: postsDB.getBoostedPosts(postUri),
   };
 
   if (editingPost) {
