@@ -42,6 +42,25 @@ export class PostsDB {
     }
   }
 
+  getVersions(uri) {
+    const post = this.db.get('posts', uri);
+
+    if (post.deletedAt === null) {
+      post.authorPerson = this.db.get('people', post.author);
+      post.boostedPosts = this.getBoostedPosts(uri);
+      const versions = this.db.get('postVersions', uri);
+
+      const postWithVersions = {};
+      for (const updatedAt in versions) {
+        postWithVersions[updatedAt] = {...post, ...versions[updatedAt], updatedAt};
+      }
+
+      return postWithVersions;
+    } else {
+      return this.db.nullPost();
+    }
+  }
+
   deletePost(uri) {
     const post = this.db.get('posts', uri);
     post.deletedAt = new Date();
@@ -476,11 +495,13 @@ export class PostsDB {
     this.db.set('imageVersions', postUri, dbImages);
   }
 
-  getImagesForPost(postUri) {
-    const {updatedAt, deletedAt} = this.db.get('posts', postUri);
+  getImagesForPost(postUri, versionUpdatedAt) {
+    const {latestUpdatedAt, deletedAt} = this.db.get('posts', postUri);
     if (deletedAt !== null) {
       return {};
     }
+
+    const updatedAt = versionUpdatedAt ?? latestUpdatedAt;
 
     const imageVersions = this.db.get('imageVersions', postUri);
     if (typeof imageVersions === "undefined") {

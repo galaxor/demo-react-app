@@ -106,6 +106,8 @@ export default function PostDetails({children}) {
           <Tab key="reactions" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"} title="Reactions" />
           <Tab key="boosts" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"} title="Boosts" />
           <Tab key="quote-boosts" href={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"} title="Quote Boosts" />
+          <Tab key="history" href={"/post/"+encodeURIComponent(post.uri)+"/history"} title="Edit History"
+               isDisabled={post.createdAt === post.updatedAt} />
         </Tabs>
       </nav>
     

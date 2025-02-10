@@ -21,7 +21,7 @@ export default function ImageList({post}) {
   const postsDB = new PostsDB(db);
   const [darkMode, setDarkMode] = useContext(DarkModeContext);
 
-  const imageBucket = postsDB.getImagesForPost(post.uri);
+  const imageBucket = postsDB.getImagesForPost(post.uri, post.updatedAt);
 
   if (!imageBucket || Object.keys(imageBucket).length <= 0) { return ""; }
 

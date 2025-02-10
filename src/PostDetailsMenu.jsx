@@ -74,7 +74,7 @@ export default function PostDetailsMenu({post, onDelete, editingPost, setEditing
       </DropdownTrigger>
       <DropdownMenu aria-label="Post Details" variant="solid" color="primary"
         onAction={getDropdownAction(originalLink, deleteModalOnOpen, setEditingPost)}
-        disabledKeys={[editingPost? 'edit-post' : '']}
+        disabledKeys={[editingPost? 'edit-post' : '', post.createdAt===post.updatedAt? 'history' : '']}
       >
       {(user !== null && post.authorPerson.handle === user.handle)?
         <DropdownSection showDivider>
@@ -93,6 +93,7 @@ export default function PostDetailsMenu({post, onDelete, editingPost, setEditing
           <DropdownItem key="reaction-details" href={"/post/"+encodeURIComponent(post.uri)+"/reactions"}>Reaction details</DropdownItem>
           <DropdownItem key="boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/boosts"}>Boost details</DropdownItem>
           <DropdownItem key="quote-boost-details" href={"/post/"+encodeURIComponent(post.uri)+"/quote-boosts"}>Quote boost details</DropdownItem>
+          <DropdownItem key="history" href={`/post/${encodeURIComponent(post.uri)}/history`}>View edit history</DropdownItem>
         </DropdownSection>
       </DropdownMenu>
     </Dropdown>

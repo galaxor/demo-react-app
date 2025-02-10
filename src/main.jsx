@@ -6,6 +6,7 @@ import './index.css'
 import App from './App.jsx'
 import BoostsDetail from './BoostsDetail.jsx'
 import CreatePost from './CreatePost.jsx'
+import History from './History.jsx'
 import PopularFeed from './PopularFeed.jsx'
 import PostsByPerson from './PostsByPerson.jsx'
 import PostDetails from './PostDetails.jsx'
@@ -119,11 +120,6 @@ const router = createBrowserRouter([
             element: <Thread />,
           },
           {
-            path: "/old-post/:postUri",
-            loader: getPostLoader(database),
-            element: <PostSingle />,
-          },
-          {
             path: "/post/:postUri/boosts",
             loader: getPostLoader(database),
             element: <PostDetails><BoostsDetail /></PostDetails>,
@@ -137,6 +133,11 @@ const router = createBrowserRouter([
             path: "/post/:postUri/reactions",
             loader: getPostLoader(database),
             element: <PostDetails><ReactionsDetail /></PostDetails>,
+          },
+          {
+            path: "/post/:postUri/history",
+            loader: getPostLoader(database),
+            element: <PostDetails><History /></PostDetails>,
           },
           {
             path: "/create",
