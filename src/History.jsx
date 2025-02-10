@@ -29,8 +29,11 @@ export default function History() {
     {Object.entries(versions).map(([updatedAt, postVersion]) => {
   // We're using ReactTimeAgo in the markup, but plain javascript-time-ago in the aria.
       const formattedTime = timeAgo.format(new Date(updatedAt))+", "+fullDateTime.format(new Date(updatedAt));
+
+      const humanReadableTime = <time dateTime={updatedAt}>{formattedTime}</time>;
+
       return (
-      <AccordionItem key={updatedAt} aria-label={formattedTime} title={formattedTime}>
+      <AccordionItem key={updatedAt} aria-label={formattedTime} title={humanReadableTime}>
         <Post showStats={false} post={postVersion} />
       </AccordionItem>
       );
