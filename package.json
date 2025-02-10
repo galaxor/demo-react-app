@@ -20,6 +20,7 @@
     "@mdxeditor/editor": "^3.19.3",
     "@nextui-org/form": "^2.1.6",
     "@nextui-org/react": "^2.4.8",
+    "diff": "^7.0.0",
     "emoji-datasource-twitter": "^15.1.2",
     "emoji-picker-react": "^4.12.0",
     "framer-motion": "^11.13.1",

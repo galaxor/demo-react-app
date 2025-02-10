@@ -4,6 +4,22 @@ html:has(.app-theme.dark) {
   background: black;
 }
 
+ins {
+  background: #d4fcbc;
+}
+
+.dark ins {
+  background: #060;
+}
+
+del {
+  background: #fbb;
+}
+
+.dark del {
+  background: #a00;
+}
+
 .visually-hidden {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
