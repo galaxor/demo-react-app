@@ -33,7 +33,7 @@ export default function History() {
     <p>Previous versions of this post.</p>
 
     <Button startContent={<FontAwesomeIcon icon={icons.eye} />}
-      onPress={() => setSelectedKeys(new Set(Object.keys(versions)))}
+      onPress={() => setSelectedKeys(new Set([...Object.keys(versions), ...Object.keys(versions).map(version => `changes-${version}`)]))}
     >
       Open All
     </Button>
