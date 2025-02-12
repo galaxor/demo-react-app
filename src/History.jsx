@@ -8,6 +8,7 @@ import { useLoaderData } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid"
 import {Fragment} from 'react'
 
+import ClickableImage from './components/ClickableImage.jsx'
 import DatabaseContext from './DatabaseContext.jsx'
 import icons from './icons.js'
 import LanguageContext from './LanguageContext.jsx'
@@ -85,8 +86,6 @@ export default function History() {
         const prevImageHashes = Object.keys(prevPost.imagesByHash);
         const imageHashes = Object.keys(postVersion.imagesByHash);
         const imageDiff = diffArrays(prevImageHashes, imageHashes);
-
-        console.log(imageDiff);
 
         const accordionItemDiff = 
           <AccordionItem key={`changes-${updatedAt}`} aria-label={`Changes introduced at ${formattedTime}`} title={<>Changes introduced {humanReadableTime}</>} className="bg-content2">
@@ -175,14 +174,28 @@ function imageChangeTable({key, caption, imageHashes, postVersion, prevPost}) {
           // so we can't diff the alt text.
           return (
             <tr key={imageHash}>
-              <td className="image">{imageHash}</td>
+              <td className="image">
+                <ClickableImage 
+                  fileName={postVersion.imagesByHash[imageHash].fileName}
+                  imageData={postVersion.imagesByHash[imageHash].data}
+                  altText={postVersion.imagesByHash[imageHash].altText}
+                  altTextLang={postVersion.imagesByHash[imageHash].altTextLang}
+                />
+              </td>
               <td className="alt-text">{postVersion.imagesByHash[imageHash].altText}</td>
             </tr>
           );
         } else {
           return (
             <tr key={imageHash}>
-              <td className="image">{imageHash}</td>
+              <td className="image">
+                <ClickableImage 
+                  fileName={postVersion.imagesByHash[imageHash].fileName}
+                  imageData={postVersion.imagesByHash[imageHash].data}
+                  altText={postVersion.imagesByHash[imageHash].altText}
+                  altTextLang={postVersion.imagesByHash[imageHash].altTextLang}
+                />
+              </td>
               <td className="alt-text">
                 {diffWordsWithSpace(prevPost.imagesByHash[imageHash].altText, postVersion.imagesByHash[imageHash].altText).map(part => {
                   if (part.added) {
