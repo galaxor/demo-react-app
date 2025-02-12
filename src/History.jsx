@@ -31,10 +31,11 @@ export default function History() {
   const [selectedKeys, setSelectedKeys] = useState();
 
   return <>
-    <h2 className="my-5 text-xl font-bold">Edit History</h2>
+    <h2 className="my-5 text-xl font-bold">Revision History</h2>
 
-    <p>Previous versions of this post.</p>
+    <p>This page lets you see previous revisions of the post, and review what changes were made when.</p>
 
+    <p className="my-3">
     <Button startContent={<FontAwesomeIcon icon={icons.eye} />}
       onPress={() => setSelectedKeys(new Set([...Object.keys(versions), ...Object.keys(versions).map(version => `changes-${version}`)]))}
     >
@@ -46,6 +47,7 @@ export default function History() {
     >
       Close All
     </Button>
+    </p>
 
     <Accordion className="history" selectionMode="multiple" selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys} variant="splitted">
     {Object.entries(versions).map(([updatedAt, postVersion]) => {
