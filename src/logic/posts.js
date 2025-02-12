@@ -32,7 +32,7 @@ export class PostsDB {
   get(uri) {
     const post = this.db.get('posts', uri);
 
-    if (post.deletedAt === null) {
+    if (typeof post !== "undefined" && post.deletedAt === null) {
       post.authorPerson = this.db.get('people', post.author);
       post.boostedPosts = this.getBoostedPosts(uri);
       const version = this.db.get('postVersions', uri)[post.updatedAt];
@@ -126,8 +126,7 @@ export class PostsDB {
         return {
           ...post,
           boostedPosts: post.boostedPosts.map(boostedPostRow => {
-            const boostedPost = this.db.get('posts', boostedPostRow.boostedPost);
-            boostedPost.authorPerson = this.db.get('people', boostedPost.author);
+            const boostedPost = this.get(boostedPostRow.boostedPost);
             return boostedPost;
           })
         };

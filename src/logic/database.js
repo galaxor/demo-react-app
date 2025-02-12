@@ -521,6 +521,7 @@ class Database {
       conversationId: null,
       local: false,
       authorPerson: this.nullPerson(),
+      boostedPosts: [],
 
       ...this.nullVersion(),
     };
