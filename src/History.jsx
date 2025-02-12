@@ -128,6 +128,7 @@ export default function History() {
                     caption: imageChange.length > 1? <>Unchanged images</> : <>Unchanged image</>,
                     imageHashes: imageChange.value,
                     postVersion,
+                    prevPost,
                   });
                 }
               })}
@@ -148,22 +149,54 @@ export default function History() {
   </>;
 }
 
-function imageChangeTable({key, caption, imageHashes, postVersion}) {
+function imageChangeTable({key, caption, imageHashes, postVersion, prevPost}) {
+  // The prevPost argument is optional.  It will only be passed when we're
+  // showing unchanged images, and we use it so we can diff the alt text.
+  // Note that in "images removed", we also pass in prevPost, but we do it in
+  // the slot named postVersion.  The reason for this is that here, the slot
+  // marked postVersion will always be the one we look for images in.  That
+  // way, this function doesn't have to know if we're displaying an image
+  // removal, addition, or unchanged.
   return (
     <table className="image-change" key={key}>
       <caption>{caption}</caption>
       <thead>
+      <tr>
         <th>Image</th>
         <th>Alt text</th>
+      </tr>
       </thead>
       <tbody>
       {imageHashes.map(imageHash => {
-        return (
-          <tr key={imageHash}>
-            <td className="image">{imageHash}</td>
-            <td className="alt-text">{postVersion.imagesByHash[imageHash].altText}</td>
-          </tr>
-        );
+        // If prevPost is set, that's because the image was unchanged. In that
+        // case, let's diff the alt text.
+        if (typeof prevPost === "undefined") {
+          // We don't have prevPost. It was either an added or removed image,
+          // so we can't diff the alt text.
+          return (
+            <tr key={imageHash}>
+              <td className="image">{imageHash}</td>
+              <td className="alt-text">{postVersion.imagesByHash[imageHash].altText}</td>
+            </tr>
+          );
+        } else {
+          return (
+            <tr key={imageHash}>
+              <td className="image">{imageHash}</td>
+              <td className="alt-text">
+                {diffWordsWithSpace(prevPost.imagesByHash[imageHash].altText, postVersion.imagesByHash[imageHash].altText).map(part => {
+                  if (part.added) {
+                    return <ins key={uuidv4()}>{part.value}</ins>;
+                  } else if (part.removed) {
+                    return <del key={uuidv4()}>{part.value}</del>;
+                  } else {
+                    return part.value;
+                  }
+                })}
+              </td>
+            </tr>
+          );
+        }
       })}
       </tbody>
     </table>
