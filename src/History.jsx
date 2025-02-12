@@ -223,7 +223,6 @@ function ImageChangeTable({key, changeType, caption, imageHashes, postVersion, p
           );
         }
       })}
-      <tr><td>Extra</td><td>Extraneous</td></tr>
       </tbody>
     </table>
   );
