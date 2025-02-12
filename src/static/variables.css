@@ -1,3 +1,11 @@
 :root { 
   --header-height: 50px;
+
+  --insertion-color: #d4fcbc;
+  --deletion-color: #fbb;
+
+  .dark {
+    --insertion-color: #060;
+    --deletion-color: #a00;
+  }
 }

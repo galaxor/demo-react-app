@@ -16,6 +16,8 @@ import Post from './Post.jsx';
 import { PostsDB } from './logic/posts.js'
 import { fullDateTime } from './timeFormat.js'
 
+import './static/History.css'
+
 export default function History() {
   const languageContext = useContext(LanguageContext);
   const timeAgo = new TimeAgo(languageContext);
@@ -45,7 +47,7 @@ export default function History() {
       Close All
     </Button>
 
-    <Accordion selectionMode="multiple" selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys}>
+    <Accordion className="history" selectionMode="multiple" selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys} variant="splitted">
     {Object.entries(versions).map(([updatedAt, postVersion]) => {
       const formattedTime = timeAgo.format(new Date(updatedAt))+", "+fullDateTime.format(new Date(updatedAt));
 
@@ -58,7 +60,7 @@ export default function History() {
         formattedTime,
         humanReadableTime,
         {...postVersion, images: imageBucket},
-        <AccordionItem key={updatedAt} aria-label={formattedTime} title={humanReadableTime} className="bg-content1">
+        <AccordionItem key={updatedAt} aria-label={formattedTime} title={humanReadableTime} classNames={{base: "bg-content1", heading: "font-bold"}}>
           <Post showStats={false} post={postVersion} />
         </AccordionItem>
       ]);
@@ -88,7 +90,7 @@ export default function History() {
         const imageDiff = diffArrays(prevImageHashes, imageHashes);
 
         const accordionItemDiff = 
-          <AccordionItem key={`changes-${updatedAt}`} aria-label={`Changes introduced at ${formattedTime}`} title={<>Changes introduced {humanReadableTime}</>} className="bg-content2">
+          <AccordionItem key={`changes-${updatedAt}`} aria-label={`Changes introduced at ${formattedTime}`} title={<>Changes introduced {humanReadableTime}</>} classNames={{base: "bg-content2", heading: "font-bold"}}>
             <dl>
               <dt>Text</dt>
               <dd className="whitespace-pre-line">
@@ -102,36 +104,43 @@ export default function History() {
                   }
                 })}
               </dd>
+            </dl>
+            <ul>
               {imageDiff.map(imageChange => {
                 if (imageChange.removed) {
-                  return imageChangeTable({
-                    key: `removed-${imageChange.value[0]}`,
-                    caption: imageChange.length > 1? <>Images removed</> : <>Image removed</>,
-                    imageHashes: imageChange.value,
-
-                    // we need to pass prevPost so that it looks there for the
-                    // images. The images have been removed, so they won't be
-                    // in postVersion.
-                    postVersion: prevPost,
-                  });
+                  // we need to pass prevPost so that it looks there for the
+                  // images. The images have been removed, so they won't be
+                  // in postVersion.
+                  return <li key={`removed-${imageChange.value[0]}`}>
+                    <ImageChangeTable
+                      changeType="deletion"
+                      caption={imageChange.length > 1? <>Images removed</> : <>Image removed</>}
+                      imageHashes={imageChange.value}
+                      postVersion={prevPost}
+                    />
+                  </li>;
                 } else if (imageChange.added) {
-                  return imageChangeTable({
-                    key: `added-${imageChange.value[0]}`,
-                    caption: imageChange.length > 1? <>Images added</> : <>Image added</>,
-                    imageHashes: imageChange.value,
-                    postVersion,
-                  });
+                  return <li key={`added-${imageChange.value[0]}`}>
+                    <ImageChangeTable
+                      changeType="insertion"
+                      caption={imageChange.length > 1? <>Images added</> : <>Image added</>}
+                      imageHashes={imageChange.value}
+                      postVersion={postVersion}
+                    />
+                  </li>;
                 } else {
-                  return imageChangeTable({
-                    key: `unchanged-${imageChange.value[0]}`,
-                    caption: imageChange.length > 1? <>Unchanged images</> : <>Unchanged image</>,
-                    imageHashes: imageChange.value,
-                    postVersion,
-                    prevPost,
-                  });
+                  return <li key={`unchanged-${imageChange.value[0]}`}>
+                    <ImageChangeTable
+                      changeType="unchanged"
+                      caption={imageChange.length > 1? <>Unchanged images</> : <>Unchanged image</>}
+                      imageHashes={imageChange.value}
+                      postVersion={postVersion}
+                      prevPost={prevPost}
+                    />
+                  </li>;
                 }
               })}
-            </dl>
+            </ul>
           </AccordionItem>
         ;
 
@@ -148,7 +157,7 @@ export default function History() {
   </>;
 }
 
-function imageChangeTable({key, caption, imageHashes, postVersion, prevPost}) {
+function ImageChangeTable({key, changeType, caption, imageHashes, postVersion, prevPost}) {
   // The prevPost argument is optional.  It will only be passed when we're
   // showing unchanged images, and we use it so we can diff the alt text.
   // Note that in "images removed", we also pass in prevPost, but we do it in
@@ -157,8 +166,8 @@ function imageChangeTable({key, caption, imageHashes, postVersion, prevPost}) {
   // way, this function doesn't have to know if we're displaying an image
   // removal, addition, or unchanged.
   return (
-    <table className="image-change" key={key}>
-      <caption>{caption}</caption>
+    <table className={`image-change change-${changeType}`} key={key}>
+      <caption className={`change-${changeType}`}>{caption}</caption>
       <thead>
       <tr>
         <th>Image</th>
@@ -211,6 +220,7 @@ function imageChangeTable({key, caption, imageHashes, postVersion, prevPost}) {
           );
         }
       })}
+      <tr><td>Extra</td><td>Extraneous</td></tr>
       </tbody>
     </table>
   );

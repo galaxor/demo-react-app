@@ -5,19 +5,11 @@ html:has(.app-theme.dark) {
 }
 
 ins {
-  background: #d4fcbc;
-}
-
-.dark ins {
-  background: #060;
+  background: var(--insertion-color);
 }
 
 del {
-  background: #fbb;
-}
-
-.dark del {
-  background: #a00;
+  background: var(--deletion-color);
 }
 
 .visually-hidden {

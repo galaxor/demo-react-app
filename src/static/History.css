@@ -1,0 +1,46 @@
+.history {
+
+dl {
+  margin-bottom: 1em;
+}
+
+dt {
+  font-weight: bold;
+}
+
+table.image-change {
+  border-collapse: separate;
+
+  tbody tr:nth-child(even) {
+    background: hsl(var(--nextui-content3));
+  }
+  tbody tr:nth-child(odd) {
+    background: hsl(var(--nextui-content4));
+  }
+
+  td, th {
+    padding: 1ex;
+  }
+
+  caption {
+    font-weight: bold;
+  }
+}
+
+table.image-change.change-deletion {
+  border: 2px solid var(--deletion-color);
+
+  caption {
+    background: var(--deletion-color);
+  }
+}
+
+table.image-change.change-insertion {
+  border: 2px solid var(--insertion-color);
+
+  caption {
+    background: var(--insertion-color);
+  }
+}
+
+}
