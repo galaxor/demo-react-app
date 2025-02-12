@@ -2,6 +2,7 @@ import {Accordion, AccordionItem} from "@nextui-org/accordion";
 import { Button } from "@nextui-org/button"
 import { diffArrays, diffWordsWithSpace } from 'diff'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
 import { useContext, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
@@ -53,7 +54,7 @@ export default function History() {
     {Object.entries(versions).map(([updatedAt, postVersion]) => {
       const formattedTime = timeAgo.format(new Date(updatedAt))+", "+fullDateTime.format(new Date(updatedAt));
 
-      const humanReadableTime = <time dateTime={updatedAt}>{formattedTime}</time>;
+      const humanReadableTime = <time dateTime={updatedAt}><ReactTimeAgo date={new Date(updatedAt)} locale={languageContext} />, {fullDateTime.format(new Date(updatedAt))}</time>;
 
       const imageBucket = postsDB.getImagesForPost(postVersion.uri, postVersion.updatedAt);
 
