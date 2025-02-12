@@ -131,14 +131,16 @@ const Post = forwardRef(function Post2(props, ref) {
                 "Posted "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))
                 :
                 "Updated "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))}>
+              <Link to={`/post/${encodeURIComponent(post.uri)}/history`} className="text-xl">
+                {post.updatedAt !== post.createdAt? 
+                  <span className="post-edited"><FontAwesomeIcon icon={icons.pencil} title="Edited" />{" "}</span> : ""
+                }
+              </Link>
               <Link className="post-time dt-published" to={'/post/' + encodeURIComponent(post.uri)}>
+                  <span className={"text-xl time-ago " + (post.updatedAt !== post.createdAt? "time-ago-edited" : "")}>
+                    <ReactTimeAgo date={new Date(post.updatedAt)} timeStyle="mini" locale={languageContext} />
+                  </span>
                   <span className="dt-published published-date">
-                    <div className={"text-xl time-ago " + (post.updatedAt !== post.createdAt? "time-ago-edited" : "")}>
-                      {post.updatedAt !== post.createdAt? 
-                        <span className="post-edited"><FontAwesomeIcon icon={icons.pencil} title="Edited" />{" "}</span> : ""
-                      }
-                      <ReactTimeAgo date={new Date(post.updatedAt)} timeStyle="mini" locale={languageContext} />
-                    </div>
                     <div className="abs-date text-xs">
                       <div>{dayFormat.format(new Date(post.updatedAt))}</div>
                       <div>{dateFormat.format(new Date(post.updatedAt))}</div>
