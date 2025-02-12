@@ -131,7 +131,7 @@ const Post = forwardRef(function Post2(props, ref) {
                 "Posted "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))
                 :
                 "Updated "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))}>
-              <Link to={`/post/${encodeURIComponent(post.uri)}/history`} className="text-xl">
+              <Link to={`/post/${encodeURIComponent(post.uri)}/history`} className="text-xl" aria-label="View revision history">
                 {post.updatedAt !== post.createdAt? 
                   <span className="post-edited"><FontAwesomeIcon icon={icons.pencil} title="Edited" />{" "}</span> : ""
                 }
