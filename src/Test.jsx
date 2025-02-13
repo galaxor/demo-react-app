@@ -1,11 +1,22 @@
-import { Button } from '@nextui-org/button'
-import { ToastContainer, toast } from 'react-toastify';
+import { useContext, useEffect, useState } from 'react';
+import DatabaseContext from './DatabaseContext.jsx';
 
 export default function Test() {
-  return (
-    <div className="grid place-items-center h-dvh bg-zinc-900/15">
-      <Button onPress={() => toast("Did it")}>Notify !</Button>
-      <ToastContainer />
-    </div>
-  );
+  const dbPromise = useContext(DatabaseContext);
+  console.log(dbPromise);
+
+  const [nonsense, setNonsense] = useState(<>Loading</>);
+
+  useEffect(() => {
+    console.log(dbPromise.open());
+
+    dbPromise.open().then(db => {
+      console.log("setting nonsense");
+      setNonsense(<>Loaded!</>);
+    });
+
+    openDb();
+  }, []);
+
+  return nonsense;
 }

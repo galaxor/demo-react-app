@@ -6,6 +6,8 @@ import PersonContext from './PersonContext.jsx';
 import { PostsDB } from './logic/posts.js';
 import PostsList from './PostsList.jsx';
 
+// import theirPosts from './staticList.js'
+
 export default function PostsByPerson({showReplies}) {
   const [ showBoosts, setShowBoosts ] = useState(true);
 
