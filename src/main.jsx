@@ -150,11 +150,11 @@ const router = createBrowserRouter([
           },
         ],
       },
-
       {
         path: "/test",
         element: <Test db={database} />,
       },
+
     ],
   },
 ], { basename: prefix }

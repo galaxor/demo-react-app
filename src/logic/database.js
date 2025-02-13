@@ -4,11 +4,11 @@ class Database {
   constructor() {
     console.log("Opening database like you asked.");
     const dbRequest = indexedDB.open("database2", 1);
-    dbRequest.onupgradeneeded = this.onUpgradeNeeded;
+    dbRequest.onupgradeneeded = this.onUpgradeNeeded.bind(this);
 
     this.openPromise = new Promise((resolve, reject) => {
       dbRequest.onsuccess = event => {
-        setTimeout(() => { console.log("resolve"); resolve(event.target.result) }, 5000);
+        resolve(event.target.result);
       };
 
       dbRequest.onerror = event => {
@@ -23,25 +23,56 @@ class Database {
   }
 
   // Filling the database with initial test data.
-  fillTestData(db) {
-    const transaction = db.transaction([
-      "accounts",
-      "people",
-      "follows",
-      "postVersions",
-      "posts",
-      "images",
-      "imageVersions",
-      "boosts",
-      "reactions",
-    ], "readwrite", {durability: "strict"});
-
-    const accounts = transaction.objectStore("accounts");
-    for ([userName, account] of Object.entries(testData.accounts)) {
-      accounts.add({userName, handle: account.handle});
+  fillTestData(db, transaction) {
+    const accountsStore = transaction.objectStore("accounts");
+    for (const [userName, account] of Object.entries(testData.accounts)) {
+      accountsStore.add({userName, handle: account.handle});
     }
 
-    console.log(accounts.getAll());
+    const peopleStore = transaction.objectStore("people");
+    for (const person of Object.values(testData.people)) {
+      peopleStore.add(person);
+    }
+
+    const followsStore = transaction.objectStore("follows");
+    for (const [follower, followed] of testData.follows) {
+      followsStore.add({follower, followed});
+    }
+
+    const postVersionsStore = transaction.objectStore("postVersions");
+    for (const versionsOfPost of Object.values(testData.postVersions)) {
+      for (const postVersion of Object.values(versionsOfPost)) {
+        postVersionsStore.add(postVersion);
+      }
+    }
+
+    const postsStore = transaction.objectStore("posts");
+    for (const post of Object.values(testData.posts)) {
+      postsStore.add(post);
+    }
+
+    // XXX do something special for images.
+
+    const imageVersionsStore = transaction.objectStore("imageVersions");
+    for (const [postUri, imageVersions] of Object.entries(testData.imageVersions)) {
+      for (const [updatedAt, imageVersion] of Object.entries(imageVersions)) {
+        for (const [fileName, imageVersionData] of Object.entries(imageVersion)) {
+          const fullImageVersion = {...imageVersionData, fileName, updatedAt, postUri, imageHash: imageVersionData.image};
+          delete fullImageVersion.image;
+          imageVersionsStore.add(fullImageVersion);
+        }
+      }
+    }
+
+    const boostsStore = transaction.objectStore("boosts");
+    for (const boost of testData.boosts) {
+      boostsStore.add(boost);
+    }
+
+    const reactionsStore = transaction.objectStore("reactions");
+    for (const reaction of testData.reactions) {
+      reactionsStore.add(reaction);
+    }
 
     return new Promise(resolve => {
       transaction.oncomplete = event => resolve();
@@ -50,8 +81,14 @@ class Database {
 
   onUpgradeNeeded(event) {
     const db = event.target.result;
+    const transaction = event.target.transaction;
 
-    if (event.target.oldVersion < 1 && event.target.newVersion >= 1) {
+    console.log("Upgrading");
+    console.log(event);
+
+    if (event.oldVersion < 1 && event.newVersion >= 1) {
+      console.log("Initializing");
+
       // Brand new database.  Initialize it.
       db.onerror = e => console.error("Error initializing database", e);
       const accounts = db.createObjectStore("accounts", { keyPath: "userName" });
@@ -103,7 +140,7 @@ class Database {
       reactions.createIndex("reactingTo", "reactingTo");
       reactions.createIndex("createdAt", "createdAt");
 
-      this.fillTestData(db);
+      this.fillTestData(db, transaction);
     }
   }
 
