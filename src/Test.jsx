@@ -12,12 +12,23 @@ export default function Test({db}) {
       const allPeople = peopleStore.getAll();
       allPeople.onsuccess = event => {
         const people = event.target.result;
-        console.log(people);
-        setNonsense(<>Loaded!</>);
+        setNonsense(<People people={people} />);
       }
     };
     openDb();
   }, []);
 
   return nonsense;
+}
+
+function People({people}) {
+  return (
+    <ul>
+    {people.map(person => <Person key={person.handle} person={person} />)}
+    </ul>
+  );
+}
+
+function Person({person}) {
+  return <li>{person.displayName} ({person.handle})</li>;
 }
