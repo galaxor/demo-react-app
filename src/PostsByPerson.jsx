@@ -10,12 +10,19 @@ import PostsList from './PostsList.jsx';
 
 export default function PostsByPerson({showReplies}) {
   const [ showBoosts, setShowBoosts ] = useState(true);
+  const [theirPosts, setTheirPosts] = useState(<PostsByPersonLoading />);
 
   const { person } = useContext(PersonContext);
 
-  const db = useContext(DatabaseContext);
-  const postsDB = new PostsDB(db);
-  const theirPosts = postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
+  const dbConnection = useContext(DatabaseContext);
+  useEffect(() => {
+    (async () => {
+      const db = await dbConnection.open();
+      const postsDB = new PostsDB(db);
+      const theirPosts = postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
+      setTheirPosts(<PostsList posts={theirPosts} />);
+    })();
+  }, [showBoosts]);
 
   return (
     <section className="their-posts" aria-labelledby="their-posts">
@@ -27,7 +34,10 @@ export default function PostsByPerson({showReplies}) {
         Show Boosts
       </Switch>
 
-      <PostsList posts={theirPosts} />
     </section>
   );
+}
+
+function PostsByPersonLoading() {
+  return (<>Loading posts...</>);
 }

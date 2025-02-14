@@ -69,7 +69,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App db={database} />,
+        element: <App dbConnection={database} />,
         children: [
           {
             path: "/",
@@ -152,7 +152,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/test",
-        element: <Test db={database} />,
+        element: <Test dbConnection={database} />,
       },
 
     ],

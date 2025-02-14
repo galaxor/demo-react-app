@@ -12,14 +12,16 @@ import LanguageContext from "./LanguageContext.jsx";
 import UserContext from "./UserContext.jsx";
 
 import './App.css';
-import User from './logic/user.js';
+import UserDB from './logic/user.js';
 
-function App({db}) {
-  const [user, setUser] = useState(User.loggedInUser());
+function App({dbConnection}) {
+  const [user, setUser] = useState(undefined);
 
   const [sessionId, setSessionId] = useState(null);
 
   const userContext = {user, setUser, sessionId, setSessionId};
+
+  const [appContents, setAppContents] = useState(<AppLoading />);
 
   // TODO: Add i18n support 🤪
   // Anybody can read navigator.language.
@@ -51,30 +53,44 @@ function App({db}) {
     
   }, [user, setDarkMode]);
 
-  return (
-    <>
-    <DatabaseContext.Provider value={db}>
-    <UserContext.Provider value={userContext}>
-    <DarkModeContext.Provider value={[darkMode, setDarkMode]}>
-    <LanguageContext.Provider value={languageContext}>
-    <SystemNotificationArea />
-    <div className={"app-theme text-foreground bg-background " + (darkMode? "dark " : "")}>
-      <header className="page-header shadow-md">
-        <Logo />
-        <UserSection darkMode={darkMode} setDarkMode={setDarkMode} />
-      </header>
+  useEffect(() => {
+    (async () => {
+      const db = await dbConnection.open();
+      const userDB = new UserDB(db);
+      setUser(userDB.loggedInUser());
 
-      <div id="page-body">
-        <NavigationSidebar />
-        <Outlet />
-      </div>
-    </div>
-    </LanguageContext.Provider>
-    </DarkModeContext.Provider>
-    </UserContext.Provider>
-    </DatabaseContext.Provider>
-    </>
-  );
+      setAppContents (
+        <>
+        <DatabaseContext.Provider value={db}>
+        <UserContext.Provider value={userContext}>
+        <DarkModeContext.Provider value={[darkMode, setDarkMode]}>
+        <LanguageContext.Provider value={languageContext}>
+        <SystemNotificationArea />
+        <div className={"app-theme text-foreground bg-background " + (darkMode? "dark " : "")}>
+          <header className="page-header shadow-md">
+            <Logo />
+            <UserSection darkMode={darkMode} setDarkMode={setDarkMode} />
+          </header>
+
+          <div id="page-body">
+            <NavigationSidebar />
+            <Outlet />
+          </div>
+        </div>
+        </LanguageContext.Provider>
+        </DarkModeContext.Provider>
+        </UserContext.Provider>
+        </DatabaseContext.Provider>
+        </>
+      );
+    })();
+  }, [darkMode]);
+
+  return appContents;
 }
 
 export default App;
+
+function AppLoadig() {
+  return <>App loading...</>;
+}

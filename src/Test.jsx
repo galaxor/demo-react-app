@@ -1,21 +1,29 @@
 import { useContext, useEffect, useState } from 'react';
 import DatabaseContext from './DatabaseContext.jsx';
+import UserDB from './logic/user.js'
 
-export default function Test({db}) {
+export default function Test({dbConnection}) {
   const [nonsense, setNonsense] = useState(<>Loading</>);
 
   useEffect(() => {
-    const openDb = async () => {
-      const dbConnection = await db.open();
-      const transaction = dbConnection.transaction("people");
+    (async () => {
+      const db = await dbConnection.open();
+
+      const userDB = new UserDB(db);
+      const user = await userDB.loggedInUser();
+
+      const sessionId = await userDB.login();
+
+      console.log("User", user, sessionId);
+
+      const transaction = db.db.transaction("people");
       const peopleStore = transaction.objectStore("people");
       const allPeople = peopleStore.getAll();
       allPeople.onsuccess = event => {
         const people = event.target.result;
         setNonsense(<People people={people} />);
       }
-    };
-    openDb();
+    })();
   }, []);
 
   return nonsense;

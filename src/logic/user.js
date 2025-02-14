@@ -1,86 +1,87 @@
 import { v4 as uuidv4 } from 'uuid'
-import Database from './database.js'
 
-const db = new Database();
+export default class UserDB {
+  constructor(db) {
+    this.db = db;
+  }
 
-function setProp(prop, val) {
-  const account = db.get('accounts', 'testuser');
-  const person = db.get('people', account.handle);
-  var newPerson = {...person};
-  newPerson[prop] = val;
+  async setProp(prop, val) {
+    const account = await this.db.get('accounts', 'testuser');
+    const person = await this.db.get('people', account.handle);
+    var newPerson = {...person};
+    newPerson[prop] = val;
 
-  db.set('people', account.handle, newPerson);
-  return newPerson;
-};
+    await this.db.set('people', account.handle, newPerson);
+    return newPerson;
+  }
 
-export default {
-  loggedInUser: () => {
+  async loggedInUser() {
     const sessionId = localStorage.getItem('sessionId');
-    const session = db.get('sessions', sessionId);
+    const session = await this.db.get('sessions', sessionId);
     if (session) {
-      const account = db.get('accounts', 'testuser');
-      const person = db.get('people', account.handle);
+      const account = await this.db.get('accounts', 'testuser');
+      const person = await this.db.get('people', account.handle);
 
       person.session = session;
       return person;
     } else {
       return null;
     }
-  },
+  }
 
-  login: () => {
+  async login() {
     const sessionId = uuidv4();
-    db.set('sessions', sessionId, 'testuser');
+    await this.db.set('sessions', undefined, {sessionId, userName: 'testuser', startedAt: "1234"});
 
     localStorage.setItem('sessionId', sessionId);
 
     return sessionId;
-  },
+  }
 
-  logout: () => {
+  logout() {
     const sessionId = localStorage.getItem('sessionId');
-    db.del('sessions', sessionId);
+    this.db.del('sessions', sessionId);
     localStorage.removeItem('sessionId');
     return null;
-  },
+  }
 
-  setName: (displayName) => {
-    return setProp('displayName', displayName);
-  },
+  setName(displayName) {
+    return this.setProp('displayName', displayName);
+  }
 
-  setBio: (bio) => {
-    return setProp('bio', bio);
-  },
+  setBio(bio) {
+    return this.setProp('bio', bio);
+  }
 
-  setAvatar: (avatar) => {
-    return setProp('avatar', avatar);
-  },
+  setAvatar(avatar) {
+    return this.setProp('avatar', avatar);
+  }
 
-  setAvatarOrig: (avatarOrig) => {
-    return setProp('avatarOrig', avatarOrig);
-  },
+  setAvatarOrig(avatarOrig) {
+    return this.setProp('avatarOrig', avatarOrig);
+  }
 
-  setAvatarAltText: (avatarAltText) => {
-    return setProp('avatarAltText', avatarAltText);
-  },
+  setAvatarAltText(avatarAltText) {
+    return this.setProp('avatarAltText', avatarAltText);
+  }
 
-  setAvatarPosition: (avatarPosition) => {
-    return setProp('avatarPosition', avatarPosition);
-  },
+  setAvatarPosition(avatarPosition) {
+    return this.setProp('avatarPosition', avatarPosition);
+  }
 
-  setAvatarRotate: (avatarRotate) => {
-    return setProp('avatarRotate', avatarRotate);
-  },
+  setAvatarRotate(avatarRotate) {
+    return this.setProp('avatarRotate', avatarRotate);
+  }
 
-  setAvatarScale: (avatarScale) => {
-    return setProp('avatarScale', avatarScale);
-  },
+  setAvatarScale(avatarScale) {
+    return this.setProp('avatarScale', avatarScale);
+  }
 
-  setSkinTone: (newTone) => {
-    return setProp('skinTonePref', newTone);
-  },
+  setSkinTone(newTone) {
+    return this.setProp('skinTonePref', newTone);
+  }
 
-  setDarkMode: (darkMode) => {
-    return setProp('darkMode', darkMode);
-  },
+  setDarkMode(darkMode) {
+    return this.setProp('darkMode', darkMode);
+  }
 };

@@ -18,7 +18,8 @@ class Database {
   }
 
   async open() {
-    return this.openPromise;
+    this.db = await this.openPromise;
+    return this;
   }
 
   onUpgradeNeeded(event) {
@@ -127,23 +128,39 @@ class Database {
     };
   }
 
-  get(table, key) {
-    if (typeof key === "undefined") {
-      return JSON.parse(JSON.stringify(this[table]));
-    } else {
-      const result = this[table][key];
-      if (typeof result === "undefined") {
+  async get(tableName, key) {
+    const transaction = this.db.transaction(tableName);
+    const table = transaction.objectStore(tableName);
+    try {
+      const getRequest = table.get(key);
+      return await new Promise(resolve => {
+        getRequest.onsuccess = event => {
+          transaction.commit();
+          resolve(event.target.result);
+        };
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "DataError") {
+        // The data didn't exist. No big deal.
         return undefined;
       } else {
-        return JSON.parse(JSON.stringify(result));
+        throw error;
       }
     }
   }
 
-  set(table, key, value) {
-    this[table][key] = value;
-    localStorage.setItem(table, JSON.stringify(this[table]));
-    return {...value};
+  async set(tableName, key, value) {
+    const transaction = this.db.transaction(tableName, "readwrite", {durability: "strict"});
+    const table = transaction.objectStore(tableName);
+
+    console.log("Trying to insert", key, value);
+    const putRequest = table.put(value, key);
+    return await new Promise(resolve => {
+      putRequest.onsuccess = event => {
+        transaction.commit();
+        resolve(event.result);
+      };
+    });
   }
 
   addRow(table, row) {
