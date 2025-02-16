@@ -15,7 +15,7 @@ import './App.css';
 import UserDB from './logic/user.js';
 
 function App({dbConnection}) {
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState(null);
 
   const [sessionId, setSessionId] = useState(null);
 
