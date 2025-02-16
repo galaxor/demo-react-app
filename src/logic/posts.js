@@ -49,7 +49,9 @@ export class PostsDB {
           const post = cursor.value;
           if (post.inReplyTo === null && post.deletedAt === null) {
             const fullPost = await this.getFullPostFromObjectStores(post, {postVersionsStore, imageVersionsStore, peopleStore});
-            featuredPosts.push(fullPost);
+            if (fullPost.text !== null) {
+              featuredPosts.push(fullPost);
+            }
           }
           cursor.continue();
         }
