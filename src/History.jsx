@@ -6,7 +6,6 @@ import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
 import { useContext, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid"
 import {Fragment} from 'react'
 
 import ClickableImage from './components/ClickableImage.jsx'
@@ -99,9 +98,9 @@ export default function History() {
               <dd className="whitespace-pre-line">
                 {diffWordsWithSpace(prevPost.text, postVersion.text).map(part => {
                   if (part.added) {
-                    return <ins key={uuidv4()}>{part.value}</ins>;
+                    return <ins key={crypto.randomUUID()}>{part.value}</ins>;
                   } else if (part.removed) {
-                    return <del key={uuidv4()}>{part.value}</del>;
+                    return <del key={crypto.randomUUID()}>{part.value}</del>;
                   } else {
                     return part.value;
                   }
@@ -211,9 +210,9 @@ function ImageChangeTable({key, changeType, caption, imageHashes, postVersion, p
               <td className="alt-text">
                 {diffWordsWithSpace(prevPost.imagesByHash[imageHash].altText, postVersion.imagesByHash[imageHash].altText).map(part => {
                   if (part.added) {
-                    return <ins key={uuidv4()}>{part.value}</ins>;
+                    return <ins key={crypto.randomUUID()}>{part.value}</ins>;
                   } else if (part.removed) {
-                    return <del key={uuidv4()}>{part.value}</del>;
+                    return <del key={crypto.randomUUID()}>{part.value}</del>;
                   } else {
                     return part.value;
                   }

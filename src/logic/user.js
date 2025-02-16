@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
-
 export default class UserDB {
   constructor(db) {
     this.db = db;
@@ -30,7 +28,7 @@ export default class UserDB {
   }
 
   async login() {
-    const sessionId = uuidv4();
+    const sessionId = crypto.randomUUID();
     await this.db.set('sessions', undefined, {sessionId, userName: 'testuser', startedAt: "1234"});
 
     localStorage.setItem('sessionId', sessionId);

@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
 import sha256 from '../include/sha256.js'
 
 export function getPostLoader(db) {
@@ -448,7 +447,7 @@ export class PostsDB {
     this.removeBoostsBy({boostedPostUri, boosterHandle});
 
     // Make a new boost.
-    const newPostUri = boosterHandle+'/'+uuidv4();
+    const newPostUri = boosterHandle+'/'+crypto.randomUUID();
     const createdAt = new Date().toISOString();
     const newBoostersPost = {
       uri: newPostUri,

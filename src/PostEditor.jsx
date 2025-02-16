@@ -26,7 +26,6 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import { toast } from 'react-toastify'
-import { v4 as uuidv4 } from "uuid"
 
 import DatabaseContext from './DatabaseContext.jsx'
 import { PeopleDB } from './logic/people.js'
@@ -158,8 +157,8 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 export default PostEditor;
 
 async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, conversationId, quotedPost, imageEditorRef, editingPost }) {
-  const postId = editingPost? null : uuidv4();
-  const postUri = editingPost? editingPost.uri : user.handle+'/'+uuidv4();
+  const postId = editingPost? null : crypto.randomUUID();
+  const postUri = editingPost? editingPost.uri : user.handle+'/'+crypto.randomUUID();
   const updatedAt = new Date().toISOString();
   const createdAt = editingPost? editingPost.createdAt : updatedAt;
   const canonicalUrl = "/post/"+encodeURIComponent(postUri);
