@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx';
@@ -12,8 +12,18 @@ export default function PersonName({person, link}) {
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
 
-  const isYou = (user && user.handle === person.handle);
-  const youFollowThem = (user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle);
+  const [isYou, setIsYou] = useState(false);
+  const [youFollowThem, setYouFollowThem] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const isYou = (user && user.handle === person.handle);
+
+      setIsYou(isYou);
+      setYouFollowThem((user === null || isYou)? false : await peopleDB.doesXFollowY(user.handle, person.handle));
+    })();
+  }, [user]);
+
   const onHomeServer = (person.localUserId !== null); 
 
   const personName = (

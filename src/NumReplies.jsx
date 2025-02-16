@@ -1,4 +1,4 @@
-import { forwardRef, useContext, useState, useRef, useImperativeHandle } from 'react'
+import { forwardRef, useContext, useEffect, useState, useRef, useImperativeHandle } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 
@@ -9,12 +9,29 @@ import { PostsDB } from './logic/posts.js';
 import UserContext from './UserContext.jsx'
 
 const NumReplies = forwardRef(function NumReplies(props, ref) {
-  const {post, knownReplies, setComposingReply, numReplies} = props;
+  const {post, setComposingReply, numReplies} = props;
 
   const { user } = useContext(UserContext);
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
-  const replies = knownReplies ?? postsDB.getRepliesTo(post.uri);
+
+  const language = useContext(LanguageContext);
+
+  const [myNumReplies, setMyNumReplies] = useState(numReplies);
+
+  useEffect(() => {
+    (async () => {
+      if (typeof numReplies === "undefined") {
+        setMyNumReplies(await postsDB.getNumRepliesTo(post.uri));
+      }
+    })();
+  }, []);
+
+  const numRepliesDisplay = Intl.NumberFormat(language, {
+    notation: "compact",
+    maximumFractionDigits: 1
+  }).format(numReplies ?? myNumReplies)
+
 
   const replyLinkRef = useRef();
 
@@ -25,12 +42,6 @@ const NumReplies = forwardRef(function NumReplies(props, ref) {
       },
     };
   }, []);
-
-  const language = useContext(LanguageContext);
-  const numRepliesDisplay = Intl.NumberFormat(language, {
-    notation: "compact",
-    maximumFractionDigits: 1
-  }).format(numReplies ?? replies.length);
 
   const iconAndNumber = (<>
     <span className="num-replies-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span> {" "}

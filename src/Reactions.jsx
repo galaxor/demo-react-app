@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 import DatabaseContext from './DatabaseContext.jsx'
@@ -17,29 +17,26 @@ export default function Reactions({post, onReact}) {
   // But we also add total (a number).
   // And we add youToo (a boolean), true if you reacted this react.
 
-  const db = useContext(DatabaseContext);
-  const postsDB = new PostsDB(db);
-  const initialReactionTotals = postsDB.getReactionsTo(post.uri);
-
   const { user } = useContext(UserContext);
 
   // We're going to make the totals into a state variable so you can change them by clicking.
   // We have to pass it to the <Reaction> component, because that's what you'll be clicking on.
-  const [reactionTotals, setReactionTotals] = useState(initialReactionTotals);
+  const [reactionTotals, setReactionTotals] = useState([]);
 
-  const [yourReactions, setYourReactions] = useState();
+  const [yourReactions, setYourReactions] = useState([]);
 
-  // When we change users or load the page for the first time, the state won't
-  // have any opinion on whether we were among the people who set these
-  // reactions.  In that case, get it from the database.
-  // But if we have been on the page long enough to have pushed some buttons,
-  // don't read the database, read the state.
-  // (but also, when we push buttons, we'll refresh from the database after updating it).
-  const reactionButtonStates = typeof yourReactions === "undefined"?
-    ( user? postsDB.getReactionsByPerson(user.handle, post.uri) : [] )
-    :
-    yourReactions
-  ;
+  const db = useContext(DatabaseContext);
+
+  useEffect(() => {
+    (async () => {
+      const postsDB = new PostsDB(db);
+      const reactionTotals = await postsDB.getReactionsTo(post.uri);
+      const yourReactions = await postsDB.getReactionsByPerson(user.handle, post.uri);
+
+      setReactionTotals(reactionTotals);
+      setYourReactions(yourReactions);
+    })();
+  }, [user]);
 
   const htmlId = encodeURIComponent(post.uri)+'-reactions';
   return (
@@ -50,7 +47,7 @@ export default function Reactions({post, onReact}) {
             <Reaction post={post} reaction={reaction} 
               reactionTotals={reactionTotals} 
               setReactionTotals={setReactionTotals}
-              yourReactions={reactionButtonStates}
+              yourReactions={yourReactions}
               setYourReactions={setYourReactions}
               onReact={onReact}
             />
@@ -63,7 +60,7 @@ export default function Reactions({post, onReact}) {
               post={post} 
               reactionTotals={reactionTotals} 
               setReactionTotals={setReactionTotals}
-              yourReactions={reactionButtonStates}
+              yourReactions={yourReactions}
               setYourReactions={setYourReactions}
               onReact={onReact}
             />

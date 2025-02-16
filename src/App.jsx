@@ -57,7 +57,8 @@ function App({dbConnection}) {
     (async () => {
       const db = await dbConnection.open();
       const userDB = new UserDB(db);
-      setUser(userDB.loggedInUser());
+      const user = await userDB.loggedInUser();
+      setUser(user);
 
       setAppContents (
         <>
@@ -91,6 +92,6 @@ function App({dbConnection}) {
 
 export default App;
 
-function AppLoadig() {
+function AppLoading() {
   return <>App loading...</>;
 }

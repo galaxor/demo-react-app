@@ -36,10 +36,12 @@ class Database {
       boosts.createIndex("booster", "booster");
       boosts.createIndex("boostersPost", "boostersPost");
       boosts.createIndex("boostedPost", "boostedPost");
+      boosts.createIndex("booster,boostedPost", ["booster", "boostedPost"]);
       
       const follows = db.createObjectStore("follows", { autoIncrement: true });
       follows.createIndex("follower", "follower");
       follows.createIndex("followed", "followed");
+      follows.createIndex("follower,followed", ["follower", "followed"]);
 
       const images = db.createObjectStore("images", { keyPath: "hash" });
 
@@ -77,6 +79,7 @@ class Database {
       reactions.createIndex("reactorHandle", "reactorHandle");
       reactions.createIndex("reactingTo", "reactingTo");
       reactions.createIndex("createdAt", "createdAt");
+      reactions.createIndex("reactorHandle,reactingTo", ["reactorHandle", "reactingTo"]);
 
       fillTestData(db, transaction);
     }
@@ -136,6 +139,25 @@ class Database {
       return await new Promise(resolve => {
         getRequest.onsuccess = event => {
           transaction.commit();
+          resolve(event.target.result);
+        };
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "DataError") {
+        // The data didn't exist. No big deal.
+        return undefined;
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  // Get an object from an already-open object store.
+  async getFromObjectStore(objectStore, key) {
+    try {
+      const getRequest = objectStore.get(key);
+      return await new Promise(resolve => {
+        getRequest.onsuccess = event => {
           resolve(event.target.result);
         };
       });

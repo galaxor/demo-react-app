@@ -18,7 +18,14 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
   const [composingReply, setComposingReply] = useState(false);
   const [editingPost, setEditingPost] = useState(false);
 
-  const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(post.uri));
+  const [numReplies, setNumReplies] = useState(0);
+  
+  useEffect(() => {
+    (async () => {
+      setNumReplies(await postsDB.getNumRepliesTo(post.uri));
+    })();
+  }, []);
+    
   
 
   return (

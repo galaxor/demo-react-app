@@ -1,7 +1,7 @@
 import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import DatabaseContext from './DatabaseContext.jsx';
@@ -29,9 +29,6 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
 
   const { user } = useContext(UserContext);
 
-  const db = useContext(DatabaseContext);
-  const peopleDB = new PeopleDB(db);
-
   // Important states to note, so the user can make decisions about how much
   // they trust this user.
   // Things to note:
@@ -43,7 +40,6 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   // this, Pam 2 said that".
 
   const isYou = (user && user.handle === person.handle);
-  const youFollowThem = (user === null || isYou)? false : peopleDB.doesXFollowY(user.handle, person.handle);
   const onHomeServer = (person.localUserId !== null); 
 
   return (
@@ -64,14 +60,34 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
                   <FontAwesomeIcon title="From this server" icon={icons.house} />
                 </span>
               } {" "}
-              {youFollowThem && <span className="trust-you-follow-them" aria-label="You follow them">
-                  <FontAwesomeIcon title="You follow them" icon={icons.flag} />
-                </span>
-              }
+              <DoYouFollowThem follower={user.handle} followed={person.handle} />
             </span>
           </span>
         </div>
       </div>
     </Link>
   );
+}
+
+function DoYouFollowThem({follower, followed}) {
+  const [youFollowThem, setYouFollowThem] = useState("");
+  const { user } = useContext(UserContext);
+  const isYou = (user && user.handle === followed);
+
+  const db = useContext(DatabaseContext);
+  const peopleDB = new PeopleDB(db);
+
+  useEffect(() => {
+    (async () => {
+      const youFollowThem = (user === null || isYou)? false : await peopleDB.doesXFollowY(user.handle, followed);
+      if (youFollowThem) {
+        setYouFollowThem(<span className="trust-you-follow-them" aria-label="You follow them">
+            <FontAwesomeIcon title="You follow them" icon={icons.flag} />
+          </span>
+        );
+      }
+    })();
+  }, [user]);
+
+  return youFollowThem;
 }

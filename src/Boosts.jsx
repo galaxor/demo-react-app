@@ -15,38 +15,17 @@ export default function Boosts({post, onBoost}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  function getNumBoosts() { return postsDB.getNumberOfBoostsOf(post.uri); }
-  function getNumYourBoosts() { return user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0; }
-
-  function getNumQuoteBoosts() { return postsDB.getNumberOfQuoteBoostsOf(post.uri); }
-  function getNumYourQuoteBoosts() { return user? postsDB.getNumberOfQuoteBoostsOf(post.uri, {by: user.handle}) : 0; }
-
-  const [numBoosts, setNumBoosts] = useState(getNumBoosts());
-  const [numYourBoosts, setNumYourBoosts] = useState(getNumYourBoosts());
-
-  const [numQuoteBoosts, setNumQuoteBoosts] = useState(getNumQuoteBoosts());
-  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(getNumYourQuoteBoosts());
+  const [numYourBoosts, setNumYourBoosts] = useState(0);
+  const [numYourQuoteBoosts, setNumYourQuoteBoosts] = useState(0);
 
   useEffect(() => {
-    setNumBoosts(getNumBoosts());
-    setNumYourBoosts(getNumYourBoosts());
-
-    setNumQuoteBoosts(getNumQuoteBoosts());
-    setNumYourQuoteBoosts(getNumYourQuoteBoosts());
-  }, [user, setNumBoosts, setNumYourBoosts, setNumQuoteBoosts, setNumYourQuoteBoosts]);
+    (async () => {
+      setNumYourBoosts(await postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}));
+      setNumYourQuoteBoosts(await postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}));
+    })();
+  }, [user]);
 
   const htmlId = encodeURIComponent(post.uri)+'-boosts';
-
-  const language = useContext(LanguageContext);
-  const numBoostsDisplay = Intl.NumberFormat(language, {
-    notation: "compact",
-    maximumFractionDigits: 1
-  }).format(numBoosts);
-
-  const numQuoteBoostsDisplay = Intl.NumberFormat(language, {
-    notation: "compact",
-    maximumFractionDigits: 1
-  }).format(numQuoteBoosts);
 
   return (
     <>
@@ -58,12 +37,12 @@ export default function Boosts({post, onBoost}) {
         }}>
           <span className="visually-hidden">Boost this post</span>
           <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
-          <span className="total">{numBoostsDisplay}</span>
+          <span className="total"><NumBoosts uri={post.uri} /></span>
         </Button>
         :
         <div className="stat">
           <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}
-          <span className="total">{numBoostsDisplay}</span>
+          <span className="total"><NumBoosts uri={post.uri} /></span>
         </div>
       }
         
@@ -74,17 +53,43 @@ export default function Boosts({post, onBoost}) {
           <Button variant={numYourQuoteBoosts > 0? "flat" : "light"} as={Link2} href={"/quote-boost/"+encodeURIComponent(post.uri)}>
             <span className="visually-hidden">Quote-boost this post</span>
             <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon text-background"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
-            <span className="total">{numQuoteBoostsDisplay}</span>
+            <span className="total"><NumBoosts uri={post.uri} quote={true} /></span>
           </Button>
         :
         <div className="stat relative">
           <span className="icon" aria-label="Quote Boosts"><span className="quoteboost-boost-icon quoteboost-boost-icon-logged-out text-background"><FontAwesomeIcon icon={icons.repeat} size="2xs" /></span><span className="quoteboost-comment-icon"><FontAwesomeIcon icon={icons.comment} size="lg" /></span></span> {" "}
-          <span className="total">{numQuoteBoostsDisplay}</span>
+          <span className="total"><NumBoosts uri={post.uri} quote={true} /></span>
         </div>
       }
     </li>
     </>
   );
+}
+
+function NumBoosts({uri, quote}) {
+  const [numBoosts, setNumBoosts] = useState("?");
+  const language = useContext(LanguageContext);
+
+  const db = useContext(DatabaseContext);
+  const postsDB = new PostsDB(db);
+
+  useEffect(() => {
+    (async () => {
+      const numBoosts = quote?
+        await postsDB.getNumberOfQuoteBoostsOf(uri)
+        : await postsDB.getNumberOfBoostsOf(uri)
+      ;
+
+      const numBoostsDisplay = Intl.NumberFormat(language, {
+        notation: "compact",
+        maximumFractionDigits: 1
+      }).format(numBoosts);
+
+      setNumBoosts(numBoostsDisplay);
+    })();
+  }, []);
+
+  return numBoosts;
 }
 
 function clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts}) {

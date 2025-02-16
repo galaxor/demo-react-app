@@ -1,6 +1,6 @@
 import { Button } from "@nextui-org/button"
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card"
-import { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink } from 'react-router-dom'
 import { useNavigate } from "react-router"
@@ -95,12 +95,23 @@ const Post = forwardRef(function Post2(props, ref) {
     </> );
   }
 
-  const replyingToPost = showReplyBanner && post.inReplyTo? postsDB.get(post.inReplyTo) : null;
+  const [replyingToPost, setReplyingToPost] = useState(null);
+  useEffect(() => {
+    (async () => {
+      setReplyingToPost(showReplyBanner && post.inReplyTo? await postsDB.get(post.inReplyTo) : null);
+    })();
+  }, []);
+
 
   // We're using ReactTimeAgo in the markup, but plain javascript-time-ago in the aria.
   const timeAgo = new TimeAgo(languageContext);
 
   const navigate = useNavigate();
+
+  if (replyingToPost && replyingToPost.authorPerson.handle === null) {
+    console.log("Bad post", post);
+    throw new Error("Bad post");
+  }
 
   const thePost = post.deletedAt !== null? <TombstonePost/>
     :(<>

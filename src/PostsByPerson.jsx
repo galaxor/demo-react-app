@@ -19,7 +19,7 @@ export default function PostsByPerson({showReplies}) {
     (async () => {
       const db = await dbConnection.open();
       const postsDB = new PostsDB(db);
-      const theirPosts = postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
+      const theirPosts = await postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
       setTheirPosts(<PostsList posts={theirPosts} />);
     })();
   }, [showBoosts]);

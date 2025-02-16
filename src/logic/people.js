@@ -42,8 +42,19 @@ export class PeopleDB {
     return followsPerson;
   }
 
-  doesXFollowY(xHandle, yHandle) {
-    return this.db.get('follows').filter(([x, y]) => x === xHandle && y === yHandle).length > 0;
+  async doesXFollowY(xHandle, yHandle) {
+    const transaction = this.db.db.transaction("follows");
+    const followsStore = transaction.objectStore("follows");
+    return await new Promise(resolve => {
+      try {
+        followsStore.index("follower,followed").get([xHandle, yHandle]).onsuccess = event => {
+          if (event.target.result) { resolve(true); }
+          else { resolve(false); }
+        };
+      } catch(e) {
+        throw new Error(`Dnt meet rq ${xHandle}, ${yHandle}`);
+      }
+    });
   }
 
   follow(personWhoFollows, personWhoIsFollowed) {
