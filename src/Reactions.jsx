@@ -31,7 +31,7 @@ export default function Reactions({post, onReact}) {
     (async () => {
       const postsDB = new PostsDB(db);
       const reactionTotals = await postsDB.getReactionsTo(post.uri);
-      const yourReactions = await postsDB.getReactionsByPerson(user.handle, post.uri);
+      const yourReactions = user? await postsDB.getReactionsByPerson(user.handle, post.uri) : [];
 
       setReactionTotals(reactionTotals);
       setYourReactions(yourReactions);

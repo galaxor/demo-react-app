@@ -1,29 +1,36 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import DatabaseContext from './DatabaseContext.jsx';
 
-import PopularPostsDB from './logic/popularPosts.js';
+import { PostsDB } from './logic/posts.js';
 
 import PostsList from './PostsList.jsx';
 
 export default function PopularFeed() {
   const db = useContext(DatabaseContext);
-  const popularPostsDB = new PopularPostsDB(db);
+  const postsDB = new PostsDB(db);
 
-  const [postsForDisplay, setPostsForDisplay] = useState(null);
+  const [postsList, setPostsList] = useState(<PostsListLoading />);
 
-  if (!postsForDisplay) {
-    const postsForDisplay = popularPostsDB.getAll();
-    setPostsForDisplay(postsForDisplay);
-  }
-
+  useEffect(() => {
+    (async () => {
+      const posts = await postsDB.getFeaturedPosts();
+      console.log("popsts", posts);
+      setPostsList(<PostsList posts={posts} />);
+    })();
+  }, []);
+  
   return (
     <main>
-      <h1 id="featured-feed">Popular Posts</h1>
+      <h1 id="featured-feed">All Posts</h1>
 
       <div role="feed">
-        <PostsList posts={postsForDisplay} />
+        {postsList}
       </div>
     </main>
   );
+}
+
+function PostsListLoading() {
+  return <>Loading posts...</>;
 }

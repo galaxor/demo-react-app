@@ -20,8 +20,10 @@ export default function Boosts({post, onBoost}) {
 
   useEffect(() => {
     (async () => {
-      setNumYourBoosts(await postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}));
-      setNumYourQuoteBoosts(await postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}));
+      if (user) {
+        setNumYourBoosts(await postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}));
+        setNumYourQuoteBoosts(await postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}));
+      }
     })();
   }, [user]);
 

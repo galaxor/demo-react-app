@@ -61,7 +61,7 @@ export default function PostDetailsMenu({post, onDelete, editingPost, setEditing
   } = useDisclosure();
 
   return (<>
-    {(user !== null && post.authorPerson.handle === user.handle)?
+    {(user && post.authorPerson.handle === user.handle)?
       <DeletePostModal isOpen={deleteModalIsOpen} onOpen={deleteModalOnOpen} onOpenChange={deleteModalOnOpenChange} post={post} onDelete={onDelete} />
       : ""
     }
@@ -76,7 +76,7 @@ export default function PostDetailsMenu({post, onDelete, editingPost, setEditing
         onAction={getDropdownAction(originalLink, deleteModalOnOpen, setEditingPost)}
         disabledKeys={[editingPost? 'edit-post' : '', post.createdAt===post.updatedAt? 'history' : '']}
       >
-      {(user !== null && post.authorPerson.handle === user.handle)?
+      {(user && post.authorPerson.handle === user.handle)?
         <DropdownSection showDivider>
          <DropdownItem key="edit-post" textValue="Edit Post">Edit Post</DropdownItem>
          <DropdownItem key="delete-post" textValue="Delete Post" className="text-danger">Delete Post</DropdownItem>

@@ -60,7 +60,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
                   <FontAwesomeIcon title="From this server" icon={icons.house} />
                 </span>
               } {" "}
-              <DoYouFollowThem follower={user.handle} followed={person.handle} />
+              {user? <DoYouFollowThem follower={user.handle} followed={person.handle} /> : ""}
             </span>
           </span>
         </div>

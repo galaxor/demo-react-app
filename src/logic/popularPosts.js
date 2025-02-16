@@ -8,8 +8,7 @@ class PopularPostsDB {
     this.postsDB = new PostsDB(db);
   }
 
-  getAll() {
-
+  async getFeaturedPosts() {
     const allPosts = Object.values(this.db.get('posts'))
       .map(post => { return {...post, ... this.db.get('postVersions', post.uri)[post.updatedAt]}; })
       .filter(post => post.inReplyTo === null && post.text !== null && post.deletedAt === null)

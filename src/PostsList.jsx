@@ -7,7 +7,7 @@ import PostAndYourNewReplies from './PostAndYourNewReplies.jsx'
 export default function PostsList({posts}) {
   const listRef = useRef(null);
 
-  // Make it so when you click a post, you go to its PostSingle page.
+  // Make it so when you click a post, you go to its Thread page.
   useEffect(() => {
     const clickablePosts = listRef.current.querySelectorAll('article.post > div.post')
 

@@ -29,6 +29,34 @@ export class PostsDB {
     ;
   }
 
+  async getFeaturedPosts() {
+    const transaction = this.db.db.transaction(["posts", "postVersions", "imageVersions", "people", "boosts"]);
+    const postsStore = transaction.objectStore("posts");
+    const postVersionsStore = transaction.objectStore("postVersions");
+    const imageVersionsStore = transaction.objectStore("imageVersions");
+    const peopleStore = transaction.objectStore("people");
+    const boostsStore = transaction.objectStore("boosts");
+
+    return new Promise(resolve => {
+      const featuredPosts = [];
+      postsStore.openCursor().onsuccess = async event => {
+        const cursor = event.target.result;
+
+        if (cursor === null) {
+          featuredPosts.sort((a, b) => a.updatedAt === b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : -1));
+          resolve(featuredPosts);
+        } else {
+          const post = cursor.value;
+          if (post.inReplyTo === null && post.deletedAt === null) {
+            const fullPost = await this.getFullPostFromObjectStores(post, {postVersionsStore, imageVersionsStore, peopleStore});
+            featuredPosts.push(fullPost);
+          }
+          cursor.continue();
+        }
+      };
+    });
+  }
+
   async getBoostedPostsFromObjectStore(uri, {boostsStore, peopleStore, postVersionsStore, imageVersionsStore}) {
     return await new Promise(resolve => {
       const boostedPosts = [];
