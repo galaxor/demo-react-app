@@ -19,16 +19,29 @@ class Database {
 
   async open() {
     this.db = await this.openPromise;
+
+    // See if the test data is filled.  If not, await fillTestData, which will set the "test data is filled" flag when it's done.
+    const transaction = this.db.transaction("testDataFilled");
+    const testDataFilledStore = transaction.objectStore("testDataFilled");
+
+    const isDataFull = new Promise(async resolve => {
+      testDataFilledStore.count().onsuccess = event => {
+        resolve(event.target.result > 0);
+      };
+    });
+
+    if (!(await isDataFull)) {
+      await fillTestData(this.db);
+    }
     return this;
   }
 
-  onUpgradeNeeded(event) {
+  async onUpgradeNeeded(event) {
     const db = event.target.result;
     const transaction = event.target.transaction;
 
     if (event.oldVersion < 1 && event.newVersion >= 1) {
       // Brand new database.  Initialize it.
-      db.onerror = e => console.error("Error initializing database", e);
       const accounts = db.createObjectStore("accounts", { keyPath: "userName" });
       accounts.createIndex("handle", "handle");
 
@@ -81,7 +94,7 @@ class Database {
       reactions.createIndex("createdAt", "createdAt");
       reactions.createIndex("reactorHandle,reactingTo", ["reactorHandle", "reactingTo"]);
 
-      fillTestData(db, transaction);
+      const testDataFilled = db.createObjectStore("testDataFilled", { keyPath: "ok" });
     }
   }
 

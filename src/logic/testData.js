@@ -1,3 +1,5 @@
+import sha256 from '../include/sha256.js'
+
 // In case we're deployed in a subdirectory.
 // Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.
 // The BASE_URL here will be set by vite.config.js, either when running the dev
@@ -59,7 +61,7 @@ const testData = {
       bio: "I love testing websites!",
 
       avatar: prefix+'/puppy-avatar.png',
-      avatarOrig: '/puppy.jpg',
+      avatarOrig: prefix+'/puppy.jpg',
       avatarAltText: "A cute puppy",
       avatarPosition: { x: 0.5360000000000001, y: 0.42666666666666675 },
       avatarRotate: 0,
@@ -447,58 +449,88 @@ const testData = {
 };
 
 // Filling the database with initial test data.
-export default function fillTestData(db, transaction) {
-  const accountsStore = transaction.objectStore("accounts");
-  for (const [userName, account] of Object.entries(testData.accounts)) {
-    accountsStore.add({userName, handle: account.handle});
-  }
+export default async function fillTestData(db) {
+  const transaction = db.transaction(["accounts", "follows", "postVersions", "posts", "imageVersions", "boosts", "reactions"], "readwrite");
 
-  const peopleStore = transaction.objectStore("people");
-  for (const person of Object.values(testData.people)) {
-    peopleStore.add(person);
-  }
-
-  const followsStore = transaction.objectStore("follows");
-  for (const [follower, followed] of testData.follows) {
-    followsStore.add({follower, followed});
-  }
-
-  const postVersionsStore = transaction.objectStore("postVersions");
-  for (const versionsOfPost of Object.values(testData.postVersions)) {
-    for (const postVersion of Object.values(versionsOfPost)) {
-      postVersionsStore.add(postVersion);
+  return new Promise(async resolve => {
+    const accountsStore = transaction.objectStore("accounts");
+    for (const [userName, account] of Object.entries(testData.accounts)) {
+      accountsStore.add({userName, handle: account.handle});
     }
-  }
 
-  const postsStore = transaction.objectStore("posts");
-  for (const post of Object.values(testData.posts)) {
-    postsStore.add(post);
-  }
+    const followsStore = transaction.objectStore("follows");
+    for (const [follower, followed] of testData.follows) {
+      followsStore.add({follower, followed});
+    }
 
-  // XXX do something special for images.
-
-  const imageVersionsStore = transaction.objectStore("imageVersions");
-  for (const [postUri, imageVersions] of Object.entries(testData.imageVersions)) {
-    for (const [updatedAt, imageVersion] of Object.entries(imageVersions)) {
-      for (const [fileName, imageVersionData] of Object.entries(imageVersion)) {
-        const fullImageVersion = {...imageVersionData, fileName, updatedAt, postUri, imageHash: imageVersionData.image};
-        delete fullImageVersion.image;
-        imageVersionsStore.add(fullImageVersion);
+    const postVersionsStore = transaction.objectStore("postVersions");
+    for (const versionsOfPost of Object.values(testData.postVersions)) {
+      for (const postVersion of Object.values(versionsOfPost)) {
+        postVersionsStore.add(postVersion);
       }
     }
-  }
 
-  const boostsStore = transaction.objectStore("boosts");
-  for (const boost of testData.boosts) {
-    boostsStore.add(boost);
-  }
+    const postsStore = transaction.objectStore("posts");
+    for (const post of Object.values(testData.posts)) {
+      postsStore.add(post);
+    }
 
-  const reactionsStore = transaction.objectStore("reactions");
-  for (const reaction of testData.reactions) {
-    reactionsStore.add(reaction);
-  }
+    // XXX do something special for images.
 
-  return new Promise(resolve => {
-    transaction.oncomplete = event => resolve();
+    const imageVersionsStore = transaction.objectStore("imageVersions");
+    for (const [postUri, imageVersions] of Object.entries(testData.imageVersions)) {
+      for (const [updatedAt, imageVersion] of Object.entries(imageVersions)) {
+        for (const [fileName, imageVersionData] of Object.entries(imageVersion)) {
+          const fullImageVersion = {...imageVersionData, fileName, updatedAt, postUri, imageHash: imageVersionData.image};
+          delete fullImageVersion.image;
+          imageVersionsStore.add(fullImageVersion);
+        }
+      }
+    }
+
+    const boostsStore = transaction.objectStore("boosts");
+    for (const boost of testData.boosts) {
+      boostsStore.add(boost);
+    }
+
+    const reactionsStore = transaction.objectStore("reactions");
+    for (const reaction of testData.reactions) {
+      reactionsStore.add(reaction);
+    }
+
+    // Every time we await, the transaction will be closed when we come back, so
+    // we need a new transaction.
+    for (const person of Object.values(testData.people)) {
+      if (person.avatar !== null) {
+        const response = await fetch(person.avatar);
+        if (response.ok) {
+          const blob = await response.blob();
+          const imageBuffer = await blob.arrayBuffer();
+          const hash = await sha256(imageBuffer);
+
+          person.avatar = hash;
+
+          const imgTransaction = db.transaction("images", "readwrite");
+          const imagesStore = imgTransaction.objectStore("images");
+
+          await imagesStore.put({hash, imageBlob: blob});
+
+          const peopleTransaction = db.transaction("people", "readwrite");
+          const peopleStore = peopleTransaction.objectStore("people");
+          await peopleStore.add(person);
+        }
+      } else {
+        const peopleTransaction = db.transaction("people", "readwrite");
+        const peopleStore = peopleTransaction.objectStore("people");
+        peopleStore.add(person);
+      }
+    }
+
+    const testDataFilledTransaction = db.transaction("testDataFilled", "readwrite");
+    const testDataFilledStore = testDataFilledTransaction.objectStore("testDataFilled");
+
+    testDataFilledStore.add({ok:1}).onsuccess = event => {
+      resolve();
+    };
   });
 }
