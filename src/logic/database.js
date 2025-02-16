@@ -184,6 +184,28 @@ class Database {
     }
   }
 
+  async getImageObjectUrl(imageHash) {
+    const transaction = this.db.transaction("images");
+    const imagesStore = transaction.objectStore("images");
+    try {
+      return await new Promise(resolve => {
+        imagesStore.get(imageHash).onsuccess = event => {
+          const imageRow = event.target.result;
+          const objectUrl = URL.createObjectURL(imageRow.imageBlob);
+          resolve(objectUrl);
+        };
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "DataError") {
+        // The data didn't exist. No big deal.
+        return undefined;
+      } else {
+        throw error;
+      }
+    }
+  }
+
+
   async set(tableName, key, value) {
     const transaction = this.db.transaction(tableName, "readwrite", {durability: "strict"});
     const table = transaction.objectStore(tableName);

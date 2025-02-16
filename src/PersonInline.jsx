@@ -1,9 +1,8 @@
-import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import hashSum from 'hash-sum'
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import Avatar from './components/Avatar.jsx'
 import DatabaseContext from './DatabaseContext.jsx';
 import icons from './icons.js'
 import UserContext from './UserContext.jsx';
@@ -25,8 +24,6 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   // display name, but have some kind of tooltip to say what server they're
   // from.
 
-  const avatarFallbackColor = hashSum(person.handle).substring(0,6).toUpperCase();
-
   const { user } = useContext(UserContext);
 
   // Important states to note, so the user can make decisions about how much
@@ -45,10 +42,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   return (
     <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
       <div className="flex gap-2">
-        <Avatar isBordered radius="full" size="md" className="shrink-0" src={person.avatar} name={person.displayName} 
-          style={{'--avatar-bg': '#'+avatarFallbackColor}}
-          classNames={{base: "bg-[--avatar-bg]"}}
-        />
+        <Avatar name={person.displayName} handle={person.handle} imageHash={person.avatar} />
         {" "}
         <div className="name-handle flex flex-col items-start justify-center">
           <bdi className="p-name">{person.displayName}</bdi> {" "}
