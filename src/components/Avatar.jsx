@@ -8,26 +8,14 @@ export default function Avatar({imageHash, handle, name}) {
   const db = useContext(DatabaseContext);
 
   const [imgSrc, setImgSrc] = useState("");
-  const [urlsToRevoke, setUrlsToRevoke] = useState([]);
   
   useEffect(() => {
     (async () => {
-      if (imgSrc === "" && typeof imageHash !== "undefined") {
-        const objUrl = await db.getImageObjectUrl(imageHash);
-        setImgSrc(objUrl);
-        setUrlsToRevoke([...urlsToRevoke, objUrl]);
+      if (typeof imageHash !== "undefined" && imageHash !== null) {
+        setImgSrc(await db.getImageDataUrl(imageHash));
       }
     })();
   }, []);
-
-  useEffect(() => {
-    if (urlsToRevoke.length > 0) {
-      for (const objUrl of urlsToRevoke) {
-        URL.revokeObjectURL(objUrl);
-      }
-      setUrlsToRevoke([]);
-    }
-  }, [urlsToRevoke]);
   
   const avatarFallbackColor = hashSum(handle).substring(0,6).toUpperCase();
 

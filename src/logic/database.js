@@ -184,15 +184,19 @@ class Database {
     }
   }
 
-  async getImageObjectUrl(imageHash) {
+  async getImageDataUrl(imageHash) {
     const transaction = this.db.transaction("images");
     const imagesStore = transaction.objectStore("images");
     try {
       return await new Promise(resolve => {
         imagesStore.get(imageHash).onsuccess = event => {
           const imageRow = event.target.result;
-          const objectUrl = URL.createObjectURL(imageRow.imageBlob);
-          resolve(objectUrl);
+
+          const fileReader = new FileReader()
+          fileReader.onload = event => {
+            resolve(event.target.result);
+          };
+          fileReader.readAsDataURL(imageRow.imageBlob);
         };
       });
     } catch (error) {
