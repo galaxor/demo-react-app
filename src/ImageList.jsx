@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Link as Link2 } from "@nextui-org/link"
 import { useDisclosure } from "@nextui-org/use-disclosure"
@@ -13,15 +13,19 @@ export default function ImageList({post}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const imageBucket = postsDB.getImagesForPost(post.uri, post.updatedAt);
+  const [imageBucket, setImageBucket] = useState({});
+
+  useEffect(() => {
+    (async () => setImageBucket(await postsDB.getImagesForPost(post.uri, post.updatedAt) ?? {}))();
+  }, []);
 
   if (!imageBucket || Object.keys(imageBucket).length <= 0) { return ""; }
 
   return (
     <div className="post-images">
       <ul className={"post-images "+(Object.keys(imageBucket).length > 1? "grid grid-cols-2" : "")}>
-        {Object.entries(imageBucket).map(([fileName, {data: imageData, altText, altTextLang}]) => {
-          return ( <li key={fileName}><ClickableImage fileName={fileName} imageData={imageData} altTextLang={altTextLang} altText={altText} /></li> );
+        {Object.entries(imageBucket).map(([fileName, {image: imageHash, altText, altTextLang}]) => {
+          return ( <li key={fileName}><ClickableImage fileName={fileName} imageHash={imageHash} altTextLang={altTextLang} altText={altText} /></li> );
         })}
       </ul>
     </div>

@@ -638,7 +638,49 @@ export class PostsDB {
     this.db.set('imageVersions', postUri, dbImages);
   }
 
-  getImagesForPost(postUri, versionUpdatedAt) {
+  async getImagesForPost(postUri, versionUpdatedAt) {
+    const transaction = this.db.db.transaction(["posts", "imageVersions", "images"]);
+    const postsStore = transaction.objectStore("posts");
+    const imageVersionsStore = transaction.objectStore("imageVersions");
+    const imagesStore = transaction.objectStore("images");
+
+    return new Promise(resolve => {
+      try {
+        postsStore.get(postUri).onsuccess = event => {
+          const post = event.target.result;
+          if (post.deletedAt !== null) {
+            resolve({});
+          } else {
+            try {
+              imageVersionsStore.get([postUri, versionUpdatedAt]).onsuccess = event => {
+                const imageVersion = event.target.result;
+                if (typeof imageVersion === "undefined") {
+                  return {};
+                } else {
+                  console.log("Returning", imageVersion.files);
+                  resolve(imageVersion.files);
+                }
+              };
+            } catch (error) {
+              if (error instanceof DOMException && error.name === "DataError") {
+                // The data didn't exist. No big deal.
+                return undefined;
+              } else {
+                throw error;
+              }
+            }
+          }
+        };
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "DataError") {
+          // The data didn't exist. No big deal.
+          return undefined;
+        } else {
+          throw error;
+        }
+      }
+    });
+
     const {latestUpdatedAt, deletedAt} = this.db.get('posts', postUri);
     if (deletedAt !== null) {
       return {};

@@ -480,11 +480,8 @@ export default async function fillTestData(db) {
     const imageVersionsStore = transaction.objectStore("imageVersions");
     for (const [postUri, imageVersions] of Object.entries(testData.imageVersions)) {
       for (const [updatedAt, imageVersion] of Object.entries(imageVersions)) {
-        for (const [fileName, imageVersionData] of Object.entries(imageVersion)) {
-          const fullImageVersion = {...imageVersionData, fileName, updatedAt, postUri, imageHash: imageVersionData.image};
-          delete fullImageVersion.image;
-          imageVersionsStore.add(fullImageVersion);
-        }
+        const fullImageVersion = {files: imageVersion, updatedAt, postUri};
+        imageVersionsStore.add(fullImageVersion);
       }
     }
 

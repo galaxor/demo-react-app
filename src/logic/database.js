@@ -61,8 +61,6 @@ class Database {
       const imageVersions = db.createObjectStore("imageVersions", { keyPath: ["postUri", "updatedAt"] });
       imageVersions.createIndex("postUri", "postUri");
       imageVersions.createIndex("updatedAt", "updatedAt");
-      imageVersions.createIndex("fileName", "fileName");
-      imageVersions.createIndex("imageHash", "imageHash");
 
       const sessions = db.createObjectStore("sessions", { keyPath: "sessionId" });
       sessions.createIndex("userName", "userName");
@@ -192,11 +190,15 @@ class Database {
         imagesStore.get(imageHash).onsuccess = event => {
           const imageRow = event.target.result;
 
-          const fileReader = new FileReader()
-          fileReader.onload = event => {
-            resolve(event.target.result);
-          };
-          fileReader.readAsDataURL(imageRow.imageBlob);
+          if (typeof imageRow === "undefined") {
+            resolve({});
+          } else {
+            const fileReader = new FileReader()
+            fileReader.onload = event => {
+              resolve(event.target.result);
+            };
+            fileReader.readAsDataURL(imageRow.imageBlob);
+          }
         };
       });
     } catch (error) {
