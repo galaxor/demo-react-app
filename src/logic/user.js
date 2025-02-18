@@ -21,6 +21,7 @@ export default class UserDB {
       const person = await this.db.get('people', account.handle);
 
       person.session = session;
+
       return person;
     } else {
       return null;
@@ -29,7 +30,7 @@ export default class UserDB {
 
   async login() {
     const sessionId = crypto.randomUUID();
-    await this.db.set('sessions', undefined, {sessionId, userName: 'testuser', startedAt: "1234"});
+    await this.db.set('sessions', {sessionId, userName: 'testuser', startedAt: "1234"});
 
     localStorage.setItem('sessionId', sessionId);
 
