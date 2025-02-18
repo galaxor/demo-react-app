@@ -657,7 +657,6 @@ export class PostsDB {
                 if (typeof imageVersion === "undefined") {
                   return {};
                 } else {
-                  console.log("Returning", imageVersion.files);
                   resolve(imageVersion.files);
                 }
               };

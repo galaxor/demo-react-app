@@ -518,7 +518,6 @@ export default async function fillTestData(db) {
             const blob = await response.blob();
             const imageBuffer = await blob.arrayBuffer();
             const hash = await sha256(imageBuffer);
-            console.log("hash??", hash);
 
             const imgTransaction = db.transaction(["images"], "readwrite");
             const imagesStore = imgTransaction.objectStore("images");
@@ -533,7 +532,6 @@ export default async function fillTestData(db) {
         const imagesStore = imgTransaction.objectStore("imageVersions");
         const imageVersionsStore = imgTransaction.objectStore("imageVersions");
         const fullImageVersion = {files: imageVersion, updatedAt, postUri};
-        console.log("Going in:", fullImageVersion);
         imageVersionsStore.add(fullImageVersion);
       }
     }

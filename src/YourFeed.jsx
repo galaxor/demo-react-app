@@ -16,7 +16,6 @@ export default function YourFeed() {
     (async () => {
       if (user) {
         const friendsPosts = await postsDB.friendsFeed(user);
-        console.log(friendsPosts);
         setPostsList(<PostsList posts={friendsPosts} />);
       }
     })();

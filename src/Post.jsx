@@ -109,7 +109,6 @@ const Post = forwardRef(function Post2(props, ref) {
   const navigate = useNavigate();
 
   if (replyingToPost && replyingToPost.authorPerson.handle === null) {
-    console.log("Bad post", post);
     throw new Error("Bad post");
   }
 

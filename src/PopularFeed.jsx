@@ -15,7 +15,6 @@ export default function PopularFeed() {
   useEffect(() => {
     (async () => {
       const posts = await postsDB.getFeaturedPosts();
-      console.log("popsts", posts);
       setPostsList(<PostsList posts={posts} />);
     })();
   }, []);
