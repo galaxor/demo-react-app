@@ -362,17 +362,11 @@ const testData = {
     },
   },
 
-  images: {
-    "5717c8b809d31df4dc8296ba2f3a9abde3b05b8742697be50cf834c5b37323b4": {
-      data: "/sayori-dating-zoning.png",
-    },
-  },
-
   imageVersions: {
     "@mittens@kittens/sayori-dating-zoning": {
       "2024-01-30T22:16:00-05:00": {
         "sayori-dating-zoning.png": {
-          image: "5717c8b809d31df4dc8296ba2f3a9abde3b05b8742697be50cf834c5b37323b4",
+          image: "/sayori-dating-zoning.png",
           altText: "Drake meme format, but with Sayori.\n\"Dating\": Sayori says no way.\n\"Rezoning your bed for higher occupancy\": Sayori says yes way, with fingerguns.",
           altTextLang: "en-US",
         },
@@ -475,16 +469,6 @@ export default async function fillTestData(db) {
       postsStore.add(post);
     }
 
-    // XXX do something special for images.
-
-    const imageVersionsStore = transaction.objectStore("imageVersions");
-    for (const [postUri, imageVersions] of Object.entries(testData.imageVersions)) {
-      for (const [updatedAt, imageVersion] of Object.entries(imageVersions)) {
-        const fullImageVersion = {files: imageVersion, updatedAt, postUri};
-        imageVersionsStore.add(fullImageVersion);
-      }
-    }
-
     const boostsStore = transaction.objectStore("boosts");
     for (const boost of testData.boosts) {
       boostsStore.add(boost);
@@ -522,6 +506,38 @@ export default async function fillTestData(db) {
         peopleStore.add(person);
       }
     }
+
+    // imageVersions.
+    for (const [postUri, imageVersions] of Object.entries(testData.imageVersions)) {
+      for (const [updatedAt, imageVersion] of Object.entries(imageVersions)) {
+        for (const [file, imageInfo] of Object.entries(imageVersion)) {
+          const imageUrl = imageInfo.image;
+
+          const response = await fetch(imageUrl);
+          if (response.ok) {
+            const blob = await response.blob();
+            const imageBuffer = await blob.arrayBuffer();
+            const hash = await sha256(imageBuffer);
+            console.log("hash??", hash);
+
+            const imgTransaction = db.transaction(["images"], "readwrite");
+            const imagesStore = imgTransaction.objectStore("images");
+
+            await imagesStore.put({hash, imageBlob: blob});
+
+            imageVersion[file].image = hash;
+          }
+        }
+
+        const imgTransaction = db.transaction(["imageVersions"], "readwrite");
+        const imagesStore = imgTransaction.objectStore("imageVersions");
+        const imageVersionsStore = imgTransaction.objectStore("imageVersions");
+        const fullImageVersion = {files: imageVersion, updatedAt, postUri};
+        console.log("Going in:", fullImageVersion);
+        imageVersionsStore.add(fullImageVersion);
+      }
+    }
+
 
     const testDataFilledTransaction = db.transaction("testDataFilled", "readwrite");
     const testDataFilledStore = testDataFilledTransaction.objectStore("testDataFilled");
