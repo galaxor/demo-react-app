@@ -9,11 +9,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import DarkModeSwitcher from './DarkModeSwitcher.jsx'
 import icons from './icons.js'
 import NotificationBell from './NotificationBell.jsx';
-import User from './logic/user.js';
 import UserContext from './UserContext.jsx';
 
 export default function UserSection({darkMode, setDarkMode}) {
-  const {user, setUser, setSessionId} = useContext(UserContext);
+  const {user, setUser, setSessionId, userDB} = useContext(UserContext);
 
   const avatarFallbackColor = user? hashSum(user.handle).substring(0,6).toUpperCase() : '000000';
 
@@ -36,7 +35,7 @@ export default function UserSection({darkMode, setDarkMode}) {
         </>
         :
         <li>
-          <Button onPress={() => { setSessionId(User.login()); setUser(User.loggedInUser()); }}
+          <Button onPress={async () => { setSessionId(await userDB.login()); setUser(await userDB.loggedInUser()); }}
             as={Link2} radius="full" color="primary" variant="solid"
             startContent={<FontAwesomeIcon icon={icons.doorOpen} />}
           >

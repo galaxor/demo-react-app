@@ -63,7 +63,7 @@ function App({dbConnection}) {
       setAppContents (
         <>
         <DatabaseContext.Provider value={db}>
-        <UserContext.Provider value={userContext}>
+        <UserContext.Provider value={{...userContext, userDB}}>
         <DarkModeContext.Provider value={[darkMode, setDarkMode]}>
         <LanguageContext.Provider value={languageContext}>
         <SystemNotificationArea />
