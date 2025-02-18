@@ -212,12 +212,11 @@ class Database {
   }
 
 
-  async set(tableName, key, value) {
+  async set(tableName, value, key) {
     const transaction = this.db.transaction(tableName, "readwrite", {durability: "strict"});
     const table = transaction.objectStore(tableName);
 
-    console.log("Trying to insert", key, value);
-    const putRequest = table.put(value, key);
+    const putRequest = typeof key === "undefined"? table.put(value) : table.put(value, key);
     return await new Promise(resolve => {
       putRequest.onsuccess = event => {
         transaction.commit();

@@ -44,7 +44,7 @@ export const SunIcon = (props) => {
 };
 
 export default function DarkModeSwitcher({darkMode, setDarkMode}) {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, userDB } = useContext(UserContext);
 
   return (
     <Switch
@@ -55,10 +55,10 @@ export default function DarkModeSwitcher({darkMode, setDarkMode}) {
         return isSelected ? <SunIcon className={className} /> : <MoonIcon className={className} />
       }}
 
-      onValueChange={light => {
+      onValueChange={async light => {
         if (user) {
           setUser({...user, darkMode: !light});
-          User.setDarkMode(!light);
+          await userDB.setDarkMode(!light);
         }
         localStorage.setItem('darkMode', JSON.stringify(!light));
         setDarkMode(!light); 

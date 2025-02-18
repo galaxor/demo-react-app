@@ -6,10 +6,10 @@ export default class UserDB {
   async setProp(prop, val) {
     const account = await this.db.get('accounts', 'testuser');
     const person = await this.db.get('people', account.handle);
-    var newPerson = {...person};
+    const newPerson = {...person};
     newPerson[prop] = val;
 
-    await this.db.set('people', account.handle, newPerson);
+    await this.db.set('people', newPerson);
     return newPerson;
   }
 
