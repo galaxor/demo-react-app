@@ -22,6 +22,7 @@ export function clickPost(e) {
     for ( ; node.nodeName !== "ARTICLE"; node = node.parentElement) { }
     const linkToClick = node.querySelector('a.post-time');
     if (linkToClick !== null) {
+      e.stopPropagation();
       linkToClick.click();
     }
   }
