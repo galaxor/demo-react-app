@@ -1,10 +1,12 @@
 import sha256 from '../include/sha256.js'
 
 export function getPostLoader(db) {
-  return ({params}) => {
+  return async ({params}) => {
+    await db.open();
+
     const postsDB = new PostsDB(db);
 
-    const post = postsDB.get(params.postUri);
+    const post = await postsDB.get(params.postUri);
 
     return { post };
   };
@@ -58,7 +60,7 @@ export class PostsDB {
     });
   }
 
-  async getBoostedPostsFromObjectStore(uri, {boostsStore, peopleStore, postVersionsStore, imageVersionsStore}) {
+  async getBoostedPostsFromObjectStore(uri, {boostsStore, postsStore, peopleStore, postVersionsStore, imageVersionsStore}) {
     return await new Promise(resolve => {
       const boostedPosts = [];
       boostsStore.index("boostersPost").openCursor(uri).onsuccess = async event => {
@@ -71,10 +73,15 @@ export class PostsDB {
           // We don't need to see the posts that the boosted posts was
           // boosting, or we could recurse forever in a long chain of boosts!
           // So, don't pass boostsStore in.
-          const boostedPost = boostedPostsCursor.value;
-          
-          const fullBoostedPost = await getFullPostFromObjectStores(boostedPost, {postVersionsStore, imageVersionsStore, peopleStore});
-          boostedPosts.push(fullBoostedPost);
+          const boostRow = boostedPostsCursor.value;
+
+          postsStore.get(boostRow.boostedPost).onsuccess = async event => {
+            const boostedPost = event.target.result;
+            if (boostedPost !== null) {
+              const fullBoostedPost = await this.getFullPostFromObjectStores(boostedPost, {postsStore, postVersionsStore, imageVersionsStore, peopleStore});
+              boostedPosts.push(fullBoostedPost);
+            }
+          }
 
           boostedPostsCursor.continue();
         }
@@ -93,7 +100,7 @@ export class PostsDB {
     const post = await this.db.getFromObjectStore(postsStore, uri);
 
     if (typeof post !== "undefined" && post.deletedAt === null) {
-      return await this.getFullPostFromObjectStores(post, {postVersionsStore, imageVersionsStore, boostsStore, peopleStore});
+      return await this.getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, boostsStore, peopleStore});
     } else {
       return this.db.nullPost();
     }
@@ -599,11 +606,11 @@ export class PostsDB {
     });
   }
 
-  async getFullPostFromObjectStores(post, {postVersionsStore, imageVersionsStore, boostsStore, peopleStore}) {
+  async getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, boostsStore, peopleStore}) {
     // Maybe they don't want the boosted posts and so they didn't pass us the
     // boosts object store.
     if (typeof boostsStore !== "undefined") {
-      post.boostedPosts = await this.getBoostedPostsFromObjectStore(post.uri, {boostsStore, peopleStore, postVersionsStore, imageVersionsStore});
+      post.boostedPosts = await this.getBoostedPostsFromObjectStore(post.uri, {postsStore, boostsStore, peopleStore, postVersionsStore, imageVersionsStore});
     }
 
     // Maybe they already have the authorPerson filled out.  

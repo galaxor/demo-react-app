@@ -18,6 +18,7 @@ import ReactTimeAgo from 'react-time-ago';
 
 export default function Thread() {
   const mainPost = useLoaderData().post;
+
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
 
