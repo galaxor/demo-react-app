@@ -20,14 +20,15 @@ export class PostsDB {
   }
 
   // Return the posts that are boosted in this post.
-  getBoostedPosts(uri) {
-    return this.db.get('boosts')
-      .filter(boostRow => boostRow.boostersPost === uri)
-      .map(boostedPostRow => {
-        const boostedPost = this.get(boostedPostRow.boostedPost);
-        return {...boostedPost};
-      })
-    ;
+  async getBoostedPosts(uri) {
+    const transaction = this.db.db.transaction(["posts", "postVersions", "imageVersions", "people", "boosts"]);
+    const postsStore = transaction.objectStore("posts");
+    const postVersionsStore = transaction.objectStore("postVersions");
+    const imageVersionsStore = transaction.objectStore("imageVersions");
+    const peopleStore = transaction.objectStore("people");
+    const boostsStore = transaction.objectStore("boosts");
+    
+    return await this.getBoostedPostsFromObjectStore(uri, {boostsStore, peopleStore, postsStore, postVersionsStore, imageVersionsStore});
   }
 
   async getFeaturedPosts() {
@@ -541,15 +542,13 @@ export class PostsDB {
 
   addPost(post) {
     const postVersion = {
-      [post.updatedAt]: {
-        uri: post.uri,
-        updatedAt: post.updatedAt,
-        sensitive: post.sensitive,
-        spoilerText: post.spoilerText,
-        language: post.language,
-        type: post.type,
-        text: post.text,
-      },
+      uri: post.uri,
+      updatedAt: post.updatedAt,
+      sensitive: post.sensitive,
+      spoilerText: post.spoilerText,
+      language: post.language,
+      type: post.type,
+      text: post.text,
     };
 
     const newPost = {... post};
@@ -559,9 +558,8 @@ export class PostsDB {
     delete newPost.type;
     delete newPost.text;
 
-    this.db.set('posts', post.uri, newPost);
-    const oldVersions = this.db.get('postVersions', post.uri);
-    this.db.set('postVersions', post.uri, {...oldVersions, ...postVersion});
+    this.db.set('posts', newPost);
+    this.db.set('postVersions', postVersion);
     return this.get(post.uri);
   }
 
@@ -665,14 +663,13 @@ export class PostsDB {
     for (const fileName in images) {
       const image = images[fileName];
       const imageHash = await sha256(image.data);
-      this.db.set('images', imageHash, {data: image.data});
+      await this.db.set('images', {hash: imageHash, imageBlob: blob});
       delete images[fileName].data;
       images[fileName].image = imageHash;
     }
 
-    const dbImages = this.db.get('imageVersions', postUri) ?? {};
-    dbImages[updatedAt] = images;
-    this.db.set('imageVersions', postUri, dbImages);
+    const dbImages = {postUri: postUri, updatedAt: updatedAt, files: images};
+    await this.db.set('imageVersions', dbImages);
   }
 
   async getImagesForPost(postUri, versionUpdatedAt) {

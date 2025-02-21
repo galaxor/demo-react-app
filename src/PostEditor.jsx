@@ -178,17 +178,17 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
     language: "", // XXX implement a language picker
     conversationId: conversationId,
     local: true,
-    boostedPosts: postsDB.getBoostedPosts(postUri),
+    boostedPosts: await postsDB.getBoostedPosts(postUri),
   };
 
   if (editingPost) {
-    postsDB.updatePost(newPost);
+    await postsDB.updatePost(newPost);
   } else {
-    postsDB.addPost(newPost);
+    await postsDB.addPost(newPost);
   }
 
   if (quotedPost && !editingPost) {
-    postsDB.quoteBoost({boostersPostUri: postUri, boostedPostUri: quotedPost.uri, boosterHandle: user.handle});
+    await postsDB.quoteBoost({boostersPostUri: postUri, boostedPostUri: quotedPost.uri, boosterHandle: user.handle});
   }
 
   if (editingPost) {
@@ -198,9 +198,10 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
   }
 
   const images = imageEditorRef.current.getImages();
+  console.log("IJ", images);
   await postsDB.attachImages(newPost.uri, images, updatedAt);
 
-  newPost.authorPerson = peopleDB.get(user.handle);
+  newPost.authorPerson = await peopleDB.get(user.handle);
 
   typeof onSave === "function" && onSave(newPost);
 }
