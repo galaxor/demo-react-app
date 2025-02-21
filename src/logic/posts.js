@@ -49,7 +49,7 @@ export class PostsDB {
         } else {
           const post = cursor.value;
           if (post.inReplyTo === null && post.deletedAt === null) {
-            const fullPost = await this.getFullPostFromObjectStores(post, {postVersionsStore, imageVersionsStore, peopleStore});
+            const fullPost = await this.getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, peopleStore, boostsStore});
             if (fullPost.text !== null) {
               featuredPosts.push(fullPost);
             }
@@ -60,7 +60,7 @@ export class PostsDB {
     });
   }
 
-  async getBoostedPostsFromObjectStore(uri, {boostsStore, postsStore, peopleStore, postVersionsStore, imageVersionsStore}) {
+  async getBoostedPostsFromObjectStore(uri, {boostsStore, peopleStore, postsStore, postVersionsStore, imageVersionsStore}) {
     return await new Promise(resolve => {
       const boostedPosts = [];
       boostsStore.index("boostersPost").openCursor(uri).onsuccess = async event => {
@@ -78,7 +78,7 @@ export class PostsDB {
           postsStore.get(boostRow.boostedPost).onsuccess = async event => {
             const boostedPost = event.target.result;
             if (boostedPost !== null) {
-              const fullBoostedPost = await this.getFullPostFromObjectStores(boostedPost, {postsStore, postVersionsStore, imageVersionsStore, peopleStore});
+              const fullBoostedPost = await this.getFullPostFromObjectStores(boostedPost, {postVersionsStore, imageVersionsStore, peopleStore});
               boostedPosts.push(fullBoostedPost);
             }
           }
