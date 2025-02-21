@@ -1,4 +1,4 @@
-import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
+import Avatar from './Avatar.jsx'
 import hashSum from 'hash-sum'
 import { useEffect } from 'react'
 
@@ -131,8 +131,6 @@ export default function MiniMap({threadOrder}) {
 }
 
 function MiniMapNode({post, threadHandles}) {
-  const avatarFallbackColor = hashSum(post.authorPerson.handle).substring(0,6).toUpperCase();
-
   return (<div id={"minimap-"+hashSum(post.uri).toString(16)} className="minimap-threaded-post flex">
   {threadHandles.length > 0? 
     <ul>
@@ -149,12 +147,9 @@ function MiniMapNode({post, threadHandles}) {
 
   <div className={`minimap-post p${hashSum(post.uri).toString(16)}`}>
     {post.deletedAt === null?
-      <Avatar isBordered radius="full" src={post.authorPerson.avatar} name={post.authorPerson.displayName} 
-        style={{'--avatar-bg': '#'+avatarFallbackColor}}
-        classNames={{base: "avatar bg-[--avatar-bg]"}}
-      />
+      <Avatar handle={post.authorPerson.handle} imageHash={post.authorPerson.avatar} name={post.authorPerson.displayName} />
       :
-      <Avatar isBordered radius="full" />
+      <Avatar />
     }
   </div>
 

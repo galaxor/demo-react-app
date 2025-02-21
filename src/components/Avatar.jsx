@@ -24,7 +24,7 @@ export default function Avatar({imageHash, handle, name}) {
   return (
     <UIAvatar isBordered ref={avatarRef} radius="full" size="md" className="shrink-0" src={imgSrc} name={name} 
       style={{'--avatar-bg': '#'+avatarFallbackColor}}
-      classNames={{base: "bg-[--avatar-bg]", img: "opacity-100"}}
+      classNames={{base: "avatar bg-[--avatar-bg]", img: "opacity-100"}}
     />
   );
 }
