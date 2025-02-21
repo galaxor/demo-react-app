@@ -19,8 +19,6 @@ import ReactTimeAgo from 'react-time-ago';
 export default function Thread() {
   const mainPost = useLoaderData().post;
 
-  console.log("Loaded the post", mainPost.uri);
-
   // Calculate the entire thread, from knowing the main post.
   const [originatingPost, setOriginatingPost] = useState(null);
 
@@ -28,8 +26,6 @@ export default function Thread() {
     null
     : threadGymnastics(originatingPost)
   ;
-
-  console.log("ThreadOrder", threadOrder);
 
   useEffect(() => {
     (async () => {
@@ -44,7 +40,6 @@ export default function Thread() {
       setOriginatingPost(newOriginatingPost);
 
       threadGymnastics(newOriginatingPost);
-      console.log("Reset thread order");
     })();
   }, []);
 
@@ -110,8 +105,6 @@ export default function Thread() {
   // * Thread remainder (stuff that comes after the main post and its replies, in thread order)
 
   const mainPostIndex = threadOrder.findIndex(threadedPost => threadedPost.post.uri === mainPost.uri);
-
-  console.log("MPURI", mainPost.uri, "MPI", mainPostIndex, "tO", threadOrder);
 
   // The replies to the main post consist of all posts after the main post,
   // which have the main post listed among the "inReplyTo".
