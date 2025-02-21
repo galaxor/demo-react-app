@@ -126,10 +126,10 @@ export class PostsDB {
     }
   }
 
-  deletePost(uri) {
-    const post = this.db.get('posts', uri);
-    post.deletedAt = new Date();
-    this.db.set('posts', uri, post);
+  async deletePost(uri) {
+    const post = await this.db.get('posts', uri);
+    post.deletedAt = new Date().toISOString();
+    await this.db.set('posts', post);
   }
 
   async getNumRepliesTo(uri) {

@@ -250,20 +250,22 @@ export function createStylesheetsForHover(threadOrder, topPost) {
 export function onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost) {
   return () => {
     if (originatingPost.uri === post.uri) {
-      
+      // If we're deleting the top-level post, we don't need to get rid of it
+      // from its parent.
+      originatingPost.deletedAt = new Date().toISOString();
+      setOriginatingPost({...originatingPost});
+    } else {
+      const postsParent = findPost(post.inReplyTo, originatingPost);
+
+      // XXX Decide whether to just delete the post, or to show it as a
+      // tombstone.  Show it as a tombstone if it has replies.
+      const index = postsParent.replies.findIndex(reply => reply.uri === post.uri);
+
+      // Remove the deleted post.
+      postsParent.replies = [...postsParent.replies.slice(0, index), ...postsParent.replies.slice(index+1)];
+
+      setOriginatingPost({...originatingPost});
     }
-    const postsParent = findPost(post.inReplyTo, originatingPost);
-
-    // XXX Decide whether to just delete the post, or to show it as a
-    // tombstone.  Show it as a tombstone if it has replies.
-    const index = postsParent.replies.findIndex(reply => reply.uri === post.uri);
-
-    // Remove the deleted post.
-    postsParent.replies = [...postsParent.replies.slice(0, index), ...postsParent.replies.slice(index+1)];
-
-    setOriginatingPost({...originatingPost});
-
-    threadGymnastics(originatingPost);
   };
 }
 
@@ -274,8 +276,6 @@ export function setRepliesFn(post, originatingPost, threadGymnastics, setOrigina
     addToPost.replies = replies;
 
     setOriginatingPost({...originatingPost});
-
-    threadGymnastics(originatingPost);
   }
 }
 

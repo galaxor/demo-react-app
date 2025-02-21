@@ -12,8 +12,8 @@ import DarkModeContext from "../DarkModeContext.jsx";
 import DatabaseContext from '../DatabaseContext'
 import { PostsDB } from '../logic/posts.js'
 
-function deletePost(postsDB, post, onClose, onDelete) {
-  postsDB.deletePost(post.uri);
+async function deletePost(postsDB, post, onClose, onDelete) {
+  await postsDB.deletePost(post.uri);
 
   onClose();
 
@@ -37,7 +37,7 @@ export default function DeletePostModal({isOpen, onOpen, onOpenChange, post, onD
           <ModalBody className="text-foreground">Are you sure you want to delete the post?</ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={onClose}>Cancel</Button>
-            <Button color="danger" onPress={e => deletePost(postsDB, post, onClose, onDelete)}>Delete</Button>
+            <Button color="danger" onPress={async e => await deletePost(postsDB, post, onClose, onDelete)}>Delete</Button>
           </ModalFooter>
           </>);
         }}
