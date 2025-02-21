@@ -136,7 +136,7 @@ export class PostsDB {
     const transaction = this.db.db.transaction("posts");
     const postsStore = transaction.objectStore("posts");
     return new Promise(resolve => {
-      postsStore.index("inReplyTo").count(uri).onsuccess = event => {
+      postsStore.index("inReplyTo,deletedAt").count([uri, null]).onsuccess = event => {
         resolve(event.target.result);
       };
     });
