@@ -179,13 +179,17 @@ export class PostsDB {
    */
   async getRepliesRecursive(postRepliedTo) {
     return new Promise(async resolve => {
-      const replies = await this.getRepliesTo(postRepliedTo.uri);
-      for(const replyPost of replies) {
-        await this.getRepliesRecursive(replyPost);
-      }
+      if (postRepliedTo === null) {
+        resolve();
+      } else {
+        const replies = await this.getRepliesTo(postRepliedTo.uri);
+        for(const replyPost of replies) {
+          await this.getRepliesRecursive(replyPost);
+        }
 
-      postRepliedTo.replies = replies.filter(replyPost => replyPost.deletedAt === null || replyPost.replies.length > 0);
-      resolve();
+        postRepliedTo.replies = replies.filter(replyPost => replyPost.deletedAt === null || replyPost.replies.length > 0);
+        resolve();
+      }
     });
   }
 

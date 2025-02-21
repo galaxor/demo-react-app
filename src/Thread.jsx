@@ -19,6 +19,35 @@ import ReactTimeAgo from 'react-time-ago';
 export default function Thread() {
   const mainPost = useLoaderData().post;
 
+  console.log("Loaded the post", mainPost.uri);
+
+  // Calculate the entire thread, from knowing the main post.
+  const [originatingPost, setOriginatingPost] = useState(null);
+
+  const threadOrder = originatingPost === null?
+    null
+    : threadGymnastics(originatingPost)
+  ;
+
+  console.log("ThreadOrder", threadOrder);
+
+  useEffect(() => {
+    (async () => {
+      const newOriginatingPost =  (mainPost.conversationId === mainPost.uri || !mainPost.conversationId)?
+                              mainPost :
+                              await postsDB.get(mainPost.conversationId)
+      ;
+      
+      
+      await postsDB.getRepliesRecursive(newOriginatingPost);
+
+      setOriginatingPost(newOriginatingPost);
+
+      threadGymnastics(newOriginatingPost);
+      console.log("Reset thread order");
+    })();
+  }, []);
+
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
 
@@ -65,27 +94,6 @@ export default function Thread() {
     }
   }, [scrollToPost]);
 
-  // Calculate the entire thread, from knowing the main post.
-
-  const [originatingPost, setOriginatingPost] = useState(null);
-
-  const [threadOrder, setThreadOrder] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      if (threadOrder === null) {
-        const originatingPost = (mainPost.conversationId === mainPost.uri || !mainPost.conversationId)?
-                                mainPost :
-                                await postsDB.get(mainPost.conversationId)
-                                ;
-
-        await postsDB.getRepliesRecursive(originatingPost);
-
-        threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
-      }
-    })();
-  }, []);
-
   if (threadOrder === null) {
     // When we do the thread gymnastics, it sets threadOrder, which redraws the page.
     // On the first go-through, it'll try to draw the page with threadOrder set
@@ -100,7 +108,10 @@ export default function Thread() {
   // * Replies to the main post
   // * Thread context (stuff that comes before the main post in thread order)
   // * Thread remainder (stuff that comes after the main post and its replies, in thread order)
+
   const mainPostIndex = threadOrder.findIndex(threadedPost => threadedPost.post.uri === mainPost.uri);
+
+  console.log("MPURI", mainPost.uri, "MPI", mainPostIndex, "tO", threadOrder);
 
   // The replies to the main post consist of all posts after the main post,
   // which have the main post listed among the "inReplyTo".
@@ -137,8 +148,8 @@ export default function Thread() {
       <section className="main-post" aria-labelledby="main-post-h1">
         <ThreadedPost key={threadOrder[mainPostIndex].post.uri} 
           post={threadOrder[mainPostIndex].post} 
-          onDelete={onDeleteFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
-          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
+          onDelete={onDeleteFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost)}
+          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost)}
           threadHandles={threadOrder[mainPostIndex].threadHandles}
           scrollRef={mainPostScrollRef}
           setScrollToPost={setScrollToPost}
@@ -155,8 +166,8 @@ export default function Thread() {
               <ThreadedPost key={post.uri}
                 post={post} 
                 threadHandles={threadHandles}
-                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
-                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
+                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
               />
             );
           })}
@@ -173,9 +184,9 @@ export default function Thread() {
             return (
               <ThreadedPost key={post.uri}
                 post={post} 
-                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
+                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
                 threadHandles={threadHandles}
-                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
               />
             );
           })}
@@ -193,8 +204,8 @@ export default function Thread() {
               <ThreadedPost key={post.uri} 
                 post={post} 
                 threadHandles={threadHandles}
-                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
-                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder)}
+                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
+                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
                />
             );
           })}

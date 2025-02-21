@@ -1,15 +1,11 @@
 import hashSum from 'hash-sum'
 
-export function threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder) {
+export function threadGymnastics(originatingPost) {
   const threadOrder1 = flattenThread(originatingPost);
 
   const threadOrder = threadOrder1.filter(threadedPost => threadedPost.post.deletedAt === null || threadedPost.post.replies.length > 0);
 
   computeThread(threadOrder);
-
-  setOriginatingPost({...originatingPost});
-
-  setThreadOrder(threadOrder);
 
   return threadOrder;
 }
@@ -251,7 +247,7 @@ export function createStylesheetsForHover(threadOrder, topPost) {
 
 // These functions are required in order to allow replies and post-deleting.
 
-export function onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
+export function onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost) {
   return () => {
     if (originatingPost.uri === post.uri) {
       
@@ -265,17 +261,21 @@ export function onDeleteFn(post, originatingPost, threadGymnastics, setOriginati
     // Remove the deleted post.
     postsParent.replies = [...postsParent.replies.slice(0, index), ...postsParent.replies.slice(index+1)];
 
-    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
+    setOriginatingPost({...originatingPost});
+
+    threadGymnastics(originatingPost);
   };
 }
 
-export function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost, setThreadOrder) {
+export function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost) {
   return replies => {
     // Find the post we're meant to add to, inside the originatingPost.
     const addToPost = findPost(post.uri, originatingPost);
     addToPost.replies = replies;
 
-    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
+    setOriginatingPost({...originatingPost});
+
+    threadGymnastics(originatingPost);
   }
 }
 
