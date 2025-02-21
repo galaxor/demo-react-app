@@ -1,7 +1,7 @@
 import { PostsDB } from './logic/posts.js';
 
 import { clickPost } from './clickPost.js'
-import { createStylesheetsForHover, threadGymnastics, onDeleteFn, getRepliesTo, setRepliesFn, findPost } from './include/thread-gymnastics.js'
+import { createStylesheetsForHover, threadGymnastics, onDeleteFn, setRepliesFn, findPost } from './include/thread-gymnastics.js'
 import hashSum from 'hash-sum'
 import MiniMap from './components/MiniMap.jsx'
 import Post from './Post.jsx';
@@ -28,17 +28,19 @@ export default function Thread() {
 
   // Make it so when you click a post, you go to its PostSingle page.
   useEffect(() => {
-    const clickablePosts = mainRef.current.querySelectorAll('article.post > div.post')
+    if (mainRef.current !== null) {
+      const clickablePosts = mainRef.current.querySelectorAll('article.post > div.post')
 
-    clickablePosts.forEach(node => {
-      node.addEventListener('click', clickPost);
-    });
-
-    return(() => {
       clickablePosts.forEach(node => {
-        node.removeEventListener('click', clickPost);
+        node.addEventListener('click', clickPost);
       });
-    });
+
+      return(() => {
+        clickablePosts.forEach(node => {
+          node.removeEventListener('click', clickPost);
+        });
+      });
+    }
   });
 
 
@@ -69,22 +71,28 @@ export default function Thread() {
 
   const [threadOrder, setThreadOrder] = useState(null);
 
+  useEffect(() => {
+    (async () => {
+      if (threadOrder === null) {
+        const originatingPost = (mainPost.conversationId === mainPost.uri || !mainPost.conversationId)?
+                                mainPost :
+                                await postsDB.get(mainPost.conversationId)
+                                ;
+
+        await postsDB.getRepliesRecursive(originatingPost);
+
+        threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
+      }
+    })();
+  }, []);
+
   if (threadOrder === null) {
-    const originatingPost = (mainPost.conversationId === mainPost.uri || !mainPost.conversationId)?
-                            mainPost :
-                            postsDB.get(mainPost.conversationId)
-                            ;
-  
-    getRepliesTo(originatingPost, postsDB);
-
-    threadGymnastics(originatingPost, setOriginatingPost, setThreadOrder);
-
     // When we do the thread gymnastics, it sets threadOrder, which redraws the page.
     // On the first go-through, it'll try to draw the page with threadOrder set
     // to null, and that isn't going to help anyone, so let's just go ahead and
     // return the empty string and let the page get redrawn with threadOrder
     // set.
-    return "";
+    return "Loading...";
   }
 
   // Chop the thread into the four sections:

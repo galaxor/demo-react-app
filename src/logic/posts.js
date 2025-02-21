@@ -141,26 +141,52 @@ export class PostsDB {
     });
   }
 
-  getRepliesTo(uri) {
+  async getRepliesTo(uri) {
     if (uri === null) {
       return [];
     }
 
-    const replies = Object.values(this.db.get('posts'))
-      .filter(post => post.inReplyTo === uri)
-      .map(post => {
-        if (post.deletedAt === null) {
-          const version = this.db.get('postVersions', post.uri)[post.updatedAt];
-          return {...post, ...version, authorPerson: this.db.get('people', post.author)}; 
+    const transaction = this.db.db.transaction(["posts", "postVersions", "people", "boosts", "imageVersions"]);
+    const postsStore = transaction.objectStore("posts");
+    const postVersionsStore = transaction.objectStore("postVersions");
+    const imageVersionsStore = transaction.objectStore("imageVersions");
+    const boostsStore = transaction.objectStore("boosts");
+    const peopleStore = transaction.objectStore("people");
+
+    return new Promise(resolve => {
+      const replies = [];
+      postsStore.index("inReplyTo").openCursor(uri).onsuccess = async event => {
+        const cursor = event.target.result;
+        if (cursor === null) {
+          replies.sort((a, b) => a.createdAt===b.createdAt? 0 : (a.createdAt > b.createdAt? 1 : 0));
+          resolve(replies);
         } else {
-          return { ...this.db.nullPost(), uri: post.uri, inReplyTo: uri };
+          const post = cursor.value;
+          if (post.deletedAt === null) {
+            replies.push(await this.getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, boostsStore, peopleStore}));
+          } else {
+            replies.push({ ...this.db.nullPost(), uri: post.uri, inReplyTo: uri });
+          }
+
+          cursor.continue();
         }
-      })
-    ;
+      }
+    });
+  }
 
-    replies.sort((a, b) => a.createdAt===b.createdAt? 0 : (a.createdAt > b.createdAt? 1 : 0));
+  /**
+   * Given an initial post, load all the replies of the entire thread starting at that post.
+   */
+  async getRepliesRecursive(postRepliedTo) {
+    return new Promise(async resolve => {
+      const replies = await this.getRepliesTo(postRepliedTo.uri);
+      for(const replyPost of replies) {
+        await this.getRepliesRecursive(replyPost);
+      }
 
-    return replies;
+      postRepliedTo.replies = replies.filter(replyPost => replyPost.deletedAt === null || replyPost.replies.length > 0);
+      resolve();
+    });
   }
 
   getPostsBy(handle, {showReplies, includeBoosts}) {

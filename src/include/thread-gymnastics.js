@@ -15,16 +15,6 @@ export function threadGymnastics(originatingPost, setOriginatingPost, setThreadO
 }
 
 /**
- * Given an initial post, load all the replies of the entire thread starting at that post.
- */
-export function getRepliesTo(postRepliedTo, postsDB) {
-  const replies = postsDB.getRepliesTo(postRepliedTo.uri);
-  replies.forEach(replyPost => getRepliesTo(replyPost, postsDB));
-
-  postRepliedTo.replies = replies.filter(replyPost => replyPost.deletedAt === null || replyPost.replies.length > 0);
-}
-
-/**
  * Create a map that maps a uri to an index (of threadOrder), where that index
  * is the post that last directly replied to the post given in the uri.
  */
