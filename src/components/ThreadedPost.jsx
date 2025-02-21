@@ -56,7 +56,6 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
             {composingReply?
               <div className="composing-reply">
                 <PostEditor replyingTo={post.uri} conversationId={post.conversationId ?? post.uri} 
-                  editingPost={post}
                   onSave={newPost => { 
                     closeReplyNoDBRefresh({post: newPost, setComposingReply, numReplies, setNumReplies, postsDB, replies: post.replies, setReplies});
                     // postRef.current.focusReplyButton(); 
