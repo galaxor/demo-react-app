@@ -662,10 +662,23 @@ export class PostsDB {
   async attachImages(postUri, images, updatedAt) {
     for (const fileName in images) {
       const image = images[fileName];
-      const imageHash = await sha256(image.data);
-      await this.db.set('images', {hash: imageHash, imageBlob: blob});
-      delete images[fileName].data;
-      images[fileName].image = imageHash;
+
+      // We have the image as a data url, because that was the preferred format
+      // for showing it in the editing screen.  Now we want it as an
+      // Blob because that's the preferred format for storing in the database.
+      // Also, we need it as an ArrayBuffer in order to hash it.
+      // We can turn the data url into a blob by fetching it like a url.
+      const imageDataUrl = image.data;
+      const response = await fetch(imageDataUrl);
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const buffer = await blob.arrayBuffer();
+        const imageHash = await sha256(buffer);
+        await this.db.set('images', {hash: imageHash, imageBlob: blob});
+        delete images[fileName].data;
+        images[fileName].image = imageHash;
+      }
     }
 
     const dbImages = {postUri: postUri, updatedAt: updatedAt, files: images};
