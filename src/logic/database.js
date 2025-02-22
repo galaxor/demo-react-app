@@ -81,7 +81,6 @@ class Database {
       posts.createIndex("canonicalUrl", "canonicalUrl");
       posts.createIndex("conversationId", "conversationId");
       posts.createIndex("local", "local");
-      posts.createIndex("inReplyTo,deletedAt", ["inReplyTo", "deletedAt"]);
 
       const postVersions = db.createObjectStore("postVersions", { keyPath: ["uri", "updatedAt"] });
       postVersions.createIndex("uri", "uri");

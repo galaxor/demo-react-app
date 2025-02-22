@@ -136,8 +136,18 @@ export class PostsDB {
     const transaction = this.db.db.transaction("posts");
     const postsStore = transaction.objectStore("posts");
     return new Promise(resolve => {
-      postsStore.index("inReplyTo,deletedAt").count([uri, null]).onsuccess = event => {
-        resolve(event.target.result);
+      var numReplies = 0;
+
+      postsStore.index("inReplyTo").openCursor(uri).onsuccess = event => {
+        const cursor = event.target.result;
+        if (cursor === null) {
+          resolve(numReplies);
+        } else {
+          if (cursor.value.deletedAt === null) {
+            numReplies += 1;
+          }
+          cursor.continue();
+        }
       };
     });
   }
@@ -437,12 +447,16 @@ export class PostsDB {
         } else {
           const boostRow = boostsCursor.value;
           const post = await this.db.getFromObjectStore(postsStore, boostRow.boostersPost);
-          const postVersion = await this.db.getFromObjectStore(postVersionsStore, [post.uri, post.updatedAt]);
 
-          // If the "quote" option is set, only count this if the text is not null.
-          // If the "quote" option is not set, only count this if the text is null.
-          if ((postVersion.text === null) === !quote) {
-            boostedByPeople[boostRow.booster] = true;
+          // Don't count deleted posts.
+          if (post.deletedAt === null) {
+            const postVersion = await this.db.getFromObjectStore(postVersionsStore, [post.uri, post.updatedAt]);
+
+            // If the "quote" option is set, only count this if the text is not null.
+            // If the "quote" option is not set, only count this if the text is null.
+            if ((postVersion.text === null) === !quote) {
+              boostedByPeople[boostRow.booster] = true;
+            }
           }
           boostsCursor.continue();
         }
