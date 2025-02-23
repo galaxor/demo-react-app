@@ -37,9 +37,9 @@ export default class UserDB {
     return sessionId;
   }
 
-  logout() {
+  async logout() {
     const sessionId = localStorage.getItem('sessionId');
-    this.db.del('sessions', sessionId);
+    await this.db.del('sessions', sessionId);
     localStorage.removeItem('sessionId');
     return null;
   }

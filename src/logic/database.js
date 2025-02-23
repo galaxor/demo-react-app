@@ -241,8 +241,22 @@ class Database {
   }
 
   del(table, key) {
-    delete this[table][key];
-    localStorage.setItem(table, JSON.stringify(this[table]));
+    const transaction = this.db.transaction(table, "readwrite");
+    const objectStore = transaction.objectStore(table);
+    try {
+      return new Promise(resolve => {
+        objectStore.delete(key).onsuccess = event => {
+          resolve(event.target.result);
+        };
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "DataError") {
+        // The data didn't exist. No big deal.
+        return undefined;
+      } else {
+        throw error;
+      }
+    }
   }
 
   clearAll() {
