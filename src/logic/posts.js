@@ -287,8 +287,6 @@ export class PostsDB {
 
           if (typeof totals[key] === "undefined") {
             totals[key] = {...reaction};
-            delete totals[key].reactorHandle;
-            delete totals[key].reactingTo;
             totals[key].total = 1;
           } else {
             totals[key].total += 1;
