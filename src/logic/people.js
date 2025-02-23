@@ -85,10 +85,11 @@ export class PeopleDB {
 }
 
 export function getPersonLoader(db) {
-  return ({params}) => {
+  return async ({params}) => {
+    await db.open();
     const peopleDB = new PeopleDB(db);
 
-    const person = peopleDB.get(params.handle);
+    const person = await peopleDB.get(params.handle);
 
     return { person };
   };

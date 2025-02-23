@@ -22,7 +22,7 @@ export default function PostsByPerson({showReplies}) {
       const theirPosts = await postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
       setTheirPosts(<PostsList posts={theirPosts} />);
     })();
-  }, [showBoosts]);
+  }, [showBoosts, showReplies]);
 
   return (
     <section className="their-posts" aria-labelledby="their-posts">
