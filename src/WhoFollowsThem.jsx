@@ -21,7 +21,7 @@ export default function WhoFollowsThem() {
       {whoFollowsThem.length > 0 ?
         <ul className="who-follows-them" aria-labelledby="who-follows-them">
         {whoFollowsThem.map(personWhoFollows => {
-          return (<li key={personWhoFollows.handle}><PersonInline person={personWhoFollows} /></li>);
+          return (<li className="mb-4" key={personWhoFollows.handle}><PersonInline person={personWhoFollows} /></li>);
           }
         )}
         </ul>

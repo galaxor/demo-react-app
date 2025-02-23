@@ -5,9 +5,13 @@ export class PeopleDB {
     this.db = db;
   }
 
-  get(handle) {
+  async get(handle) {
     if (!handle) { throw new TypeError("Get which person?"); }
-    return this.db.get('people', handle);
+    return await this.db.get('people', handle);
+  }
+
+  async getFromObjectStore(peopleStore, handle) {
+    return await this.db.getFromObjectStore(peopleStore, handle);
   }
 
   async whoFollowsThem(handle) {
@@ -19,12 +23,15 @@ export class PeopleDB {
 
     return new Promise(resolve => {
       const followers = [];
-      followsStore.index("followed").openCursor(handle).onsuccess = event => {
+      followsStore.index("followed").openCursor(handle).onsuccess = async event => {
         const followsCursor = event.target.result;
         if (followsCursor === null) {
+          followers.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
           resolve(followers);
         } else {
-          followers.push(followsCursor.value);
+          const followRow = followsCursor.value;
+          const person = await this.getFromObjectStore(peopleStore, followRow.follower);
+          followers.push(person);
           followsCursor.continue();
         }
       };
@@ -40,12 +47,15 @@ export class PeopleDB {
 
     return new Promise(resolve => {
       const follows = [];
-      followsStore.index("follower").openCursor(handle).onsuccess = event => {
+      followsStore.index("follower").openCursor(handle).onsuccess = async event => {
         const followsCursor = event.target.result;
         if (followsCursor === null) {
+          follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
           resolve(follows);
         } else {
-          follows.push(followsCursor.value);
+          const followRow = followsCursor.value;
+          const person = await this.getFromObjectStore(peopleStore, followRow.followed);
+          follows.push(person);
           followsCursor.continue();
         }
       };
