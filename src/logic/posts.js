@@ -351,29 +351,56 @@ export class PostsDB {
   }
 
   setReaction({reactorHandle, reactingTo, reaction, createdAt, newValue}) {
-    this.db.delRow('reactions', dbReaction => {
-      return (
-        dbReaction.reactorHandle === reactorHandle
-        && dbReaction.reactingTo === reactingTo
-        && dbReaction.type === reaction.type
-        && dbReaction.unicode === reaction.unicode
-        && dbReaction.reactName === reaction.reactName
-        && dbReaction.reactServer === reaction.reactServer
-        && dbReaction.reactUrl === reaction.reactUrl
-      );
+    const transaction = this.db.db.transaction("reactions", "readwrite");
+    const reactionsStore = transaction.objectStore("reactions");
+    return new Promise(resolve => {
+      const promisesOfDeletion = [];
+      reactionsStore.index("reactorHandle,reactingTo").openCursor([reactorHandle, reactingTo]).onsuccess = event => {
+        const cursor = event.target.result;
+        if (cursor === null) {
+          Promise.all(promisesOfDeletion).then(() => {
+            // We've deleted any previous reactions of this type, by this person, on this post.
+            // Now, if they wanted to add a reaction, let's put one in.
+            // It'll have the latest createdAt date.
+            if (newValue) {
+              reactionsStore.add({
+                ...reaction,
+                reactorHandle,
+                reactingTo,
+                createdAt,
+              }).onsuccess = event => {
+                resolve(undefined);
+              };
+            }
+          });
+        } else {
+          const dbReaction = cursor.value;
+          if (dbReaction.type === reaction.type
+              && dbReaction.unicode === reaction.unicode
+              && dbReaction.reactName === reaction.reactName
+              && dbReaction.reactServer === reaction.reactServer
+              && dbReaction.reactUrl === reaction.reactUrl
+          ) {
+            promisesOfDeletion.push(new Promise(resolve2 => {
+              const key = cursor.key;
+              try {
+                reactionsStore.delete(key).onsuccess = event => {
+                  resolve2(event.target.result);
+                };
+              } catch (error) {
+                if (error instanceof DOMException && error.name === "DataError") {
+                  // The data didn't exist. No big deal.
+                  resolve2(undefined);
+                } else {
+                  throw error;
+                }
+              }
+            }));
+          }
+          cursor.continue();
+        }
+      };
     });
-
-    // We've deleted any previous reactions of this type, by this person, on this post.
-    // Now, if they wanted to add a reaction, let's put one in.
-    // It'll have the latest createdAt date.
-    if (newValue) {
-      this.db.addRow('reactions', {
-        ...reaction,
-        reactorHandle,
-        reactingTo,
-        createdAt,
-      });
-    }
   }
 
   getBoostsOf(uri) {
