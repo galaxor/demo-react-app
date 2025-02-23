@@ -14,11 +14,11 @@ export default function PostsByPerson({showReplies}) {
 
   const { person } = useContext(PersonContext);
 
-  const dbConnection = useContext(DatabaseContext);
+  const db = useContext(DatabaseContext);
+  const postsDB = new PostsDB(db);
+
   useEffect(() => {
     (async () => {
-      const db = await dbConnection.open();
-      const postsDB = new PostsDB(db);
       const theirPosts = await postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
       setTheirPosts(<PostsList posts={theirPosts} />);
     })();
@@ -34,6 +34,7 @@ export default function PostsByPerson({showReplies}) {
         Show Boosts
       </Switch>
 
+      {theirPosts}
     </section>
   );
 }

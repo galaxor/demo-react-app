@@ -204,43 +204,33 @@ export class PostsDB {
     });
   }
 
-  getPostsBy(handle, {showReplies, includeBoosts}) {
-    const posts = Object.entries(this.db.get('posts'))
-      .filter(([postURI, post]) => (post.author === handle) && (showReplies || post.inReplyTo === null) )
-      .map(([postURI, post]) => { 
-        const version = this.db.get('postVersions', post.uri)[post.updatedAt];
-        const newPost = {
-          ...post,
-          ...version,
-          authorPerson: this.db.get('people', post.author),
-          boostedPosts: this.db.get('boosts').filter(boost => boost.booster === handle && boost.boostersPost === post.uri)
-        }; 
+  async getPostsBy(handle, {showReplies, includeBoosts}) {
+    const transaction = this.db.db.transaction(["posts", "postVersions", "imageVersions", "people", "boosts"]);
+    const postsStore = transaction.objectStore("posts");
+    const postVersionsStore = transaction.objectStore("postVersions");
+    const imageVersionsStore = transaction.objectStore("imageVersions");
+    const peopleStore = transaction.objectStore("people");
+    const boostsStore = transaction.objectStore("boosts");
 
-        return newPost;
-      })
-
-      // Now take out boost posts if that's what we want.
-      // We exclude posts that have no text, but boost stuff.
-      // (What do we do with posts that have no text, but don't boost stuff?
-      // Show it, I guess....)
-      .filter(post => includeBoosts || (post.text !== null || post.boostedPosts.length === 0)) 
-
-      // Right now, "boostedPosts" is just the rows from the boosts table.
-      // Let's get the actual text of those posts.
-      .map(post => { 
-        return {
-          ...post,
-          boostedPosts: post.boostedPosts.map(boostedPostRow => {
-            const boostedPost = this.get(boostedPostRow.boostedPost);
-            return boostedPost;
-          })
-        };
-      })
-    ;
-
-    posts.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : 0));
-
-    return posts;
+    return new Promise(resolve => {
+      const posts = [];
+      postsStore.index("author").openCursor(handle).onsuccess = async event => {
+        const cursor = event.target.result;
+        if (cursor === null) {
+          posts.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt? 1 : 0));
+          resolve(posts);
+        } else {
+          const post = cursor.value;
+          if (showReplies || post.inReplyTo === null) {
+            const fullPost = await this.getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, boostsStore, peopleStore});
+            if (includeBoosts || (fullPost.text !== null || fullPost.boostedPosts.length === 0)) {
+              posts.push(fullPost);
+            }
+          }
+          cursor.continue();
+        }
+      }
+    });
   }
 
   async getReactionsTo(postURI, options) {
