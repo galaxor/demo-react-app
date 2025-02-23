@@ -15,7 +15,7 @@ import {
   ModalFooter
 } from "@nextui-org/modal";
 
-import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
+import Avatar from './components/Avatar.jsx'
 import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
@@ -115,12 +115,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
     <main className="h-card profile-view">
       <h1 className="mb-8 flex gap-5 items-center">
         <Link2 onPress={avatarDisclosure.onOpen}>
-          <Avatar isBordered radius="full" className="text-large w-[100px] h-[100px]" src={person.avatar} 
-            name={person.displayName} 
-            alt={person.avatarAltText}
-            style={{'--avatar-bg': '#'+avatarFallbackColor}}
-            classNames={{base: "bg-[--avatar-bg]"}}
-          />
+          <Avatar imageHash={person.avatar} handle={person.handle} name={person.displayName} className="text-large w-[100px] h-[100px]" />
         </Link2>
         <Modal isOpen={avatarDisclosure.isOpen} onOpenChange={avatarDisclosure.onOpenChange}>
           <ModalContent>
