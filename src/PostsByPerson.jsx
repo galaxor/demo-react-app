@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {Switch} from "@nextui-org/react";
 
 import DatabaseContext from './DatabaseContext.jsx';

@@ -84,7 +84,7 @@ function NumBoosts({uri, quote}) {
 
       const numBoostsDisplay = Intl.NumberFormat(language, {
         notation: "compact",
-        maximumFractionDigits: 1
+        maximumFractionDigits: 0
       }).format(numBoosts);
 
       setNumBoosts(numBoostsDisplay);

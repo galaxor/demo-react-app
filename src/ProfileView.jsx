@@ -2,7 +2,7 @@ import { Button } from "@nextui-org/button"
 import {Divider} from "@nextui-org/divider";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import hashSum from 'hash-sum'
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, Route, Routes, useLocation, useLoaderData, useMatches } from "react-router-dom";
 import { Link as Link2 } from "@nextui-org/link"
 import {Tabs, Tab} from "@nextui-org/tabs";
@@ -20,6 +20,7 @@ import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
 import icons from './icons.js'
+import LanguageContext from './LanguageContext.jsx'
 import LogoutLink from './LogoutLink.jsx';
 import PersonContext from './PersonContext.jsx';
 import ProfileBio from './ProfileBio.jsx';
@@ -30,6 +31,7 @@ import './static/ProfileView.css'
 
 export default function ProfileView({handle, loggedInUser, children }) {
   const { user } = useContext(UserContext);
+  const language = useContext(LanguageContext);
 
   const loaderData = useLoaderData();
   const loadedPerson = loaderData? loaderData.person : null;
@@ -45,11 +47,31 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
   const [youFollowThem, setYouFollowThem] = useState();
 
+  const [whoFollowsThem, setWhoFollowsThem] = useState([]);
+  const [whoDoTheyFollow, setWhoDoTheyFollow] = useState([]);
+
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
-  const whoFollowsThem = peopleDB.whoFollowsThem(person.handle);
-  const whoDoTheyFollow = peopleDB.whoDoTheyFollow(person.handle);
 
+  useEffect(() => {
+    (async () => {
+      setWhoFollowsThem(await peopleDB.whoFollowsThem(person.handle));
+      setWhoDoTheyFollow(await peopleDB.whoDoTheyFollow(person.handle));
+    })();
+  }, []);
+
+  const numFollowers = Intl.NumberFormat(language, {
+    notation: "compact",
+    maximumFractionDigits: 0
+  }).format(whoFollowsThem.length);
+  const numFollowersLabel = `Followers ${numFollowers}`;
+
+  const numFollows = Intl.NumberFormat(language, {
+    notation: "compact",
+    maximumFractionDigits: 0
+  }).format(whoDoTheyFollow.length);
+  const numFollowsLabel = `Follows ${numFollows}`;
+  
   // This condition happens if we're supposed to be looking at the logged in
   // user, but they haven't loaded yet.
   if (loggedInUser && person === null) {
@@ -156,8 +178,8 @@ export default function ProfileView({handle, loggedInUser, children }) {
           <Tabs size="sm" selectedKey={activeTab} aria-labelledby="navigation">
             <Tab key="posts" href={"/people/"+person.handle} title="Posts" />
             <Tab key="posts-replies" href={'/people/'+person.handle+'/posts-replies'} title="Posts & Replies" />
-            <Tab key="followers" href={'/people/'+person.handle+'/followers'} title={"Followers " + whoFollowsThem.length} />
-            <Tab key="follows" href={'/people/'+person.handle+'/follows'} title={"Follows "+whoDoTheyFollow.length} />
+            <Tab key="followers" href={'/people/'+person.handle+'/followers'} title={numFollowersLabel} />
+            <Tab key="follows" href={'/people/'+person.handle+'/follows'} title={numFollowsLabel} />
           </Tabs>
         </nav>
         
