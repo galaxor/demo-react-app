@@ -348,7 +348,7 @@ export class PostsDB {
     return totals;
   }
 
-  setReaction({reactorHandle, reactingTo, reaction, createdAt, newValue}) {
+  async setReaction({reactorHandle, reactingTo, reaction, createdAt, newValue}) {
     const transaction = this.db.db.transaction("reactions", "readwrite");
     const reactionsStore = transaction.objectStore("reactions");
     return new Promise(resolve => {
@@ -369,6 +369,8 @@ export class PostsDB {
               }).onsuccess = event => {
                 resolve(undefined);
               };
+            } else {
+              resolve(undefined);
             }
           });
         } else {
@@ -380,13 +382,13 @@ export class PostsDB {
               && dbReaction.reactUrl === reaction.reactUrl
           ) {
             promisesOfDeletion.push(new Promise(resolve2 => {
-              const key = cursor.key;
+              const key = cursor.primaryKey;
               try {
                 reactionsStore.delete(key).onsuccess = event => {
                   resolve2(event.target.result);
                 };
               } catch (error) {
-                if (error instanceof DOMException && error.name === "DataError") {
+                if (false || error instanceof DOMException && error.name === "DataError") {
                   // The data didn't exist. No big deal.
                   resolve2(undefined);
                 } else {

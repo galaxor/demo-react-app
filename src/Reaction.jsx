@@ -46,8 +46,8 @@ export default function Reaction({post, reaction, reactionTotals, setReactionTot
   return (
     user? 
       <Button size="sm" className="reaction" variant={didYouDoThis? "flat" : "light"}
-        onPress={e => {
-          toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions,
+        onPress={async e => {
+          await toggleReaction({user, postsDB, post, reaction, reactionTotals, setReactionTotals, yourReactions, setYourReactions,
             newValue: !didYouDoThis});
 
           if (typeof onReact === 'function') { onReact(); }
