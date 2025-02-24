@@ -1,4 +1,5 @@
 import LanguageContext from './LanguageContext.jsx'
+import NumberDisplay from './components/NumberDisplay.jsx'
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import ReactionGlyph from './ReactionGlyph.jsx'
@@ -17,13 +18,6 @@ export default function ReactionsDetail() {
   const languageContext = useContext(LanguageContext);
 
   const { reactionsList, setReactionsList } = useContext(PostDetailsContext);
-
-  const language = useContext(LanguageContext);
-  const numReactionsDisplay = (numReactions) => 
-    Intl.NumberFormat(language, {
-      notation: "compact",
-      maximumFractionDigits: 1
-    }).format(numReactions);
 
   const totalNumReactions = reactionsList
     .map(reactionType => reactionType.reactors.length)
@@ -44,8 +38,8 @@ export default function ReactionsDetail() {
         <Tabs aria-labelledby="reactions-toc-header" className="reactions-toc"
           classNames={{tabList: "flex-wrap", tab: "w-auto"}}
         >
-          <Tab key="all" title={"All "+numReactionsDisplay(totalNumReactions)}>
-            <h3 id="all-reactions" className="my-5 text-lg font-bold">All Reactions ({totalNumReactions})</h3>
+          <Tab key="all" title={<>All <NumberDisplay number={totalNumReactions} compact={true} /></>}>
+            <h3 id="all-reactions" className="my-5 text-lg font-bold">All Reactions (<NumberDisplay number={totalNumReactions} />)</h3>
 
             <ul className="reactors" aria-labelledby="all-reactions">
             {reactionsList.map(reactionType => {
@@ -64,8 +58,8 @@ export default function ReactionsDetail() {
           const key = hashSum([reactionType.type, reactionType.unicode, reactionType.reactName, reactionType.reactServer, encodeURIComponent(reactionType.reactUrl)].join(':'));
 
           return (
-            <Tab key={key} title={<><div className="flex flex-nowrap"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{numReactionsDisplay(reactionType.reactors.length)}</span></div></>}>
-              <h3 id={key+'-header'} className="my-5 text-lg font-bold"><div className="flex flex-nowrap items-center"><ReactionGlyph reaction={reactionType} /> <span className="ml-1">{reactionType.reactors.length}</span></div></h3>
+            <Tab key={key} title={<><div className="flex flex-nowrap"><ReactionGlyph reaction={reactionType} /> <span className="ml-1"><NumberDisplay number={reactionType.reactors.length} compact={true} /></span></div></>}>
+              <h3 id={key+'-header'} className="my-5 text-lg font-bold"><div className="flex flex-nowrap items-center"><ReactionGlyph reaction={reactionType} /> <span className="ml-1"><NumberDisplay number={reactionType.reactors.length} /></span></div></h3>
 
               <ul className="reactors" aria-labelledby={key+'-header'}>
               {reactionType.reactors.map(person => {
