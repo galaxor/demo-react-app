@@ -21,9 +21,8 @@ import {
 import '@mdxeditor/editor/style.css'
 import { Button } from "@nextui-org/button"
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card"
-import { forwardRef, useContext, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Link } from "react-router-dom"
-import { useState } from "react"
 import { useNavigate } from "react-router"
 import { toast } from 'react-toastify'
 
@@ -51,9 +50,13 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
   const postsDB = new PostsDB(db);
   const peopleDB = new PeopleDB(db);
 
-  const [uploadedImages, setUploadedImages] = useState(
-    editingPost? postsDB.getImagesForPost(editingPost.uri) ?? {} : {}
-  );
+  const [uploadedImages, setUploadedImages] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      setUploadedImages(editingPost? await postsDB.getImagesForPost(editingPost.uri) ?? {} : {});
+    })();
+  }, []);
 
   const editorRef = useRef(null);
   const { user } = useContext(UserContext);
@@ -198,6 +201,7 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
   }
 
   const images = await imageEditorRef.current.getImages();
+  console.log("IMJ", images);
   await postsDB.attachImages(newPost.uri, images, updatedAt);
 
   newPost.authorPerson = await peopleDB.get(user.handle);
