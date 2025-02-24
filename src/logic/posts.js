@@ -713,7 +713,6 @@ export class PostsDB {
     }
 
     const dbImages = {postUri: postUri, updatedAt: updatedAt, files: images};
-    console.log(dbImages);
     await this.db.set('imageVersions', dbImages);
   }
 

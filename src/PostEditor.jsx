@@ -202,7 +202,6 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
   }
 
   const images = await imageEditorRef.current.getImages();
-  console.log("IMJ", images);
   await postsDB.attachImages(newPost.uri, images, updatedAt);
 
   newPost.authorPerson = await peopleDB.get(user.handle);

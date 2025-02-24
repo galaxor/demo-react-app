@@ -90,7 +90,7 @@ function imageUpload({e, uploadedImages, setUploadedImages}) {
     // XXX intl
     const newUploadedImages = {...uploadedImages};
     newUploadedImages[fileName] = { data: newImage, altText: "", altTextLang: "en-US" };
-    setUploadedImages(imageList);
+    setUploadedImages(newUploadedImages);
   });
 
   reader.readAsDataURL(e.target.files[0]);
