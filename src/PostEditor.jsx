@@ -54,7 +54,8 @@ const PostEditor = forwardRef(function PostEditor(props, ref) {
 
   useEffect(() => {
     (async () => {
-      setUploadedImages(editingPost? await postsDB.getImagesForPost(editingPost.uri) ?? {} : {});
+      const newUploadedImages = editingPost? await postsDB.getImagesForPost(editingPost.uri, undefined, {getImages: true}) ?? {} : {};
+      setUploadedImages(newUploadedImages);
     })();
   }, []);
 

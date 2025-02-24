@@ -182,9 +182,8 @@ class Database {
     }
   }
 
-  async getImageDataUrl(imageHash) {
-    const transaction = this.db.transaction("images");
-    const imagesStore = transaction.objectStore("images");
+  async getImageDataUrl(imageHash, imagesStoreArg) {
+    const imagesStore = imagesStoreArg ?? this.db.transaction("images").objectStore("images");
     try {
       return await new Promise(resolve => {
         imagesStore.get(imageHash).onsuccess = event => {

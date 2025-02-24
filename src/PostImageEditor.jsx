@@ -8,9 +8,8 @@ import icons from './icons.js'
 
 import './static/PostImageEditor.css'
 
-function removeImageFunction({fileName, uploadedImages, setUploadedImages, imageBucket}) {
+function removeImageFunction({fileName, uploadedImages, setUploadedImages}) {
   return () => {
-    delete imageBucket.current[fileName];
     const newUploadedImages = {...uploadedImages};
     delete newUploadedImages[fileName];
     setUploadedImages(newUploadedImages);
@@ -24,19 +23,12 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   // That way, we don't have to copy all the image data every time we add an image.
   const { uploadedImages, setUploadedImages } = props;
 
-  const imageBucket = useRef(uploadedImages);
-
-
   const fileUploaderRef = useRef(null);
 
   useImperativeHandle(ref, () => {
     return {
       getImages() {
-        for (const fileName in uploadedImages) {
-          imageBucket.current[fileName].altTextLang = uploadedImages[fileName].altTextLang;
-          imageBucket.current[fileName].altText = uploadedImages[fileName].altText;
-        }
-        return imageBucket.current;
+        return uploadedImages;
       },
     };
   }, [uploadedImages]);
@@ -51,12 +43,12 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
               <li key={fileName}>
                 <Card>
                   <CardHeader>
-                    <Button variant="light" isIconOnly aria-label="Remove" onPress={removeImageFunction({fileName, setUploadedImages, uploadedImages, imageBucket})}>
+                    <Button variant="light" isIconOnly aria-label="Remove" onPress={removeImageFunction({fileName, setUploadedImages, uploadedImages})}>
                       <FontAwesomeIcon icon={icons.circleXmark} size="xl" />
                     </Button>
                   </CardHeader>
                   <CardBody>
-                    <img className="h-[200px] w-auto object-contain" src={imageBucket.current[fileName].data} />
+                    <img className="h-[200px] w-auto object-contain" src={uploadedImages[fileName].data} />
                     <Textarea label="Alt text" placeholder="Describe the image as if you're talking to someone who can't see it." 
                         value={uploadedImages[fileName].altText}
                         onChange={(e) => {
@@ -79,7 +71,7 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
         <label ref={fileUploaderRef} className="post-image-upload block w-full text-wrap" tabIndex="-1">
           <input type="file" className="post-image-upload-input visually-hidden" name="new-image" tabIndex="-1"
             accept="image/*"
-            onChange={(e) => imageUpload({e, imageBucket, uploadedImages, setUploadedImages})}
+            onChange={(e) => imageUpload({e, uploadedImages, setUploadedImages})}
           />
           <span className="icon"><FontAwesomeIcon icon={icons.image} /></span><br />Upload Image
         </label>
@@ -89,17 +81,15 @@ const PostImageEditor = forwardRef(function PostImageEditor(props, ref) {
   );
 });
 
-function imageUpload({e, imageBucket, uploadedImages, setUploadedImages}) {
+function imageUpload({e, uploadedImages, setUploadedImages}) {
   const reader = new FileReader();
   reader.addEventListener("load", (x) => {
     const fileName = e.target.files[0].name;
     const newImage = reader.result;
 
     // XXX intl
-    imageBucket.current[fileName] = { data: newImage, altText: "", altTextLang: "en-US" };
-
-    const imageList = {...uploadedImages};
-    imageList[fileName] = { altText: "", altTextLang: "en-US" };
+    const newUploadedImages = {...uploadedImages};
+    newUploadedImages[fileName] = { data: newImage, altText: "", altTextLang: "en-US" };
     setUploadedImages(imageList);
   });
 

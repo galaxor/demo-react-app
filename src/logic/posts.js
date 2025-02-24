@@ -717,7 +717,13 @@ export class PostsDB {
     await this.db.set('imageVersions', dbImages);
   }
 
-  async getImagesForPost(postUri, versionUpdatedAt) {
+  async getImagesForPost(postUri, versionUpdatedAt, options) {
+    // If they pass true for the getImages option, then we actually get the
+    // images and insert their data urls as {... data}.  Otherwise, we just
+    // leave the hash there and let someone else pull the image data out of the
+    // database (like <ClickableImage> for example).
+    const getImages = typeof options === "undefined"? false : options.getImages;
+    
     const transaction = this.db.db.transaction(["posts", "imageVersions", "images"]);
     const postsStore = transaction.objectStore("posts");
     const imageVersionsStore = transaction.objectStore("imageVersions");
@@ -731,18 +737,36 @@ export class PostsDB {
             resolve({});
           } else {
             try {
-              imageVersionsStore.get([postUri, versionUpdatedAt]).onsuccess = event => {
+              const latestUpdatedAt = post.updatedAt;
+
+              imageVersionsStore.get([postUri, versionUpdatedAt ?? latestUpdatedAt]).onsuccess = async event => {
                 const imageVersion = event.target.result;
                 if (typeof imageVersion === "undefined") {
-                  return {};
+                  resolve({});
                 } else {
-                  resolve(imageVersion.files);
+                  // Do we actually get the image data, or just the hash, and
+                  // let someone else grab the image data?
+                  if (getImages) {
+                    const promises = [];
+                    for (const [fileName, file] of Object.entries(imageVersion.files)) {
+                      const imageHash = file.image;
+                      promises.push(new Promise(async resolve2 => {
+                        imageVersion.files[fileName].data = await this.db.getImageDataUrl(imageHash, imagesStore);
+                        resolve2();
+                      }));
+                    }
+
+                    await Promise.all(promises);
+                    resolve(imageVersion.files);
+                  } else {
+                    resolve(imageVersion.files);
+                  }
                 }
               };
             } catch (error) {
               if (error instanceof DOMException && error.name === "DataError") {
                 // The data didn't exist. No big deal.
-                return undefined;
+                resolve({});
               } else {
                 throw error;
               }
@@ -752,30 +776,12 @@ export class PostsDB {
       } catch (error) {
         if (error instanceof DOMException && error.name === "DataError") {
           // The data didn't exist. No big deal.
-          return undefined;
+          resolve(undefined);
         } else {
           throw error;
         }
       }
     });
-
-    const {latestUpdatedAt, deletedAt} = this.db.get('posts', postUri);
-    if (deletedAt !== null) {
-      return {};
-    }
-
-    const updatedAt = versionUpdatedAt ?? latestUpdatedAt;
-
-    const imageVersions = this.db.get('imageVersions', postUri);
-    if (typeof imageVersions === "undefined") {
-      return {};
-    }
-    const imageVersion = imageVersions[updatedAt];
-    for (const fileName in imageVersion) {
-      imageVersion[fileName].data = this.db.get('images', imageVersion.image)[imageVersion[fileName].image].data;
-    }
-    
-    return imageVersion;
   }
 }
 
