@@ -197,7 +197,7 @@ async function savePost({ user, peopleDB, postsDB, text, onSave, replyingTo, con
     toast(<>Your new post was saved. <Link to={canonicalUrl}>View post.</Link></>, {type: 'success'});
   }
 
-  const images = imageEditorRef.current.getImages();
+  const images = await imageEditorRef.current.getImages();
   await postsDB.attachImages(newPost.uri, images, updatedAt);
 
   newPost.authorPerson = await peopleDB.get(user.handle);
