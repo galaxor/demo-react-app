@@ -38,37 +38,22 @@ export default function PostDetails({children}) {
 
   // Info for the reactions details.
   const [reactionsList, setReactionsList] = useState([]);
-
   const [viewingReaction, setViewingReaction] = useState(document.location.hash);
 
-
   // Info for the boost details.
-  function getNumBoosts() { return postsDB.getNumberOfBoostsOf(post.uri); }
-  function getNumYourBoosts() { return user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0; }
-  const [numBoosts, setNumBoosts] = useState(getNumBoosts());
-  const [numYourBoosts, setNumYourBoosts] = useState(getNumYourBoosts());
+  const [boostsList, setBoostsList] = useState([]);
+  const [quoteBoostsList, setQuoteBoostsList] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const allReactions = await postsDB.getAllReactionsTo(post.uri);
-      setReactionsList(allReactions);
+      postsDB.getAllReactionsTo(post.uri).then(allReactions => setReactionsList(allReactions));
+
+// sort by updated
+// boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
+      postsDB.getBoostsOf(post.uri, {quote: false, getPeople: true}).then(boostPosts => setBoostsList(boostPosts));
+      postsDB.getBoostsOf(post.uri, {quote: true, getPeople: true}).then(quoteBoostPosts => setQuoteBoostsList(quoteBoostPosts));
     })();
   }, []);
-
-  function getBoostPostsList() {
-    const boostPosts = postsDB.getBoostsOf(post.uri);
-
-    // We now have { handle1: boost-row-1, handle2: boost-row-2 }
-    // We want a list of the boostersPosts.
-    const boostPostsList = Object.values(boostPosts)
-      .map(row => row.boostersPost)
-    ;
-
-    boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
-    return boostPostsList;
-  }
-
-  const [boostPostsList, setBoostPostsList] = useState(getBoostPostsList());
 
   // Figure out which tab is active, based on the url.
   const loc = useLocation();
@@ -118,7 +103,7 @@ export default function PostDetails({children}) {
         </Tabs>
       </nav>
     
-      <PostDetailsContext.Provider value={{reactionsList, setReactionsList, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts, boostPostsList, setBoostPostsList}}>
+      <PostDetailsContext.Provider value={{reactionsList, setReactionsList, boostsList, setBoostsList}}>
         {children}
       </PostDetailsContext.Provider>
 

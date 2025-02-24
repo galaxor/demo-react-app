@@ -423,8 +423,9 @@ export class PostsDB {
     const quote = (typeof options === "undefined")? false : options.quote;
     const getPeople = (typeof options === "undefined")? false : options.getPeople;
 
-    const transaction = this.db.db.transaction(["boosts", "posts", "postVersions"]);
+    const transaction = this.db.db.transaction(["boosts", "people", "posts", "postVersions"]);
     const boostsStore = transaction.objectStore("boosts");
+    const peopleStore = transaction.objectStore("people");
     const postsStore = transaction.objectStore("posts");
     const postVersionsStore = transaction.objectStore("postVersions");
     return await new Promise(async resolve => {
@@ -436,6 +437,10 @@ export class PostsDB {
       // (Quote-boosts are not considered, unless the quote option is set, in
       // which case only quote boosts are considered).
       const boostedByPeople = {};
+
+      // If we're doing quote boosts, we want to return each individual boost
+      // post as a post.
+      const quoteBoosts = [];
 
       // Are we trying to find out if a certain person boosted the post?  
       // If not, we will not have "by" set, and we will open a cursor on 
@@ -450,13 +455,32 @@ export class PostsDB {
       cursor.onsuccess = async event => {
         const boostsCursor = event.target.result;
         if (boostsCursor === null) {
-          if (getPeople) {
-            const peopleObjects = boostedByPeople.map(handle => this.db.getFromObjectStore(peopleStore, handle));
-            await Promise.all(peopleObjects);
-            peopleObjects.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
-            resolve(peopleObjects);
+          // We've been through all the boosts and we're ready to return our results.
+          // We've been building up the results in one of two objects:
+          // * If we've been collecting quote-boosts, then `quoteBoosts` is a
+          //   list of post objects, with the versions filled in, and not the
+          //   author or the images.
+          //   We will want to fill in the authors.
+          // * If we haven't been collecting quote boosts, then
+          //   `boostedByPeople` is an object {[handle]: updatedAt}, where
+          //   "updatedAt" is the earliest known boost by that person.
+          //   We will want to return a list of {authorPerson: (person object), updatedAt: (date string)}'s.
+
+          if (quote) {
+            const promises = quoteBoosts.map(quoteBoost => this.db.getFromObjectStore(peopleStore, quoteBoost.author).then(authorPerson => quoteBoost.authorPerson = authorPerson));
+            await Promise.all(promises);
+            resolve(quoteBoosts);
           } else {
-            resolve(Object.keys(boostedByPeople));
+            if (getPeople) {
+              const peoplePromises = Object.keys(boostedByPeople).map(handle => this.db.getFromObjectStore(peopleStore, handle));
+              const peopleObjects = await Promise.all(peoplePromises);
+
+              const boostPosts = peopleObjects.map(person => {return {authorPerson: person, updatedAt: boostedByPeople[person.handle]}; });
+              boostPosts.sort((a, b) => a.updatedAt === b.updatedAt? 0 : a.updatedAt < b.updatedAt? -1 : 1);
+              resolve(boostPosts);
+            } else {
+              resolve(Object.keys(boostedByPeople));
+            }
           }
         } else {
           const boostRow = boostsCursor.value;
@@ -468,8 +492,11 @@ export class PostsDB {
 
             // If the "quote" option is set, only count this if the text is not null.
             // If the "quote" option is not set, only count this if the text is null.
-            if ((postVersion.text === null) === !quote) {
-              boostedByPeople[boostRow.booster] = true;
+            if (quote && postVersion.text !== null) {
+              quoteBoosts.push({...post, ...postVersion});
+            } else if (!quote && postVersion.text === null) {
+              const existingUpdatedAt = boostedByPeople[boostRow.booster] ?? '9999';
+              boostedByPeople[boostRow.booster] = existingUpdatedAt < post.updatedAt? existingUpdatedAt : post.updatedAt;
             }
           }
           boostsCursor.continue();

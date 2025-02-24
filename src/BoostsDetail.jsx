@@ -1,5 +1,6 @@
 import { PeopleDB } from './logic/people.js';
 
+import NumberDisplay from './components/NumberDisplay.jsx'
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import PostDetailsContext from './PostDetailsContext.jsx'
@@ -24,24 +25,24 @@ export default function BoostsDetail() {
 
   const peopleDB = new PeopleDB(db);
 
-  const { numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts, boostPostsList, setBoostPostsList } = useContext(PostDetailsContext);
+  const { boostsList, setBoostsList } = useContext(PostDetailsContext);
 
   // XXX You should be able to search the list of people who boosted the post.
   // Especially since, one day, this might be paged, in case some post has like 29k boosts.
 
   return (
     <>
-    <h2 className="my-5 text-xl font-bold">{numBoosts > 1 || numBoosts === 0 ? 
-      <>Boosted by {numBoosts} people</>
+    <h2 className="my-5 text-xl font-bold">{boostsList.length > 1 || boostsList.length === 0 ? 
+      <>Boosted by <NumberDisplay number={boostsList.length} /> people</>
       :
       <>Boosted by 1 person</>
     }</h2>
 
-    {numBoosts <= 0? "No boosts." :
+    {boostsList.length <= 0? "No boosts." :
       <ul className="boosts-detail">
-      {boostPostsList.map(post => {
+      {boostsList.map(post => {
         const key=encodeURIComponent(post.uri);
-        const authorPerson = peopleDB.get(post.author);
+        const authorPerson = post.authorPerson;
 
         return (
           <li key={key}><PersonInline person={authorPerson} />

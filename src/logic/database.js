@@ -164,10 +164,10 @@ class Database {
   }
 
   // Get an object from an already-open object store.
-  async getFromObjectStore(objectStore, key) {
+  getFromObjectStore(objectStore, key) {
     try {
       const getRequest = objectStore.get(key);
-      return await new Promise(resolve => {
+      return new Promise(resolve => {
         getRequest.onsuccess = event => {
           resolve(event.target.result);
         };
