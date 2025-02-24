@@ -37,7 +37,7 @@ export default function PostDetails({children}) {
 
 
   // Info for the reactions details.
-  const [reactionsList, setReactionsList] = useState(postsDB.getAllReactionsTo(post.uri));
+  const [reactionsList, setReactionsList] = useState([]);
 
   const [viewingReaction, setViewingReaction] = useState(document.location.hash);
 
@@ -47,6 +47,13 @@ export default function PostDetails({children}) {
   function getNumYourBoosts() { return user? postsDB.getNumberOfBoostsOf(post.uri, {by: user.handle}) : 0; }
   const [numBoosts, setNumBoosts] = useState(getNumBoosts());
   const [numYourBoosts, setNumYourBoosts] = useState(getNumYourBoosts());
+
+  useEffect(() => {
+    (async () => {
+      const allReactions = await postsDB.getAllReactionsTo(post.uri);
+      setReactionsList(allReactions);
+    })();
+  }, []);
 
   function getBoostPostsList() {
     const boostPosts = postsDB.getBoostsOf(post.uri);

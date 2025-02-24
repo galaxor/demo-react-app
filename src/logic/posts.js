@@ -305,47 +305,62 @@ export class PostsDB {
     return await this.getReactionsTo(postURI, {by: personHandle});
   }
 
-  getAllReactionsTo(postURI) {
-    const totals = Object.values(this.db.get('reactions')
-      .filter(reaction => reaction.reactingTo === postURI)
-      .reduce((reactionsList, reaction) => {
-        const key = [reaction.type, reaction.unicode, reaction.reactName, reaction.reactServer, reaction.reactURL].join(':');
+  async getAllReactionsTo(postURI) {
+    const transaction = this.db.db.transaction(["reactions", "people"]);
+    const reactionsStore = transaction.objectStore("reactions");
+    const peopleStore = transaction.objectStore("people");
 
-        if (typeof reactionsList[key] === "undefined") {
-          reactionsList[key] = {...reaction, reactors: [this.db.get('people', reaction.reactorHandle)]};
+    return new Promise(resolve => {
+      const totals = {};
+      const people = {};
+      reactionsStore.index("reactingTo").openCursor(postURI).onsuccess = async event => {
+        const cursor = event.target.result;
+        if (cursor === null) {
+          const reactionsList = Object.values(totals);
+          // At this point, the list is:
+          // [{type, unicode, reactName, reactServer, reactURL, altText, createdAt, reactors: [<person-object>, ...]}]
+
+          // For the detail view, we don't need to ensure that Likes are represented if there are 0 of them.
+
+          // We want to sort the oldest one at the top.
+          // That is, we want it in the order of "when was the first time a person used this react".
+          // Except we want likes to always be at the top.
+          reactionsList.sort((a, b) => {
+            if (a.type === "like") { return -1; }
+            if (b.type === "like") { return 1; }
+            if (a.createdAt === b.createdAt) { return 0; }
+            if (a.createdAt > b.createdAt) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+
+          resolve(reactionsList);
         } else {
-          reactionsList[key].reactors.push(this.db.get('people', reaction.reactorHandle));
-          if (reaction.createdAt < reactionsList[key].createdAt) {
-            reactionsList[key].createdAt = reaction.createdAt;
+          const reaction = cursor.value;
+          const key = `${reaction.type}:${reaction.unicode}:${reaction.reactName}:${reaction.reactServer}:${reaction.reactURL}`;
+          const reactorHandle = reaction.reactorHandle;
+          if (typeof totals[key] === "undefined") {
+            totals[key] = {...reaction};
+            delete totals[key].reactorHandle;
+            totals[key].reactors = [];
+          } else if (reaction.createdAt < totals[key].createdAt) {
+            totals[key].createdAt = reaction.createdAt;
           }
-        } 
 
-        // At this point, the list is:
-        // {<key>: {type, unicode, reactName, reactServer, reactURL, altText, createdAt, reactors: [<person-object>, ...]}}
-        return reactionsList;
-      }, {}
-    ));
+          // We're caching the people who reacted, so that if someone gave
+          // multiple reactions, we don't have to go to the database for each
+          // one to get their person object.
+          if (typeof people[reactorHandle] === "undefined") {
+            people[reactorHandle] = await this.db.getFromObjectStore(peopleStore, reactorHandle);
+          }
+          totals[key].reactors.push(people[reactorHandle]);
 
-    // At this point, the list is:
-    // [{type, unicode, reactName, reactServer, reactURL, altText, createdAt, reactors: [<person-object>, ...]}]
-
-    // For the detail view, we don't need to ensure that Likes are represented if there are 0 of them.
-
-    // We want to sort the oldest one at the top.
-    // That is, we want it in the order of "when was the first time a person used this react".
-    // Except we want likes to always be at the top.
-    totals.sort((a, b) => {
-      if (a.type === "like") { return -1; }
-      if (b.type === "like") { return 1; }
-      if (a.createdAt === b.createdAt) { return 0; }
-      if (a.createdAt > b.createdAt) {
-        return 1;
-      } else {
-        return -1;
-      }
+          cursor.continue();
+        }
+      };
     });
-
-    return totals;
   }
 
   async setReaction({reactorHandle, reactingTo, reaction, createdAt, newValue}) {
@@ -403,35 +418,10 @@ export class PostsDB {
     });
   }
 
-  getBoostsOf(uri) {
-    // This will return the most recent boost of this post by each person.
-    // (Quote-boosts are not considered).
-    return this.db.get('boosts')
-      .filter(row => row.boostedPost===uri)
-      .reduce((mostRecentByEachPerson, boost) => {
-        const boostersPost = this.get(boost.boostersPost);
-
-        // If it's a quote-boost, make no changes.
-        if (boostersPost.text !== null) { return mostRecentByEachPerson; }
-
-        if (typeof mostRecentByEachPerson[boost.booster] === "undefined") {
-          boost.boostersPost = boostersPost;
-          boost.createdAt = boostersPost.updatedAt;
-          mostRecentByEachPerson[boost.booster] = boost;
-        } else {
-          if (mostRecentByEachPerson[boost.booster].createdAt < boostersPost.updatedAt) {
-            mostRecentByEachPerson[boost.booster].boostersPost = boost;
-            mostRecentByEachPerson[boost.booster].createdAt = boostersPost.updatedAt;
-          }
-        }
-        return mostRecentByEachPerson;
-      }, {})
-    ;
-  }
-
-  async getNumberOfBoostsOf(uri, options) {
+  async getBoostsOf(uri, options) {
     const by = (typeof options === "undefined")? undefined : options.by;
     const quote = (typeof options === "undefined")? false : options.quote;
+    const getPeople = (typeof options === "undefined")? false : options.getPeople;
 
     const transaction = this.db.db.transaction(["boosts", "posts", "postVersions"]);
     const boostsStore = transaction.objectStore("boosts");
@@ -460,7 +450,14 @@ export class PostsDB {
       cursor.onsuccess = async event => {
         const boostsCursor = event.target.result;
         if (boostsCursor === null) {
-          resolve(Object.keys(boostedByPeople).length);
+          if (getPeople) {
+            const peopleObjects = boostedByPeople.map(handle => this.db.getFromObjectStore(peopleStore, handle));
+            await Promise.all(peopleObjects);
+            peopleObjects.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+            resolve(peopleObjects);
+          } else {
+            resolve(Object.keys(boostedByPeople));
+          }
         } else {
           const boostRow = boostsCursor.value;
           const post = await this.db.getFromObjectStore(postsStore, boostRow.boostersPost);
@@ -479,6 +476,10 @@ export class PostsDB {
         }
       };
     });
+  }
+
+  async getNumberOfBoostsOf(uri, options) {
+    return (await this.getBoostsOf(uri, options)).length;
   }
 
   async getNumberOfQuoteBoostsOf(uri, options) {
