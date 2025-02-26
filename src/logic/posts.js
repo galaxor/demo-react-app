@@ -514,34 +514,97 @@ export class PostsDB {
     return await this.getNumberOfBoostsOf(uri, {by, quote: true});
   }
 
-  removeBoostsBy({boostedPostUri, boosterHandle}) {
-    // Remove boosts of this post made by this person.
-    // Don't touch quote-boosts.
-    const boostsToRemove = this.db.get('boosts')
-      .filter(boost => {
-        const boostersPost = this.get( boost.boostersPost);
-        if (boost.booster === boosterHandle && boost.boostedPost === boostedPostUri && boostersPost.text === null) {
-          return true;
+  // You can optionally provide the boostsStoreArg, postsStoreArg, and
+  // postVersionsStoreArg if you already have a transaction open.
+  // The this.boost() function will do this to ensure that the old boosts are
+  // removed and the new one is added in the same transaction.
+  removeBoostsBy({boostedPostUri, boosterHandle, boostsStoreArg, postsStoreArg, postVersionsStoreArg}) {
+    const transaction = (!boostsStoreArg || !postsStoreArg)?
+      this.db.db.transaction(["boosts", "posts", "postVersions"], "readwrite")
+      : undefined;
+
+    const boostsStore = boostsStoreArg ?? transaction.objectStore("boosts");
+    const postsStore = postsStoreArg ?? transaction.objectStore("posts");
+    const postVersionsStore = postVersionsStoreArg ?? transaction.objectStore("postVersions");
+
+    return new Promise(resolve => {
+      const boostsToRemove = [];
+      const promises = [];
+
+      boostsStore.index("booster,boostedPost").openCursor([boosterHandle, boostedPostUri]).onsuccess = event => {
+        const cursor = event.target.result;
+        if (cursor === null) {
+          // Wait for all the checks to resolve, to know we've got the
+          // complete list of boosts that need to be removed.
+          Promise.all(promises).then(() => {
+            const promisesOfRemoval = [];
+
+            // Remove the boosts.
+            for (const [boostKey, boostersPost] of boostsToRemove) {
+              promisesOfRemoval.push(new Promise(resolve2 => {
+                postVersionsStore.delete([boostersPost.uri, boostersPost.updatedAt]).onsuccess = event => {
+                  resolve2();
+                };
+              }));
+
+              promisesOfRemoval.push(new Promise(resolve2 => {
+                postsStore.delete(boostersPost.uri).onsuccess = event => {
+                  resolve2();
+                };
+              }));
+
+              promisesOfRemoval.push(new Promise(resolve2 => {
+                boostsStore.delete(boostKey).onsuccess = event => {
+                  resolve2();
+                };
+              }));
+            }
+
+            // We are done.
+            Promise.all(promisesOfRemoval).then(() => resolve());
+          });
         } else {
-          return false;
+          // We only want to remove the boost if it's not a quote-boost.  To
+          // find out if it's a quote-boost, we need to get the booster's post,
+          // and its postVersion.  We'll check the text of the postVersion.  If
+          // it's null, this is not a quote boost, so we want to remove it.
+          const boostKey = cursor.primaryKey;
+          const boostersPostUri = cursor.value.boostersPost;
+          
+          promises.push(new Promise(resolve2 => {
+            postsStore.get(boostersPostUri).onsuccess = event => {
+              const boostersPost = event.target.result;
+              const updatedAt = boostersPost.updatedAt;
+              postVersionsStore.get([boostersPost.uri, updatedAt]).onsuccess = event => {
+                const postVersion = event.target.result;
+                if (postVersion.text === null) {
+                  boostsToRemove.push([boostKey, boostersPost]);
+                  resolve2();
+                } else {
+                  // If it's not a plain boost, we don't have to wait for it to
+                  // delete; resolve right away.
+                  resolve2();
+                }
+              };
+            };
+          }));
+          cursor.continue();
         }
-      })
-    ;
-
-    boostsToRemove.forEach(boostToRemove => {
-      this.db.delRow('boosts', boost => 
-          boost.booster === boostToRemove.booster 
-          && boost.boostedPost===boostToRemove.boostedPost 
-          && boost.boostersPost === boostToRemove.boostersPost
-      );
-
-      this.db.del('posts', boostToRemove.boostersPost);
+      };
     });
   }
 
-  boost({boostedPostUri, boosterHandle}) {
+  async boost({boostedPostUri, boosterHandle}) {
+    // I'd love to remove and then add in the same transaction, but I guess awaiting closes the transaction??
+    await this.removeBoostsBy({boosterHandle, boostedPostUri});
+
+    const transaction = this.db.db.transaction(["boosts", "posts", "postVersions"], "readwrite")
+    const boostsStore = transaction.objectStore("boosts");
+    const postsStore = transaction.objectStore("posts");
+    const postVersionsStore = transaction.objectStore("postVersions");
+
     // Remove any old (non-quote) boosts.
-    this.removeBoostsBy({boostedPostUri, boosterHandle});
+    const promises = [];
 
     // Make a new boost.
     const newPostUri = boosterHandle+'/'+crypto.randomUUID();
@@ -557,27 +620,43 @@ export class PostsDB {
       conversationId: null,
       local: true,
     };
-    this.db.set('posts', newPostUri, newBoostersPost);
+
+    promises.push(new Promise(resolve => {
+      postsStore.add(newBoostersPost).onsuccess = event => {
+        resolve();
+      };
+    }));
 
     const newBoostersPostVersion = {
-      [createdAt]: {
-        uri: newPostUri,
-        updatedAt: createdAt,
-        sensitive: false,
-        spoilerText: null,
-        language: null, // There's no text, so I don't know what to put here.  Null?
-        type: "text",
-        text: null,
-      },
+      uri: newPostUri,
+      updatedAt: createdAt,
+      sensitive: false,
+      spoilerText: null,
+      language: null, // There's no text, so I don't know what to put here.  Null?
+      type: "text",
+      text: null,
     };
-    this.db.set('postVersions', newPostUri, newBoostersPostVersion);
+
+    promises.push(new Promise(resolve => {
+      postVersionsStore.add(newBoostersPostVersion).onsuccess = event => {
+        resolve();
+      };
+    }));
 
     const newBoost = {
       booster: boosterHandle,
       boostersPost: newPostUri,
       boostedPost: boostedPostUri,
     };
-    this.db.addRow('boosts', newBoost);
+
+    promises.push(new Promise(resolve => {
+      boostsStore.add(newBoost).onsuccess = event => {
+        resolve();
+      };
+    }));
+
+
+    return Promise.all(promises);
   }
 
   quoteBoost({boostersPostUri, boostedPostUri, boosterHandle}) {
