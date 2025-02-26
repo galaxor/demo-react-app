@@ -666,7 +666,7 @@ export class PostsDB {
       boostedPost: boostedPostUri,
     };
 
-    this.db.addRow('boosts', newBoost);
+    return this.db.set('boosts', newBoost);
   }
 
   getQuoteBoostsOf(uri) {
