@@ -678,7 +678,7 @@ export class PostsDB {
     ;
   }
 
-  addPost(post) {
+  async addPost(post) {
     const postVersion = {
       uri: post.uri,
       updatedAt: post.updatedAt,
@@ -696,14 +696,16 @@ export class PostsDB {
     delete newPost.type;
     delete newPost.text;
 
-    this.db.set('posts', newPost);
-    this.db.set('postVersions', postVersion);
+    await Promise.all([
+      this.db.set('posts', newPost),
+      this.db.set('postVersions', postVersion),
+    ]);
     return this.get(post.uri);
   }
 
-  updatePost(post) {
+  async updatePost(post) {
     // It looks like we can just use addPost, in the current database implementation.
-    this.addPost(post);
+    await this.addPost(post);
     return this.get(post.uri);
   }
 
