@@ -27,6 +27,9 @@ export default function Thread() {
     : threadGymnastics(originatingPost)
   ;
 
+  // Toggle this to reload the thread.
+  const [threadReload, setThreadReload] = useState(false);
+
   useEffect(() => {
     (async () => {
       const newOriginatingPost =  (mainPost.conversationId === mainPost.uri || !mainPost.conversationId)?
@@ -38,10 +41,8 @@ export default function Thread() {
       await postsDB.getRepliesRecursive(newOriginatingPost);
 
       setOriginatingPost(newOriginatingPost);
-
-      threadGymnastics(newOriginatingPost);
     })();
-  }, []);
+  }, [threadReload]);
 
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
@@ -105,6 +106,19 @@ export default function Thread() {
   // * Thread remainder (stuff that comes after the main post and its replies, in thread order)
 
   const mainPostIndex = threadOrder.findIndex(threadedPost => threadedPost.post.uri === mainPost.uri);
+
+  // If we've navigated to a new thread, then we'll have the originatingPost of
+  // the old thread, but the mainPost of the new thread.  We won't be able to
+  // find mainPostIndex, and we'll error out.
+  // Detect that case, and clear out originatingPost and call for it to be
+  // reloaded.
+  // This can happen if we're using the back and forward buttons to navigate
+  // between different threads, or if we clicked on a quote-boosted post.
+  if (mainPostIndex === -1) {
+    setOriginatingPost(null);
+    setThreadReload(!threadReload);
+    return "Loading...";
+  }
 
   // The replies to the main post consist of all posts after the main post,
   // which have the main post listed among the "inReplyTo".
