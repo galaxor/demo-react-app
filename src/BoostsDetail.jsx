@@ -4,7 +4,6 @@ import NumberDisplay from './components/NumberDisplay.jsx'
 import PersonInline from './PersonInline.jsx';
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx';
 import PostDetailsContext from './PostDetailsContext.jsx'
-import DatabaseContext from './DatabaseContext.jsx'
 import LanguageContext from './LanguageContext.jsx'
 import UserContext from './UserContext.jsx'
 
@@ -21,9 +20,6 @@ export default function BoostsDetail() {
 
   const post = useLoaderData().post;
   const languageContext = useContext(LanguageContext);
-  const db = useContext(DatabaseContext);
-
-  const peopleDB = new PeopleDB(db);
 
   const { boostsList, setBoostsList } = useContext(PostDetailsContext);
 

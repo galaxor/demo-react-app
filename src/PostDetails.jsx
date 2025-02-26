@@ -103,7 +103,7 @@ export default function PostDetails({children}) {
         </Tabs>
       </nav>
     
-      <PostDetailsContext.Provider value={{reactionsList, setReactionsList, boostsList, setBoostsList}}>
+      <PostDetailsContext.Provider value={{reactionsList, setReactionsList, boostsList, setBoostsList, quoteBoostsList, setQuoteBoostsList}}>
         {children}
       </PostDetailsContext.Provider>
 
