@@ -108,7 +108,7 @@ export class PostsDB {
   }
 
   getVersions(uri) {
-    const transaction = this.db.db.transaction(["people", "posts", "postVersions", "imageVersions"]);
+    const transaction = this.db.db.transaction(["people", "posts", "postVersions", "imageVersions", "images"]);
     const peopleStore = transaction.objectStore("people");
     const postsStore = transaction.objectStore("posts");
     const postVersionsStore = transaction.objectStore("postVersions");
@@ -141,13 +141,22 @@ export class PostsDB {
             });
           } else {
             const postVersion = cursor.value;
-            versions[postVersion.updatedAt] = {...post, ...postVersion};
             promises.push(new Promise(resolve2 => {
-              imageVersionsStore.get([uri, postVersion.updatedAt]).onsuccess = event => {
-                const imageVersion = event.target.result;
-                postVersion.images = imageVersion.files;
-                resolve2();
-              };
+              try {
+                imageVersionsStore.get([uri, postVersion.updatedAt]).onsuccess = event => {
+                  const imageVersion = event.target.result;
+                  postVersion.images = imageVersion.files;
+                  versions[postVersion.updatedAt] = {...post, ...postVersion};
+                  resolve2();
+                };
+              } catch (e) {
+                if (error instanceof DOMException && error.name === "DataError") {
+                  // There wasn't an imageVersion to go with this postVersion.  No big deal.
+                  postVersion.images = {};
+                  versions[postVersion.updatedAt] = {...post, ...postVersion};
+                  resolve2();
+                }
+              }
             }));
             cursor.continue();
           }
@@ -433,7 +442,7 @@ export class PostsDB {
                   resolve2(event.target.result);
                 };
               } catch (error) {
-                if (false || error instanceof DOMException && error.name === "DataError") {
+                if (error instanceof DOMException && error.name === "DataError") {
                   // The data didn't exist. No big deal.
                   resolve2(undefined);
                 } else {

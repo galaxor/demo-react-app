@@ -63,7 +63,7 @@ export default function History() {
 
       const humanReadableTime = <time dateTime={updatedAt}><ReactTimeAgo date={new Date(updatedAt)} locale={languageContext} />, {fullDateTime.format(new Date(updatedAt))}</time>;
 
-      const imageBucket = postsDB.getImagesForPost(postVersion.uri, postVersion.updatedAt);
+      const imageBucket = postVersion.images;
 
       return ([
         updatedAt,
@@ -175,6 +175,7 @@ function ImageChangeTable({key, changeType, caption, imageHashes, postVersion, p
   // marked postVersion will always be the one we look for images in.  That
   // way, this function doesn't have to know if we're displaying an image
   // removal, addition, or unchanged.
+
   return (
     <table className={`image-change change-${changeType}`} key={key}>
       <caption className={`change-${changeType}`}>{caption}</caption>
@@ -196,7 +197,7 @@ function ImageChangeTable({key, changeType, caption, imageHashes, postVersion, p
               <td className="image">
                 <ClickableImage 
                   fileName={postVersion.imagesByHash[imageHash].fileName}
-                  imageData={postVersion.imagesByHash[imageHash].data}
+                  imageHash={imageHash}
                   altText={postVersion.imagesByHash[imageHash].altText}
                   altTextLang={postVersion.imagesByHash[imageHash].altTextLang}
                 />
