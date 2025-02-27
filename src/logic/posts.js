@@ -108,7 +108,7 @@ export class PostsDB {
   }
 
   getVersions(uri) {
-    const transaction = this.db.db.transaction(["people", "posts", "postVersions", "imageVersions", "images"]);
+    const transaction = this.db.db.transaction(["people", "posts", "postVersions", "imageVersions"]);
     const peopleStore = transaction.objectStore("people");
     const postsStore = transaction.objectStore("posts");
     const postVersionsStore = transaction.objectStore("postVersions");
