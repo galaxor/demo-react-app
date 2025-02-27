@@ -1,8 +1,6 @@
-import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/avatar";
 import { Button } from "@nextui-org/button"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {Form} from "@nextui-org/form";
-import hashSum from 'hash-sum'
 import {Input, Textarea} from "@nextui-org/input";
 import { toast } from 'react-toastify'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -16,16 +14,21 @@ import {
   ModalFooter
 } from "@nextui-org/modal";
 
+import Avatar from './components/Avatar.jsx'
 import AvatarUpload from './AvatarUpload.jsx';
 import DarkModeContext from "./DarkModeContext.jsx";
+import DatabaseContext from './DatabaseContext.jsx'
 import icons from './icons.js'
 import UserContext from './UserContext.jsx';
 
-import User from './logic/user.js';
+import UserDB from './logic/user.js';
 
 import './static/ProfileEdit.css';
 
 export default function ProfileEdit() {
+  const db = useContext(DatabaseContext);
+  const userDB = new UserDB(db);
+
   const { user, setUser } = useContext(UserContext);
   const [darkMode, setDarkMode] = useContext(DarkModeContext);
   const imageEditorDisclosure = useDisclosure();
@@ -36,7 +39,6 @@ export default function ProfileEdit() {
 
   const [avatar, setAvatar] = useState(null);
   const avatarEditorRef = useRef({});
-  const avatarFallbackColor = user? hashSum(user.handle).substring(0,6).toUpperCase() : '000000';
 
   const onAvatarChange = useCallback(newAvatar => (newAvatar? setAvatar(newAvatar) : ""), []);
 
@@ -90,20 +92,18 @@ export default function ProfileEdit() {
     <main className="profile-edit">
     <h1>Edit Your Profile</h1>
 
-    <Form ref={formRef} id="profile-edit" className="w-full" onSubmit={(e) => {
+    <Form ref={formRef} id="profile-edit" className="w-full" onSubmit={async (e) => {
       e.preventDefault();
 
-      User.setBio(bioInputRef.current.value);
+      await userDB.setBio(bioInputRef.current.value);
+      await userDB.setName(nameInputRef.current.value);
 
-      // Every call to User.setWhatever changes the database and then returns a fresh copy of the user variable.
-      // But it's up to us to notify react that there's been a change.
-      // We only do that when we've done the last of the changes we want to do.
-      // We keep that fresh copy we got from the database, and setUser to it.
-      const newUser = User.setName(nameInputRef.current.value);
+      const newUser = await userDB.loggedInUser();
+
       setUser(newUser);
 
       toast("Profile Updated", {type: 'success'});
-      navigate("/profile");
+      // navigate("/profile");
     }}>
       <div id="profile-fields" className="w-full">
 
@@ -114,10 +114,7 @@ export default function ProfileEdit() {
             <span style={{textShadow: "hsl(var(--nextui-background)) 0 0 5px"}}>Change Avatar Image</span>
           </div>
 
-          <Avatar isBordered radius="full" className="shrink-0 w-[200px] h-[200px]" src={user.avatar} name={user.displayName} 
-            style={{'--avatar-bg': '#'+avatarFallbackColor}}
-            classNames={{base: "bg-[--avatar-bg]"}}
-          />
+          <Avatar name={user.displayName} handle={user.handle} imageHash={user.avatar} className="shrink-0 w-[200px] h-[200px]" />
         </Button>
 
         <Modal isOpen={imageEditorDisclosure.isOpen} onOpenChange={imageEditorDisclosure.onOpenChange}
@@ -137,25 +134,24 @@ export default function ProfileEdit() {
             </ModalBody>
 
             <ModalFooter>
-              <Button variant="solid" color="primary" onPress={() => {
+              <Button variant="solid" color="primary" onPress={async () => {
                 // The rest of the avatar data comes through the state every time we make
                 // an update, but the cropped version, we have to ask for specifically.
                 if (avatarEditorRef && avatarEditorRef.current) {
                   const editedAvatar = avatarEditorRef.current.getImage();
-                  User.setAvatar(editedAvatar);
+                  await userDB.setAvatar(editedAvatar);
                 }
 
-                User.setAvatarOrig(avatar.avatarOrig);
-                User.setAvatarAltText(avatar.avatarAltText);
-                User.setAvatarPosition(avatar.avatarPosition);
-                User.setAvatarRotate(avatar.avatarRotate);
+                await userDB.setAvatarOrig(avatar.avatarOrig);
+                await userDB.setAvatarAltText(avatar.avatarAltText);
+                await userDB.setAvatarPosition(avatar.avatarPosition);
+                await userDB.setAvatarRotate(avatar.avatarRotate);
+                await userDB.setAvatarScale(avatar.avatarScale);
 
-                const newUser = User.setAvatarScale(avatar.avatarScale);
+                await Promise.all(promises);
 
-                // Every call to User.setWhatever changes the database and then returns a fresh copy of the user variable.
-                // But it's up to us to notify react that there's been a change.
-                // We only do that when we've done the last of the changes we want to do.
-                // We keep that fresh copy we got from the database, and setUser to it.
+                const newUser = await userDB.loggedInUser();
+
                 setUser(newUser);
 
                 toast("Profile Updated", {type: 'success'});
