@@ -211,7 +211,7 @@ function ImageChangeTable({key, changeType, caption, imageHashes, postVersion, p
               <td className="image">
                 <ClickableImage 
                   fileName={postVersion.imagesByHash[imageHash].fileName}
-                  imageData={postVersion.imagesByHash[imageHash].data}
+                  imageHash={imageHash}
                   altText={postVersion.imagesByHash[imageHash].altText}
                   altTextLang={postVersion.imagesByHash[imageHash].altTextLang}
                 />
