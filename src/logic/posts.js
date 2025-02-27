@@ -544,6 +544,10 @@ export class PostsDB {
     });
   }
 
+  getQuoteBoostsOf(uri, options) {
+    return this.getBoostsOf(uri, {...options, quote: true});
+  }
+
   async getNumberOfBoostsOf(uri, options) {
     return (await this.getBoostsOf(uri, options)).length;
   }
@@ -706,15 +710,6 @@ export class PostsDB {
     };
 
     return this.db.set('boosts', newBoost);
-  }
-
-  getQuoteBoostsOf(uri) {
-    return this.db.boosts.filter(boost => boost.boostedPost === uri)
-      .map(boost => { return {...boost, boostersPost: this.get(boost.boostersPost)}; })
-      
-      // Get rid of the boosts that are not quote-boosts.
-      .filter(boost => boost.boostersPost.text !== null)
-    ;
   }
 
   async addPost(post) {

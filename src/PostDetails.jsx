@@ -51,7 +51,7 @@ export default function PostDetails({children}) {
 // sort by updated
 // boostPostsList.sort((a, b) => a.updatedAt===b.updatedAt? 0 : (a.updatedAt < b.updatedAt)? 1 : 0);
       postsDB.getBoostsOf(post.uri, {quote: false, getPeople: true}).then(boostPosts => setBoostsList(boostPosts));
-      postsDB.getBoostsOf(post.uri, {quote: true, getPeople: true}).then(quoteBoostPosts => setQuoteBoostsList(quoteBoostPosts));
+      postsDB.getQuoteBoostsOf(post.uri, {getPeople: true}).then(quoteBoostPosts => setQuoteBoostsList(quoteBoostPosts));
     })();
   }, []);
 
