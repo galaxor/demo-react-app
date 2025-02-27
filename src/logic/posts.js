@@ -108,22 +108,52 @@ export class PostsDB {
   }
 
   getVersions(uri) {
-    const post = this.db.get('posts', uri);
+    const transaction = this.db.db.transaction(["people", "posts", "postVersions", "imageVersions"]);
+    const peopleStore = transaction.objectStore("people");
+    const postsStore = transaction.objectStore("posts");
+    const postVersionsStore = transaction.objectStore("postVersions");
+    const imageVersionsStore = transaction.objectStore("imageVersions");
 
-    if (post.deletedAt === null) {
-      post.authorPerson = this.db.get('people', post.author);
-      post.boostedPosts = this.getBoostedPosts(uri);
-      const versions = this.db.get('postVersions', uri);
+    return new Promise(resolve => {
+      postsStore.get(uri).onsuccess = event => {
+        const post = event.target.result;
 
-      const postWithVersions = {};
-      for (const updatedAt in versions) {
-        postWithVersions[updatedAt] = {...post, ...versions[updatedAt], updatedAt};
-      }
+        if (post.deletedAt !== null) {
+          resolve({});
+        }
 
-      return postWithVersions;
-    } else {
-      return this.db.nullPost();
-    }
+        const promises = [];
+        promises.push(new Promise(resolve => {
+          peopleStore.get(post.author).onsuccess = event => {
+            const person = event.target.result;
+            post.authorPerson = person;
+            resolve();
+          };
+        }));
+  
+
+        const versions = {};
+        postVersionsStore.index("uri").openCursor(uri).onsuccess = event => {
+          const cursor = event.target.result;
+          if (cursor === null) {
+            Promise.all(promises).then(() => {
+              resolve(versions);
+            });
+          } else {
+            const postVersion = cursor.value;
+            versions[postVersion.updatedAt] = {...post, ...postVersion};
+            promises.push(new Promise(resolve2 => {
+              imageVersionsStore.get([uri, postVersion.updatedAt]).onsuccess = event => {
+                const imageVersion = event.target.result;
+                postVersion.images = imageVersion.files;
+                resolve2();
+              };
+            }));
+            cursor.continue();
+          }
+        };
+      };
+    });
   }
 
   async deletePost(uri) {

@@ -4,7 +4,7 @@ import { diffArrays, diffWordsWithSpace } from 'diff'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import {Fragment} from 'react'
 
@@ -26,7 +26,15 @@ export default function History() {
 
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
-  const versions = postsDB.getVersions(post.uri);
+
+  useEffect(() => {
+    (async () => {
+      const theVersions = await postsDB.getVersions(post.uri);
+      setVersions(theVersions);
+    })();
+  }, []);
+
+  const [versions, setVersions] = useState({});
 
   const [selectedKeys, setSelectedKeys] = useState();
 
