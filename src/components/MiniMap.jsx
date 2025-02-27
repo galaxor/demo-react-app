@@ -11,6 +11,13 @@ export default function MiniMap({threadOrder}) {
   // Set the heights of the minimap posts based on the heights of the real posts.
   useEffect(() => {
     const threadMain = document.getElementById('thread-main');
+    if (!threadMain) {
+      // It would spew errors as you moved from a Thread page to a details page.
+      // The errors were related to threadMain not existing.  Let's just
+      // quietly exit in that situation.
+      return;
+    }
+
     const threadHeight = threadMain.getBoundingClientRect().height;
     const postHeights = {};
 
@@ -158,6 +165,13 @@ function MiniMapNode({post, threadHandles}) {
 
 function getMinimapThumbDimensions() {
   const threadMain = document.getElementById('thread-main');
+  if (!threadMain) {
+    // It would spew errors as you moved from a Thread page to a details page.
+    // The errors were related to threadMain not existing.  Let's just
+    // quietly exit in that situation.
+    return {top: 0, height: 0};
+  }
+
   const threadHeight = threadMain.offsetHeight;
   const threadTop = threadMain.offsetTop;
   const scrollY = window.scrollY;
