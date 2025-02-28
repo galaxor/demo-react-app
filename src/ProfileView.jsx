@@ -45,6 +45,8 @@ export default function ProfileView({handle, loggedInUser, children }) {
   const [whoFollowsThem, setWhoFollowsThem] = useState([]);
   const [whoDoTheyFollow, setWhoDoTheyFollow] = useState([]);
 
+  const [avatarImage, setAvatarImage] = useState("");
+
   const db = useContext(DatabaseContext);
   const peopleDB = new PeopleDB(db);
 
@@ -53,8 +55,9 @@ export default function ProfileView({handle, loggedInUser, children }) {
       if (user) { setYouFollowThem(await peopleDB.doesXFollowY(user.handle, person.handle)); }
       setWhoFollowsThem(await peopleDB.whoFollowsThem(person.handle));
       setWhoDoTheyFollow(await peopleDB.whoDoTheyFollow(person.handle));
+      setAvatarImage(await db.getImageDataUrl(person.avatar));
     })();
-  }, [user]);
+  }, [user, person]);
 
   const numFollowers = Intl.NumberFormat(language, {
     notation: "compact",
@@ -111,7 +114,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
             {(onClose) => 
               <>
               <ModalBody>
-                <Link2 href={person.avatar} isExternal><img src={person.avatar} alt={person.avatarAltText} /></Link2>
+                <Link2 href={person.avatar} isExternal><img src={avatarImage} alt={person.avatarAltText} /></Link2>
                 {person.avatarAltText? <div className="whitespace-pre-line">{person.avatarAltText}</div> : ""}
               </ModalBody>
               </>
