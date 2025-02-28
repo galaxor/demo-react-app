@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import Avatar2 from './components/Avatar2.jsx'
+import Avatar from './components/Avatar.jsx'
 import DatabaseContext from './DatabaseContext.jsx';
 import icons from './icons.js'
 import UserContext from './UserContext.jsx';
@@ -42,7 +42,7 @@ export default function PersonInline({person, onClick, onHover, onUnHover}) {
   return (
     <Link className="person-inline h-card" onClick={onClick} to={'/people/'+person.handle}>
       <div className="flex gap-2">
-        <Avatar2 person={person} />
+        <Avatar person={person} />
         {" "}
         <div className="name-handle flex flex-col items-start justify-center">
           <bdi className="p-name">{person.displayName}</bdi> {" "}

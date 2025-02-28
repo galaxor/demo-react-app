@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { Link as Link2 } from "@nextui-org/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import Avatar2 from './components/Avatar2.jsx'
+import Avatar from './components/Avatar.jsx'
 import DarkModeSwitcher from './DarkModeSwitcher.jsx'
 import icons from './icons.js'
 import NotificationBell from './NotificationBell.jsx';
@@ -22,7 +22,7 @@ export default function UserSection({darkMode, setDarkMode}) {
           <NotificationBell />
         </li>
         <li id="user-name"><NavLink to="/profile">{user.avatar? 
-          <Avatar2 person={user} />
+          <Avatar person={user} />
           :
           ""}
         </NavLink></li>

@@ -14,7 +14,7 @@ import {
   ModalFooter
 } from "@nextui-org/modal";
 
-import Avatar2 from './components/Avatar2.jsx'
+import Avatar from './components/Avatar.jsx'
 import AvatarUpload from './AvatarUpload.jsx';
 import DarkModeContext from "./DarkModeContext.jsx";
 import DatabaseContext from './DatabaseContext.jsx'
@@ -83,7 +83,7 @@ export default function ProfileEdit() {
             <span style={{textShadow: "hsl(var(--nextui-background)) 0 0 5px"}}>Change Avatar Image</span>
           </div>
 
-          <Avatar2 person={user} className="shrink-0 w-[200px] h-[200px]" />
+          <Avatar person={user} className="shrink-0 w-[200px] h-[200px]" />
         </Button>
 
         <Modal isOpen={imageEditorDisclosure.isOpen} onOpenChange={imageEditorDisclosure.onOpenChange}
