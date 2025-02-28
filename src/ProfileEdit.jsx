@@ -14,7 +14,7 @@ import {
   ModalFooter
 } from "@nextui-org/modal";
 
-import Avatar from './components/Avatar.jsx'
+import Avatar2 from './components/Avatar2.jsx'
 import AvatarUpload from './AvatarUpload.jsx';
 import DarkModeContext from "./DarkModeContext.jsx";
 import DatabaseContext from './DatabaseContext.jsx'
@@ -45,45 +45,14 @@ export default function ProfileEdit() {
   // I copy/pasted stuff from the AvatarUpload component when I realized I needed to lift up the state.
   // I didn't want to mess with the namespace here, so I'm making this into a function.
   // I wanted to make sure you could close the modal and then open it back up to continue where you left off.
-  const avatarEditingState = (() => {
-    const [avatarDraft, setAvatarDraft] = useState(false);
-    const [avatarEdited, setAvatarEdited] = useState(user? user.avatar : null);
-    const [avatarOrig, setAvatarOrig] = useState(user? user.avatarOrig : null);
-    const [avatarAltText, setAvatarAltText] = useState("");
-    const [avatarPosition, setAvatarPosition] = useState({x: 0.5, y: 0.5});
-    const [avatarRotate, setAvatarRotate] = useState(0);
-    const [avatarScale, setAvatarScale] = useState(1);
-    const [removeAvatar, setRemoveAvatar] = useState(false);
-
-    return {
-      avatarDraft, setAvatarDraft,
-      avatarEdited, setAvatarEdited,
-      avatarOrig, setAvatarOrig,
-      avatarAltText, setAvatarAltText,
-      avatarPosition, setAvatarPosition,
-      avatarRotate, setAvatarRotate,
-      avatarScale, setAvatarScale,
-      removeAvatar, setRemoveAvatar,
-    };
-  })();
-
-  function resetAvatar() {
-    avatarEditingState.setAvatarDraft(false);
-    avatarEditingState.setAvatarEdited(user.avatarEdited);
-    avatarEditingState.setAvatarOrig(user.avatarOrig);
-    avatarEditingState.setAvatarAltText(user.avatarAltText);
-    avatarEditingState.setAvatarPosition(user.avatarPosition);
-    avatarEditingState.setAvatarRotate(user.avatarRotate);
-    avatarEditingState.setAvatarScale(user.avatarScale);
-  }
-
-  // When you first load the page, the previews will be empty.
-  // Load them with the saved values.
-  useEffect(() => {
-    if (user) {
-      resetAvatar();
-    }
-  }, [user]);
+  const [avatarDraft, setAvatarDraft] = useState(false);
+  const [avatarEdited, setAvatarEdited] = useState(user.avatar);
+  const [avatarOrig, setAvatarOrig] = useState(user.avatarOrig);
+  const [avatarAltText, setAvatarAltText] = useState(user.avatarAltText);
+  const [avatarPosition, setAvatarPosition] = useState(user.avatarPosition);
+  const [avatarRotate, setAvatarRotate] = useState(user.avatarRotate);
+  const [avatarScale, setAvatarScale] = useState(user.avatarScale);
+  const [removeAvatar, setRemoveAvatar] = useState(false);
 
   const [nameInputValue, setNameInputValue] = useState(user? user.displayName : "");
   const formRef = useRef(null);
@@ -114,7 +83,7 @@ export default function ProfileEdit() {
             <span style={{textShadow: "hsl(var(--nextui-background)) 0 0 5px"}}>Change Avatar Image</span>
           </div>
 
-          <Avatar name={user.displayName} handle={user.handle} imageHash={user.avatar} className="shrink-0 w-[200px] h-[200px]" />
+          <Avatar2 person={user} className="shrink-0 w-[200px] h-[200px]" />
         </Button>
 
         <Modal isOpen={imageEditorDisclosure.isOpen} onOpenChange={imageEditorDisclosure.onOpenChange}
@@ -129,7 +98,16 @@ export default function ProfileEdit() {
                 darkMode={darkMode}
                 getImageRef={avatarEditorRef}
                 onChange={onAvatarChange}
-                avatarEditingState={avatarEditingState}
+                avatarEditingState={{
+                  avatarDraft, setAvatarDraft,
+                  avatarEdited, setAvatarEdited,
+                  avatarOrig, setAvatarOrig,
+                  avatarAltText, setAvatarAltText,
+                  avatarPosition, setAvatarPosition,
+                  avatarRotate, setAvatarRotate,
+                  avatarScale, setAvatarScale,
+                  removeAvatar, setRemoveAvatar,
+                }}
               />
             </ModalBody>
 
@@ -149,6 +127,7 @@ export default function ProfileEdit() {
                 await userDB.setAvatarScale(avatar.avatarScale);
 
                 const newUser = await userDB.loggedInUser();
+
 
                 setUser({...newUser});
 

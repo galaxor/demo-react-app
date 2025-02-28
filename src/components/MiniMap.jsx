@@ -1,4 +1,4 @@
-import Avatar from './Avatar.jsx'
+import Avatar2 from './Avatar2.jsx'
 import hashSum from 'hash-sum'
 import { useEffect } from 'react'
 
@@ -154,9 +154,9 @@ function MiniMapNode({post, threadHandles}) {
 
   <div className={`minimap-post p${hashSum(post.uri).toString(16)}`}>
     {post.deletedAt === null?
-      <Avatar handle={post.authorPerson.handle} imageHash={post.authorPerson.avatar} name={post.authorPerson.displayName} />
+      <Avatar2 person={post.authorPerson} />
       :
-      <Avatar />
+      <Avatar2 />
     }
   </div>
 
