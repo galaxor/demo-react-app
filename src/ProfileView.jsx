@@ -16,6 +16,7 @@ import {
 } from "@nextui-org/modal";
 
 import Avatar from './components/Avatar.jsx'
+import DarkModeContext from "./DarkModeContext.jsx";
 import DatabaseContext from './DatabaseContext.jsx';
 import FollowInfoContext from './FollowInfoContext.jsx';
 import FriendStatus from './FriendStatus.jsx';
@@ -40,6 +41,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
   const matches = useMatches();
 
+  const [darkMode, setDarkMode] = useContext(DarkModeContext);
   const [youFollowThem, setYouFollowThem] = useState(false);
 
   const [whoFollowsThem, setWhoFollowsThem] = useState([]);
@@ -109,12 +111,14 @@ export default function ProfileView({handle, loggedInUser, children }) {
         <Link2 onPress={avatarDisclosure.onOpen}>
           <Avatar person={person} className="text-large w-[100px] h-[100px]" />
         </Link2>
-        <Modal isOpen={avatarDisclosure.isOpen} onOpenChange={avatarDisclosure.onOpenChange}>
+        <Modal isOpen={avatarDisclosure.isOpen} onOpenChange={avatarDisclosure.onOpenChange}
+          className={(darkMode? "dark" : "")+" max-h-screen overflow-y-auto text-foreground bg-background"}
+        >
           <ModalContent>
             {(onClose) => 
               <>
               <ModalBody>
-                <Link2 href={person.avatar} isExternal><img src={avatarImage} alt={person.avatarAltText} /></Link2>
+                <Link2 href={avatarImage} isExternal><img src={avatarImage} alt={person.avatarAltText} /></Link2>
                 {person.avatarAltText? <div className="whitespace-pre-line">{person.avatarAltText}</div> : ""}
               </ModalBody>
               </>
