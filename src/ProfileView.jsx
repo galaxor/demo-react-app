@@ -36,12 +36,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
   const loaderData = useLoaderData();
   const loadedPerson = loaderData? loaderData.person : null;
 
-  let person;
-  if (loggedInUser) {
-    person = user;
-  } else {
-    person = loadedPerson;
-  }
+  const person = loggedInUser? user : loadedPerson;
 
   const matches = useMatches();
 
@@ -72,13 +67,6 @@ export default function ProfileView({handle, loggedInUser, children }) {
   }).format(whoDoTheyFollow.length);
   const numFollowsLabel = `Follows ${numFollows}`;
   
-  // This condition happens if we're supposed to be looking at the logged in
-  // user, but they haven't loaded yet.
-  if (loggedInUser && person === null) {
-    // This is where we would draw a throbber, probably, if the database was actually asynchronous.
-    return "";
-  }
-
   const onHomeServer = (person.localUserId !== null); 
 
   const isYou = (user && user.handle === person.handle);

@@ -148,11 +148,9 @@ export default function ProfileEdit() {
                 await userDB.setAvatarRotate(avatar.avatarRotate);
                 await userDB.setAvatarScale(avatar.avatarScale);
 
-                await Promise.all(promises);
-
                 const newUser = await userDB.loggedInUser();
 
-                setUser(newUser);
+                setUser({...newUser});
 
                 toast("Profile Updated", {type: 'success'});
                 

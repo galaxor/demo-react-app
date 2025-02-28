@@ -76,7 +76,7 @@ export default function AvatarUpload({onChange, getImageRef, darkMode, avatarEdi
             {avatarOrig?
               <Avatar isBordered radius="full" size="lg" className="shrink-0" src={avatarEdited} name="Image preview"
                 style={{'--avatar-bg': '#'+avatarFallbackColor}}
-                classNames={{base: "bg-[--avatar-bg] w-[75px] h-[75px] "}}
+                classNames={{base: "bg-[--avatar-bg] w-[75px] h-[75px] ", img: "opacity-100 "}}
               />
               :
               ''

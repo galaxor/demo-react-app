@@ -52,8 +52,10 @@ export default class UserDB {
     return this.setProp('bio', bio);
   }
 
-  setAvatar(avatar) {
-    return this.setProp('avatar', avatar);
+  async setAvatar(imageDataUrl) {
+    const hash = await this.db.uploadImage(imageDataUrl);
+
+    return this.setProp('avatar', hash);
   }
 
   setAvatarOrig(avatarOrig) {
