@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {Switch} from "@nextui-org/react";
 
 import PersonContext from './PersonContext.jsx';
@@ -16,7 +16,15 @@ export default function FriendStatus({person}) {
   const peopleDB = new PeopleDB(db);
 
   const { youFollowThem, setYouFollowThem } = useContext(PersonContext);
-  const theyFollowYou = user? peopleDB.doesXFollowY(person.handle, user.handle) : null;
+  const [theyFollowYou, setTheyFollowYou] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      if (user) {
+        setTheyFollowYou(await peopleDB.doesXFollowY(person.handle, user.handle));
+      }
+    })();
+  }, []);
 
   return (
     <section className="follow-status" aria-labelledby="follow-status">
@@ -31,19 +39,16 @@ export default function FriendStatus({person}) {
               : youFollowThem
           }
 
-          onValueChange={checked => {
-            if (checked) { peopleDB.follow(user.handle, person.handle); }
-            else { peopleDB.unfollow(user.handle, person.handle); }
+          onValueChange={async checked => {
+            if (checked) { await peopleDB.follow(user.handle, person.handle); }
+            else { await peopleDB.unfollow(user.handle, person.handle); }
 
             setYouFollowThem(checked);
           }}
 
           classNames={switchStyles}
         >
-            {(typeof youFollowThem === "undefined"? 
-                  (user && peopleDB.doesXFollowY(user.handle, person.handle)) 
-                  : youFollowThem)
-              ?
+            {youFollowThem?
               <> You follow <bdi>{person.displayName}</bdi> </>
               :
               <> Follow <bdi>{person.displayName}</bdi> </>

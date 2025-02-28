@@ -40,7 +40,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
   const matches = useMatches();
 
-  const [youFollowThem, setYouFollowThem] = useState();
+  const [youFollowThem, setYouFollowThem] = useState(false);
 
   const [whoFollowsThem, setWhoFollowsThem] = useState([]);
   const [whoDoTheyFollow, setWhoDoTheyFollow] = useState([]);
@@ -50,6 +50,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
 
   useEffect(() => {
     (async () => {
+      if (user) { setYouFollowThem(await peopleDB.doesXFollowY(user.handle, person.handle)); }
       setWhoFollowsThem(await peopleDB.whoFollowsThem(person.handle));
       setWhoDoTheyFollow(await peopleDB.whoDoTheyFollow(person.handle));
     })();

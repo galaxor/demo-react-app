@@ -77,20 +77,36 @@ export class PeopleDB {
     });
   }
 
-  follow(personWhoFollows, personWhoIsFollowed) {
-    if (this.doesXFollowY(personWhoFollows, personWhoIsFollowed)) {
+  async follow(personWhoFollows, personWhoIsFollowed) {
+    if (await this.doesXFollowY(personWhoFollows, personWhoIsFollowed)) {
       // It's a no-op. It has already been done.
       return;
     } else {
-      this.db.addRow('follows', [personWhoFollows, personWhoIsFollowed]);
+      const transaction = this.db.db.transaction("follows", "readwrite");
+      const followsStore = transaction.objectStore("follows");
+      return new Promise(resolve => {
+        followsStore.add({follower: personWhoFollows, followed: personWhoIsFollowed}).onsuccess = event => {
+          resolve();
+        };
+      });
     }
   }
 
   unfollow(personWhoOnceFollowed, personWhoWasOnceFollowed) {
-    this.db.delRow('follows', (([a, b]) => {
-      const result = (personWhoOnceFollowed === a && personWhoWasOnceFollowed === b);
-      return result;
-    }));
+    const transaction = this.db.db.transaction("follows", "readwrite");
+    const followsStore = transaction.objectStore("follows");
+    return new Promise(resolve => {
+      followsStore.index("follower,followed").openCursor([personWhoOnceFollowed, personWhoWasOnceFollowed]).onsuccess = event => {
+        const cursor = event.target.result;
+        if (cursor === null) {
+          resolve();
+        } else {
+          cursor.delete().onsuccess = event => {
+            cursor.continue();
+          };
+        }
+      };
+    });
   }
 }
 
