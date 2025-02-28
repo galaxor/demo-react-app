@@ -54,7 +54,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       setWhoFollowsThem(await peopleDB.whoFollowsThem(person.handle));
       setWhoDoTheyFollow(await peopleDB.whoDoTheyFollow(person.handle));
     })();
-  }, []);
+  }, [user]);
 
   const numFollowers = Intl.NumberFormat(language, {
     notation: "compact",

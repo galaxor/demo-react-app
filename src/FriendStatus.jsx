@@ -24,7 +24,7 @@ export default function FriendStatus({person}) {
         setTheyFollowYou(await peopleDB.doesXFollowY(person.handle, user.handle));
       }
     })();
-  }, []);
+  }, [user]);
 
   return (
     <section className="follow-status" aria-labelledby="follow-status">
