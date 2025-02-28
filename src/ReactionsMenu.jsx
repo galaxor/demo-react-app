@@ -9,7 +9,7 @@ import { PostsDB } from './logic/posts.js';
 import DatabaseContext from './DatabaseContext.jsx';
 import icons from './icons.js'
 import { toggleReaction } from './toggle-reaction.js';
-import User from './logic/user.js';
+import UserDB from './logic/user.js';
 import UserContext from './UserContext.jsx';
 
 import emojiData from 'emoji-datasource-twitter/emoji_pretty.json'
@@ -54,6 +54,7 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
 
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
+  const userDB = new UserDB(db);
 
   const [skinTone, useSkinTone] = useState();
 
@@ -73,7 +74,7 @@ export default function ReactionsMenu({htmlId, post, reactionTotals, setReaction
             addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReactionTotals, yourReactions, setYourReactions, setMenuOpen});
             if (typeof onReact === 'function') { onReact(); }
           }}
-          onSkinToneChange={newTone => skinToneChange({newTone, user, setUser})}
+          onSkinToneChange={async newTone => skinToneChange({newTone, user, setUser, userDB})}
         />
       </PopoverContent>
     </Popover>
@@ -106,7 +107,7 @@ function addEmojiReaction({emoji, user, postsDB, post, reactionTotals, setReacti
   setMenuOpen(false);
 }
 
-function skinToneChange({newTone, user, setUser}) {
-  const newUser = User.setSkinTone(newTone);
-  setUser(newUser);
+async function skinToneChange({newTone, user, setUser, userDB}) {
+  await userDB.setSkinTone(newTone);
+  setUser({...await userDB.loggedInUser()});
 }

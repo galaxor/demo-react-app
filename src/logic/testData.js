@@ -499,7 +499,7 @@ export default async function fillTestData(db) {
           if (person.avatarOrig !== null) {
             const response2 = await fetch(person.avatarOrig);
             if (response2.ok) {
-              const blob2 = await response.blob();
+              const blob2 = await response2.blob();
               const imageBuffer2 = await blob.arrayBuffer();
               const hash2 = await sha256(imageBuffer2);
               person.avatarOrig = hash2;
@@ -507,7 +507,7 @@ export default async function fillTestData(db) {
               const imgTransaction = db.transaction("images", "readwrite");
               const imagesStore = imgTransaction.objectStore("images");
 
-              await imagesStore.put({hash2, imageBlob: blob2});
+              await imagesStore.put({hash: hash2, imageBlob: blob2});
             }
           }
 
