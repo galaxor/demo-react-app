@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import {Switch} from "@nextui-org/react";
 
+import FollowInfoContext from './FollowInfoContext.jsx';
 import PersonContext from './PersonContext.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
 import { PeopleDB } from './logic/people.js';
@@ -16,6 +17,7 @@ export default function FriendStatus({person}) {
   const peopleDB = new PeopleDB(db);
 
   const { youFollowThem, setYouFollowThem } = useContext(PersonContext);
+  const { whoFollowsThem, setWhoFollowsThem } = useContext(FollowInfoContext);
   const [theyFollowYou, setTheyFollowYou] = useState(false);
 
   useEffect(() => {
@@ -40,8 +42,16 @@ export default function FriendStatus({person}) {
           }
 
           onValueChange={async checked => {
-            if (checked) { await peopleDB.follow(user.handle, person.handle); }
-            else { await peopleDB.unfollow(user.handle, person.handle); }
+            if (checked) {
+              await peopleDB.follow(user.handle, person.handle); 
+              const newWhoFollowsThem = [...whoFollowsThem, user];
+              newWhoFollowsThem.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+              setWhoFollowsThem(newWhoFollowsThem);
+            } else {
+              await peopleDB.unfollow(user.handle, person.handle); 
+              const newWhoFollowsThem = whoFollowsThem.filter(person => person.handle != user.handle);
+              setWhoFollowsThem(newWhoFollowsThem);
+            }
 
             setYouFollowThem(checked);
           }}

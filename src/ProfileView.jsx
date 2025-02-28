@@ -140,6 +140,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       </h1>
 
       <PersonContext.Provider value={{person, youFollowThem, setYouFollowThem}}>
+        <FollowInfoContext.Provider value={ { whoDoTheyFollow, whoFollowsThem, setWhoFollowsThem } }>
         <section className="actions mb-4">
           <h2 className="visually-hidden">Follow Info</h2>
           {user && !isYou && <FriendStatus person={person} />}
@@ -167,7 +168,6 @@ export default function ProfileView({handle, loggedInUser, children }) {
           </Tabs>
         </nav>
         
-        <FollowInfoContext.Provider value={ { whoDoTheyFollow, whoFollowsThem } }>
           {children? children : ''}
           <Outlet />
         </FollowInfoContext.Provider>
