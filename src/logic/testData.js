@@ -500,7 +500,7 @@ export default async function fillTestData(db) {
             const response2 = await fetch(person.avatarOrig);
             if (response2.ok) {
               const blob2 = await response2.blob();
-              const imageBuffer2 = await blob.arrayBuffer();
+              const imageBuffer2 = await blob2.arrayBuffer();
               const hash2 = await sha256(imageBuffer2);
               person.avatarOrig = hash2;
 
