@@ -518,7 +518,9 @@ export class PostsDB {
               boostPosts.sort((a, b) => a.updatedAt === b.updatedAt? 0 : a.updatedAt < b.updatedAt? -1 : 1);
               resolve(boostPosts);
             } else {
-              resolve(Object.keys(boostedByPeople));
+              resolve(Object.entries(boostedByPeople).map(([author, updatedAt]) => {
+                return {author, updatedAt};
+              }));
             }
           }
         } else {

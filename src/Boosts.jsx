@@ -40,9 +40,9 @@ export default function Boosts({post, onBoost}) {
     <>
     <li className="post-stat non-quote-boosts order-2 mr-1 h-[40px] content-center">
       {user? 
-        <Button variant={numYourBoosts > 0? "flat" : "light"} className="stat" onPress={e => {
-          clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
-          if (typeof onBoost === "function") { onBoost(); }
+        <Button variant={numYourBoosts > 0? "flat" : "light"} className="stat" onPress={async e => {
+          await clickBoosts({user, post, postsDB, numBoosts, setNumBoosts, numYourBoosts, setNumYourBoosts});
+          if (typeof onBoost === "function") { await onBoost(); }
         }}>
           <span className="visually-hidden">Boost this post</span>
           <span className="icon" aria-label="Boosts"><FontAwesomeIcon icon={icons.repeat} size="lg" /></span> {" "}

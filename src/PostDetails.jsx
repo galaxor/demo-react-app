@@ -87,9 +87,8 @@ export default function PostDetails({children}) {
         }}
 
         onBoost={async () => {
-          setNumBoosts(getNumBoosts());
-          setNumYourBoosts(getNumYourBoosts());
-          setBoostPostsList(getBoostPostsList());
+          const boosts = await postsDB.getBoostsOf(post.uri, {getPeople: true});
+          setBoostsList(boosts);
         }}
       />
 

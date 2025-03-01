@@ -39,6 +39,7 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, is
           post={post} 
           threadHandles={passThreadHandles}
           onReact={onReact}
+          onBoost={onBoost}
           onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
           setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
           isMainPost={isMainPost}
