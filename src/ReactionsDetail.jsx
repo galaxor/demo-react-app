@@ -19,11 +19,6 @@ export default function ReactionsDetail() {
 
   const { reactionsList, setReactionsList } = useContext(PostDetailsContext);
 
-// XXX Gotta use onReact, which is part of Post.  ThreadedPost doesn't seem to offer it, but we could change that.
-// We want to use onReact in displaying the post we're showing the details of.
-// We want to change the list of reactions when the user reacts to the post
-// that's being detailed.
-
   const totalNumReactions = reactionsList
     .map(reactionType => reactionType.reactors.length)
     .reduce(((partialSum, numReactions) => partialSum + numReactions), 0)
