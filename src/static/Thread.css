@@ -13,7 +13,7 @@ main.thread {
 
 @media (width >= 600px) {
   /* visually-hidden */
-  article:not(.main-post) > div.boost-info > a:not(:focus):not(:active) {
+  article:not(.main-post) > div.reply-info > a:not(:focus):not(:active) {
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
     height: 1px;

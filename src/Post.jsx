@@ -2,6 +2,7 @@ import { Button } from "@nextui-org/button"
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card"
 import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import hashSum from 'hash-sum'
 import { Link, NavLink } from 'react-router-dom'
 import { useNavigate } from "react-router"
 import ReactTimeAgo from 'react-time-ago'
@@ -32,6 +33,8 @@ const Post = forwardRef(function Post2(props, ref) {
   const {id, post: postPassedIn, composingReply, setComposingReply, editingPost, setEditingPost, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete, isMainPost} = props;
 
   const [post, setPost] = useState(postPassedIn);
+
+  const postId = id? id : "p"+(hashSum(post.uri).toString(16));
 
   // showStats defaults to true.
   const showStatsForReal = ((typeof showStats === "undefined")? true : showStats) && post.deletedAt === null;
@@ -115,7 +118,7 @@ const Post = forwardRef(function Post2(props, ref) {
   const thePost = post.deletedAt !== null? <TombstonePost/>
     :(<>
       {replyingToPost && 
-        <div className="boost-info">
+        <div className="reply-info">
           <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
             <FontAwesomeIcon icon="comment" /> Replying to <PersonName person={replyingToPost.authorPerson} />
           </Link>
@@ -132,9 +135,9 @@ const Post = forwardRef(function Post2(props, ref) {
           conversationId={post.conversationId}
         />
       :
-      <Card id={id? id.toString() : ""} ref={postDivRef} className={"post overflow-visible hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+(className ?? "")}>
+      <Card id={postId? postId.toString() : ""} ref={postDivRef} className={"post overflow-visible hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+(className ?? "")}>
         <CardHeader>
-          {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} id={"scroll-target-"+id.toString(16)} className="scroll-into-view"></div> : ""}
+          {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} id={"scroll-target-"+postId.toString(16)} className="scroll-into-view"></div> : ""}
           <span className="post-metadata w-full flex justify-between">
             <span className="post-date order-1 text-right"
               aria-label={post.updatedAt === post.createdAt?
