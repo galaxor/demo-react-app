@@ -260,7 +260,7 @@ export class PostsDB {
           resolve(posts);
         } else {
           const post = cursor.value;
-          if (showReplies || post.inReplyTo === null) {
+          if (post.deletedAt === null && (showReplies || post.inReplyTo === null)) {
             const fullPost = await this.getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, boostsStore, peopleStore});
             if (includeBoosts || (fullPost.text !== null || fullPost.boostedPosts.length === 0)) {
               posts.push(fullPost);
