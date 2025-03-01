@@ -81,11 +81,12 @@ export default function PostDetails({children}) {
 
       <div ref={scrollHereRef} />
       <PostAndYourNewReplies post={post}
-        onReact={() => {
-          setReactionsList(postsDB.getAllReactionsTo(post.uri));
+        onReact={async () => {
+          const reactions = await postsDB.getAllReactionsTo(post.uri);
+          setReactionsList(reactions);
         }}
 
-        onBoost={() => {
+        onBoost={async () => {
           setNumBoosts(getNumBoosts());
           setNumYourBoosts(getNumYourBoosts());
           setBoostPostsList(getBoostPostsList());

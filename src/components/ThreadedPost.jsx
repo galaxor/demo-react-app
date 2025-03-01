@@ -8,7 +8,7 @@ import Post from '../Post.jsx';
 import PostEditor from '../PostEditor.jsx';
 import { PostsDB } from '../logic/posts.js';
 
-export default function ThreadedPost({post, threadHandles, className, scrollRef, setReplies, setScrollToPost, onDelete, isMainPost}) {
+export default function ThreadedPost({post, threadHandles, className, scrollRef, setReplies, onReact, setScrollToPost, onDelete, isMainPost}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
@@ -26,7 +26,6 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
     })();
   }, []);
     
-  
 
   return (
       <div id={"threaded-post-"+hashSum(post.uri).toString(16)} className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
@@ -49,6 +48,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
             composingReply={composingReply} setComposingReply={setComposingReply} 
             editingPost={editingPost} setEditingPost={setEditingPost}
             numReplies={numReplies} setNumReplies={setNumReplies}
+            onReact={onReact}
             onDelete={onDelete}
             isMainPost={isMainPost}
           >
