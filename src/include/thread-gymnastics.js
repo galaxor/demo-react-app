@@ -247,7 +247,7 @@ export function createStylesheetsForHover(threadOrder, topPost) {
 
 // These functions are required in order to allow replies and post-deleting.
 
-export function onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost) {
+export function onDeleteFn(post, originatingPost, setOriginatingPost) {
   return () => {
     if (originatingPost.uri === post.uri) {
       // If we're deleting the top-level post, we don't need to get rid of it
@@ -269,7 +269,7 @@ export function onDeleteFn(post, originatingPost, threadGymnastics, setOriginati
   };
 }
 
-export function setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost) {
+export function setRepliesFn(post, originatingPost, setOriginatingPost) {
   return replies => {
     // Find the post we're meant to add to, inside the originatingPost.
     const addToPost = findPost(post.uri, originatingPost);

@@ -39,8 +39,8 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, is
           threadHandles={passThreadHandles}
           onReact={onReact}
           onBoost={onBoost}
-          onDelete={onDeleteFn(post, post, threadGymnastics, () => {})}
-          setReplies={setRepliesFn(post, post, threadGymnastics, originatingPost => setThreadOrder(threadGymnastics(originatingPost)))}
+          onDelete={onDeleteFn(post, post, () => {})}
+          setReplies={setRepliesFn(post, post, originatingPost => setThreadOrder(threadGymnastics(originatingPost)))}
           isMainPost={isMainPost}
         />
         {threadOrder.slice(1).map(({threadHandles, post: replyPost}) => {
@@ -49,8 +49,8 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, is
               className="reply"
               post={replyPost} 
               threadHandles={threadHandles}
-              onDelete={onDeleteFn(replyPost, post, threadGymnastics, () => {})}
-              setReplies={setRepliesFn(replyPost, post, threadGymnastics, originatingPost => setThreadOrder(threadGymnastics(originatingPost)))}
+              onDelete={onDeleteFn(replyPost, post, () => {})}
+              setReplies={setRepliesFn(replyPost, post, originatingPost => setThreadOrder(threadGymnastics(originatingPost)))}
             />
           );
         })}

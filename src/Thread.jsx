@@ -155,8 +155,8 @@ export default function Thread() {
       <section className="main-post" aria-labelledby="main-post-h1">
         <ThreadedPost key={threadOrder[mainPostIndex].post.uri} 
           post={threadOrder[mainPostIndex].post} 
-          onDelete={onDeleteFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost)}
-          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, threadGymnastics, setOriginatingPost)}
+          onDelete={onDeleteFn(threadOrder[mainPostIndex].post, originatingPost, setOriginatingPost)}
+          setReplies={setRepliesFn(threadOrder[mainPostIndex].post, originatingPost, setOriginatingPost)}
           threadHandles={threadOrder[mainPostIndex].threadHandles}
           scrollRef={mainPostScrollRef}
           setScrollToPost={setScrollToPost}
@@ -173,8 +173,8 @@ export default function Thread() {
               <ThreadedPost key={post.uri}
                 post={post} 
                 threadHandles={threadHandles}
-                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
-                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
+                onDelete={onDeleteFn(post, originatingPost, setOriginatingPost)}
+                setReplies={setRepliesFn(post, originatingPost, setOriginatingPost)}
               />
             );
           })}
@@ -191,9 +191,9 @@ export default function Thread() {
             return (
               <ThreadedPost key={post.uri}
                 post={post} 
-                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
+                onDelete={onDeleteFn(post, originatingPost, setOriginatingPost)}
                 threadHandles={threadHandles}
-                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
+                setReplies={setRepliesFn(post, originatingPost, setOriginatingPost)}
               />
             );
           })}
@@ -211,8 +211,8 @@ export default function Thread() {
               <ThreadedPost key={post.uri} 
                 post={post} 
                 threadHandles={threadHandles}
-                onDelete={onDeleteFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
-                setReplies={setRepliesFn(post, originatingPost, threadGymnastics, setOriginatingPost)}
+                onDelete={onDeleteFn(post, originatingPost, setOriginatingPost)}
+                setReplies={setRepliesFn(post, originatingPost, setOriginatingPost)}
                />
             );
           })}
