@@ -22,12 +22,11 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, is
 
   const postsDB = new PostsDB(db);
 
-  const [threadOrder, setThreadOrder] = useState(threadGymnastics(post, () => {}, () => {}));
+  const [threadOrder, setThreadOrder] = useState(threadGymnastics(post));
 
   const [replies, setReplies] = useState([]);
 
   const isBoostPost = post.boostedPosts && post.boostedPosts.length > 0 && post.text === null;
-  const [numReplies, setNumReplies] = useState(postsDB.getNumRepliesTo(isBoostPost? post.boostedPosts[0].uri : post.uri));
 
   const passThreadHandles = (typeof threadOrder[0] === "undefined")? [] : threadOrder[0].threadHandles;
 
@@ -40,8 +39,8 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, is
           threadHandles={passThreadHandles}
           onReact={onReact}
           onBoost={onBoost}
-          onDelete={onDeleteFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
-          setReplies={setRepliesFn(post, post, threadGymnastics, () => {}, setThreadOrder)}
+          onDelete={onDeleteFn(post, post, threadGymnastics, () => {})}
+          setReplies={setRepliesFn(post, post, threadGymnastics, originatingPost => setThreadOrder(threadGymnastics(originatingPost)))}
           isMainPost={isMainPost}
         />
         {threadOrder.slice(1).map(({threadHandles, post: replyPost}) => {
@@ -50,8 +49,8 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, is
               className="reply"
               post={replyPost} 
               threadHandles={threadHandles}
-              onDelete={onDeleteFn(replyPost, post, threadGymnastics, () => {}, setThreadOrder)}
-              setReplies={setRepliesFn(replyPost, post, threadGymnastics, () => {}, setThreadOrder)}
+              onDelete={onDeleteFn(replyPost, post, threadGymnastics, () => {})}
+              setReplies={setRepliesFn(replyPost, post, threadGymnastics, originatingPost => setThreadOrder(threadGymnastics(originatingPost)))}
             />
           );
         })}
