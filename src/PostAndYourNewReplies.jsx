@@ -14,7 +14,7 @@ import hashSum from 'hash-sum'
 import { useContext, useRef, useState } from 'react';
 import ReactTimeAgo from 'react-time-ago';
 
-export default function PostAndYourNewReplies({post, prune, onBoost, onReact, isMainPost}) {
+export default function PostAndYourNewReplies({post, prune, onBoost, onReact, onDelete, isMainPost}) {
   const languageContext = useContext(LanguageContext);
   const db = useContext(DatabaseContext);
 
@@ -39,7 +39,7 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, is
           threadHandles={passThreadHandles}
           onReact={onReact}
           onBoost={onBoost}
-          onDelete={onDeleteFn(post, post, () => {})}
+          onDelete={onDeleteFn(post, post, onDelete)}
           setReplies={setRepliesFn(post, post, originatingPost => setThreadOrder(threadGymnastics(originatingPost)))}
           isMainPost={isMainPost}
         />

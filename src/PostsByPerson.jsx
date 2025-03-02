@@ -10,7 +10,7 @@ import PostsList from './PostsList.jsx';
 
 export default function PostsByPerson({showReplies}) {
   const [ showBoosts, setShowBoosts ] = useState(true);
-  const [theirPosts, setTheirPosts] = useState(<PostsByPersonLoading />);
+  const [theirPosts, setTheirPosts] = useState(null);
 
   const { person } = useContext(PersonContext);
 
@@ -20,7 +20,7 @@ export default function PostsByPerson({showReplies}) {
   useEffect(() => {
     (async () => {
       const theirPosts = await postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
-      setTheirPosts(<PostsList posts={theirPosts} />);
+      setTheirPosts(theirPosts);
     })();
   }, [showBoosts, showReplies]);
 
@@ -34,7 +34,10 @@ export default function PostsByPerson({showReplies}) {
         Show Boosts
       </Switch>
 
-      {theirPosts}
+      {theirPosts === null? <>Loading...</>
+      // XXX We should pass an onDelete function to PostsList that will remove their post from the list.
+        : <PostsList posts={theirPosts} />
+      }
     </section>
   );
 }

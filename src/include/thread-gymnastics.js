@@ -264,7 +264,9 @@ export function onDeleteFn(post, originatingPost, setOriginatingPost) {
       // Remove the deleted post.
       postsParent.replies = [...postsParent.replies.slice(0, index), ...postsParent.replies.slice(index+1)];
 
-      setOriginatingPost({...originatingPost});
+      if (typeof setOriginatingPost === "function") {
+        setOriginatingPost({...originatingPost});
+      }
     }
   };
 }

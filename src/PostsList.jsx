@@ -4,7 +4,7 @@ import { clickPost } from './clickPost.js'
 import Post from './Post.jsx'
 import PostAndYourNewReplies from './PostAndYourNewReplies.jsx'
 
-export default function PostsList({posts}) {
+export default function PostsList({posts, onDelete}) {
   const listRef = useRef(null);
 
   // Make it so when you click a post, you go to its Thread page.
@@ -21,14 +21,14 @@ export default function PostsList({posts}) {
       });
     });
   }, []);
-  
+
   return (
     <div ref={listRef} className={"posts-list" + (posts.length === 0? " no-posts" : "")}>
       {(posts && posts.length > 0) ?
         <>
         {posts.map((post) => { 
             return (
-              <PostAndYourNewReplies key={post.uri} post={post} isMainPost={true} />
+              <PostAndYourNewReplies key={post.uri} post={post} onDelete={onDelete} isMainPost={true} />
             );
           })}
         </>

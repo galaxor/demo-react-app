@@ -89,7 +89,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/profile",
-            element: <ProfileView loggedInUser={true}><PostsByPerson showReplies={true} /></ProfileView>,
+            element: <ProfileView loggedInUser={true}><PostsByPerson showReplies={false} /></ProfileView>,
           },
           {
             path: "/people/:handle",
