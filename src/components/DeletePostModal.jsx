@@ -18,7 +18,7 @@ async function deletePost(postsDB, post, onClose, onDelete) {
   onClose();
 
   if (typeof onDelete === "function") {
-    onDelete();
+    onDelete(post);
   }
 }
 

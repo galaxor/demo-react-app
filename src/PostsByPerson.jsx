@@ -35,13 +35,11 @@ export default function PostsByPerson({showReplies}) {
       </Switch>
 
       {theirPosts === null? <>Loading...</>
-      // XXX We should pass an onDelete function to PostsList that will remove their post from the list.
-        : <PostsList posts={theirPosts} />
+        : <PostsList posts={theirPosts} onDelete={post => {
+            const newTheirPosts = theirPosts.filter(theirPost => theirPost.uri !== post.uri);
+            setTheirPosts(newTheirPosts);
+          }} />
       }
     </section>
   );
-}
-
-function PostsByPersonLoading() {
-  return (<>Loading posts...</>);
 }
