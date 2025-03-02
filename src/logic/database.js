@@ -2,8 +2,11 @@ import fillTestData from './testData.js'
 import sha256 from '../include/sha256.js'
 
 class Database {
-  constructor() {
-    const dbRequest = indexedDB.open("database2", 1);
+  constructor(serverUrl) {
+    this.serverUrl = serverUrl;
+
+    const dbName = `ProSocial-${serverUrl}` ?? "database2";
+    const dbRequest = indexedDB.open(dbName, 1);
     dbRequest.onupgradeneeded = this.onUpgradeNeeded.bind(this);
 
     this.openPromise = new Promise((resolve, reject) => {
@@ -31,7 +34,7 @@ class Database {
       };
     });
 
-    if (!(await isDataFull)) {
+    if (typeof this.serverUrl === undefined && !(await isDataFull)) {
       await fillTestData(this.db);
     }
     return this;
@@ -94,6 +97,10 @@ class Database {
       reactions.createIndex("reactorHandle,reactingTo", ["reactorHandle", "reactingTo"]);
 
       const testDataFilled = db.createObjectStore("testDataFilled", { keyPath: "ok" });
+
+      const mastodonApiAppRegistrations = db.createObjectStore("mastodonApiAppRegistrations", { keyPath: "serverUrl" });
+      console.log(mastodonApiAppRegistrations);
+      // { serverUrl, clientId, clientSecret }
     }
   }
 
