@@ -2,10 +2,13 @@ import fillTestData from './testData.js'
 import sha256 from '../include/sha256.js'
 
 class Database {
-  constructor(serverUrl) {
+  constructor() {
+  }
+
+  dbInit(serverUrl) {
     this.serverUrl = serverUrl;
 
-    const dbName = `ProSocial-${serverUrl}` ?? "database2";
+    const dbName = serverUrl? `ProSocial-${serverUrl}` : "database2";
     const dbRequest = indexedDB.open(dbName, 1);
     dbRequest.onupgradeneeded = this.onUpgradeNeeded.bind(this);
 
@@ -21,7 +24,9 @@ class Database {
     });
   }
 
-  async open() {
+  async open(serverUrl) {
+    await this.dbInit(serverUrl);
+
     this.db = await this.openPromise;
 
     // See if the test data is filled.  If not, await fillTestData, which will set the "test data is filled" flag when it's done.
@@ -34,7 +39,7 @@ class Database {
       };
     });
 
-    if (typeof this.serverUrl === undefined && !(await isDataFull)) {
+    if (typeof this.serverUrl === "undefined" && !(await isDataFull)) {
       await fillTestData(this.db);
     }
     return this;
@@ -99,7 +104,6 @@ class Database {
       const testDataFilled = db.createObjectStore("testDataFilled", { keyPath: "ok" });
 
       const mastodonApiAppRegistrations = db.createObjectStore("mastodonApiAppRegistrations", { keyPath: "serverUrl" });
-      console.log(mastodonApiAppRegistrations);
       // { serverUrl, clientId, clientSecret }
     }
   }

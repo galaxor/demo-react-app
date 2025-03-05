@@ -1,17 +1,28 @@
+import * as OpenID from 'openid-client'
+
 class MastodonAPI {
   constructor(db) {
     this.db = db;
 
+    this.serverUrl = localStorage.getItem('serverUrl');
+    this.codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
+
+    this.redirectUri = new URL(window.location);
+    this.redirectUri.pathname = '/test';
+
     this.oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
   }
 
-  async open(serverUrl) {
+  async open(serverUrlArg) {
     // It should look up in the database to see if we have a client
     // registration, and get the client_id and client_secret.
     // If we don't have a stored registration, call register_app to get one,
     // and then this function stores those things in the database.
 
-    this.serverUrl = new URL(serverUrl);
+    const serverUrl = typeof serverUrlArg === "undefined"? localStorage.getItem('serverUrl') : serverUrlArg;
+    localStorage.setItem('serverUrl', serverUrl);
+
+    this.serverUrl = serverUrl;
     
     const appRegistration = await this.db.get('mastodonApiAppRegistrations', this.serverUrl.toString());
     if (appRegistration) {
@@ -31,15 +42,21 @@ class MastodonAPI {
   async registerApp(serverUrl) {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = '/api/v1/apps';
+
+    const redirectUri = new URL(window.location);
+    redirectUri.pathname = '/test';
+
+    this.redirectUri = redirectUri.toString();
+
     const response = await fetch(
       requestUrl.toString(), {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams({
+        body: JSON.stringify({
           client_name: 'ProSocial',
-          redirect_uris: 'urn:ietf:wg:oauth:2.0:oob',
+          redirect_uris: ['urn:ietf:wg:oauth:2.0:oob', redirectUri.toString()],
           scopes: 'read write push',
           website: 'https://prosocial.app/',
         }),
@@ -62,6 +79,46 @@ class MastodonAPI {
     } else {
       throw new Error(`Attempting to register the application: ${response.status} ${response.statusText}`);
     }
+  }
+
+  // Adapted from the https://www.npmjs.com/package/openid-client documentation.
+  async loginUrl() {
+    this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
+
+    /**
+     * PKCE: The following MUST be generated for every redirect to the
+     * authorization_endpoint. You must store the code_verifier and state in the
+     * end-user session such that it can be recovered as the user gets redirected
+     * from the authorization server back to your application.
+     */
+    const codeVerifier = OpenID.randomPKCECodeVerifier();
+    const codeChallenge = await OpenID.calculatePKCECodeChallenge(codeVerifier)
+
+    this.codeVerifiers[this.serverUrl] = codeVerifier;
+    localStorage.setItem('codeVerifiers', JSON.stringify(this.codeVerifiers));
+
+    let parameters = {
+      redirect_uri: this.redirectUri.toString(),
+      scope: 'read write push',
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256',
+    };
+
+    if (!this.serverConfig.serverMetadata().supportsPKCE()) {
+      /**
+       * We cannot be sure the server supports PKCE so we're going to use state too.
+       * Use of PKCE is backwards compatible even if the AS doesn't support it which
+       * is why we're using it regardless. Like PKCE, random state must be generated
+       * for every redirect to the authorization_endpoint.
+       */
+      const state = OpenID.randomState();
+      parameters.state = state;
+    }
+
+    const redirectTo = OpenID.buildAuthorizationUrl(this.serverConfig, parameters);
+
+    // now redirect the user to redirectTo.href
+    return redirectTo;
   }
 
   // https://docs.joinmastodon.org/methods/oauth/#token
@@ -111,6 +168,34 @@ class MastodonAPI {
     }
   }
 
+  // https://docs.joinmastodon.org/methods/oauth/#token
+  async getAuthorizedToken() {
+    if (this.oauthTokens[this.serverUrl.toString()] && this.oauthTokens[this.serverUrl.toString()].authorized) {
+      return this.oauthTokens[this.serverUrl.toString()].authorized;
+    }
+
+    console.log("idsc", this.clientId, this.clientSecret);
+    this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost(this.clientSecret), {algorithm: 'oauth2'});
+
+console.log("wlh", window.location.href);
+
+console.log("Server config", this.serverConfig, this.clientSecret, typeof this.clientSecret);
+console.log("metameta", this.serverConfig.serverMetadata());
+
+    const token = await OpenID.authorizationCodeGrant(
+      this.serverConfig,
+      new URL(window.location.href),
+      {
+        pkceCodeVerifier: this.codeVerifiers[this.serverUrl],
+      },
+    )
+
+    const authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? {};
+    authTokens[this.serverUrl] = token.access_token;
+    localStorage.setItem('authTokens', JSON.stringify(authTokens));
+    console.log("Tokens", token);
+  }
+
   async verifyCredentials() {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = '/api/v1/accounts/verify_credentials';
@@ -131,8 +216,6 @@ class MastodonAPI {
       }
 
       const responseJson = await response.json();
-
-      console.log("verify", responseJson);
     } else {
       throw new Error(`Attempting to get an anonymous token: ${response.status} ${response.statusText}`);
     }
@@ -159,7 +242,6 @@ class MastodonAPI {
 
       const responseJson = await response.json();
 
-      console.log("thingy", responseJson);
       return responseJson;
     } else {
       throw new Error(`Attempting to do request ${requestUrl.toString()}: ${response.status} ${response.statusText}`);

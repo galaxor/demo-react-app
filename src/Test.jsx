@@ -7,24 +7,65 @@ import MastodonAPI from './mastodon-api/mastodon-api.js'
 import UserDB from './logic/user.js'
 
 export default function Test({dbConnection}) {
-  const [nonsense, setNonsense] = useState(<>Loading</>);
+  const [serverUrl, setServerUrl] = useState(localStorage.getItem('serverUrl'));
+  const [authToken, setAuthToken] = useState();
+
+  const db = new Database();
 
   useEffect(() => {
     (async () => {
-/*
-      const response = await fetch('https://social.iheartmichelle.com/api/v1/instance');
-      console.log(response);
+      const searchParams = new URLSearchParams(window.location.search);
+      console.log("sp", searchParams);
+      if (searchParams.has('code')) {
+        const codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
+        console.log("I have code", searchParams.get('code'));
+        console.log("I have codeVerifiers", serverUrl, codeVerifiers);
+        console.log("I have codeVerifier", codeVerifiers[serverUrl]);
 
-      const response2 = await fetch('https://social.iheartmichelle.com/api/v1/timelines/public?limit=30&local=true');
-      console.log(response2);
-*/
+        await db.open(serverUrl);
+        const mastodonApi = new MastodonAPI(db);
+        await mastodonApi.open(serverUrl);
+        await mastodonApi.getAuthorizedToken();
+      }
     })();
   }, []);
 
+
+  const authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? {};
+  console.log("atat", serverUrl, authTokens);
+  if (authToken || (serverUrl && authTokens[serverUrl])) {
+    console.log("AT", authToken ?? authTokens[serverUrl]);
+    return <>Authorized, baybee 😎</>;
+  }
+
+  const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.has('code')) {
+    return <>Logging in...</>;
+  }
+
+  return serverUrl? <LoginForm db={db} serverUrl={serverUrl} /> : <HostForm setServerUrl={setServerUrl} db={db} />
+}
+
+function LoginForm({db, serverUrl}) {
+  const [loginUrl, setLoginUrl] = useState();
+
+  useEffect(() => {
+    (async () => {
+      await db.open(serverUrl);
+      const mastodonApi = new MastodonAPI(db);
+      await mastodonApi.open();
+      const myLoginUrl = await mastodonApi.loginUrl();
+      setLoginUrl(myLoginUrl);
+    })();
+  }, []);
+
+  return typeof loginUrl === "undefined"? "Uwu hewwo" : <>U should go to <a href={loginUrl.href}>the login url</a></>;
+}
+
+function HostForm({db, setServerUrl}) {
   return <form onSubmit={async e => {
         e.preventDefault();
         const form = e.target;
-        console.log("uwu", e.target);
 
         const serverName = form.querySelector("input[name=\"server\"]").value;
 
@@ -32,34 +73,25 @@ export default function Test({dbConnection}) {
 
         const serverUrl = new URL(`https://${hostName}`);
 
-        const db = new Database(serverUrl);
-        await db.open();
-
+        await db.open(serverUrl);
         const mastodonApi = new MastodonAPI(db);
+
         await mastodonApi.open(serverUrl.toString());
         const anonymousToken = await mastodonApi.getAnonymousToken();
 
-        console.log(anonymousToken);
+        localStorage.setItem('serverUrl', serverUrl.toString());
+        setServerUrl(serverUrl);
 
-        await mastodonApi.apiGet('/api/v1/accounts/110881637687376775');
-        await mastodonApi.apiGet('/api/v1/accounts/110881637687376775/followers');
-        await mastodonApi.apiGet('/api/v1/accounts/110881637687376775/following');
+        // Get some anonymous data to show that we can.
+        /*
+        console.log(await mastodonApi.apiGet('/api/v1/accounts/110881637687376775'));
+        console.log(await mastodonApi.apiGet('/api/v1/accounts/110881637687376775/followers'));
+        console.log(await mastodonApi.apiGet('/api/v1/accounts/110881637687376775/following'));
 
-        await mastodonApi.apiGet('/api/v1/accounts/110854828163953676/following');
+        console.log(await mastodonApi.apiGet('/api/v1/accounts/110854828163953676/following'));
+        */
       }}>
     <label>Your server: <input type="text" name="server" /></label>
     <input type="submit" />
   </form>;
-}
-
-function People({people}) {
-  return (
-    <ul>
-    {people.map(person => <Person key={person.handle} person={person} />)}
-    </ul>
-  );
-}
-
-function Person({person}) {
-  return <li>{person.displayName} ({person.handle})</li>;
 }
