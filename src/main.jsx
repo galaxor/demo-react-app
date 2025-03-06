@@ -7,6 +7,7 @@ import App from './App.jsx'
 import BoostsDetail from './BoostsDetail.jsx'
 import CreatePost from './CreatePost.jsx'
 import History from './History.jsx'
+import LoginLanding from './LoginLanding.jsx'
 import PopularFeed from './PopularFeed.jsx'
 import PostsByPerson from './PostsByPerson.jsx'
 import PostDetails from './PostDetails.jsx'
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <App dbConnection={database} mastodonApi={mastodonApi} />,
         children: [
+          {
+            path: "/login-landing",
+            element: <LoginLanding />,
+          },
           {
             path: "/",
             element: <RootFeed />,

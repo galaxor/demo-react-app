@@ -11,9 +11,6 @@ class MastodonAPI {
 
     this.oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
 
-    this.authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? null;
-    // this.authToken = this.authTokens[this.serverUrl];
-
     this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
 
@@ -95,7 +92,6 @@ class MastodonAPI {
   async loginUrl() {
     if (!this.serverConfig) {
       this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
-      localStorage.setItem('serverConfig', JSON.stringify(this.serverConfig));
     }
 
     /**
@@ -175,6 +171,8 @@ class MastodonAPI {
 
       this.oauthToken = this.oauthTokens[this.serverUrl.toString()][null].token;
 
+      localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
+
       return this.oauthTokens[this.serverUrl.toString()][null];
     } else {
       throw new Error(`Attempting to get an anonymous token: ${response.status} ${response.statusText}`);
@@ -187,18 +185,22 @@ class MastodonAPI {
       return this.oauthTokens[this.serverUrl.toString()].authorized;
     }
 
+    if (!this.serverConfig) {
+      this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
+    }
+
     const token = await OpenID.authorizationCodeGrant(
       this.serverConfig,
       new URL(window.location.href),
       {
-        pkceCodeVerifier: this.codeVerifiers[this.serverUrl],
+        pkceCodeVerifier: this.codeVerifiers[this.serverUrl].codeVerifier,
       },
     )
 
-    const authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? {};
-    authTokens[this.serverUrl] = token.access_token;
-    localStorage.setItem('authTokens', JSON.stringify(authTokens));
-    console.log("Tokens", token);
+    this.oauthTokens[this.serverUrl].authorized = token.access_token;
+    localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
+
+    return this.oauthTokens[this.serverUrl].authorized;
   }
 
   async verifyCredentials() {

@@ -60,10 +60,11 @@ function App({dbConnection, mastodonApi}) {
     (async () => {
       if (serverUrl) {
         const db = await dbConnection.open(serverUrl);
-        const userDB = new UserDB(db);
-        const user = await userDB.loggedInUser();
 
         await mastodonApi.open(serverUrl);
+
+        const userDB = new UserDB(db, serverUrl, mastodonApi);
+        const user = await userDB.loggedInUser();
 
         setDB(db);
         setUserDB(userDB);

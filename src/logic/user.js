@@ -1,6 +1,8 @@
 export default class UserDB {
-  constructor(db) {
+  constructor(db, serverUrl, mastodonApi) {
     this.db = db;
+    this.serverUrl = serverUrl;
+    this.mastodonApi = mastodonApi;
   }
 
   async setProp(prop, val) {
@@ -14,9 +16,12 @@ export default class UserDB {
   }
 
   async loggedInUser() {
-    const sessionId = localStorage.getItem('sessionId');
-    const session = await this.db.get('sessions', sessionId);
-    if (session) {
+    const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
+    const serverUrl = new URL(localStorage.getItem('serverUrl'));
+    
+    await this.mastodonApi.ready();
+
+    if (oauthTokens[serverUrl] && oauthTokens[serverUrl].authorized) {
       const account = await this.db.get('accounts', 'testuser');
       const person = await this.db.get('people', account.handle);
 
