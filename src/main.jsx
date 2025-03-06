@@ -26,6 +26,7 @@ import WhoDoTheyFollow from './WhoDoTheyFollow.jsx'
 import Test from './Test.jsx'
 
 import Database from "./logic/database.js";
+import MastodonAPI from './mastodon-api/mastodon-api.js'
 import { getPersonLoader } from './logic/people.js';
 import { getPostLoader } from './logic/posts.js';
 
@@ -56,6 +57,7 @@ if (typeof timeAgoLocales[lang] === "undefined") {
 }
 
 const database = new Database();
+const mastodonApi = new MastodonAPI(database);
 
 // In case we're deployed in a subdirectory.
 // Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.
@@ -69,7 +71,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App dbConnection={database} />,
+        element: <App dbConnection={database} mastodonApi={mastodonApi} />,
         children: [
           {
             path: "/",

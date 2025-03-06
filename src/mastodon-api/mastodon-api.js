@@ -4,7 +4,6 @@ class MastodonAPI {
   constructor(db) {
     this.db = db;
 
-    this.serverUrl = localStorage.getItem('serverUrl');
     this.codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
 
     // this.serverConfig = Object.assign(new OpenID.Configuration(), JSON.parse(localStorage.getItem('serverConfig')));
@@ -16,7 +15,7 @@ class MastodonAPI {
     this.oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
 
     this.authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? null;
-    this.authToken = this.authTokens[this.serverUrl];
+    // this.authToken = this.authTokens[this.serverUrl];
   }
 
   async open(serverUrlArg) {
