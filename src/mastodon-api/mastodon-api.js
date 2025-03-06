@@ -7,10 +7,16 @@ class MastodonAPI {
     this.serverUrl = localStorage.getItem('serverUrl');
     this.codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
 
+    // this.serverConfig = Object.assign(new OpenID.Configuration(), JSON.parse(localStorage.getItem('serverConfig')));
+    // console.log("Stored sc", this.serverConfig);
+
     this.redirectUri = new URL(window.location);
     this.redirectUri.pathname = '/test';
 
     this.oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
+
+    this.authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? null;
+    this.authToken = this.authTokens[this.serverUrl];
   }
 
   async open(serverUrlArg) {
@@ -35,6 +41,13 @@ class MastodonAPI {
         clientId: this.clientId,
         clientSecret: this.clientSecret,
       });
+    }
+
+    if (!this.serverConfig) {
+      console.log("Getting server config");
+      this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
+      console.log("Got ", this.serverConfig);
+      localStorage.setItem('serverConfig', JSON.stringify(this.serverConfig));
     }
   }
 
@@ -83,7 +96,10 @@ class MastodonAPI {
 
   // Adapted from the https://www.npmjs.com/package/openid-client documentation.
   async loginUrl() {
-    this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
+    if (!this.serverConfig) {
+      this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
+      localStorage.setItem('serverConfig', JSON.stringify(this.serverConfig));
+    }
 
     /**
      * PKCE: The following MUST be generated for every redirect to the
@@ -174,14 +190,6 @@ class MastodonAPI {
       return this.oauthTokens[this.serverUrl.toString()].authorized;
     }
 
-    console.log("idsc", this.clientId, this.clientSecret);
-    this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost(this.clientSecret), {algorithm: 'oauth2'});
-
-console.log("wlh", window.location.href);
-
-console.log("Server config", this.serverConfig, this.clientSecret, typeof this.clientSecret);
-console.log("metameta", this.serverConfig.serverMetadata());
-
     const token = await OpenID.authorizationCodeGrant(
       this.serverConfig,
       new URL(window.location.href),
@@ -224,27 +232,26 @@ console.log("metameta", this.serverConfig.serverMetadata());
   async apiGet(requestPath) {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestPath;
-    const response = await fetch(
-      requestUrl, {
-        method: "GET",
-        headers: {
-          "Authorization": `bearer ${this.oauthToken}`,
-        },
-      }
+
+    // XXX Doing this with OpenID's fetchProtectedResource requires having a
+    // correct serverConfig.  But Mastodon does not require this - we only need
+    // the authToken.  So let's maybe ditch the OpenID library here and just
+    // write our own fetch with the Authorization header.
+    // Otherwise, we might end up having to make a round trip to do the
+    // discovery of the server config, which would be unnecessary.
+    const response = await OpenID.fetchProtectedResource(
+      this.serverConfig,
+      this.authToken,
+      requestUrl,
+      'GET',
     );
 
+    console.log("Response", response);
+
     if (response.ok) {
-      const length = response.headers.get('Content-Length');
-      if (length > (1 << 10 << 10)) {
-        // We don't want it if it's more than a megabyte.
-        throw new Error(`Attempting to verfiy credentials: Response too long (${length})`);
-      }
-
-      const responseJson = await response.json();
-
-      return responseJson;
+      return response.json();
     } else {
-      throw new Error(`Attempting to do request ${requestUrl.toString()}: ${response.status} ${response.statusText}`);
+      throw new Error(`Error trying to GET ${requestUrl.toString}: ${response.status}, ${response.statusText}`);
     }
   }
 }

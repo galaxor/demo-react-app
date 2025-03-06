@@ -27,6 +27,15 @@ export default function Test({dbConnection}) {
         await mastodonApi.open(serverUrl);
         await mastodonApi.getAuthorizedToken();
       }
+
+      if (authToken || (serverUrl && authTokens[serverUrl])) {
+        await db.open(serverUrl);
+        const mastodonApi = new MastodonAPI(db);
+        await mastodonApi.open(serverUrl);
+
+        const response = await mastodonApi.apiGet('/api/v1/accounts/verify_credentials');
+        console.log(response);
+      }
     })();
   }, []);
 
@@ -34,7 +43,6 @@ export default function Test({dbConnection}) {
   const authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? {};
   console.log("atat", serverUrl, authTokens);
   if (authToken || (serverUrl && authTokens[serverUrl])) {
-    console.log("AT", authToken ?? authTokens[serverUrl]);
     return <>Authorized, baybee 😎</>;
   }
 
