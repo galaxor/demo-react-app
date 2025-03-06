@@ -9,13 +9,12 @@ class MastodonAPI {
     // this.serverConfig = Object.assign(new OpenID.Configuration(), JSON.parse(localStorage.getItem('serverConfig')));
     // console.log("Stored sc", this.serverConfig);
 
-    this.redirectUri = new URL(window.location);
-    this.redirectUri.pathname = '/test';
-
     this.oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
 
     this.authTokens = JSON.parse(localStorage.getItem('authTokens')) ?? null;
     // this.authToken = this.authTokens[this.serverUrl];
+
+    this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
 
   async open(serverUrlArg) {
@@ -28,7 +27,12 @@ class MastodonAPI {
     localStorage.setItem('serverUrl', serverUrl);
 
     this.serverUrl = serverUrl;
-    
+
+    const redirectUrl = new URL(window.location);
+    const prefix=import.meta.env.BASE_URL.replace(/\/+$/, '');
+    redirectUrl.pathname = prefix+'/login-landing';
+    this.redirectUrl = redirectUrl.toString();
+
     const appRegistration = await this.db.get('mastodonApiAppRegistrations', this.serverUrl.toString());
     if (appRegistration) {
       this.clientId = appRegistration.clientId;
@@ -42,23 +46,17 @@ class MastodonAPI {
       });
     }
 
-    if (!this.serverConfig) {
-      console.log("Getting server config");
-      this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
-      console.log("Got ", this.serverConfig);
-      localStorage.setItem('serverConfig', JSON.stringify(this.serverConfig));
-    }
+    this.readyResolve(true);
+  }
+
+  ready() {
+    return this.readyState;
   }
 
   // https://docs.joinmastodon.org/methods/apps/
   async registerApp(serverUrl) {
     const requestUrl = new URL(this.serverUrl);
-    requestUrl.pathname = '/api/v1/apps';
-
-    const redirectUri = new URL(window.location);
-    redirectUri.pathname = '/test';
-
-    this.redirectUri = redirectUri.toString();
+    requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+'/api/v1/apps';
 
     const response = await fetch(
       requestUrl.toString(), {
@@ -68,7 +66,7 @@ class MastodonAPI {
         },
         body: JSON.stringify({
           client_name: 'ProSocial',
-          redirect_uris: ['urn:ietf:wg:oauth:2.0:oob', redirectUri.toString()],
+          redirect_uris: ['urn:ietf:wg:oauth:2.0:oob', this.redirectUrl.toString()],
           scopes: 'read write push',
           website: 'https://prosocial.app/',
         }),
@@ -109,11 +107,8 @@ class MastodonAPI {
     const codeVerifier = OpenID.randomPKCECodeVerifier();
     const codeChallenge = await OpenID.calculatePKCECodeChallenge(codeVerifier)
 
-    this.codeVerifiers[this.serverUrl] = codeVerifier;
-    localStorage.setItem('codeVerifiers', JSON.stringify(this.codeVerifiers));
-
     let parameters = {
-      redirect_uri: this.redirectUri.toString(),
+      redirect_uri: this.redirectUrl.toString(),
       scope: 'read write push',
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
@@ -130,6 +125,9 @@ class MastodonAPI {
       parameters.state = state;
     }
 
+    this.codeVerifiers[this.serverUrl] = {codeVerifier, state: parameters.state};
+    localStorage.setItem('codeVerifiers', JSON.stringify(this.codeVerifiers));
+
     const redirectTo = OpenID.buildAuthorizationUrl(this.serverConfig, parameters);
 
     // now redirect the user to redirectTo.href
@@ -143,7 +141,7 @@ class MastodonAPI {
     }
 
     const requestUrl = new URL(this.serverUrl);
-    requestUrl.pathname = '/oauth/token';
+    requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+'/oauth/token';
 
     const response = await fetch(
       requestUrl, {
@@ -205,7 +203,7 @@ class MastodonAPI {
 
   async verifyCredentials() {
     const requestUrl = new URL(this.serverUrl);
-    requestUrl.pathname = '/api/v1/accounts/verify_credentials';
+    requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+'/api/v1/accounts/verify_credentials';
     const response = await fetch(
       requestUrl, {
         method: "GET",
@@ -230,7 +228,7 @@ class MastodonAPI {
 
   async apiGet(requestPath) {
     const requestUrl = new URL(this.serverUrl);
-    requestUrl.pathname = requestPath;
+    requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+requestPath;
 
     // XXX Doing this with OpenID's fetchProtectedResource requires having a
     // correct serverConfig.  But Mastodon does not require this - we only need

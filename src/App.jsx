@@ -75,23 +75,8 @@ function App({dbConnection, mastodonApi}) {
   // If they haven't even picked what server they're working with, we need to
   // let them choose that.  We can't even open the database without knowing
   // what server we're talking to.
-  if (!serverUrl) {
-    return (
-    <div className={"app-theme text-foreground bg-background " + (darkMode? "dark " : "")}>
-      <header className="page-header shadow-md">
-        <Logo />
-        <UserSection darkMode={darkMode} setDarkMode={setDarkMode} />
-      </header>
-      <div id="page-body">
-        <main>
-          <ServerPicker setServerUrl={setServerUrl} />
-        </main>
-      </div>
-    </div>
-    );
-  }
 
-  if (typeof db === "undefined") {
+  if (serverUrl && typeof db === "undefined") {
     return "App loading...";
   }
 
@@ -99,7 +84,7 @@ function App({dbConnection, mastodonApi}) {
     <>
     <DatabaseContext.Provider value={db}>
     <MastodonAPIContext.Provider value={mastodonApi}>
-    <UserContext.Provider value={{user, setUser, sessionId, setSessionId, userDB}}>
+    <UserContext.Provider value={{user, setUser, sessionId, setSessionId, userDB, serverUrl, setServerUrl}}>
     <DarkModeContext.Provider value={[darkMode, setDarkMode]}>
     <LanguageContext.Provider value={languageContext}>
     <SystemNotificationArea />
@@ -110,8 +95,16 @@ function App({dbConnection, mastodonApi}) {
       </header>
 
       <div id="page-body">
-        <NavigationSidebar />
-        <Outlet />
+        {serverUrl?
+          <>
+          <NavigationSidebar />
+          <Outlet />
+          </>
+          :
+          <main>
+            <ServerPicker setServerUrl={setServerUrl} />
+          </main>
+        }
       </div>
     </div>
     </LanguageContext.Provider>
