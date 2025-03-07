@@ -46,6 +46,7 @@ export default function UserSection({darkMode, setDarkMode}) {
             <Button onPress={async () => { setSessionId(await userDB.login()); setUser(await userDB.loggedInUser()); }}
               as={Link2} href={loginUrl} radius="full" color="primary" variant="solid"
               startContent={<FontAwesomeIcon icon={icons.doorOpen} />}
+              target="_self"
             >
               Log In
             </Button>
