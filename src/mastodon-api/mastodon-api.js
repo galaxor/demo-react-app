@@ -223,7 +223,8 @@ class MastodonAPI {
 
     const serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost(this.clientSecret), {algorithm: 'oauth2'});
 
-    const appRegistration = await this.db.get('mastodonApiAppRegistrations', this.serverUrl.toString());
+    console.log("idsc", this.clientId, this.clientSecret);
+    console.log("cv", this.serverUrl, this.codeVerifiers, this.codeVerifiers[this.serverUrl].codeVerifier);
 
     const token = await OpenID.authorizationCodeGrant(
       serverConfig,
@@ -274,6 +275,9 @@ class MastodonAPI {
   async apiGet(requestPath) {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+requestPath;
+
+    console.log("I'm going with", this.oauthToken);
+
     const response = await fetch(
       requestUrl, {
         method: "GET",
@@ -293,7 +297,7 @@ class MastodonAPI {
       const responseJson = await response.json();
       return responseJson;
     } else {
-      throw new Error(`Attempting to get an anonymous token: ${response.status} ${response.statusText}`);
+      throw new Error(`Attempting to run ${requestPath}: ${response.status} ${response.statusText}`);
     }
   }
 }
