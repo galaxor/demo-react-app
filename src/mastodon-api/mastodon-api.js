@@ -6,10 +6,32 @@ class MastodonAPI {
 
     this.codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
 
-    // this.serverConfig = Object.assign(new OpenID.Configuration(), JSON.parse(localStorage.getItem('serverConfig')));
-    // console.log("Stored sc", this.serverConfig);
-
+    // This is the list of tokens we COULD use.
+    // We can use this to create a user-switcher.
+    // The format is:
+    // {
+    //   [serverUrl]: { 
+    //     anonymous: {
+    //       handle: null,
+    //       token: oauth access token,
+    //       createdAt: the date-time the token was created (ISO string).
+    //     },
+    //     authorized: [
+    //       {
+    //         handle: fediverse handle,
+    //         token: oauth access token,
+    //         createdAt: the date-time the token was created (ISO string).
+    //       },
+    //       ...
+    //     ],
+    //   },
+    //   ...
+    // }
     this.oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
+
+    // This is the token we have DECIDED to use.
+    // It's just the string that is the authorization token.
+    this.oauthToken = localStorage.getItem('oauthToken');
 
     this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
@@ -132,8 +154,8 @@ class MastodonAPI {
 
   // https://docs.joinmastodon.org/methods/oauth/#token
   async getAnonymousToken() {
-    if (this.oauthTokens[this.serverUrl.toString()] && this.oauthTokens[this.serverUrl.toString()][null]) {
-      return this.oauthTokens[this.serverUrl.toString()][null];
+    if (this.oauthTokens[this.serverUrl.toString()] && this.oauthTokens[this.serverUrl.toString()].anonymous) {
+      return this.oauthTokens[this.serverUrl.toString()].anonymous.token;
     }
 
     const requestUrl = new URL(this.serverUrl);
@@ -166,28 +188,37 @@ class MastodonAPI {
       if (typeof this.oauthTokens[this.serverUrl.toString()] === "undefined") {
         this.oauthTokens[this.serverUrl.toString()] = {};
       }
-      this.oauthTokens[this.serverUrl.toString()][null] = {serverUrl: this.serverUrl.toString(), user: null, token: responseJson.access_token, createdAt: new Date(responseJson.created_at * 1000).toISOString()};
+      this.oauthTokens[this.serverUrl.toString()].anonymous = {serverUrl: this.serverUrl.toString(), user: null, token: responseJson.access_token, createdAt: new Date(responseJson.created_at * 1000).toISOString()};
       localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
 
-      this.oauthToken = this.oauthTokens[this.serverUrl.toString()][null].token;
+      const oauthToken = this.oauthTokens[this.serverUrl.toString()].anonymous.token;
 
       localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
 
-      return this.oauthTokens[this.serverUrl.toString()][null];
+      return oauthToken;
     } else {
       throw new Error(`Attempting to get an anonymous token: ${response.status} ${response.statusText}`);
     }
   }
 
+  // We may have an anonymous token and also several users we can switch between.
+  // This sets which one is active.
+  setToken(newOauthToken) {
+    localStorage.setItem('oauthToken', newOauthToken);
+    this.oauthToken = newOauthToken;
+  }
+
   // https://docs.joinmastodon.org/methods/oauth/#token
-  async getAuthorizedToken() {
-    if (this.oauthTokens[this.serverUrl.toString()] && this.oauthTokens[this.serverUrl.toString()].authorized) {
-      return this.oauthTokens[this.serverUrl.toString()].authorized;
+  async getAuthorizedToken({newToken}) {
+    if (this.oauthToken && !newToken) {
+      return this.oauthToken;
     }
 
-    if (!this.serverConfig) {
-      this.serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
+    if (this.oauthTokens[this.serverUrl.toString()] && !this.oauthTokens[this.serverUrl.toString()].authorized) {
+      this.oauthTokens[this.serverUrl.toString()].authorized = [];
     }
+
+    const serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
 
     const token = await OpenID.authorizationCodeGrant(
       this.serverConfig,
@@ -197,10 +228,14 @@ class MastodonAPI {
       },
     )
 
-    this.oauthTokens[this.serverUrl].authorized = token.access_token;
+    this.oauthTokens[this.serverUrl.toString()].authorized.push({serverUrl: this.serverUrl.toString(), handle: null, token: token.access_token, createdAt: new Date().toISOString(), details: token});
+
     localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
 
-    return this.oauthTokens[this.serverUrl].authorized;
+    this.oauthToken = token.access_token;
+    localStorage.setItem('oauthToken', this.oauthToken);
+
+    return token.access_token;
   }
 
   async verifyCredentials() {
@@ -231,26 +266,25 @@ class MastodonAPI {
   async apiGet(requestPath) {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+requestPath;
-
-    // XXX Doing this with OpenID's fetchProtectedResource requires having a
-    // correct serverConfig.  But Mastodon does not require this - we only need
-    // the authToken.  So let's maybe ditch the OpenID library here and just
-    // write our own fetch with the Authorization header.
-    // Otherwise, we might end up having to make a round trip to do the
-    // discovery of the server config, which would be unnecessary.
-    const response = await OpenID.fetchProtectedResource(
-      this.serverConfig,
-      this.authToken,
-      requestUrl,
-      'GET',
+    const response = await fetch(
+      requestUrl, {
+        method: "GET",
+        headers: {
+          "Authorization": `bearer ${this.oauthToken}`,
+        },
+      }
     );
 
-    console.log("Response", response);
-
     if (response.ok) {
-      return response.json();
+      const length = response.headers.get('Content-Length');
+      if (length > (1 << 10 << 10)) {
+        // We don't want it if it's more than a megabyte.
+        throw new Error(`Attempting to verfiy credentials: Response too long (${length})`);
+      }
+
+      const responseJson = await response.json();
     } else {
-      throw new Error(`Error trying to GET ${requestUrl.toString}: ${response.status}, ${response.statusText}`);
+      throw new Error(`Attempting to get an anonymous token: ${response.status} ${response.statusText}`);
     }
   }
 }

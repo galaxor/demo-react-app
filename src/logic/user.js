@@ -16,19 +16,34 @@ export default class UserDB {
   }
 
   async loggedInUser() {
+    // The tokens we have available.
     const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
+
+    // The token we've chosen to use.
+    const oauthToken = localStorage.getItem('oauthToken');
+
     const serverUrl = new URL(localStorage.getItem('serverUrl'));
     
-    await this.mastodonApi.ready();
+    if (oauthToken && oauthTokens[serverUrl] && oauthTokens[serverUrl].authorized) {
+      const oauthData = oauthTokens[serverUrl].authorized.find(item => item.token === oauthToken);
 
-    if (oauthTokens[serverUrl] && oauthTokens[serverUrl].authorized) {
-      const account = await this.db.get('accounts', 'testuser');
-      const person = await this.db.get('people', account.handle);
+      if (oauthData && oauthData.handle) {
+        const person = await this.db.get('people', oauthData.handle);
+        return person;
+      } else {
+        // The server knows about this person, but we don't.  Let's get their
+        // info and shove it in our database!
+        if (typeof person === "undefined") {
+          await this.mastodonApi.ready();
+          const apiPerson = await this.mastodonApi.apiGet('/api/v1/accounts/verify_credentials');
 
-      person.session = session;
-
-      return person;
+          // Put them in the database.
+          // Return the person.
+        }
+      }
     } else {
+      const anonToken = await this.mastodonApi.getAnonymousToken();
+      this.mastodonApi.setToken(anonToken);
       return null;
     }
   }
