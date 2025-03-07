@@ -50,6 +50,7 @@ class MastodonAPI {
     const redirectUrl = new URL(window.location);
     const prefix=import.meta.env.BASE_URL.replace(/\/+$/, '');
     redirectUrl.pathname = prefix+'/login-landing';
+    redirectUrl.search = '';
     this.redirectUrl = redirectUrl.toString();
 
     const appRegistration = await this.db.get('mastodonApiAppRegistrations', this.serverUrl.toString());
@@ -209,7 +210,9 @@ class MastodonAPI {
   }
 
   // https://docs.joinmastodon.org/methods/oauth/#token
-  async getAuthorizedToken({newToken}) {
+  async getAuthorizedToken(options) {
+    const newToken = options? options.newToken : undefined;
+
     if (this.oauthToken && !newToken) {
       return this.oauthToken;
     }
@@ -218,10 +221,12 @@ class MastodonAPI {
       this.oauthTokens[this.serverUrl.toString()].authorized = [];
     }
 
-    const serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost, {algorithm: 'oauth2'});
+    const serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost(this.clientSecret), {algorithm: 'oauth2'});
+
+    const appRegistration = await this.db.get('mastodonApiAppRegistrations', this.serverUrl.toString());
 
     const token = await OpenID.authorizationCodeGrant(
-      this.serverConfig,
+      serverConfig,
       new URL(window.location.href),
       {
         pkceCodeVerifier: this.codeVerifiers[this.serverUrl].codeVerifier,
@@ -234,6 +239,9 @@ class MastodonAPI {
 
     this.oauthToken = token.access_token;
     localStorage.setItem('oauthToken', this.oauthToken);
+
+    delete this.codeVerifiers[this.serverUrl];
+    localStorage.setItem('codeVerifiers', JSON.stringify(this.codeVerifiers));
 
     return token.access_token;
   }
@@ -283,6 +291,7 @@ class MastodonAPI {
       }
 
       const responseJson = await response.json();
+      return responseJson;
     } else {
       throw new Error(`Attempting to get an anonymous token: ${response.status} ${response.statusText}`);
     }
