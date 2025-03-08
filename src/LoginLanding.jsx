@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from "react-router-dom"
 
 import MastodonAPIContext from './context/MastodonAPIContext.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
@@ -7,6 +8,8 @@ import UserContext from './UserContext.jsx';
 export default function LoginLanding() {
   const { user, setUser, serverUrl, setServerUrl } = useContext(UserContext);
   const mastodonApi = useContext(MastodonAPIContext);
+
+  const navigate = useNavigate();
 
   // In dev mode, React mounts everything twice. That means the Effect will
   // fire twice. But we can only use the code to get a token once.
@@ -36,6 +39,7 @@ export default function LoginLanding() {
           const response = await mastodonApi.apiGet('/api/v1/accounts/verify_credentials');
 
           console.log("Logged in as", response);
+          navigate("/");
         } else {
           alert("We don't have a code verifier for "+serverUrl);
         }
