@@ -70,12 +70,11 @@ export default class UserDB {
       ... this.db.nullPerson(),
       localUserId: apiPerson.acct ?? null,
       displayName: apiPerson.display_name,
-      handle: `@${apiPerson.acct}@${serverUrl}`,
+      handle: `@${apiPerson.acct}@${new URL(serverUrl).host}`,
       avatar: apiPerson.avatar,
       bio: apiPerson.source? apiPerson.source.node : apiPerson.note,
     };
 
-    console.log("Is this the place??");
     await this.db.set('people', newPerson);
 
     // XXX Get the avatar and stash it locally, too.
