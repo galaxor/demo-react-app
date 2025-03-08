@@ -6,7 +6,7 @@ import DatabaseContext from './DatabaseContext.jsx';
 import UserContext from './UserContext.jsx';
 
 export default function LoginLanding() {
-  const { user, setUser, serverUrl, setServerUrl } = useContext(UserContext);
+  const { user, setUser, serverUrl, setServerUrl, userDB } = useContext(UserContext);
   const mastodonApi = useContext(MastodonAPIContext);
 
   const navigate = useNavigate();
@@ -39,6 +39,11 @@ export default function LoginLanding() {
           const response = await mastodonApi.apiGet('/api/v1/accounts/verify_credentials');
 
           console.log("Logged in as", response);
+
+          const person = await userDB.updatePersonFromApi(response);
+          setUser(person);
+
+          console.log("Locally Logged in as", person);
           navigate("/");
         } else {
           alert("We don't have a code verifier for "+serverUrl);

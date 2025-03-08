@@ -308,7 +308,7 @@ class MastodonAPI {
       const length = response.headers.get('Content-Length');
       if (length > (1 << 10 << 10)) {
         // We don't want it if it's more than a megabyte.
-        throw new Error(`Attempting to verfiy credentials: Response too long (${length})`);
+        throw new Error(`Attempting to fetch ${requestUrl.toString()}: Response too long (${length})`);
       }
 
       const responseJson = await response.json();

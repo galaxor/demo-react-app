@@ -64,6 +64,26 @@ export default class UserDB {
     return null;
   }
 
+  async updatePersonFromApi(apiPerson) {
+    const serverUrl = localStorage.getItem('serverUrl');
+    const newPerson = {
+      ... this.db.nullPerson(),
+      localUserId: apiPerson.acct ?? null,
+      displayName: apiPerson.display_name,
+      handle: `@${apiPerson.acct}@${serverUrl}`,
+      avatar: apiPerson.avatar,
+      bio: apiPerson.source? apiPerson.source.node : apiPerson.note,
+    };
+
+    console.log("Is this the place??");
+    await this.db.set('people', newPerson);
+
+    // XXX Get the avatar and stash it locally, too.
+    // This is something we could ask a Worker to do, so we can navigate away.
+
+    return newPerson;
+  }
+
   setName(displayName) {
     return this.setProp('displayName', displayName);
   }
