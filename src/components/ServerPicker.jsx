@@ -12,7 +12,7 @@ export default function ServerPicker({setServerUrl}) {
         ProSocial is a Fediverse client. It must communicate with a Fediverse server. If you have one you'd like to communicate with, enter the url below.
 
         <div className="mt-4">
-        <Input name="server_url" label="Server URL" type="url" placeholder="example.org" isRequired />
+        <Input name="server_url" label="Server URL" type="url" placeholder="example.org" isRequired autoFocus />
         </div>
 
       </CardBody>
