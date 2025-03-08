@@ -30,6 +30,7 @@ export default function LoginLanding() {
         const codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
         if (codeVerifiers[serverUrl]) {
           await mastodonApi.ready();
+          console.log("Making a request for authorized token");
           const authToken = await mastodonApi.getAuthorizedToken({newToken: true});
           console.log("ATATAT", authToken);
           const response = await mastodonApi.apiGet('/api/v1/accounts/verify_credentials');

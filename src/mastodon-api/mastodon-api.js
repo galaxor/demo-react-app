@@ -123,8 +123,15 @@ class MastodonAPI {
      * end-user session such that it can be recovered as the user gets redirected
      * from the authorization server back to your application.
      */
-    const codeVerifier = OpenID.randomPKCECodeVerifier();
-    const codeChallenge = await OpenID.calculatePKCECodeChallenge(codeVerifier)
+    const codeVerifier = this.codeVerifiers[this.serverUrl]?
+      this.codeVerifiers[this.serverUrl].codeVerifier
+      : OpenID.randomPKCECodeVerifier()
+    ;
+
+    const codeChallenge = this.codeVerifiers[this.serverUrl]?
+      this.codeVerifiers[this.serverUrl].codeChallenge
+      : await OpenID.calculatePKCECodeChallenge(codeVerifier)
+    ;
 
     let parameters = {
       redirect_uri: this.redirectUrl.toString(),
@@ -144,7 +151,8 @@ class MastodonAPI {
       parameters.state = state;
     }
 
-    this.codeVerifiers[this.serverUrl] = {codeVerifier, state: parameters.state};
+    this.codeVerifiers[this.serverUrl] = {codeVerifier, codeChallenge, state: parameters.state};
+    console.log("setting code verifier", this.codeVerifiers);
     localStorage.setItem('codeVerifiers', JSON.stringify(this.codeVerifiers));
 
     const redirectTo = OpenID.buildAuthorizationUrl(this.serverConfig, parameters);
@@ -158,6 +166,8 @@ class MastodonAPI {
     if (this.oauthTokens[this.serverUrl.toString()] && this.oauthTokens[this.serverUrl.toString()].anonymous) {
       return this.oauthTokens[this.serverUrl.toString()].anonymous.token;
     }
+
+    console.log("Getting new anonymous token");
 
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+'/oauth/token';
@@ -185,6 +195,8 @@ class MastodonAPI {
       }
 
       const responseJson = await response.json();
+
+      console.log("Anon token info", responseJson);
 
       if (typeof this.oauthTokens[this.serverUrl.toString()] === "undefined") {
         this.oauthTokens[this.serverUrl.toString()] = {};
@@ -217,6 +229,8 @@ class MastodonAPI {
       return this.oauthToken;
     }
 
+    console.log("Getting new authorized token");
+
     if (this.oauthTokens[this.serverUrl.toString()] && !this.oauthTokens[this.serverUrl.toString()].authorized) {
       this.oauthTokens[this.serverUrl.toString()].authorized = [];
     }
@@ -231,8 +245,11 @@ class MastodonAPI {
       new URL(window.location.href),
       {
         pkceCodeVerifier: this.codeVerifiers[this.serverUrl].codeVerifier,
+        scope: 'read write push',
       },
     )
+
+    console.log("I gotted", token);
 
     this.oauthTokens[this.serverUrl.toString()].authorized.push({serverUrl: this.serverUrl.toString(), handle: null, token: token.access_token, createdAt: new Date().toISOString(), details: token});
 
