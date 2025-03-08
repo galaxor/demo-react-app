@@ -43,6 +43,15 @@ export default function LoginLanding() {
           const person = await userDB.updatePersonFromApi(response);
           setUser(person);
 
+          // Previously, we had the oauthToken, but not the handle of the user
+          // it corresponded to.
+          // Now that we know more about that user (from the verify_credentials
+          // call), we can set the handle in our list of tokens.
+          const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens'));
+          const oauthData = oauthTokens[serverUrl].authorized.find(item => item.token === oauthToken);
+          oauthData.handle = person.handle;
+          localStorage.setItem('oauthTokens', JSON.stringify(oauthTokens));
+
           console.log("Locally Logged in as", person);
           navigate("/");
         } else {

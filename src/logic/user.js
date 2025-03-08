@@ -39,6 +39,15 @@ export default class UserDB {
 
           // Put them in the database.
           // Return the person.
+          const person = await this.updatePersonFromApi(apiPerson);
+
+          // Set their handle for later use.
+          const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens'));
+          const oauthData = oauthTokens[serverUrl].authorized.find(item => item.token === oauthToken);
+          oauthData.handle = person.handle;
+          localStorage.setItem('oauthTokens', JSON.stringify(oauthTokens));
+
+          return person;
         }
       }
     } else {
