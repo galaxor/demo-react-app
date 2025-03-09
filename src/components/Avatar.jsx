@@ -20,7 +20,7 @@ export default function Avatar({person, className}) {
   const avatarRef = useRef(null);
 
   return (
-    <UIAvatar isBordered ref={avatarRef} radius="full" size="md" className={`shrink-0 ${className ?? ""}`} src={imgSrc} name={person.name} 
+    <UIAvatar isBordered ref={avatarRef} radius="full" size="md" className={`shrink-0 ${className ?? ""}`} src={imgSrc} name={person.displayName} 
       style={{'--avatar-bg': '#'+avatarFallbackColor}}
       classNames={{base: "avatar bg-[--avatar-bg]", img: "opacity-100"}}
     />
