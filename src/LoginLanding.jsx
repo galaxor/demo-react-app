@@ -47,6 +47,7 @@ export default function LoginLanding() {
           // it corresponded to.
           // Now that we know more about that user (from the verify_credentials
           // call), we can set the handle in our list of tokens.
+          const oauthToken = localStorage.getItem('oauthToken');
           const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens'));
           const oauthData = oauthTokens[serverUrl].authorized.find(item => item.token === oauthToken);
           oauthData.handle = person.handle;

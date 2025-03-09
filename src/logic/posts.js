@@ -2,7 +2,8 @@ import sha256 from '../include/sha256.js'
 
 export function getPostLoader(db) {
   return async ({params}) => {
-    await db.open();
+    const serverUrl = localStorage.getItem('serverUrl');
+    await db.open(serverUrl);
 
     const postsDB = new PostsDB(db);
 

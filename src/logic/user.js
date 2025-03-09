@@ -81,10 +81,15 @@ export default class UserDB {
       displayName: apiPerson.display_name,
       handle: `@${apiPerson.acct}@${new URL(serverUrl).host}`,
       avatar: apiPerson.avatar,
-      bio: apiPerson.source? apiPerson.source.node : apiPerson.note,
+      bio: apiPerson.source? apiPerson.source.note : apiPerson.note,
+      url: apiPerson.url,
     };
 
-    await this.db.set('people', newPerson);
+    const result = await this.db.set('people', newPerson);
+    console.log(result);
+
+    const ppl = await this.db.get('people', newPerson.handle);
+    console.log(ppl);
 
     // XXX Get the avatar and stash it locally, too.
     // This is something we could ask a Worker to do, so we can navigate away.

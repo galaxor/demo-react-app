@@ -9,6 +9,7 @@ class Database {
     this.serverUrl = serverUrl;
 
     const dbName = serverUrl? `ProSocial-${serverUrl}` : "database2";
+    console.log("Opening DB", dbName);
     const dbRequest = indexedDB.open(dbName, 1);
     dbRequest.onupgradeneeded = this.onUpgradeNeeded.bind(this);
 

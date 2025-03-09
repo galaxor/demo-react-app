@@ -112,10 +112,14 @@ export class PeopleDB {
 
 export function getPersonLoader(db) {
   return async ({params}) => {
-    await db.open();
+    const serverUrl = localStorage.getItem('serverUrl');
+
+    await db.open(serverUrl);
     const peopleDB = new PeopleDB(db);
 
+    console.log("H", params.handle);
     const person = await peopleDB.get(params.handle);
+    console.log("P", person);
 
     return { person };
   };
