@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, Route, Routes, useLocation, useLoaderData, useMatches } from "react-router-dom";
 import { Link as Link2 } from "@nextui-org/link"
 import {Tabs, Tab} from "@nextui-org/tabs";
+import { toast } from 'react-toastify'
 import { useDisclosure } from "@nextui-org/use-disclosure"
 import {
   Modal,
@@ -138,6 +139,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
           <Link2 className="author-handle u-impp font-bold text-default-1000"
             onPress={async () => {
               await navigator.clipboard.writeText(person.handle);
+              toast("Handle copied to clipboard", {type: 'info'});
             }}
           >
             {person.handle}
