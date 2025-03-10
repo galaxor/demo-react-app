@@ -3,13 +3,17 @@ import { useNavigate } from "react-router-dom"
 
 import MastodonAPIContext from './context/MastodonAPIContext.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
+import { PeopleDB } from './logic/people.js'
+import PostOfficeContext from './context/PostOfficeContext.jsx'
 import UserContext from './UserContext.jsx';
 
 export default function LoginLanding() {
   const { user, setUser, serverUrl, setServerUrl, userDB } = useContext(UserContext);
   const mastodonApi = useContext(MastodonAPIContext);
+  const db = useContext(DatabaseContext);
 
   const navigate = useNavigate();
+  const worker = useContext(PostOfficeContext);
 
   // In dev mode, React mounts everything twice. That means the Effect will
   // fire twice. But we can only use the code to get a token once.
@@ -42,6 +46,12 @@ export default function LoginLanding() {
 
           const person = await userDB.updatePersonFromApi(response);
           setUser(person);
+          worker.send({command: 'fetchImage', url: response.avatar}, async hash => {
+            console.log("the hash", hash);
+            person.avatar = hash;
+            setUser({...person});
+            await db.set('people', person);
+          });
 
           // Previously, we had the oauthToken, but not the handle of the user
           // it corresponded to.

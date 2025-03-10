@@ -25,7 +25,7 @@ function App({dbConnection, mastodonApi, postOffice}) {
   const [serverUrl, setServerUrl] = useState(localStorage.getItem('serverUrl'));
 
   const userContext = {user, setUser, sessionId, setSessionId};
-
+  
   // TODO: Add i18n support 🤪
   // Anybody can read navigator.language.
   // But the idea is one day this could be a state value that you can change with a drop down.
@@ -69,6 +69,9 @@ function App({dbConnection, mastodonApi, postOffice}) {
         setDB(db);
         setUserDB(userDB);
         setUser(user);
+
+        // We have to initialize the worker to use the correct database, too.
+        postOffice.send({command: 'init', serverUrl: serverUrl.toString()});
       }
     })();
   }, [serverUrl]);

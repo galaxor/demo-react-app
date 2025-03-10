@@ -11,7 +11,8 @@ export default function Avatar({person, className}) {
 
   useEffect(() => {
     (async () => {
-      setImgSrc(await db.getImageDataUrl(person.avatar));
+      const newImgSrc = await db.getImageDataUrl(person.avatar);
+      setImgSrc(newImgSrc);
     })();
   }, [person]);
   

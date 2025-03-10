@@ -1,4 +1,5 @@
 import Database from '../logic/database.js'
+import sha256 from '../include/sha256.js'
 
 
 class MyWorker {
@@ -21,9 +22,13 @@ class MyWorker {
     case 'ding':
       response = await this.ding(message.message);
       break;
+
+    case 'fetchImage':
+      response = await this.fetchImage(message.url);
+      break;
     }
 
-    console.log("Doot", event.data);
+    console.log("Doot", event.data, response);
     this.respond(envelope, response);
   }
 
@@ -39,6 +44,11 @@ class MyWorker {
 
   respond(envelope, response) {
     postMessage({returnAddress: envelope.returnAddress, response});
+  }
+
+  async fetchImage(url) {
+    const hash = await this.db.uploadImage(url);
+    return hash;
   }
 }
 
