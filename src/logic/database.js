@@ -223,13 +223,16 @@ class Database {
     }
   }
 
-  async uploadImage(imageDataUrl) {
+  async uploadImage(imageDataUrl, responseArg) {
     // We have the image as a data url, because that was the preferred format
     // for showing it in the editing screen.  Now we want it as an
     // Blob because that's the preferred format for storing in the database.
     // Also, we need it as an ArrayBuffer in order to hash it.
     // We can turn the data url into a blob by fetching it like a url.
-    const response = await fetch(imageDataUrl);
+
+    // You can pass in a responseArg, if you want to fetch the image using
+    // authenticated methods.  Then this function processes the response.
+    const response = responseArg ?? await fetch(imageDataUrl);
 
     if (response.ok) {
       const blob = await response.blob();
