@@ -28,8 +28,11 @@ import Test from './Test.jsx'
 
 import Database from "./logic/database.js";
 import MastodonAPI from './mastodon-api/mastodon-api.js'
+import PostOffice from './workers/PostOffice.js'
 import { getPersonLoader } from './logic/people.js';
 import { getPostLoader } from './logic/posts.js';
+
+import workerUrl from './workers/worker.js?worker&url'
 
 import {
   createBrowserRouter,
@@ -59,6 +62,8 @@ if (typeof timeAgoLocales[lang] === "undefined") {
 
 const database = new Database();
 const mastodonApi = new MastodonAPI(database);
+const worker = new Worker(workerUrl, {type: 'module'});
+const postOffice = new PostOffice(worker);
 
 // In case we're deployed in a subdirectory.
 // Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.
@@ -72,7 +77,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App dbConnection={database} mastodonApi={mastodonApi} />,
+        element: <App dbConnection={database} mastodonApi={mastodonApi} postOffice={postOffice} />,
         children: [
           {
             path: "/login-landing",

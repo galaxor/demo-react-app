@@ -11,13 +11,13 @@ import DatabaseContext from "./DatabaseContext.jsx";
 import DarkModeContext from "./DarkModeContext.jsx";
 import LanguageContext from "./LanguageContext.jsx";
 import MastodonAPIContext from "./context/MastodonAPIContext.jsx";
-import ServerContext from "./context/ServerContext.jsx";
+import PostOfficeContext from "./context/PostOfficeContext.jsx";
 import UserContext from "./UserContext.jsx";
 
 import './App.css';
 import UserDB from './logic/user.js';
 
-function App({dbConnection, mastodonApi}) {
+function App({dbConnection, mastodonApi, postOffice}) {
   const [db, setDB] = useState();
   const [sessionId, setSessionId] = useState(null);
   const [userDB, setUserDB] = useState();
@@ -84,6 +84,7 @@ function App({dbConnection, mastodonApi}) {
   return (
     <>
     <DatabaseContext.Provider value={db}>
+    <PostOfficeContext.Provider value={postOffice}>
     <MastodonAPIContext.Provider value={mastodonApi}>
     <UserContext.Provider value={{user, setUser, sessionId, setSessionId, userDB, serverUrl, setServerUrl}}>
     <DarkModeContext.Provider value={[darkMode, setDarkMode]}>
@@ -112,6 +113,7 @@ function App({dbConnection, mastodonApi}) {
     </DarkModeContext.Provider>
     </UserContext.Provider>
     </MastodonAPIContext.Provider>
+    </PostOfficeContext.Provider>
     </DatabaseContext.Provider>
     </>
   );
