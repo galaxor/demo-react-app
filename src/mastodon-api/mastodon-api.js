@@ -1,10 +1,13 @@
 import * as OpenID from 'openid-client'
 
+// XXX I need to take all this localStorage stuff and put it in the database instead.
+// That way, it's available to the Worker that needs to use the Mastodon api.
+
 class MastodonAPI {
-  constructor(db) {
+  constructor(db, oauthTokensArg, oauthTokenArg) {
     this.db = db;
 
-    this.codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
+    this.codeVerifiers = typeof localStorage === "undefined"? {} : (JSON.parse(localStorage.getItem('codeVerifiers')) ?? {});
 
     // This is the list of tokens we COULD use.
     // We can use this to create a user-switcher.
@@ -27,11 +30,11 @@ class MastodonAPI {
     //   },
     //   ...
     // }
-    this.oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
+    this.oauthTokens = oauthTokensArg ?? JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
 
     // This is the token we have DECIDED to use.
     // It's just the string that is the authorization token.
-    this.oauthToken = localStorage.getItem('oauthToken');
+    this.oauthToken = oauthTokenArg ?? localStorage.getItem('oauthToken');
 
     this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
@@ -289,9 +292,15 @@ class MastodonAPI {
     }
   }
 
-  async apiGet(requestPath) {
+  async apiGet(requestPath, params) {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+requestPath;
+
+    const searchParams = new URLSearchParams({
+      ...Object.fromEntries(requestUrl.entries()),
+      ...params
+    });
+    requestUrl.search = searchParams.toString();
 
     console.log("I'm going with", this.oauthToken);
 

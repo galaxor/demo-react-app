@@ -5,6 +5,8 @@ import DatabaseContext from './DatabaseContext.jsx';
 import PersonContext from './PersonContext.jsx';
 import { PostsDB } from './logic/posts.js';
 import PostsList from './PostsList.jsx';
+import PostOfficeContext from './context/PostOfficeContext.jsx'
+
 
 // import theirPosts from './staticList.js'
 
@@ -17,10 +19,24 @@ export default function PostsByPerson({showReplies}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
+  const worker = useContext(PostOfficeContext);
+
   useEffect(() => {
     (async () => {
       const theirPosts = await postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
       setTheirPosts(theirPosts);
+
+      worker.send(
+        {
+          command: "getPostsBy",
+          handle: person.handle,
+          minId: theirPosts.length === 0? undefined : theirPosts[0].serverId,
+        }, 
+        posts => {
+          console.log("I'd fetch these posts", posts);
+        }
+      );
+      
     })();
   }, [showBoosts, showReplies]);
 

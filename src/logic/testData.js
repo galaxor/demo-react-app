@@ -17,6 +17,7 @@ const testData = {
   people: {
     '@astra_underscore@wetdry.world': {
       localUserId: null,
+      serverId: 1,
       handle: '@astra_underscore@wetdry.world',
 
       url: 'https://wetdry.world/@astra_underscore',
@@ -35,6 +36,7 @@ const testData = {
 
     '@darkphoenix@not.an.evilcyberhacker.net': {
       localUserId: null,
+      serverId: 2,
       handle: '@darkphoenix@not.an.evilcyberhacker.net',
 
       url: 'https://not.an.evilcyberhacker.net/@darkphoenix',
@@ -53,6 +55,7 @@ const testData = {
 
     '@testuser@local': {
       localUserId: 'testuser',
+      serverId: 3,
       handle: '@testuser@local',
 
       url: null,
@@ -72,6 +75,7 @@ const testData = {
 
     '@alice@local': {
       localUserId: 'alice',
+      serverId: 4,
       handle: '@alice@local',
 
       url: 'https://coolserver.example.org/alice',
@@ -90,6 +94,7 @@ const testData = {
 
     '@mittens@kittens': {
       localUserId: null,
+      serverId: 5,
       handle: '@mittens@kittens',
 
       url: 'https://kittens.example.org/@mittens',
@@ -108,6 +113,7 @@ const testData = {
 
     '@jasper.shadow@solarpunk': {
       localUserId: null,
+      serverId: 6,
       handle: '@jasper.shadow@solarpunk',
 
       url: 'https://solarpunk.example.org/@jasper.shadow',
@@ -126,6 +132,7 @@ const testData = {
 
     '@cfur@corporate': {
       localUserId: null,
+      serverId: 7,
       handle: '@cfur@corporate',
 
       url: 'https://corporate.example.org/@cfur',
@@ -265,6 +272,7 @@ const testData = {
   posts: {
     "@alice@local/a-cool-article": {
       uri: "@alice@local/a-cool-article",
+      serverId: 1,
       author: "@alice@local",
       createdAt: "2024-11-21T14:46:26-05:00",
       updatedAt: "2024-11-21T14:46:26-05:00",
@@ -277,6 +285,7 @@ const testData = {
 
     "@alice@local/has-anyone-seen-bob": {
       uri: "@alice@local/has-anyone-seen-bob",
+      serverId: 2,
       author: "@alice@local",
       createdAt: "2024-11-24T13:41:26-05:00",
       updatedAt: "2024-11-24T13:41:26-05:00",
@@ -289,6 +298,7 @@ const testData = {
 
     "https://wetdry.world/@astra_underscore/113522617022220742": {
       uri: "https://wetdry.world/@astra_underscore/113522617022220742",
+      serverId: 3,
       author: "@astra_underscore@wetdry.world",
       createdAt: "2024-11-21T02:30:00-04:00",
       updatedAt: "2024-11-21T02:34:00-04:00",
@@ -302,6 +312,7 @@ const testData = {
 
     "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl": {
       uri: "https://not.an.evilcyberhacker.net/notes/a0va3qltels602bl",
+      serverId: 4,
       author: "@darkphoenix@not.an.evilcyberhacker.net",
       createdAt: "2024-11-21T07:37:00+01:00",
       updatedAt: "2024-11-21T07:37:00+01:00",
@@ -314,6 +325,7 @@ const testData = {
 
     "testuser@local/same": {
       uri: "testuser@local/same",
+      serverId: 5,
       author: "@testuser@local",
       createdAt: "2024-11-23T00:50:00-05:00",
       updatedAt: "2024-11-23T00:50:00-05:00",
@@ -327,6 +339,7 @@ const testData = {
 
     "@cfur@corporate/boost-a-cool-article": {
       uri: "@cfur@corporate/boost-a-cool-article",
+      serverId: 6,
       author: "@cfur@corporate",
       createdAt: "2024-11-24T12:16:31-05:00",
       updatedAt: "2024-11-24T12:16:31-05:00",
@@ -339,6 +352,7 @@ const testData = {
 
     "@cfur@corporate/help-alice-find-bob": {
       uri: "@cfur@corporate/help-alice-find-bob",
+      serverId: 7,
       author: "@cfur@corporate",
       createdAt: "2024-11-24T13:44:31-05:00",
       updatedAt: "2024-11-24T13:44:31-05:00",
@@ -351,6 +365,7 @@ const testData = {
 
     "@mittens@kittens/sayori-dating-zoning": {
       uri: "@mittens@kittens/sayori-dating-zoning",
+      serverId: 8,
       author: "@mittens@kittens",
       createdAt: "2024-01-30T22:16:00-05:00",
       updatedAt: "2024-01-30T22:16:00-05:00",

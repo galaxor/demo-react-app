@@ -71,7 +71,7 @@ function App({dbConnection, mastodonApi, postOffice}) {
         setUser(user);
 
         // We have to initialize the worker to use the correct database, too.
-        postOffice.send({command: 'init', serverUrl: serverUrl.toString()});
+        postOffice.send({command: 'init', serverUrl: serverUrl.toString(), oauthTokens: JSON.parse(localStorage.getItem('oauthTokens')), oauthToken: localStorage.getItem('oauthToken')});
       }
     })();
   }, [serverUrl]);

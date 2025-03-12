@@ -80,6 +80,7 @@ class Database {
       people.createIndex("localUserId", "localUserId");
       people.createIndex("url", "url");
       people.createIndex("displayName", "displayName");
+      people.createIndex("serverId", "serverId");
 
       const posts = db.createObjectStore("posts", { keyPath: "uri" });
       posts.createIndex("uri", "uri");
@@ -91,6 +92,7 @@ class Database {
       posts.createIndex("canonicalUrl", "canonicalUrl");
       posts.createIndex("conversationId", "conversationId");
       posts.createIndex("local", "local");
+      posts.createIndex("serverId", "serverId");
 
       const postVersions = db.createObjectStore("postVersions", { keyPath: ["uri", "updatedAt"] });
       postVersions.createIndex("uri", "uri");

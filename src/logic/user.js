@@ -83,6 +83,7 @@ export default class UserDB {
       avatar: apiPerson.avatar,
       bio: apiPerson.source? apiPerson.source.note : apiPerson.note,
       url: apiPerson.url,
+      serverId: apiPerson.id,
     };
 
     const result = await this.db.set('people', newPerson);
