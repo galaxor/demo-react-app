@@ -17,15 +17,13 @@ export default class UserDB {
 
   async loggedInUser() {
     // The tokens we have available.
-    const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
+    const oauthTokens = await this.db.get("oauthTokens", this.serverUrl)?.tokens ?? [];
 
     // The token we've chosen to use.
-    const oauthToken = localStorage.getItem('oauthToken');
+    const oauthToken = oauthTokens.find(token => token.chosen === true);
 
-    const serverUrl = new URL(localStorage.getItem('serverUrl'));
-    
-    if (oauthToken && oauthTokens[serverUrl] && oauthTokens[serverUrl].authorized) {
-      const oauthData = oauthTokens[serverUrl].authorized.find(item => item.token === oauthToken);
+    if (oauthToken && oauthTokens.find(token => token.user !== null)) {
+      const oauthData = oauthTokens.find(item => item.token === oauthToken);
 
       if (oauthData && oauthData.handle) {
         const person = await this.db.get('people', oauthData.handle);
@@ -43,9 +41,9 @@ export default class UserDB {
 
           // Set their handle for later use.
           const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens'));
-          const oauthData = oauthTokens[serverUrl].authorized.find(item => item.token === oauthToken);
+          const oauthData = oauthTokens.find(item => item.token === oauthToken);
           oauthData.handle = person.handle;
-          localStorage.setItem('oauthTokens', JSON.stringify(oauthTokens));
+          await this.db.set("oauthTokens", {serverUrl: this.serverUrl, tokens: oauthTokens});
 
           return person;
         }

@@ -4,57 +4,44 @@ import * as OpenID from 'openid-client'
 // That way, it's available to the Worker that needs to use the Mastodon api.
 
 class MastodonAPI {
-  constructor(db, oauthTokensArg, oauthTokenArg) {
+  constructor(db) {
     this.db = db;
-
-    this.codeVerifiers = typeof localStorage === "undefined"? {} : (JSON.parse(localStorage.getItem('codeVerifiers')) ?? {});
-
-    // This is the list of tokens we COULD use.
-    // We can use this to create a user-switcher.
-    // The format is:
-    // {
-    //   [serverUrl]: { 
-    //     anonymous: {
-    //       handle: null,
-    //       token: oauth access token,
-    //       createdAt: the date-time the token was created (ISO string).
-    //     },
-    //     authorized: [
-    //       {
-    //         handle: fediverse handle,
-    //         token: oauth access token,
-    //         createdAt: the date-time the token was created (ISO string).
-    //       },
-    //       ...
-    //     ],
-    //   },
-    //   ...
-    // }
-    this.oauthTokens = oauthTokensArg ?? JSON.parse(localStorage.getItem('oauthTokens')) ?? {};
-
-    // This is the token we have DECIDED to use.
-    // It's just the string that is the authorization token.
-    this.oauthToken = oauthTokenArg ?? localStorage.getItem('oauthToken');
 
     this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
 
+  async getOauthState(serverUrl) {
+    const transaction = this.db.db.transaction(['codeVerifiers', 'oauthTokens']);
+    await Promise.all([
+      new Promise(async resolve => {
+        this.codeVerifiers = await this.db.getFromObjectStore(transaction.objectStore('codeVerifiers'), serverUrl) ?? {};
+        resolve();
+      }),
+      new Promise(async resolve => {
+        this.oauthTokens = await this.db.getFromObjectStore(transaction.objectStore('oauthTokens'), serverUrl)?.tokens ?? [];
+        resolve();
+      }),
+    ]);
+
+    // This is the token we have DECIDED to use.
+    // It's just the string that is the authorization token.
+    this.oauthToken = this.oauthTokens.find(token => token.chosen === true)?.token;
+  }
+
   async open(serverUrlArg) {
+    this.getOauthState();
+
     // It should look up in the database to see if we have a client
     // registration, and get the client_id and client_secret.
     // If we don't have a stored registration, call register_app to get one,
     // and then this function stores those things in the database.
 
-    const serverUrl = typeof serverUrlArg === "undefined"? localStorage.getItem('serverUrl') : serverUrlArg;
-    localStorage.setItem('serverUrl', serverUrl);
+    const serverUrl = typeof serverUrlArg === "undefined"? localStorage?.getItem('serverUrl') : serverUrlArg;
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem('serverUrl', serverUrl);
+    }
 
     this.serverUrl = serverUrl;
-
-    const redirectUrl = new URL(window.location);
-    const prefix=import.meta.env.BASE_URL.replace(/\/+$/, '');
-    redirectUrl.pathname = prefix+'/login-landing';
-    redirectUrl.search = '';
-    this.redirectUrl = redirectUrl.toString();
 
     const appRegistration = await this.db.get('mastodonApiAppRegistrations', this.serverUrl.toString());
     if (appRegistration) {
@@ -70,6 +57,14 @@ class MastodonAPI {
     }
 
     this.readyResolve(true);
+  }
+
+  redirectUrl() {
+    const redirectUrl = new URL(window.location);
+    const prefix=import.meta.env.BASE_URL.replace(/\/+$/, '');
+    redirectUrl.pathname = prefix+'/login-landing';
+    redirectUrl.search = '';
+    return redirectUrl.toString();
   }
 
   ready() {
@@ -89,7 +84,7 @@ class MastodonAPI {
         },
         body: JSON.stringify({
           client_name: 'ProSocial',
-          redirect_uris: ['urn:ietf:wg:oauth:2.0:oob', this.redirectUrl.toString()],
+          redirect_uris: ['urn:ietf:wg:oauth:2.0:oob', this.redirectUrl()],
           scopes: 'read write push',
           website: 'https://prosocial.app/',
         }),
@@ -126,18 +121,12 @@ class MastodonAPI {
      * end-user session such that it can be recovered as the user gets redirected
      * from the authorization server back to your application.
      */
-    const codeVerifier = this.codeVerifiers[this.serverUrl]?
-      this.codeVerifiers[this.serverUrl].codeVerifier
-      : OpenID.randomPKCECodeVerifier()
-    ;
+    const codeVerifier = this.codeVerifiers?.codeVerifier ?? OpenID.randomPKCECodeVerifier();
 
-    const codeChallenge = this.codeVerifiers[this.serverUrl]?
-      this.codeVerifiers[this.serverUrl].codeChallenge
-      : await OpenID.calculatePKCECodeChallenge(codeVerifier)
-    ;
+    const codeChallenge = this.codeVerifiers?.codeChallenge ?? await OpenID.calculatePKCECodeChallenge(codeVerifier);
 
     let parameters = {
-      redirect_uri: this.redirectUrl.toString(),
+      redirect_uri: this.redirectUrl(),
       scope: 'read write push',
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
@@ -154,9 +143,9 @@ class MastodonAPI {
       parameters.state = state;
     }
 
-    this.codeVerifiers[this.serverUrl] = {codeVerifier, codeChallenge, state: parameters.state};
-    console.log("setting code verifier", this.codeVerifiers);
-    localStorage.setItem('codeVerifiers', JSON.stringify(this.codeVerifiers));
+    this.codeVerifier = {serverUrl: this.serverUrl.toString(), codeVerifier, codeChallenge, state: parameters.state};
+    console.log("setting code verifier", this.serverUrl, this.codeVerifier);
+    this.db.set('codeVerifiers', this.codeVerifier);
 
     const redirectTo = OpenID.buildAuthorizationUrl(this.serverConfig, parameters);
 
@@ -166,8 +155,9 @@ class MastodonAPI {
 
   // https://docs.joinmastodon.org/methods/oauth/#token
   async getAnonymousToken() {
-    if (this.oauthTokens[this.serverUrl.toString()] && this.oauthTokens[this.serverUrl.toString()].anonymous) {
-      return this.oauthTokens[this.serverUrl.toString()].anonymous.token;
+    const existingAnonymousToken = this.oauthTokens?.find(token => token.handle === null);
+    if (existingAnonymousToken) {
+      return existingAnonymousToken.token;
     }
 
     console.log("Getting new anonymous token");
@@ -201,17 +191,10 @@ class MastodonAPI {
 
       console.log("Anon token info", responseJson);
 
-      if (typeof this.oauthTokens[this.serverUrl.toString()] === "undefined") {
-        this.oauthTokens[this.serverUrl.toString()] = {};
-      }
-      this.oauthTokens[this.serverUrl.toString()].anonymous = {serverUrl: this.serverUrl.toString(), user: null, token: responseJson.access_token, createdAt: new Date(responseJson.created_at * 1000).toISOString()};
-      localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
+      this.oauthTokens.push({handle: null, token: responseJson.access_token, createdAt: new Date(responseJson.created_at * 1000).toISOString(), chosen: true});
+      await this.db.set('oauthTokens', {serverUrl: this.serverUrl.toString(), tokens: this.oauthTokens});
 
-      const oauthToken = this.oauthTokens[this.serverUrl.toString()].anonymous.token;
-
-      localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
-
-      return oauthToken;
+      return responseJson.access_token;
     } else {
       throw new Error(`Attempting to get an anonymous token: ${response.status} ${response.statusText}`);
     }
@@ -219,8 +202,10 @@ class MastodonAPI {
 
   // We may have an anonymous token and also several users we can switch between.
   // This sets which one is active.
-  setToken(newOauthToken) {
-    localStorage.setItem('oauthToken', newOauthToken);
+  async setToken(newOauthToken) {
+    this.oauthTokens.filter(token => token.chosen === true).forEach(token => token.chosen = false);
+    this.oauthTokens.find(token => token.token === newOauthToken).chosen = true;
+    await this.db.set("oauthTokens", {serverUrl: this.serverUrl, tokens: this.oauthTokens});
     this.oauthToken = newOauthToken;
   }
 
@@ -234,10 +219,6 @@ class MastodonAPI {
 
     console.log("Getting new authorized token");
 
-    if (this.oauthTokens[this.serverUrl.toString()] && !this.oauthTokens[this.serverUrl.toString()].authorized) {
-      this.oauthTokens[this.serverUrl.toString()].authorized = [];
-    }
-
     const serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost(this.clientSecret), {algorithm: 'oauth2'});
 
     console.log("idsc", this.clientId, this.clientSecret);
@@ -247,22 +228,22 @@ class MastodonAPI {
       serverConfig,
       new URL(window.location.href),
       {
-        pkceCodeVerifier: this.codeVerifiers[this.serverUrl].codeVerifier,
+        pkceCodeVerifier: this.codeVerifiers.codeVerifier,
         scope: 'read write push',
       },
     )
 
     console.log("I gotted", token);
 
-    this.oauthTokens[this.serverUrl.toString()].authorized.push({serverUrl: this.serverUrl.toString(), handle: null, token: token.access_token, createdAt: new Date().toISOString(), details: token});
+    this.oauthTokens.filter(token => token.chosen === true).forEach(token => token.chosen = false);
+    this.oauthTokens.push({handle: '', token: token.access_token, createdAt: new Date().toISOString(), details: token, chosen: true});
+    await this.db.set("oauthTokens", {serverUrl: this.serverUrl.toString(), tokens: this.oauthTokens});
 
-    localStorage.setItem('oauthTokens', JSON.stringify(this.oauthTokens));
 
     this.oauthToken = token.access_token;
-    localStorage.setItem('oauthToken', this.oauthToken);
 
-    delete this.codeVerifiers[this.serverUrl];
-    localStorage.setItem('codeVerifiers', JSON.stringify(this.codeVerifiers));
+    this.codeVerifiers = {};
+    this.db.del("codeVerifiers", this.serverUrl.toString());
 
     return token.access_token;
   }

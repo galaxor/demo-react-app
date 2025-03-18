@@ -9,7 +9,6 @@ class Database {
     this.serverUrl = serverUrl;
 
     const dbName = serverUrl? `ProSocial-${serverUrl}` : "database2";
-    console.log("Opening DB", dbName);
     const dbRequest = indexedDB.open(dbName, 1);
     dbRequest.onupgradeneeded = this.onUpgradeNeeded.bind(this);
 
@@ -60,6 +59,10 @@ class Database {
       boosts.createIndex("boostersPost", "boostersPost");
       boosts.createIndex("boostedPost", "boostedPost");
       boosts.createIndex("booster,boostedPost", ["booster", "boostedPost"]);
+
+      // Format:
+      // [{serverUrl, codeVerifier, codeChallenge}, ...]
+      const codeVerifiers = db.createObjectStore("codeVerifiers", { keyPath: "serverUrl" });
       
       const follows = db.createObjectStore("follows", { autoIncrement: true });
       follows.createIndex("follower", "follower");
@@ -72,9 +75,10 @@ class Database {
       imageVersions.createIndex("postUri", "postUri");
       imageVersions.createIndex("updatedAt", "updatedAt");
 
-      const sessions = db.createObjectStore("sessions", { keyPath: "sessionId" });
-      sessions.createIndex("userName", "userName");
-      sessions.createIndex("startedAt", "startedAt");
+      // Format:
+      // [{serverUrl, tokens: [{handle, token, createdAt, chosen}, ...]}, ...]
+      // handle is null for the anonymous token
+      const oauthTokens = db.createObjectStore("oauthTokens", { keyPath: "serverUrl" });
 
       const people = db.createObjectStore("people", { keyPath: "handle" });
       people.createIndex("localUserId", "localUserId");
