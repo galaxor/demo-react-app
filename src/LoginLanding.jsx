@@ -34,9 +34,10 @@ export default function LoginLanding() {
         // they gave us a code and we can use that to get an authorized token.
         // But we have to prove that we initiated the request for the code.  If
         // we did, we'll have the correct codeVerifier.
-        const codeVerifiers = JSON.parse(localStorage.getItem('codeVerifiers')) ?? {};
-        if (codeVerifiers[serverUrl]) {
-          await mastodonApi.ready();
+        await mastodonApi.ready();
+
+        const codeVerifiers = mastodonApi.getCodeVerifiers();
+        if (codeVerifiers) {
           console.log("Making a request for authorized token");
           const authToken = await mastodonApi.getAuthorizedToken({newToken: true});
           console.log("ATATAT", authToken);

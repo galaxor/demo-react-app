@@ -14,11 +14,11 @@ class MastodonAPI {
     const transaction = this.db.db.transaction(['codeVerifiers', 'oauthTokens']);
     await Promise.all([
       new Promise(async resolve => {
-        this.codeVerifiers = await this.db.getFromObjectStore(transaction.objectStore('codeVerifiers'), serverUrl) ?? {};
+        this.codeVerifiers = await this.db.getFromObjectStore(transaction.objectStore('codeVerifiers'), serverUrl.toString());
         resolve();
       }),
       new Promise(async resolve => {
-        this.oauthTokens = await this.db.getFromObjectStore(transaction.objectStore('oauthTokens'), serverUrl)?.tokens ?? [];
+        this.oauthTokens = await this.db.getFromObjectStore(transaction.objectStore('oauthTokens'), serverUrl.toString())?.tokens ?? [];
         resolve();
       }),
     ]);
@@ -121,9 +121,32 @@ class MastodonAPI {
      * end-user session such that it can be recovered as the user gets redirected
      * from the authorization server back to your application.
      */
-    const codeVerifier = this.codeVerifiers?.codeVerifier ?? OpenID.randomPKCECodeVerifier();
+    var codeVerifier;
+    var codeChallenge;
 
-    const codeChallenge = this.codeVerifiers?.codeChallenge ?? await OpenID.calculatePKCECodeChallenge(codeVerifier);
+    if (this.codeVerifiers) {
+      codeVerifier = this.codeVerifiers.codeVerifier;
+      codeChallenge = this.codeVerifiers.codeChallenge;
+    } else {
+      codeVerifier = OpenID.randomPKCECodeVerifier();
+      codeChallenge = await OpenID.calculatePKCECodeChallenge(codeVerifier);
+
+      // XXX implement this properly one day.
+      // if (!this.serverConfig.serverMetadata().supportsPKCE()) {
+      //   /**
+      //    * We cannot be sure the server supports PKCE so we're going to use state too.
+      //    * Use of PKCE is backwards compatible even if the AS doesn't support it which
+      //    * is why we're using it regardless. Like PKCE, random state must be generated
+      //    * for every redirect to the authorization_endpoint.
+      //    */
+      //   const state = OpenID.randomState();
+      //   parameters.state = state;
+      // }
+
+      this.codeVerifiers = {serverUrl: this.serverUrl.toString(), codeVerifier, codeChallenge, /*state: parameters.state*/};
+      console.log("setting code verifier", this.serverUrl, this.codeVerifiers);
+      await this.db.set('codeVerifiers', this.codeVerifiers);
+    }
 
     let parameters = {
       redirect_uri: this.redirectUrl(),
@@ -131,22 +154,6 @@ class MastodonAPI {
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
     };
-
-    if (!this.serverConfig.serverMetadata().supportsPKCE()) {
-      /**
-       * We cannot be sure the server supports PKCE so we're going to use state too.
-       * Use of PKCE is backwards compatible even if the AS doesn't support it which
-       * is why we're using it regardless. Like PKCE, random state must be generated
-       * for every redirect to the authorization_endpoint.
-       */
-      const state = OpenID.randomState();
-      parameters.state = state;
-    }
-
-    this.codeVerifier = {serverUrl: this.serverUrl.toString(), codeVerifier, codeChallenge, state: parameters.state};
-    console.log("setting code verifier", this.serverUrl, this.codeVerifier);
-    await this.db.set('codeVerifiers', this.codeVerifier);
-
     const redirectTo = OpenID.buildAuthorizationUrl(this.serverConfig, parameters);
 
     // now redirect the user to redirectTo.href
@@ -205,7 +212,7 @@ class MastodonAPI {
   async setToken(newOauthToken) {
     this.oauthTokens.filter(token => token.chosen === true).forEach(token => token.chosen = false);
     this.oauthTokens.find(token => token.token === newOauthToken).chosen = true;
-    await this.db.set("oauthTokens", {serverUrl: this.serverUrl, tokens: this.oauthTokens});
+    await this.db.set("oauthTokens", {serverUrl: this.serverUrl.toString(), tokens: this.oauthTokens});
     this.oauthToken = newOauthToken;
   }
 
@@ -222,7 +229,7 @@ class MastodonAPI {
     const serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost(this.clientSecret), {algorithm: 'oauth2'});
 
     console.log("idsc", this.clientId, this.clientSecret);
-    console.log("cv", this.serverUrl, this.codeVerifiers, this.codeVerifiers[this.serverUrl].codeVerifier);
+    console.log("cv", this.serverUrl, this.codeVerifiers);
 
     const token = await OpenID.authorizationCodeGrant(
       serverConfig,
@@ -277,8 +284,10 @@ class MastodonAPI {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+requestPath;
 
+    console.log(requestUrl);
+
     const searchParams = new URLSearchParams({
-      ...Object.fromEntries(requestUrl.entries()),
+      ...Object.fromEntries(requestUrl.searchParams.entries()),
       ...params
     });
     requestUrl.search = searchParams.toString();
@@ -306,6 +315,10 @@ class MastodonAPI {
     } else {
       throw new Error(`Attempting to run ${requestPath}: ${response.status} ${response.statusText}`);
     }
+  }
+
+  getCodeVerifiers() {
+    return this.codeVerifiers;
   }
 }
 
