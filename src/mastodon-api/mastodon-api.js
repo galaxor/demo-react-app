@@ -29,8 +29,6 @@ class MastodonAPI {
   }
 
   async open(serverUrlArg) {
-    this.getOauthState();
-
     // It should look up in the database to see if we have a client
     // registration, and get the client_id and client_secret.
     // If we don't have a stored registration, call register_app to get one,
@@ -42,6 +40,8 @@ class MastodonAPI {
     }
 
     this.serverUrl = serverUrl;
+
+    this.getOauthState(this.serverUrl);
 
     const appRegistration = await this.db.get('mastodonApiAppRegistrations', this.serverUrl.toString());
     if (appRegistration) {
@@ -145,7 +145,7 @@ class MastodonAPI {
 
     this.codeVerifier = {serverUrl: this.serverUrl.toString(), codeVerifier, codeChallenge, state: parameters.state};
     console.log("setting code verifier", this.serverUrl, this.codeVerifier);
-    this.db.set('codeVerifiers', this.codeVerifier);
+    await this.db.set('codeVerifiers', this.codeVerifier);
 
     const redirectTo = OpenID.buildAuthorizationUrl(this.serverConfig, parameters);
 
