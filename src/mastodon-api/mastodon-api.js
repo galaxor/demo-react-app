@@ -244,6 +244,7 @@ class MastodonAPI {
 
     this.oauthTokens.filter(token => token.chosen === true).forEach(token => token.chosen = false);
     this.oauthTokens.push({handle: '', token: token.access_token, createdAt: new Date().toISOString(), details: token, chosen: true});
+    console.log("Setting oauth tokens to", this.oauthTokens);
     await this.db.set("oauthTokens", {serverUrl: this.serverUrl.toString(), tokens: this.oauthTokens});
 
 
@@ -319,6 +320,21 @@ class MastodonAPI {
 
   getCodeVerifiers() {
     return this.codeVerifiers;
+  }
+
+  getOauthTokens() {
+    return this.oauthTokens;
+  }
+
+  getOauthToken() {
+    return this.oauthToken;
+  }
+
+  async setOauthTokens(oauthTokens) {
+    console.log("Writing tokens to db", oauthTokens);
+    this.oauthTokens = oauthTokens;
+    this.oauthToken = this.oauthTokens.find(token => token.chosen === true)?.token;
+    await this.db.set("oauthTokens", {serverUrl: this.serverUrl.toString(), tokens: oauthTokens});
   }
 }
 

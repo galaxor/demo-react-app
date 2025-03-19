@@ -37,10 +37,18 @@ export default function LoginLanding() {
         await mastodonApi.ready();
 
         const codeVerifiers = mastodonApi.getCodeVerifiers();
+        console.log("CODV", codeVerifiers);
         if (codeVerifiers) {
           console.log("Making a request for authorized token");
           const authToken = await mastodonApi.getAuthorizedToken({newToken: true});
           console.log("ATATAT", authToken);
+
+          // Save their token without their handle.
+          const oauthTokens = mastodonApi.getOauthTokens();
+          const oauthData = oauthTokens.find(item => item.token === authToken);
+          oauthData.chosen = true;
+          await mastodonApi.setOauthTokens(oauthTokens);
+
           const response = await mastodonApi.apiGet('/api/v1/accounts/verify_credentials');
 
           console.log("Logged in as", response);
@@ -53,6 +61,10 @@ export default function LoginLanding() {
             setUser({...person});
             await db.set('people', person);
           });
+
+          // Save their token with their handle.
+          oauthData.handle = person.handle;
+          await mastodonApi.setOauthTokens(oauthTokens);
 
           navigate("/");
         } else {

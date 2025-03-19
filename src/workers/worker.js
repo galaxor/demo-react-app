@@ -39,7 +39,7 @@ class MyWorker {
       break;
 
     case 'getPostsBy':
-      response = await this.fetchImage(message.handle, message.minId);
+      response = await this.getPostsBy(message.handle, message.minId);
       break;
     }
 
@@ -67,6 +67,9 @@ class MyWorker {
     if (typeof minId !== "undefined") {
       params.min_id = minId;
     }
+
+    // const apiPosts = await this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/statuses`, params);
+
     return await this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/statuses`, params);
   }
 }

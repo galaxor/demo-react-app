@@ -17,7 +17,8 @@ export default class UserDB {
 
   async loggedInUser() {
     // The tokens we have available.
-    const oauthTokens = await this.db.get("oauthTokens", this.serverUrl)?.tokens ?? [];
+    await this.mastodonApi.ready();
+    const oauthTokens = this.mastodonApi.getOauthTokens();
 
     // The token we've chosen to use.
     const oauthToken = oauthTokens.find(token => token.chosen === true);
@@ -32,7 +33,6 @@ export default class UserDB {
         // The server knows about this person, but we don't.  Let's get their
         // info and shove it in our database!
         if (typeof person === "undefined") {
-          await this.mastodonApi.ready();
           const apiPerson = await this.mastodonApi.apiGet('/api/v1/accounts/verify_credentials');
 
           // Put them in the database.
@@ -40,7 +40,6 @@ export default class UserDB {
           const person = await this.updatePersonFromApi(apiPerson);
 
           // Set their handle for later use.
-          const oauthTokens = JSON.parse(localStorage.getItem('oauthTokens'));
           const oauthData = oauthTokens.find(item => item.token === oauthToken);
           oauthData.handle = person.handle;
           await this.db.set("oauthTokens", {serverUrl: this.serverUrl, tokens: oauthTokens});
