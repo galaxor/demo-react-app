@@ -155,7 +155,6 @@ class Database {
       canonicalUrl: null,
       conversationId: null,
       local: false,
-      authorPerson: this.nullPerson(),
       boostedPosts: [],
     };
   }

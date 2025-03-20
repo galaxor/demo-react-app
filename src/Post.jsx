@@ -173,6 +173,9 @@ const Post = forwardRef(function Post2(props, ref) {
         <CardBody>
           {(post.type ?? "text") === "text" && <div className="post-text post-text-text e-content" lang={post.language}>{post.text}</div>}
           {post.type === "markdown" && <div className="post-text post-text-markdown e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
+
+          {/* XXX sanitize html and display it. */}
+          {post.type === "html" && <div className="post-text post-text-markdown e-content" lang={post.language}>{post.text}</div>}
           <ImageList post={post} />
           {post.boostedPosts && post.boostedPosts.length > 0 &&
             <blockquote className="quote-boosted-posts">

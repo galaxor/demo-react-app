@@ -142,9 +142,7 @@ export function getPersonLoader(db) {
     await db.open(serverUrl);
     const peopleDB = new PeopleDB(db);
 
-    console.log("H", params.handle);
     const person = await peopleDB.get(params.handle);
-    console.log("P", person);
 
     return { person };
   };
