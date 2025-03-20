@@ -11,14 +11,14 @@ class MastodonAPI {
   }
 
   async getOauthState(serverUrl) {
-    const transaction = this.db.db.transaction(['codeVerifiers', 'oauthTokens']);
     await Promise.all([
       new Promise(async resolve => {
-        this.codeVerifiers = await this.db.getFromObjectStore(transaction.objectStore('codeVerifiers'), serverUrl.toString());
+        this.codeVerifiers = await this.db.get('codeVerifiers', serverUrl.toString());
         resolve();
       }),
       new Promise(async resolve => {
-        this.oauthTokens = await this.db.getFromObjectStore(transaction.objectStore('oauthTokens'), serverUrl.toString())?.tokens ?? [];
+        this.oauthTokens = (await this.db.get('oauthTokens', serverUrl.toString()))?.tokens ?? [];
+        console.log("MYOT", this.oauthTokens, "svr", serverUrl.toString());
         resolve();
       }),
     ]);
@@ -331,10 +331,13 @@ class MastodonAPI {
   }
 
   async setOauthTokens(oauthTokens) {
-    console.log("Writing tokens to db", oauthTokens);
     this.oauthTokens = oauthTokens;
     this.oauthToken = this.oauthTokens.find(token => token.chosen === true)?.token;
+    console.log("I AM WRITING", oauthTokens);
     await this.db.set("oauthTokens", {serverUrl: this.serverUrl.toString(), tokens: oauthTokens});
+
+    const nowits = await this.db.get("oauthTokens", this.serverUrl.toString());
+    console.log("Now it's", nowits, "in", this.db.db);
   }
 }
 

@@ -8,44 +8,23 @@ import UserDB from './logic/user.js'
 
 import workerUrl from './workers/worker.js?worker&url'
 
-class PostOffice {
-  constructor(worker) {
-    this.worker = worker;
-    this.messageId = 0;
-    this.correspondents = {};
-
-    this.worker.addEventListener('message', event => this.responder(event.data));
-  }
-
-  async send(message, callback) {
-    const returnAddress = this.messageId++;
-    this.correspondents[returnAddress] = callback;
-    this.worker.postMessage({returnAddress, message});
-  }
-
-  responder(responseEnvelope) {
-    const recipient = this.correspondents[responseEnvelope.returnAddress];
-    const response = responseEnvelope.response;
-    if (typeof recipient === 'function') {
-      recipient(response);
-    }
-    delete this.correspondents[responseEnvelope.returnAddress];
-  }
-}
-
 export default function Test({dbConnection}) {
   useEffect(() => {
     (async () => {
-      const serviceWorkerScript = import.meta.env.BASE_URL.replace(/\/+$/, '')+"/src/workers/service-worker.js";
-      console.log(serviceWorkerScript);
-      const registration = await navigator.serviceWorker.register(serviceWorkerScript);
-      console.log(registration);
+      await dbConnection.open('https://social.iheartmichelle.com');
+      await new Promise(resolve => {
+        dbConnection.db.transaction('oauthTokens').objectStore('oauthTokens').count().onsuccess = event => console.log("COUNT", event.target.result);
 
-      
-      const worker = new Worker(workerUrl, {type: 'module'});
-      console.log(worker);
-      const postOffice = new PostOffice(worker);
-      postOffice.send({command: 'ding', message: 'ding dung'}, response => console.log("RSP", response));
+        dbConnection.db.transaction('oauthTokens').objectStore('oauthTokens').openCursor().onsuccess = event => {
+          const cursor = event.target.result;
+          if (cursor === null) {
+            resolve();
+          } else {
+            console.log(cursor.value);
+            cursor.continue();
+          }
+        };
+      });
     })();
   }, []);
 

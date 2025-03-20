@@ -21,6 +21,8 @@ export default function YourFeed() {
         const friendsPosts = await postsDB.friendsFeed(user);
         setPostsList(<PostsList posts={friendsPosts} />);
         postOffice.send({command: 'ding', message: 'robobobot'}, response => console.log("rsprsp", response));
+
+        console.log("DBDB", db.db);
       }
     })();
   }, [user]);

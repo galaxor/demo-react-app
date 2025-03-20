@@ -20,11 +20,17 @@ export default class UserDB {
     await this.mastodonApi.ready();
     const oauthTokens = this.mastodonApi.getOauthTokens();
 
-    // The token we've chosen to use.
-    const oauthToken = oauthTokens.find(token => token.chosen === true);
+    console.log("Alls I know is", oauthTokens);
 
-    if (oauthToken && oauthTokens.find(token => token.user !== null)) {
+    // The token we've chosen to use.
+    const oauthToken = oauthTokens.find(token => token.chosen === true)?.token;
+
+    console.log("And mine is", oauthToken);
+
+    if (oauthToken && oauthTokens.find(token => token.token === oauthToken && token.handle !== null)) {
       const oauthData = oauthTokens.find(item => item.token === oauthToken);
+
+      console.log("My whole deal is", oauthData);
 
       if (oauthData && oauthData.handle) {
         const person = await this.db.get('people', oauthData.handle);
@@ -42,7 +48,8 @@ export default class UserDB {
           // Set their handle for later use.
           const oauthData = oauthTokens.find(item => item.token === oauthToken);
           oauthData.handle = person.handle;
-          await this.db.set("oauthTokens", {serverUrl: this.serverUrl, tokens: oauthTokens});
+          console.log("I WILL WRITE", oauthTokens);
+          await this.mastodonApi.setOauthTokens(oauthTokens);
 
           return person;
         }
@@ -84,10 +91,8 @@ export default class UserDB {
     };
 
     const result = await this.db.set('people', newPerson);
-    console.log(result);
-
     const ppl = await this.db.get('people', newPerson.handle);
-    console.log(ppl);
+    console.log("NUUP", ppl);
 
     // XXX Get the avatar and stash it locally, too.
     // This is something we could ask a Worker to do, so we can navigate away.
