@@ -157,8 +157,6 @@ class Database {
       local: false,
       authorPerson: this.nullPerson(),
       boostedPosts: [],
-
-      ...this.nullVersion(),
     };
   }
 

@@ -8,23 +8,28 @@ import UserDB from './logic/user.js'
 
 import workerUrl from './workers/worker.js?worker&url'
 
+function dumpTable(db, table) {
+  return new Promise(resolve => {
+    db.db.transaction(table).objectStore(table).count().onsuccess = event => console.log(`-${table}- COUNT`, event.target.result);
+
+    db.db.transaction(table).objectStore(table).openCursor().onsuccess = event => {
+      const cursor = event.target.result;
+      if (cursor === null) {
+        resolve();
+      } else {
+        console.log(cursor.value);
+        cursor.continue();
+      }
+    };
+  });
+}
+
 export default function Test({dbConnection}) {
   useEffect(() => {
     (async () => {
-      await dbConnection.open('https://social.iheartmichelle.com');
-      await new Promise(resolve => {
-        dbConnection.db.transaction('oauthTokens').objectStore('oauthTokens').count().onsuccess = event => console.log("COUNT", event.target.result);
-
-        dbConnection.db.transaction('oauthTokens').objectStore('oauthTokens').openCursor().onsuccess = event => {
-          const cursor = event.target.result;
-          if (cursor === null) {
-            resolve();
-          } else {
-            console.log(cursor.value);
-            cursor.continue();
-          }
-        };
-      });
+      await dbConnection.open('https://social.iheartmichelle.com/');
+      await dumpTable(dbConnection, 'people');
+      await dumpTable(dbConnection, 'posts');
     })();
   }, []);
 

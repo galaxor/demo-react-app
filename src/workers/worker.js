@@ -8,6 +8,8 @@ class MyWorker {
     this.db = new Database();
     this.mastodonApi = new MastodonAPI(this.db);
     onmessage = async event => this.dispatcher(event);
+
+    this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
 
   async init(serverUrl, oauthTokens, oauthToken) {
@@ -16,6 +18,9 @@ class MyWorker {
 
     await this.db.open(serverUrl);
     await this.mastodonApi.open(serverUrl, this.oauthTokens, this.oauthToken);
+
+    this.readyResolve(true);
+
     return "ready";
   }
 
@@ -43,13 +48,7 @@ class MyWorker {
       break;
     }
 
-    console.log("Doot", event.data, response);
     this.respond(envelope, response);
-  }
-
-  ding(message) {
-    console.log("Ding", message);
-    return {ding: message};
   }
 
   respond(envelope, response) {
@@ -57,20 +56,30 @@ class MyWorker {
   }
 
   async fetchImage(url) {
+    await this.readyState;
+
     const hash = await this.db.uploadImage(url);
     return hash;
   }
 
   async getPostsBy(handle, minId) {
+    await this.readyState;
+
     const person = await this.db.get('people', handle);
     const params = {limit: 40};
     if (typeof minId !== "undefined") {
       params.min_id = minId;
     }
 
-    // const apiPosts = await this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/statuses`, params);
+    const apiPosts = await this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/statuses`, params);
+    const promises = [];
+    for (const apiPost of apiPosts) {
+      const postPromises = this.mastodonApi.ingestPost(apiPost);
+      promises.push(postPromises.resolvedPost);
+    } 
 
-    return await this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/statuses`, params);
+    const posts = await Promise.all(promises);
+    return posts;
   }
 }
 

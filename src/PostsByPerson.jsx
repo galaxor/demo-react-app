@@ -23,9 +23,12 @@ export default function PostsByPerson({showReplies}) {
 
   useEffect(() => {
     (async () => {
+      // Show the posts we already know about.
+      console.log("I will print the posts by", person.handle);
       const theirPosts = await postsDB.getPostsBy(person.handle, {showReplies, includeBoosts: showBoosts});
       setTheirPosts(theirPosts);
 
+      // Get more posts from the API.
       worker.send(
         {
           command: "getPostsBy",
@@ -33,7 +36,7 @@ export default function PostsByPerson({showReplies}) {
           minId: theirPosts.length === 0? undefined : theirPosts[0].serverId,
         }, 
         posts => {
-          console.log("I'd fetch these posts", posts);
+          console.log("I got these posts", posts);
         }
       );
       

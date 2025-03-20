@@ -18,7 +18,6 @@ class MastodonAPI {
       }),
       new Promise(async resolve => {
         this.oauthTokens = (await this.db.get('oauthTokens', serverUrl.toString()))?.tokens ?? [];
-        console.log("MYOT", this.oauthTokens, "svr", serverUrl.toString());
         resolve();
       }),
     ]);
@@ -144,7 +143,6 @@ class MastodonAPI {
       // }
 
       this.codeVerifiers = {serverUrl: this.serverUrl.toString(), codeVerifier, codeChallenge, /*state: parameters.state*/};
-      console.log("setting code verifier", this.serverUrl, this.codeVerifiers);
       await this.db.set('codeVerifiers', this.codeVerifiers);
     }
 
@@ -166,8 +164,6 @@ class MastodonAPI {
     if (existingAnonymousToken) {
       return existingAnonymousToken.token;
     }
-
-    console.log("Getting new anonymous token");
 
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+'/oauth/token';
@@ -196,8 +192,6 @@ class MastodonAPI {
 
       const responseJson = await response.json();
 
-      console.log("Anon token info", responseJson);
-
       this.oauthTokens.push({handle: null, token: responseJson.access_token, createdAt: new Date(responseJson.created_at * 1000).toISOString(), chosen: true});
       await this.db.set('oauthTokens', {serverUrl: this.serverUrl.toString(), tokens: this.oauthTokens});
 
@@ -224,12 +218,7 @@ class MastodonAPI {
       return this.oauthToken;
     }
 
-    console.log("Getting new authorized token");
-
     const serverConfig = await OpenID.discovery(new URL(this.serverUrl), this.clientId, this.clientSecret, OpenID.ClientSecretPost(this.clientSecret), {algorithm: 'oauth2'});
-
-    console.log("idsc", this.clientId, this.clientSecret);
-    console.log("cv", this.serverUrl, this.codeVerifiers);
 
     const token = await OpenID.authorizationCodeGrant(
       serverConfig,
@@ -240,11 +229,8 @@ class MastodonAPI {
       },
     )
 
-    console.log("I gotted", token);
-
     this.oauthTokens.filter(token => token.chosen === true).forEach(token => token.chosen = false);
     this.oauthTokens.push({handle: '', token: token.access_token, createdAt: new Date().toISOString(), details: token, chosen: true});
-    console.log("Setting oauth tokens to", this.oauthTokens);
     await this.db.set("oauthTokens", {serverUrl: this.serverUrl.toString(), tokens: this.oauthTokens});
 
 
@@ -285,15 +271,13 @@ class MastodonAPI {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+requestPath;
 
-    console.log(requestUrl);
-
     const searchParams = new URLSearchParams({
       ...Object.fromEntries(requestUrl.searchParams.entries()),
       ...params
     });
     requestUrl.search = searchParams.toString();
 
-    console.log("I'm going with", this.oauthToken);
+    console.log("Making request", requestUrl.toString(), "with", this.oauthToken);
 
     const response = await fetch(
       requestUrl, {
@@ -333,11 +317,97 @@ class MastodonAPI {
   async setOauthTokens(oauthTokens) {
     this.oauthTokens = oauthTokens;
     this.oauthToken = this.oauthTokens.find(token => token.chosen === true)?.token;
-    console.log("I AM WRITING", oauthTokens);
     await this.db.set("oauthTokens", {serverUrl: this.serverUrl.toString(), tokens: oauthTokens});
 
     const nowits = await this.db.get("oauthTokens", this.serverUrl.toString());
-    console.log("Now it's", nowits, "in", this.db.db);
+  }
+
+  ingestPerson(apiPerson) {
+    const handle = (apiPerson.acct.indexOf('@') > 0)? apiPerson.acct : `${apiPerson.acct}@${new URL(this.serverUrl).host}`;
+    const newPerson = {
+      ...this.db.nullPerson(),
+      localUserId: (apiPerson.acct.indexOf('@') > 0)? null : apiPerson.acct,
+      handle,
+      serverId: apiPerson.id,
+      url: apiPerson.url,
+      displayName: apiPerson.display_name,
+      bio: apiPerson.note,
+    };
+
+    const personPromise = this.db.set('people', newPerson).then(result => newPerson);
+    const avatarPromise = new Promise(async resolve => {
+      const hash = await this.db.uploadImage(apiPerson.avatar);
+      newPerson.avatar = hash;
+      this.db.set('people', newPerson);
+      resolve(newPerson);
+    });
+    
+
+    return {
+      person: personPromise,
+      avatar: avatarPromise,
+      all: [personPromise, avatarPromise],
+    };
+  }
+
+  ingestPost(apiPost) {
+    const apiPerson = apiPost.account;
+
+    const handle = (apiPerson.acct.indexOf('@') > 0)? apiPerson.acct : `${apiPerson.acct}@${new URL(this.serverUrl).host}`;
+
+    const newPost = {
+      ...this.db.nullPost(),
+      author: handle,
+      serverId: apiPost.id,
+      uri: apiPost.uri,
+      canonicalUrl: apiPost.url,
+      createdAt: apiPost.created_at,
+      updatedAt: apiPost.edited_at ?? apiPost.created_at,
+      deletedAt: null,
+    };
+
+    const newPostVersion = {
+      ...this.db.nullVersion(),
+      uri: apiPost.uri,
+      updatedAt: apiPost.edited_at ?? apiPost.created_at,
+      language: apiPost.language,
+      type: 'html',
+      text: apiPost.content,
+      sensitive: apiPost.sensitive,
+      spoilerText: apiPost.spoiler_text,
+    };
+
+    // XXX get the inReplyTo stuff and the boosted posts.
+    // There should be a mechanism to prevent the inReplyTo stuff from fetching
+    // entire threads every time.
+
+    // XXX Also boosts.  For now, if it's a boost, let's just ignore it.
+
+    // XXX Also attached images.
+
+    const authorPromises = this.ingestPerson(apiPerson);
+    
+    const promises = {
+      author: authorPromises.person,
+      authorAvatar: authorPromises.avatar,
+    };
+
+    if (apiPost.reblog === null) {
+      promises.post = this.db.set('posts', newPost).then(result => newPost);
+      promises.postVersion = this.db.set('postVersions', newPostVersion).then(result => newPostVersion);
+    }
+
+    promises.resolvedPost = new Promise(async resolve => {
+      const post = await promises.post;
+      const postVersion = await promises.postVersion;
+      const author = await promises.authorAvatar;
+
+      resolve({...post, ...postVersion, authorPerson: author});
+    });
+
+    promises.all = Object.values(promises);
+
+    return promises;
   }
 }
 

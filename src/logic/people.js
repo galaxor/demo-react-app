@@ -115,7 +115,7 @@ export class PeopleDB {
       ... this.db.nullPerson(),
       localUserId: apiPerson.acct ?? null,
       displayName: apiPerson.display_name,
-      handle: `@${apiPerson.acct}@${new URL(serverUrl).host}`,
+      handle: `${apiPerson.acct}@${new URL(serverUrl).host}`,
       avatar: apiPerson.avatar,
       bio: apiPerson.source? apiPerson.source.note : apiPerson.note,
       url: apiPerson.url,

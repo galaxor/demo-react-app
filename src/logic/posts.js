@@ -104,7 +104,7 @@ export class PostsDB {
     if (typeof post !== "undefined" && post.deletedAt === null) {
       return await this.getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, boostsStore, peopleStore});
     } else {
-      return this.db.nullPost();
+      return {...this.db.nullPost(), ...this.db.nullVersion()};
     }
   }
 
@@ -216,7 +216,7 @@ export class PostsDB {
           if (post.deletedAt === null) {
             replies.push(await this.getFullPostFromObjectStores(post, {postsStore, postVersionsStore, imageVersionsStore, boostsStore, peopleStore}));
           } else {
-            replies.push({ ...this.db.nullPost(), uri: post.uri, inReplyTo: uri });
+            replies.push({ ...this.db.nullPost(), ...this.db.nullVersion(), uri: post.uri, inReplyTo: uri });
           }
 
           cursor.continue();

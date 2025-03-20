@@ -20,9 +20,9 @@ export default function YourFeed() {
       if (user) {
         const friendsPosts = await postsDB.friendsFeed(user);
         setPostsList(<PostsList posts={friendsPosts} />);
-        postOffice.send({command: 'ding', message: 'robobobot'}, response => console.log("rsprsp", response));
 
-        console.log("DBDB", db.db);
+        // This is where I could make an api request for your feed, using the worker.
+        // postOffice.send({command: 'ding', message: 'robobobot'}, response => console.log("rsprsp", response));
       }
     })();
   }, [user]);
