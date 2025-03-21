@@ -12,7 +12,35 @@ export default class UserDB {
     newPerson[prop] = val;
 
     await this.db.set('people', newPerson);
+
+    // XXX We should also send this change upstream.
+
     return newPerson;
+  }
+
+  async setAccountProp(prop, val) {
+    const account = await this.loggedInAccount();
+    const newAccount = {...account};
+    newAccount[prop] = val;
+
+    console.log("About to set", newAccount);
+
+    await this.db.set('accounts', newAccount);
+
+    // No need to push these changes upstream because this is just local
+    // settings for this app.
+
+    return newAccount;
+  }
+
+  async loggedInAccount() {
+    const user = await this.loggedInUser();
+    if (user) {
+      const account = (await this.db.get('accounts', user.handle)) ?? {handle: user.handle};
+      return account;
+    } else {
+      return null;
+    }
   }
 
   async loggedInUser() {
@@ -132,6 +160,6 @@ export default class UserDB {
   }
 
   setDarkMode(darkMode) {
-    return this.setProp('darkMode', darkMode);
+    return this.setAccountProp('darkMode', darkMode);
   }
 };

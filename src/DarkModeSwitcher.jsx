@@ -2,6 +2,7 @@ import {Switch} from "@nextui-org/switch";
 import { useContext } from 'react';
 
 import User from './logic/user.js';
+import AccountContext from './context/AccountContext.jsx';
 import UserContext from './UserContext.jsx';
 
 
@@ -44,7 +45,8 @@ export const SunIcon = (props) => {
 };
 
 export default function DarkModeSwitcher({darkMode, setDarkMode}) {
-  const { user, setUser, userDB } = useContext(UserContext);
+  const { account, setAccount } = useContext(AccountContext);
+  const { userDB } = useContext(UserContext);
 
   return (
     <Switch
@@ -56,8 +58,8 @@ export default function DarkModeSwitcher({darkMode, setDarkMode}) {
       }}
 
       onValueChange={async light => {
-        if (user) {
-          setUser({...user, darkMode: !light});
+        if (account) {
+          setAccount({...account, darkMode: !light});
           await userDB.setDarkMode(!light);
         }
         localStorage.setItem('darkMode', JSON.stringify(!light));

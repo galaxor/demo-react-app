@@ -52,8 +52,7 @@ class Database {
 
     if (event.oldVersion < 1 && event.newVersion >= 1) {
       // Brand new database.  Initialize it.
-      const accounts = db.createObjectStore("accounts", { keyPath: "userName" });
-      accounts.createIndex("handle", "handle");
+      const accounts = db.createObjectStore("accounts", { keyPath: "handle" });
 
       const boosts = db.createObjectStore("boosts", { autoIncrement: true });
       boosts.createIndex("booster", "booster");
