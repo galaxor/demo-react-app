@@ -103,3 +103,10 @@ main {
 img.emoji {
   height: 20px;
 }
+
+.user-content {
+  a {
+    color: hsl(var(--nextui-primary));
+    text-decoration: underline;
+  }
+}

@@ -11,6 +11,7 @@ import Markdown from 'react-markdown'
 
 import Boosts from './Boosts.jsx'
 import DatabaseContext from './DatabaseContext'
+import DangerousHTML from './components/DangerousHTML.jsx'
 import icons from './icons.js'
 import ImageList from './ImageList'
 import LanguageContext from './LanguageContext.jsx'
@@ -174,8 +175,7 @@ const Post = forwardRef(function Post2(props, ref) {
           {(post.type ?? "text") === "text" && <div className="post-text post-text-text e-content" lang={post.language}>{post.text}</div>}
           {post.type === "markdown" && <div className="post-text post-text-markdown e-content" lang={post.language}><Markdown>{post.text}</Markdown></div>}
 
-          {/* XXX sanitize html and display it. */}
-          {post.type === "html" && <div className="post-text post-text-markdown e-content" lang={post.language}>{post.text}</div>}
+          {post.type === "html" && <div className="post-text post-text-markdown e-content" lang={post.language}><DangerousHTML>{post.text}</DangerousHTML></div>}
           <ImageList post={post} />
           {post.boostedPosts && post.boostedPosts.length > 0 &&
             <blockquote className="quote-boosted-posts">
