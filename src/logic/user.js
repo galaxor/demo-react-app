@@ -6,8 +6,8 @@ export default class UserDB {
   }
 
   async setProp(prop, val) {
-    const account = await this.db.get('accounts', 'testuser');
-    const person = await this.db.get('people', account.handle);
+    const user = await this.loggedInUser();
+    const person = await this.db.get('people', user.handle);
     const newPerson = {...person};
     newPerson[prop] = val;
 
@@ -27,7 +27,6 @@ export default class UserDB {
       const oauthData = oauthTokens.find(item => item.token === oauthToken);
 
       if (oauthData && oauthData.handle) {
-        console.log("HDL", oauthData.handle);
         const person = await this.db.get('people', oauthData.handle);
         return person;
       } else {
@@ -38,13 +37,14 @@ export default class UserDB {
 
           // Put them in the database.
           // Return the person.
-          const person = await this.updatePersonFromApi(apiPerson);
+          const person = await (this.mastodonApi.ingestPerson(apiPerson).personPromise);
 
           // Set their handle for later use.
           const oauthData = oauthTokens.find(item => item.token === oauthToken);
           oauthData.handle = person.handle;
           await this.mastodonApi.setOauthTokens(oauthTokens);
 
+          this.handle = person.handle;
           return person;
         }
       }
