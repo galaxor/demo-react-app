@@ -10,12 +10,12 @@ export default function PopularFeed() {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const [postsList, setPostsList] = useState(<PostsListLoading />);
+  const [postsList, setPostsList] = useState(null);
 
   useEffect(() => {
     (async () => {
       const posts = await postsDB.getFeaturedPosts();
-      setPostsList(<PostsList posts={posts} />);
+      setPostsList(posts);
     })();
   }, []);
   
@@ -24,7 +24,7 @@ export default function PopularFeed() {
       <h1 id="featured-feed">All Posts</h1>
 
       <div role="feed">
-        {postsList}
+        {postsList === null? <PostsListLoading /> : <PostsList posts={postsList} />}
       </div>
     </main>
   );
