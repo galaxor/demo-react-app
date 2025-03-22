@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import DatabaseContext from './DatabaseContext'
+import NewPosts from './components/NewPosts.jsx'
 import PostOfficeContext from './context/PostOfficeContext.jsx'
 import { PostsDB } from './logic/posts.js'
 import PostsList from './PostsList.jsx'
@@ -13,16 +14,26 @@ export default function YourFeed() {
 
   const postOffice = useContext(PostOfficeContext);
 
-  const [postsList, setPostsList] = useState(<PostsListLoading />);
+  const [postsList, setPostsList] = useState(null);
+
+  const [newPosts, setNewPosts] = useState([]);
 
   useEffect(() => {
     (async () => {
       if (user) {
         const friendsPosts = await postsDB.friendsFeed(user);
-        setPostsList(<PostsList posts={friendsPosts} />);
+        setPostsList(friendsPosts);
 
-        // This is where I could make an api request for your feed, using the worker.
-        // postOffice.send({command: 'ding', message: 'robobobot'}, response => console.log("rsprsp", response));
+        postOffice.send(
+          { 
+            command: 'getYourFeed',
+            minId: friendsPosts.length === 0? undefined : friendsPosts[0].serverId,
+          },
+          response => {
+            console.log("These are the posts to display", response);
+            setNewPosts([...response, ...newPosts]);
+          }
+        );
       }
     })();
   }, [user]);
@@ -31,8 +42,13 @@ export default function YourFeed() {
     <main>
       <h1 id="your-feed">Your Feed</h1>
 
+      <NewPosts newPosts={newPosts} setNewPosts={setNewPosts} onClick={event => setPostsList([...newPosts, postsList])} />
+
       <div role="feed">
-        {postsList}
+        {postsList === null?
+          <PostsListLoading />
+          : <PostsList posts={postsList} />
+        }
       </div>
     </main>
   );

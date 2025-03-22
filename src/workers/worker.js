@@ -46,6 +46,10 @@ class MyWorker {
     case 'getPostsBy':
       response = await this.getPostsBy(message.handle, message.minId);
       break;
+
+    case 'getYourFeed':
+      response = await this.getYourFeed(message.minId);
+      break;
     }
 
     this.respond(envelope, response);
@@ -62,24 +66,49 @@ class MyWorker {
     return hash;
   }
 
+  async ingestPosts(apiPosts) {
+    const promises = [];
+    for (const apiPost of apiPosts) {
+      const postPromises = this.mastodonApi.ingestPost(apiPost);
+
+      // XXX Right now, we're not ingesting the post if it's a boost, because I
+      // don't have code for ingesting the boosted post.
+      // So, if it's a boost, there won't be a resolvedPost promise.
+      if (postPromises.resolvedPost) {
+        promises.push(postPromises.resolvedPost);
+      }
+    } 
+
+    const posts = await Promise.all(promises);
+    return posts;
+  }
+
   async getPostsBy(handle, minId) {
     await this.readyState;
 
     const person = await this.db.get('people', handle);
+
     const params = {limit: 40};
     if (typeof minId !== "undefined") {
       params.min_id = minId;
     }
 
     const apiPosts = await this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/statuses`, params);
-    const promises = [];
-    for (const apiPost of apiPosts) {
-      const postPromises = this.mastodonApi.ingestPost(apiPost);
-      promises.push(postPromises.resolvedPost);
-    } 
 
-    const posts = await Promise.all(promises);
-    return posts;
+    return await this.ingestPosts(apiPosts);
+  }
+
+  async getYourFeed(handle, minId) {
+    await this.readyState;
+
+    const params = {limit: 40};
+    if (typeof minId !== "undefined") {
+      params.min_id = minId;
+    }
+
+    const apiPosts = await this.mastodonApi.apiGet(`/api/v1/timelines/home`, params);
+
+    return await this.ingestPosts(apiPosts);
   }
 }
 

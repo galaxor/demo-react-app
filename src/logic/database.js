@@ -235,17 +235,28 @@ class Database {
 
     // You can pass in a responseArg, if you want to fetch the image using
     // authenticated methods.  Then this function processes the response.
-    const response = responseArg ?? await fetch(imageDataUrl);
+    try {
+      const response = responseArg ?? await fetch(imageDataUrl);
 
-    if (response.ok) {
-      const blob = await response.blob();
-      const buffer = await blob.arrayBuffer();
-      const imageHash = await sha256(buffer);
+      if (response.ok) {
+        const blob = await response.blob();
+        const buffer = await blob.arrayBuffer();
+        const imageHash = await sha256(buffer);
 
-      await this.set('images', {hash: imageHash, imageBlob: blob});
-      return imageHash;
-    } else {
-      return null;
+        await this.set('images', {hash: imageHash, imageBlob: blob});
+        return imageHash;
+      } else {
+        return null;
+      }
+    } catch(e) {
+      // Catch the network error if we can't get the image.  Return null as the hash.
+      if (e instanceof TypeError) {
+        // If it's a TypeError: NetworkError when attempting to fetch resource.
+        // That probably means the server didn't give us CORS permission on the image.
+        return null;
+      } else {
+        throw e;
+      }
     }
   }
 

@@ -395,15 +395,15 @@ class MastodonAPI {
     if (apiPost.reblog === null) {
       promises.post = this.db.set('posts', newPost).then(result => newPost);
       promises.postVersion = this.db.set('postVersions', newPostVersion).then(result => newPostVersion);
+
+      promises.resolvedPost = new Promise(async resolve => {
+        const post = await promises.post;
+        const postVersion = await promises.postVersion;
+        const author = await promises.authorAvatar;
+
+        resolve({...post, ...postVersion, authorPerson: author});
+      });
     }
-
-    promises.resolvedPost = new Promise(async resolve => {
-      const post = await promises.post;
-      const postVersion = await promises.postVersion;
-      const author = await promises.authorAvatar;
-
-      resolve({...post, ...postVersion, authorPerson: author});
-    });
 
     promises.all = Object.values(promises);
 
