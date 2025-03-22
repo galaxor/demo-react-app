@@ -1,6 +1,7 @@
 import DOMPurify from 'dompurify'
 
 const DOMPurifyConfig = {
+  SANITIZED_NAMED_PROPS: true,
   FORBID_ATTR: [
     'class',
   ],
