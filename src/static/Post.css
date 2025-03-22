@@ -39,3 +39,7 @@ span.post-author {
   z-index: -1;
   background: transparent;
 } 
+
+a.post-time:hover {
+  text-decoration: underline;
+}
