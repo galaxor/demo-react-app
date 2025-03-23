@@ -22,7 +22,6 @@ import PostEditor from './PostEditor.jsx'
 import PostDetailsMenu from './PostDetailsMenu.jsx'
 import { PostsDB } from './logic/posts.js'
 import Reactions from './Reactions.jsx'
-import ReplyLevel from './ReplyLevel.jsx'
 import TombstonePost from './components/TombstonePost.jsx'
 import UserContext from './UserContext.jsx'
 
@@ -139,7 +138,7 @@ const Post = forwardRef(function Post2(props, ref) {
       <Card id={postId? postId.toString() : ""} ref={postDivRef} className={"post overflow-visible hover:bg-default-100 "+(highlight? 'ring-2 ring-inset ring-default-500 ' : " ")+(className ?? "")}>
         <CardHeader>
           {typeof scrollHereRef !== "undefined"? <div ref={scrollHereRef} id={"scroll-target-"+postId.toString(16)} className="scroll-into-view"></div> : ""}
-          <span className="post-metadata w-full flex justify-between">
+          <cite className="post-metadata w-full flex justify-between">
             <span className="post-date order-1 text-right"
               aria-label={post.updatedAt === post.createdAt?
                 "Posted "+timeAgo.format(new Date(post.updatedAt))+", "+fullDateTime.format(new Date(post.updatedAt))
@@ -165,11 +164,11 @@ const Post = forwardRef(function Post2(props, ref) {
               </Link>
             </span>
                 
-            <credit className="post-author w-3/4 p-author">
+            <span className="post-author w-3/4 p-author">
               <span className="visually-hidden">By</span>
               <PersonInline person={post.authorPerson} />
-            </credit>
-          </span>
+            </span>
+          </cite>
         </CardHeader>
         <CardBody>
           {(post.type ?? "text") === "text" && <div className="post-text post-text-text e-content" lang={post.language}>{post.text}</div>}
@@ -217,15 +216,9 @@ const Post = forwardRef(function Post2(props, ref) {
     </>
   );
 
-  const postWithoutChildren = showReplyLevel?
-    <ReplyLevel post={post}>{thePost}</ReplyLevel>
-    :
-    <>{thePost}</>
-  ;
-
   return (
     <article className={`post h-entry ${isMainPost? "main-post" : ""} ${className ?? ""}`}>
-      {postWithoutChildren}
+      {thePost}
       {children}
     </article>
   );
