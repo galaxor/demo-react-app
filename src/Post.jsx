@@ -165,10 +165,10 @@ const Post = forwardRef(function Post2(props, ref) {
               </Link>
             </span>
                 
-            <span className="post-author w-3/4">
+            <credit className="post-author w-3/4 p-author">
               <span className="visually-hidden">By</span>
               <PersonInline person={post.authorPerson} />
-            </span>
+            </credit>
           </span>
         </CardHeader>
         <CardBody>
