@@ -25,16 +25,24 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
       setNumReplies(await postsDB.getNumRepliesTo(post.uri));
     })();
   }, []);
-    
 
+  
   return (
       <div id={"threaded-post-"+hashSum(post.uri).toString(16)} className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
         {threadHandles.length > 0? 
           <ul>
             {threadHandles.map(threadHandle  => {
+              const postId = `p${hashSum(threadHandle.pointsToPost.uri).toString(16)}`
+              const onHover = onThreadHandleHoverFn(postId);
+              const onUnhover = onThreadHandleUnhoverFn(postId);
               return (
               <li key={threadHandle.pointsToPost.uri} className={threadHandle.glyph}>
-                <a href={"#p"+hashSum(threadHandle.pointsToPost.uri).toString(16)} className="thread-handle"><Corner /></a>
+                <a href={`#${postId}`} className="thread-handle"
+                  onPointerEnter={onHover}
+                  onFocus={onHover}
+                  onPointerLeave={onUnhover}
+                  onBlur={onUnhover}
+                ><Corner /></a>
               </li>
               );
             })}
@@ -72,4 +80,41 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
         </div>
       </div>
   );
+}
+
+
+function onThreadHandleHoverFn(postId) {
+  return (event) => {
+    // Highlight all the thread handles that point to the same post.
+    for (const threadHandle of document.querySelectorAll(`.thread-handle[href="#${postId}"]`)) {
+      threadHandle.classList.add('thread-handle-highlight');
+    }
+
+    // Highlight the actual post (What if it's on the page more than once??)
+    // If it's on the page more than once, then the id is repeated, which it
+    // shouldn't be.  It might end up on the page more than once if we're
+    // looking at a feed that contains it as a boosted post and also as itself.
+    // XXX We should figure out a way to give it a different id if that
+    // situation comes up.
+    const post = document.getElementById(postId);
+    post.classList.add('thread-handle-highlight');
+  };
+}
+
+function onThreadHandleUnhoverFn(postId) {
+  return (event) => {
+    // Unhighlight all the thread handles that point to the same post.
+    for (const threadHandle of document.querySelectorAll(`.thread-handle[href="#${postId}"]`)) {
+      threadHandle.classList.remove('thread-handle-highlight');
+    }
+
+    // Unhighlight the actual post (What if it's on the page more than once??)
+    // If it's on the page more than once, then the id is repeated, which it
+    // shouldn't be.  It might end up on the page more than once if we're
+    // looking at a feed that contains it as a boosted post and also as itself.
+    // XXX We should figure out a way to give it a different id if that
+    // situation comes up.
+    const post = document.getElementById(postId);
+    post.classList.remove('thread-handle-highlight');
+  };
 }

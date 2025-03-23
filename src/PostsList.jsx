@@ -26,10 +26,15 @@ export default function PostsList({posts, onDelete}) {
     <div ref={listRef} className={"posts-list" + (posts.length === 0? " no-posts" : "")}>
       {(posts && posts.length > 0) ?
         <>
-        {posts.map((post) => { 
+        {posts.map(post => { 
             return (
               <PostAndYourNewReplies key={post.uri} post={post} onDelete={onDelete} isMainPost={true} />
             );
+            /*
+            return (
+              <Post key={post.uri} post={post} onDelete={onDelete} isMainPost={true} />
+            );
+            */
           })}
         </>
 

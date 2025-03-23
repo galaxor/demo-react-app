@@ -75,7 +75,8 @@ div.threaded-post > ul {
     a {
       display: block;
       width: 16px;
-      border-left: 1px solid hsl(var(--nextui-foreground));
+      border-left-width: 1px;
+      border-left-style: solid;
     }
   }
 
@@ -94,7 +95,8 @@ div.threaded-post > ul {
 
   li.branch-singleton a {
     width: 45px;
-    border-left: 1px solid hsl(var(--nextui-foreground));
+    border-left-width: 1px;
+    border-left-style: solid;
   }
 
   li.branch-singleton-end a {
@@ -104,7 +106,8 @@ div.threaded-post > ul {
   li.start-branch a {
     display: flex;
     width: 45px;
-    border-left: 1px solid hsl(var(--nextui-foreground));
+    border-left-width: 1px;
+    border-left-style: solid;
 
     &::after {
       content: " ";
@@ -112,7 +115,8 @@ div.threaded-post > ul {
       width: 16px;
       height: auto;
       margin-top: 24px;
-      border-left: 1px solid hsl(var(--nextui-foreground));
+      border-left-width: 1px;
+      border-left-style: solid;
     }
   }
 }
@@ -151,6 +155,24 @@ section.main-post div.post {
   position: absolute;
   white-space: nowrap;
   width: 1px;
+}
+
+.thread-handle {
+  border-color: hsl(var(--nextui-foreground));
+}
+
+a.thread-handle-highlight {
+  border-color: hsl(var(--nextui-primary)); 
+
+  svg { color: hsl(var(--nextui-primary)); }
+}
+
+div.threaded-post:has(div.post.thread-handle-highlight) a.thread-handle::after {
+  border-color: hsl(var(--nextui-primary)); 
+}
+
+div.post.thread-handle-highlight {
+  outline-color: hsl(var(--nextui-primary));
 }
 
 }

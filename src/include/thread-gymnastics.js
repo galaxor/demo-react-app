@@ -193,6 +193,8 @@ function makeThreadHandlesReal(threadOrder) {
 
 
 export function createStylesheetsForHover(threadOrder, topPost) {
+  return "";
+
   const hoverRules = [];
 
   const stylesheetTop = topPost ?? "main#thread-main.thread";

@@ -30,10 +30,15 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, on
 
   const passThreadHandles = (typeof threadOrder[0] === "undefined")? [] : threadOrder[0].threadHandles;
 
+  // XXX The thing that takes most of the time is installing the styles from
+  // createStylesheetsForHover.  It's not even a matter of computing them, it's
+  // a matter of getting them into the DOM.
+  // I wonder if there's a better way...
+
   return (
     <>
       <article className={`post-and-your-new-replies post-and-your-new-replies-${hashSum(post.uri).toString(16)}`}>
-        <style type="text/css">{createStylesheetsForHover(threadOrder, '.post-and-your-new-replies-'+hashSum(post.uri).toString(16))}</style>
+        <style type="text/css">{/*createStylesheetsForHover(threadOrder, '.post-and-your-new-replies-'+hashSum(post.uri).toString(16))*/}</style>
         <ThreadedPost key={post.uri}
           post={post} 
           threadHandles={passThreadHandles}

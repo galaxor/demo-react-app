@@ -24,7 +24,9 @@ export default function PopularFeed() {
       <h1 id="featured-feed">All Posts</h1>
 
       <div role="feed">
-        {postsList === null? <PostsListLoading /> : <PostsList posts={postsList} />}
+        {postsList === null? <PostsListLoading /> : 
+          <PostsList posts={postsList} />
+        }
       </div>
     </main>
   );
