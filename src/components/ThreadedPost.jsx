@@ -32,12 +32,12 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
         {threadHandles.length > 0? 
           <ul>
             {threadHandles.map(threadHandle  => {
-              const postId = `p${hashSum(threadHandle.pointsToPost.uri).toString(16)}`
+              const postId = hashSum(threadHandle.pointsToPost.uri).toString(16);
               const onHover = onThreadHandleHoverFn(postId);
               const onUnhover = onThreadHandleUnhoverFn(postId);
               return (
               <li key={threadHandle.pointsToPost.uri} className={threadHandle.glyph}>
-                <a href={`#${postId}`} className="thread-handle"
+                <a href={`#p${postId}`} className="thread-handle"
                   onPointerEnter={onHover}
                   onFocus={onHover}
                   onPointerLeave={onUnhover}
@@ -86,9 +86,15 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
 function onThreadHandleHoverFn(postId) {
   return (event) => {
     // Highlight all the thread handles that point to the same post.
-    for (const threadHandle of document.querySelectorAll(`.thread-handle[href="#${postId}"]`)) {
+    for (const threadHandle of document.querySelectorAll(`.thread-handle[href="#p${postId}"]`)) {
       threadHandle.classList.add('thread-handle-highlight');
     }
+
+    // Do the same for the minimap.
+    for (const threadHandle of document.querySelectorAll(`#minimap .thread-handle[data-href="#p${postId}"]`)) {
+      threadHandle.classList.add('thread-handle-highlight');
+    }
+    
 
     // Highlight the actual post (What if it's on the page more than once??)
     // If it's on the page more than once, then the id is repeated, which it
@@ -96,15 +102,24 @@ function onThreadHandleHoverFn(postId) {
     // looking at a feed that contains it as a boosted post and also as itself.
     // XXX We should figure out a way to give it a different id if that
     // situation comes up.
-    const post = document.getElementById(postId);
+    const post = document.getElementById(`p${postId}`);
     post.classList.add('thread-handle-highlight');
+
+    // Do the same thing for the minimap.
+    const minimapPost = document.getElementById(`minimap-${postId}`);
+    minimapPost.classList.add('thread-handle-highlight');
   };
 }
 
 function onThreadHandleUnhoverFn(postId) {
   return (event) => {
     // Unhighlight all the thread handles that point to the same post.
-    for (const threadHandle of document.querySelectorAll(`.thread-handle[href="#${postId}"]`)) {
+    for (const threadHandle of document.querySelectorAll(`.thread-handle[href="#p${postId}"]`)) {
+      threadHandle.classList.remove('thread-handle-highlight');
+    }
+
+    // Do the same for the minimap.
+    for (const threadHandle of document.querySelectorAll(`#minimap .thread-handle[data-href="#p${postId}"]`)) {
       threadHandle.classList.remove('thread-handle-highlight');
     }
 
@@ -114,7 +129,11 @@ function onThreadHandleUnhoverFn(postId) {
     // looking at a feed that contains it as a boosted post and also as itself.
     // XXX We should figure out a way to give it a different id if that
     // situation comes up.
-    const post = document.getElementById(postId);
+    const post = document.getElementById(`p${postId}`);
     post.classList.remove('thread-handle-highlight');
+
+    // Do the same thing for the minimap.
+    const minimapPost = document.getElementById(`minimap-${postId}`);
+    minimapPost.classList.remove('thread-handle-highlight');
   };
 }

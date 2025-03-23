@@ -39,7 +39,8 @@
   /* border: 1px solid hsl(var(--nextui-foreground)); */
 
   div.minimap-post {
-    border: 1px solid hsl(var(--nextui-foreground));
+    border-left-width: 1px;
+    border-left-style: solid;
     border-radius: 1ex;
     width: 100%;
 
@@ -78,7 +79,8 @@
       div.thread-handle {
         display: block;
         width: 16px;
-        border-left: 1px solid hsl(var(--nextui-foreground));
+        border-left-width: 1px;
+        border-left-style: solid;
       }
     }
 
@@ -97,7 +99,8 @@
 
     li.branch-singleton div.thread-handle {
       width: 45px;
-      border-left: 1px solid hsl(var(--nextui-foreground));
+      border-left-width: 1px;
+      border-left-style: solid;
     }
 
     li.branch-singleton-end div.thread-handle {
@@ -107,7 +110,8 @@
     li.start-branch div {
       display: flex;
       width: 45px;
-      border-left: 1px solid hsl(var(--nextui-foreground));
+      border-left-width: 1px;
+      border-left-style: solid;
 
       &::after {
         content: " ";
@@ -115,7 +119,8 @@
         width: 16px;
         height: auto;
         margin-top: 24px;
-        border-left: 1px solid hsl(var(--nextui-foreground));
+        border-left-width: 1px;
+        border-left-style: solid;
       }
     }
   }
@@ -155,4 +160,26 @@
     border-color: hsl(var(--nextui-foreground));
   }
 
+  /* Highlights when you are hovering parts of the main thread. */
+  .thread-handle {
+    border-color: hsl(var(--nextui-foreground));
+  }
+
+  div.thread-handle.thread-handle-highlight {
+    border-color: hsl(var(--nextui-primary)); 
+
+    svg { color: hsl(var(--nextui-primary)); }
+  }
+
+  div.minimap-threaded-post.thread-handle-highlight {
+    background: hsl(var(--nextui-primary-100));
+  }
+
+  div.minimap-threaded-post.thread-handle-highlight div.thread-handle::after {
+    border-color: hsl(var(--nextui-primary)); 
+  }
+
+  div.post.thread-handle-highlight {
+    outline-color: hsl(var(--nextui-primary));
+  }
 }

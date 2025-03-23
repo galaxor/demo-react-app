@@ -38,7 +38,6 @@ export default function PostAndYourNewReplies({post, prune, onBoost, onReact, on
   return (
     <>
       <article className={`post-and-your-new-replies post-and-your-new-replies-${hashSum(post.uri).toString(16)}`}>
-        <style type="text/css">{/*createStylesheetsForHover(threadOrder, '.post-and-your-new-replies-'+hashSum(post.uri).toString(16))*/}</style>
         <ThreadedPost key={post.uri}
           post={post} 
           threadHandles={passThreadHandles}
