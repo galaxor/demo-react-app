@@ -134,8 +134,6 @@ export default function Thread() {
   const threadRemainder = threadOrder.slice(mainPostIndex+1+replies.length);
 
   return <>
-    <style type="text/css">{createStylesheetsForHover(threadOrder)}</style>
-
     <main id="thread-main" ref={mainRef} className="thread flex flex-wrap">
       <h1 id="main-post-h1">Post by <bdi>{mainPost.authorPerson.displayName}</bdi>,{" "}
         <time dateTime={mainPost.createdAt}>

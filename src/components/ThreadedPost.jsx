@@ -26,6 +26,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
     })();
   }, []);
 
+  const threadedPostId = hashSum(post.uri).toString(16);
   
   return (
       <div id={"threaded-post-"+hashSum(post.uri).toString(16)} className={"threaded-post flex "+(className ?? "")+" threaded-post-"+hashSum(post.uri).toString(16)} key={post.uri}>
@@ -51,7 +52,7 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
         }
 
         <div className="post-and-composing-reply w-full">
-          <Post id={"p"+(hashSum(post.uri).toString(16))} ref={postRef} post={post} scrollHereRef={scrollHereRef}
+          <Post id={"p"+threadedPostId} ref={postRef} post={post} scrollHereRef={scrollHereRef}
             showReplyBanner={true}
             composingReply={composingReply} setComposingReply={setComposingReply} 
             editingPost={editingPost} setEditingPost={setEditingPost}
@@ -59,6 +60,10 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
             onReact={onReact}
             onBoost={onBoost}
             onDelete={onDelete}
+
+            onHoverReply={onThreadHandleHoverFn(threadedPostId)}
+            onUnhoverReply={onThreadHandleUnhoverFn(threadedPostId)}
+
             isMainPost={isMainPost}
           >
 

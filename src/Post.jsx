@@ -30,7 +30,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post2(props, ref) {
-  const {id, post: postPassedIn, composingReply, setComposingReply, editingPost, setEditingPost, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete, isMainPost} = props;
+  const {id, post: postPassedIn, composingReply, setComposingReply, editingPost, setEditingPost, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete, isMainPost, onHoverReply, onUnhoverReply} = props;
 
   const [post, setPost] = useState(postPassedIn);
 
@@ -119,7 +119,13 @@ const Post = forwardRef(function Post2(props, ref) {
     :(<>
       {replyingToPost && 
         <div className="reply-info">
-          <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}>
+          <Link to={"/post/"+encodeURIComponent(replyingToPost.uri)}
+            onPointerEnter={onHoverReply}
+            onFocus={onHoverReply}
+
+            onPointerLeave={onUnhoverReply}
+            onBlur={onUnhoverReply}
+          >
             <FontAwesomeIcon icon="comment" /> Replying to <PersonName person={replyingToPost.authorPerson} />
           </Link>
         </div>
