@@ -30,7 +30,7 @@ import { fullDateTime, dayFormat, dateFormat, timeFormat } from './timeFormat.js
 import './static/Post.css'
 
 const Post = forwardRef(function Post2(props, ref) {
-  const {id, post: postPassedIn, composingReply, setComposingReply, editingPost, setEditingPost, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete, isMainPost, onHoverReply, onUnhoverReply} = props;
+  const {id, post: postPassedIn, composingReply, setComposingReply, editingPost, setEditingPost, numReplies, setNumReplies, children, showStats, showReplyBanner, onBoost, onReact, className, showReplyLevel, scrollHereRef, highlight, onDelete, isMainPost, onHoverReplyFn, onUnhoverReplyFn} = props;
 
   const [post, setPost] = useState(postPassedIn);
 
@@ -104,6 +104,10 @@ const Post = forwardRef(function Post2(props, ref) {
       setReplyingToPost(showReplyBanner && post.inReplyTo? await postsDB.get(post.inReplyTo) : null);
     })();
   }, []);
+
+  const replyingToPostId = replyingToPost? hashSum(replyingToPost.uri).toString(16) : undefined;
+  const onHoverReply = replyingToPost? onHoverReplyFn(replyingToPostId) : undefined;
+  const onUnhoverReply = replyingToPost? onUnhoverReplyFn(replyingToPostId) : undefined;
 
 
   // We're using ReactTimeAgo in the markup, but plain javascript-time-ago in the aria.

@@ -61,8 +61,8 @@ export default function ThreadedPost({post, threadHandles, className, scrollRef,
             onBoost={onBoost}
             onDelete={onDelete}
 
-            onHoverReply={onThreadHandleHoverFn(threadedPostId)}
-            onUnhoverReply={onThreadHandleUnhoverFn(threadedPostId)}
+            onHoverReplyFn={onThreadHandleHoverFn}
+            onUnhoverReplyFn={onThreadHandleUnhoverFn}
 
             isMainPost={isMainPost}
           >
