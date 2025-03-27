@@ -50,6 +50,10 @@ class MyWorker {
     case 'getYourFeed':
       response = await this.getYourFeed(message.minId);
       break;
+
+    case 'getFollowInfo':
+      response = await this.getFollowInfo(message.person);
+      break;
     }
 
     this.respond(envelope, response);
@@ -109,6 +113,34 @@ class MyWorker {
     const apiPosts = await this.mastodonApi.apiGet(`/api/v1/timelines/home`, params);
 
     return await this.ingestPosts(apiPosts);
+  }
+
+  async getFollowInfo(person) {
+    await this.readyState;
+
+    const followersParams = {limit: 80};
+    if (person.lastKnownFollower) {
+      followersParams.minId = person.lastKnownFollower;
+    }
+
+    const followsParams = {limit: 80};
+    if (person.lastKnownFollow) {
+      followsParams.minId = person.lastKnownFollow;
+    }
+
+    const promises = [
+      this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/followers`, followersParams, {parsePaginationLinkHeader: true}),
+        // XXX I should use then() to actually ingest these followers, and just return the list of follows and followers in our format.
+        // We've got a mastodon-api ingestFollowInfo function, but it should be
+        // rewritten to work on these individually, instead of having to wait
+        // for both.
+
+      this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/following`, followsParams, {parsePaginationLinkHeader: true}),
+    ];
+
+    const [newFollowers, newFollows] = await Promise.all(promises);
+
+    return {person, newFollows, newFollowers};
   }
 }
 

@@ -267,7 +267,7 @@ class MastodonAPI {
     }
   }
 
-  async apiGet(requestPath, params) {
+  async apiGet(requestPath, params, options) {
     const requestUrl = new URL(this.serverUrl);
     requestUrl.pathname = requestUrl.pathname.replace(/\/+$/, '')+requestPath;
 
@@ -296,7 +296,16 @@ class MastodonAPI {
       }
 
       const responseJson = await response.json();
-      return responseJson;
+
+      if (options?.parsePaginationLinkHeader) {
+        const paginationInfo = this.parsePaginationLinkHeader(response.headers.get('Link'));
+        return {
+          pagination: paginationInfo,
+          body: responseJson,
+        };
+      } else {
+        return responseJson;
+      }
     } else {
       throw new Error(`Attempting to run ${requestPath}: ${response.status} ${response.statusText}`);
     }
@@ -322,8 +331,12 @@ class MastodonAPI {
     const nowits = await this.db.get("oauthTokens", this.serverUrl.toString());
   }
 
+  personHandle(apiHandle) {
+    return (apiHandle.indexOf('@') > 0)? apiHandle : `${apiHandle}@${new URL(this.serverUrl).host}`;
+  }
+
   ingestPerson(apiPerson) {
-    const handle = (apiPerson.acct.indexOf('@') > 0)? apiPerson.acct : `${apiPerson.acct}@${new URL(this.serverUrl).host}`;
+    const handle = this.personHandle(apiPerson.acct);
     const newPerson = {
       ...this.db.nullPerson(),
       localUserId: (apiPerson.acct.indexOf('@') > 0)? null : apiPerson.acct,
@@ -353,7 +366,7 @@ class MastodonAPI {
   ingestPost(apiPost) {
     const apiPerson = apiPost.account;
 
-    const handle = (apiPerson.acct.indexOf('@') > 0)? apiPerson.acct : `${apiPerson.acct}@${new URL(this.serverUrl).host}`;
+    const handle = this.personHandle(apiPerson.acct);
 
     const newPost = {
       ...this.db.nullPost(),
@@ -408,6 +421,52 @@ class MastodonAPI {
     promises.all = Object.values(promises);
 
     return promises;
+  }
+
+  parsePaginationLinkHeader(linkHeader) {
+    if (!linkHeader) {
+      return {};
+    }
+
+    const paginationInfo = {};
+
+    if (linkHeader.match(/.*<([^>]*)>; rel="next".*/)) {
+      const nextUrl = linkHeader.replace(/.*<([^>]*)>; rel="next".*/, '$1');
+      const nextArgs = nextUrl? Object.fromEntries(new URL(nextUrl).searchParams.entries()) : {};
+      paginationInfo.next = {url: nextUrl, args: nextArgs};
+    }
+
+    if (linkHeader.match(/.*<([^>]*)>; rel="next".*/)) {
+      const prevUrl = linkHeader.replace(/.*<([^>]*)>; rel="prev".*/, '$1');
+      const prevArgs = prevUrl? Object.fromEntries(new URL(prevUrl).searchParams.entries()) : {};
+      paginationInfo.prev = {url: prevUrl, args: prevArgs};
+    }
+
+    return paginationInfo;
+  }
+
+  ingestFollowInfo(person, followInfo) {
+    const followeePromises = [];
+    const followsDBPromises = [];
+
+    for (const followee of followInfo.newFollows.body) {
+      followeePromises.push(...this.ingestPerson(followee).all);
+      const follow = [person.handle, this.personHandle(followee.acct)];
+      followsDBPromises.push(this.db.set('follows', follow));
+    }
+
+    for (const follower of followInfo.newFollowers.body) {
+      followerPromises.push(...this.ingestPerson(follower).all);
+      const follow = [this.personHandle(follower.acct), person.handle];
+      followsDBPromises.push(this.db.set('follows', follow));
+    }
+
+    return {
+      followsDBPromises,
+      followerPromises,
+      followeePromises,
+      all: [followsDBPromises, followerPromises, followeePromises],
+    };
   }
 }
 
