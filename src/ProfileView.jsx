@@ -69,8 +69,13 @@ export default function ProfileView({handle, loggedInUser, children }) {
           person,
         },
         ({newFollowers, newFollows}) => {
-          setWhoFollowsThem([...whoFollowsThem, ...newFollowers]);
-          setWhoDoTheyFollow([...whoDoTheyFollow, ...newFollows]);
+          const followers = [...whoFollowsThem, ...newFollowers];
+          followers.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+          setWhoFollowsThem(followers);
+
+          const follows = [...whoDoTheyFollow, ...newFollows];
+          follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+          setWhoDoTheyFollow(follows);
         }
       );
     })();
