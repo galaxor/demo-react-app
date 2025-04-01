@@ -452,7 +452,7 @@ class MastodonAPI {
 
     if (followees) {
       for (const followee of followees) {
-        const follow = [person.handle, this.personHandle(followee.acct)];
+        const follow = {follower: person.handle, followed: this.personHandle(followee.acct)};
         const followPromise = this.db.set('follows', follow).then(db => follow);
         followsDBPromises.push(followPromise);
         
@@ -466,8 +466,8 @@ class MastodonAPI {
 
     if (followers) {
       for (const follower of followers) {
-        const follow = [person.handle, this.personHandle(follower.acct)];
-        const followPromise = this.db.set('follows', follow).then(db => follow);
+        const follow = {follower: this.personHandle(follower.acct), followed: person.handle};
+        const followPromise = this.db.set('follows', follow).then(db => { console.log(db); return follow; });
         followsDBPromises.push(followPromise);
         
         const personPromise = this.ingestPerson(follower).avatar;
