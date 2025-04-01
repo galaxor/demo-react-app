@@ -129,13 +129,14 @@ class MyWorker {
     }
 
     const promises = [
-      this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/followers`, followersParams, {parsePaginationLinkHeader: true}),
-        // XXX I should use then() to actually ingest these followers, and just return the list of follows and followers in our format.
-        // We've got a mastodon-api ingestFollowInfo function, but it should be
-        // rewritten to work on these individually, instead of having to wait
-        // for both.
+      this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/followers`, followersParams, {parsePaginationLinkHeader: true}).then(followersInfo => {
+        return this.mastodonApi.ingestFollowInfo(person, {followers: followersInfo.body}).followerPromises;
+        
+      }),
 
-      this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/following`, followsParams, {parsePaginationLinkHeader: true}),
+      this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/following`, followsParams, {parsePaginationLinkHeader: true}).then(followeesInfo => {
+        return this.mastodonApi.ingestFollowInfo(person, {followees: followeesInfo.body}).followeePromises;
+      }),
     ];
 
     const [newFollowers, newFollows] = await Promise.all(promises);

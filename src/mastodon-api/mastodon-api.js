@@ -445,28 +445,46 @@ class MastodonAPI {
     return paginationInfo;
   }
 
-  ingestFollowInfo(person, followInfo) {
+  ingestFollowInfo(person, {followees, followers}) {
     const followeePromises = [];
+    const followerPromises = [];
     const followsDBPromises = [];
 
-    for (const followee of followInfo.newFollows.body) {
-      followeePromises.push(...this.ingestPerson(followee).all);
-      const follow = [person.handle, this.personHandle(followee.acct)];
-      followsDBPromises.push(this.db.set('follows', follow));
+    if (followees) {
+      for (const followee of followees) {
+        const follow = [person.handle, this.personHandle(followee.acct)];
+        const followPromise = this.db.set('follows', follow).then(db => follow);
+        followsDBPromises.push(followPromise);
+        
+        const personPromise = this.ingestPerson(followee).avatar;
+
+        const followeePromise = Promise.all([followPromise, personPromise]).then(([follow, person]) => person);
+        followeePromises.push(followeePromise);
+        
+      }
     }
 
-    for (const follower of followInfo.newFollowers.body) {
-      followerPromises.push(...this.ingestPerson(follower).all);
-      const follow = [this.personHandle(follower.acct), person.handle];
-      followsDBPromises.push(this.db.set('follows', follow));
+    if (followers) {
+      for (const follower of followers) {
+        const follow = [person.handle, this.personHandle(follower.acct)];
+        const followPromise = this.db.set('follows', follow).then(db => follow);
+        followsDBPromises.push(followPromise);
+        
+        const personPromise = this.ingestPerson(follower).avatar;
+
+        const followerPromise = Promise.all([followPromise, personPromise]).then(([follow, person]) => person);
+        followerPromises.push(followerPromise);
+      }
     }
 
-    return {
-      followsDBPromises,
-      followerPromises,
-      followeePromises,
-      all: [followsDBPromises, followerPromises, followeePromises],
+    const returnPromises = {
+      followsDBPromises: Promise.all(followsDBPromises),
+      followerPromises: Promise.all(followerPromises),
+      followeePromises: Promise.all(followeePromises),
+      all: Promise.all([followsDBPromises, followerPromises, followeePromises]),
     };
+
+    return returnPromises;
   }
 }
 

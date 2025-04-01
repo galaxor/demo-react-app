@@ -68,8 +68,9 @@ export default function ProfileView({handle, loggedInUser, children }) {
           command: 'getFollowInfo',
           person,
         },
-        response => {
-          console.log("This is the new follow info", response);
+        ({newFollowers, newFollows}) => {
+          setWhoFollowsThem([...whoFollowsThem, ...newFollowers]);
+          setWhoDoTheyFollow([...whoDoTheyFollow, ...newFollows]);
         }
       );
     })();
