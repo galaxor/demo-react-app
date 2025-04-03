@@ -120,22 +120,36 @@ class MyWorker {
 
     const followersParams = {limit: 80};
     if (person.lastKnownFollower) {
-      followersParams.minId = person.lastKnownFollower;
+      followersParams.max_id = person.lastKnownFollower;
     }
 
     const followsParams = {limit: 80};
     if (person.lastKnownFollow) {
-      followsParams.minId = person.lastKnownFollow;
+      followsParams.max_id = person.lastKnownFollow;
     }
 
     const promises = [
       this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/followers`, followersParams, {parsePaginationLinkHeader: true}).then(followersInfo => {
-        return this.mastodonApi.ingestFollowInfo(person, {followers: followersInfo.body}).followerPromises;
+        const lastKnownFollower = followersInfo.pagination?.prev?.args?.max_id ?? person.lastKnownFollower;
+        return this.mastodonApi.ingestFollowInfo(person, {followers: followersInfo.body}).followerPromises.then(async followers => {
+          const dbPerson = await this.db.get('people', person.handle);
+          person.lastKnownFollower = lastKnownFollower;
+          dbPerson.lastKnownFollower = lastKnownFollower;
+          await this.db.set('people', dbPerson);
+          return followers;
+        });
         
       }),
 
       this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/following`, followsParams, {parsePaginationLinkHeader: true}).then(followeesInfo => {
-        return this.mastodonApi.ingestFollowInfo(person, {followees: followeesInfo.body}).followeePromises;
+        const lastKnownFollow = followeesInfo.pagination?.prev?.args?.max_id ?? person.lastKnownFollow;
+        return this.mastodonApi.ingestFollowInfo(person, {followees: followeesInfo.body}).followeePromises.then(async followees => {
+          const dbPerson = await this.db.get('people', person.handle);
+          person.lastKnownFollow = lastKnownFollow;
+          dbPerson.lastKnownFollow = lastKnownFollow;
+          await this.db.set('people', dbPerson);
+          return followees;
+        });
       }),
     ];
 

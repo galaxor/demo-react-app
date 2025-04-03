@@ -26,8 +26,10 @@ export class PeopleDB {
       followsStore.index("followed").openCursor(handle).onsuccess = async event => {
         const followsCursor = event.target.result;
         if (followsCursor === null) {
-          followers.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
-          resolve(followers);
+          const followersMap = Object.fromEntries(followers.map(follower => [follower.handle, follower]));
+          const followersUnique = Object.values(followersMap);
+          followersUnique.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+          resolve(followersUnique);
         } else {
           const followRow = followsCursor.value;
           const person = await this.getFromObjectStore(peopleStore, followRow.follower);
@@ -50,8 +52,12 @@ export class PeopleDB {
       followsStore.index("follower").openCursor(handle).onsuccess = async event => {
         const followsCursor = event.target.result;
         if (followsCursor === null) {
-          follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
-          resolve(follows);
+          console.log("Total of", follows.length);
+
+          const followsMap = Object.fromEntries(follows.map(followee => [followee.handle, followee]));
+          const followsUnique = Object.values(followsMap);
+          followsUnique.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+          resolve(followsUnique);
         } else {
           const followRow = followsCursor.value;
           const person = await this.getFromObjectStore(peopleStore, followRow.followed);

@@ -467,7 +467,7 @@ class MastodonAPI {
     if (followers) {
       for (const follower of followers) {
         const follow = {follower: this.personHandle(follower.acct), followed: person.handle};
-        const followPromise = this.db.set('follows', follow).then(db => { console.log(db); return follow; });
+        const followPromise = this.db.set('follows', follow).then(db => { return follow; });
         followsDBPromises.push(followPromise);
         
         const personPromise = this.ingestPerson(follower).avatar;

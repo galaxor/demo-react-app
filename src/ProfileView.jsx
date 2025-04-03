@@ -62,20 +62,27 @@ export default function ProfileView({handle, loggedInUser, children }) {
       setWhoDoTheyFollow(await peopleDB.whoDoTheyFollow(person.handle));
       setAvatarImage(await db.getImageDataUrl(person.avatar));
 
-      console.log("Asking for follow info");
+      console.log("Asking for follow info for", person);
       postOffice.send(
         { 
           command: 'getFollowInfo',
           person,
         },
-        ({newFollowers, newFollows}) => {
-          const followers = [...whoFollowsThem, ...newFollowers];
+        ({returnedPerson, newFollowers, newFollows}) => {
+          const whoFollowsThemMap = Object.fromEntries(whoFollowsThem.map(follower => [follower.handle, follower]));
+          const newFollowersMap = Object.fromEntries(newFollowers.map(follower => [follower.handle, follower]));
+          const followers = Object.values({...whoFollowsThemMap, ...newFollowersMap});
           followers.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
           setWhoFollowsThem(followers);
 
-          const follows = [...whoDoTheyFollow, ...newFollows];
+          const whoDoTheyFollowMap = Object.fromEntries(whoDoTheyFollow.map(followee => [followee.handle, followee]));
+          const newFollowsMap = Object.fromEntries(newFollows.map(followee => [followee.handle, followee]));
+          console.log("Adding follows", Object.values(newFollowsMap).length);
+          const follows = Object.values({...whoDoTheyFollowMap, ...newFollowsMap});
           follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
           setWhoDoTheyFollow(follows);
+
+          console.log(person);
         }
       );
     })();
