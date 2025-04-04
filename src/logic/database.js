@@ -64,7 +64,7 @@ class Database {
       // [{serverUrl, codeVerifier, codeChallenge}, ...]
       const codeVerifiers = db.createObjectStore("codeVerifiers", { keyPath: "serverUrl" });
       
-      const follows = db.createObjectStore("follows", { autoIncrement: true });
+      const follows = db.createObjectStore("follows", { keyPath: ["follower", "followed"] });
       follows.createIndex("follower", "follower");
       follows.createIndex("followed", "followed");
       follows.createIndex("follower,followed", ["follower", "followed"]);
