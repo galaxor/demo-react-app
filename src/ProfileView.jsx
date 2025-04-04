@@ -58,8 +58,12 @@ export default function ProfileView({handle, loggedInUser, children }) {
   useEffect(() => {
     (async () => {
       if (user) { setYouFollowThem(await peopleDB.doesXFollowY(user.handle, person.handle)); }
-      setWhoFollowsThem(await peopleDB.whoFollowsThem(person.handle));
-      setWhoDoTheyFollow(await peopleDB.whoDoTheyFollow(person.handle));
+
+      const whoFollowsThemPromise = peopleDB.whoFollowsThem(person.handle);
+      const whoDoTheyFollowPromise = peopleDB.whoDoTheyFollow(person.handle);
+
+      setWhoFollowsThem(await whoFollowsThemPromise);
+      setWhoDoTheyFollow(await whoDoTheyFollowPromise);
       setAvatarImage(await db.getImageDataUrl(person.avatar));
 
       console.log("Asking for follow info for", person);
@@ -68,21 +72,27 @@ export default function ProfileView({handle, loggedInUser, children }) {
           command: 'getFollowInfo',
           person,
         },
-        ({returnedPerson, newFollowers, newFollows}) => {
-          const whoFollowsThemMap = Object.fromEntries(whoFollowsThem.map(follower => [follower.handle, follower]));
-          const newFollowersMap = Object.fromEntries(newFollowers.map(follower => [follower.handle, follower]));
-          const followers = Object.values({...whoFollowsThemMap, ...newFollowersMap});
-          followers.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
-          setWhoFollowsThem(followers);
+        async ({returnedPerson, newFollowers, newFollows}) => {
+          await Promise.all([
+            (async () => {
+              const whoFollowsThemMap = Object.fromEntries((await whoFollowsThemPromise).map(follower => [follower.handle, follower]));
+              const newFollowersMap = Object.fromEntries(newFollowers.map(follower => [follower.handle, follower]));
+              const followers = Object.values({...whoFollowsThemMap, ...newFollowersMap});
+              followers.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+              setWhoFollowsThem(followers);
+            })(),
 
-          const whoDoTheyFollowMap = Object.fromEntries(whoDoTheyFollow.map(followee => [followee.handle, followee]));
-          const newFollowsMap = Object.fromEntries(newFollows.map(followee => [followee.handle, followee]));
-          console.log("Adding follows", Object.values(newFollowsMap).length);
-          const follows = Object.values({...whoDoTheyFollowMap, ...newFollowsMap});
-          follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
-          setWhoDoTheyFollow(follows);
-
-          console.log(person);
+            (async () => {
+              const whoDoTheyFollowMap = Object.fromEntries((await whoDoTheyFollowPromise).map(followee => [followee.handle, followee]));
+              const newFollowsMap = Object.fromEntries(newFollows.map(followee => [followee.handle, followee]));
+              console.log("Adding follows", Object.values(newFollowsMap).length);
+              console.log("Old follows", whoDoTheyFollowMap);
+              console.log("New follows", newFollowsMap);
+              const follows = Object.values({...whoDoTheyFollowMap, ...newFollowsMap});
+              follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
+              setWhoDoTheyFollow(follows);
+            })()
+          ]);
         }
       );
     })();

@@ -120,17 +120,18 @@ class MyWorker {
 
     const followersParams = {limit: 80};
     if (person.lastKnownFollower) {
-      followersParams.max_id = person.lastKnownFollower;
+      followersParams.since_id = person.lastKnownFollower;
     }
 
     const followsParams = {limit: 80};
     if (person.lastKnownFollow) {
-      followsParams.max_id = person.lastKnownFollow;
+      followsParams.since_id = person.lastKnownFollow;
     }
 
     const promises = [
       this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/followers`, followersParams, {parsePaginationLinkHeader: true}).then(followersInfo => {
-        const lastKnownFollower = followersInfo.pagination?.prev?.args?.max_id ?? person.lastKnownFollower;
+        const lastKnownFollower = followersInfo.pagination?.prev?.args?.since_id ?? person.lastKnownFollower;
+        const earliestKnownFollower = followersInfo.pagination?.next?.args?.max_id ?? person.earliestKnownFollower;
         return this.mastodonApi.ingestFollowInfo(person, {followers: followersInfo.body}).followerPromises.then(async followers => {
           const dbPerson = await this.db.get('people', person.handle);
           person.lastKnownFollower = lastKnownFollower;
@@ -142,11 +143,13 @@ class MyWorker {
       }),
 
       this.mastodonApi.apiGet(`/api/v1/accounts/${person.serverId}/following`, followsParams, {parsePaginationLinkHeader: true}).then(followeesInfo => {
-        const lastKnownFollow = followeesInfo.pagination?.prev?.args?.max_id ?? person.lastKnownFollow;
+        const lastKnownFollow = followeesInfo.pagination?.prev?.args?.since_id ?? person.lastKnownFollow;
+        const earliestKnownFollow = followeesInfo.pagination?.next?.args?.max_id;
         return this.mastodonApi.ingestFollowInfo(person, {followees: followeesInfo.body}).followeePromises.then(async followees => {
           const dbPerson = await this.db.get('people', person.handle);
           person.lastKnownFollow = lastKnownFollow;
           dbPerson.lastKnownFollow = lastKnownFollow;
+          dbPerson.earliestKnownFollow = earliestKnownFollow;
           await this.db.set('people', dbPerson);
           return followees;
         });
