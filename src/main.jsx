@@ -65,6 +65,22 @@ const mastodonApi = new MastodonAPI(database);
 const worker = new Worker(workerUrl, {type: 'module'});
 const postOffice = new PostOffice(worker);
 
+navigator.serviceWorker.register("/service-worker.js");
+
+navigator.serviceWorker.ready.then(
+  registration => {
+    console.log("Reggie", registration);
+    navigator.serviceWorker.addEventListener("message", message => {
+      console.log("Received wisdom", message);
+    });
+
+    registration.active.postMessage("uwu hewwo??");
+  }
+);
+
+navigator.serviceWorker.startMessages();
+
+
 // In case we're deployed in a subdirectory.
 // Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.
 // The BASE_URL here will be set by vite.config.js, either when running the dev
