@@ -9,6 +9,8 @@ class MyWorker {
     this.mastodonApi = new MastodonAPI(this.db);
     onmessage = async event => this.dispatcher(event);
 
+    this.subscriptions = {};
+
     this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
 
@@ -53,6 +55,18 @@ class MyWorker {
 
     case 'getFollowInfo':
       response = await this.getFollowInfo(message.person);
+      break;
+
+    case 'broadcast':
+      response = await this.broadcast(event);
+      break;
+
+    case 'subscribe':
+      response = this.subscribe(eventName, envelope);
+      break;
+
+    case 'unsubscribe':
+      response = this.unsubscribe(eventName, id);
       break;
     }
 
@@ -159,6 +173,18 @@ class MyWorker {
     const [newFollowers, newFollows] = await Promise.all(promises);
 
     return {person, newFollows, newFollowers};
+  }
+
+  subscribe(eventName) {
+    if (typeof this.subscriptions[eventName] === "undefined") {
+      this.subscriptions[eventName] = {};
+    }
+
+    const uuid = crypto.randomUUID();
+    this.subscriptions[eventName][uuid] = 
+  }
+
+  unsubscribe(eventName) {
   }
 }
 
