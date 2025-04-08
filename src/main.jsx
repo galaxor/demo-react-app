@@ -67,15 +67,14 @@ const postOffice = new PostOffice(worker);
 
 navigator.serviceWorker.register("/service-worker.js");
 
-navigator.serviceWorker.ready.then(
-  registration => {
-    const serviceWorkerPostOffice = new PostOffice(registration.active, navigator.serviceWorker);
-    serviceWorkerPostOffice.send({command: 'ping', message: 'ooby dooby'}, response => {
-      console.log("Received", response);
-    });
-  }
-);
-navigator.serviceWorker.startMessages();
+const serviceWorker = new Promise(resolve => {
+  navigator.serviceWorker.ready.then(
+    registration => {
+      const serviceWorkerPostOffice = new PostOffice(registration.active, navigator.serviceWorker);
+      resolve(serviceWorkerPostOffice);
+    }
+  );
+});
 
 // In case we're deployed in a subdirectory.
 // Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.
@@ -89,7 +88,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App dbConnection={database} mastodonApi={mastodonApi} postOffice={postOffice} />,
+        element: <App dbConnection={database} mastodonApi={mastodonApi} postOffice={postOffice} serviceWorker={serviceWorker} />,
         children: [
           {
             path: "/login-landing",

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import DatabaseContext from './DatabaseContext'
 import NewPosts from './components/NewPosts.jsx'
-import PostOfficeContext from './context/PostOfficeContext.jsx'
+import WorkerContext from './context/WorkerContext.jsx'
 import { PostsDB } from './logic/posts.js'
 import PostsList from './PostsList.jsx'
 import UserContext from './UserContext.jsx'
@@ -12,7 +12,7 @@ export default function YourFeed() {
   const postsDB = new PostsDB(db);
   const { user } = useContext(UserContext);
 
-  const postOffice = useContext(PostOfficeContext);
+  const {worker} = useContext(WorkerContext);
 
   const [postsList, setPostsList] = useState(null);
 
@@ -24,7 +24,7 @@ export default function YourFeed() {
         const friendsPosts = await postsDB.friendsFeed(user);
         setPostsList(friendsPosts);
 
-        postOffice.send(
+        worker.send(
           { 
             command: 'getYourFeed',
             minId: friendsPosts.length === 0? undefined : friendsPosts[0].serverId,

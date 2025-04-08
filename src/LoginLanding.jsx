@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import MastodonAPIContext from './context/MastodonAPIContext.jsx';
 import DatabaseContext from './DatabaseContext.jsx';
 import { PeopleDB } from './logic/people.js'
-import PostOfficeContext from './context/PostOfficeContext.jsx'
+import WorkerContext from './context/WorkerContext.jsx'
 import UserContext from './UserContext.jsx';
 
 export default function LoginLanding() {
@@ -13,7 +13,7 @@ export default function LoginLanding() {
   const db = useContext(DatabaseContext);
 
   const navigate = useNavigate();
-  const worker = useContext(PostOfficeContext);
+  const {worker} = useContext(WorkerContext);
 
   // In dev mode, React mounts everything twice. That means the Effect will
   // fire twice. But we can only use the code to get a token once.

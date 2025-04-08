@@ -25,7 +25,7 @@ import icons from './icons.js'
 import LanguageContext from './LanguageContext.jsx'
 import LogoutLink from './LogoutLink.jsx';
 import PersonContext from './PersonContext.jsx';
-import PostOfficeContext from './context/PostOfficeContext.jsx'
+import WorkerContext from './context/WorkerContext.jsx'
 import ProfileBio from './ProfileBio.jsx';
 import { PeopleDB } from './logic/people.js';
 import UserContext from './UserContext.jsx';
@@ -35,7 +35,7 @@ import './static/ProfileView.css'
 export default function ProfileView({handle, loggedInUser, children }) {
   const { user } = useContext(UserContext);
   const language = useContext(LanguageContext);
-  const postOffice = useContext(PostOfficeContext);
+  const {worker} = useContext(WorkerContext);
 
   const loaderData = useLoaderData();
   const loadedPerson = loaderData? loaderData.person : null;
@@ -67,7 +67,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       setAvatarImage(await db.getImageDataUrl(person.avatar));
 
       console.log("Asking for follow info for", person);
-      postOffice.send(
+      worker.send(
         { 
           command: 'getFollowInfo',
           person,

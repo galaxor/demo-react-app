@@ -66,15 +66,6 @@ class MyWorker {
 // Actually set up the handler.
 const w = new MyWorker();
 
-
-self.addEventListener("install", (event) => {
-  console.log("Installed");
-});
-
-self.addEventListener("activate", (event) => {
-  console.log("Activated");
-});
-
 self.addEventListener("message", event => {
   w.dispatcher(event);
 });

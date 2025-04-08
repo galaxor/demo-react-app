@@ -12,13 +12,13 @@ import DatabaseContext from "./DatabaseContext.jsx";
 import DarkModeContext from "./DarkModeContext.jsx";
 import LanguageContext from "./LanguageContext.jsx";
 import MastodonAPIContext from "./context/MastodonAPIContext.jsx";
-import PostOfficeContext from "./context/PostOfficeContext.jsx";
+import WorkerContext from "./context/WorkerContext.jsx";
 import UserContext from "./UserContext.jsx";
 
 import './App.css';
 import UserDB from './logic/user.js';
 
-function App({dbConnection, mastodonApi, postOffice}) {
+function App({dbConnection, mastodonApi, postOffice, serviceWorker}) {
   const [db, setDB] = useState();
   const [sessionId, setSessionId] = useState(null);
   const [userDB, setUserDB] = useState();
@@ -92,7 +92,7 @@ function App({dbConnection, mastodonApi, postOffice}) {
   return (
     <>
     <DatabaseContext.Provider value={db}>
-    <PostOfficeContext.Provider value={postOffice}>
+    <WorkerContext.Provider value={{worker: postOffice, serviceWorker}}>
     <MastodonAPIContext.Provider value={mastodonApi}>
     <AccountContext.Provider value={{account, setAccount}}>
     <UserContext.Provider value={{user, setUser, sessionId, setSessionId, userDB, serverUrl, setServerUrl}}>
@@ -123,7 +123,7 @@ function App({dbConnection, mastodonApi, postOffice}) {
     </UserContext.Provider>
     </AccountContext.Provider>
     </MastodonAPIContext.Provider>
-    </PostOfficeContext.Provider>
+    </WorkerContext.Provider>
     </DatabaseContext.Provider>
     </>
   );

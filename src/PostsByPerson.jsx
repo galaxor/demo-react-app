@@ -5,7 +5,7 @@ import DatabaseContext from './DatabaseContext.jsx';
 import PersonContext from './PersonContext.jsx';
 import { PostsDB } from './logic/posts.js';
 import PostsList from './PostsList.jsx';
-import PostOfficeContext from './context/PostOfficeContext.jsx'
+import WorkerContext from './context/WorkerContext.jsx'
 
 
 // import theirPosts from './staticList.js'
@@ -19,7 +19,7 @@ export default function PostsByPerson({showReplies}) {
   const db = useContext(DatabaseContext);
   const postsDB = new PostsDB(db);
 
-  const worker = useContext(PostOfficeContext);
+  const {worker} = useContext(WorkerContext);
 
   useEffect(() => {
     (async () => {
