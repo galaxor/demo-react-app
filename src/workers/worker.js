@@ -181,7 +181,7 @@ class MyWorker {
     }
 
     const uuid = crypto.randomUUID();
-    this.subscriptions[eventName][uuid] = 
+    // this.subscriptions[eventName][uuid] = 
   }
 
   unsubscribe(eventName) {

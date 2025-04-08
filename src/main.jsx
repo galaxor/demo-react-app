@@ -69,17 +69,13 @@ navigator.serviceWorker.register("/service-worker.js");
 
 navigator.serviceWorker.ready.then(
   registration => {
-    console.log("Reggie", registration);
-    navigator.serviceWorker.addEventListener("message", message => {
-      console.log("Received wisdom", message);
+    const serviceWorkerPostOffice = new PostOffice(registration.active, navigator.serviceWorker);
+    serviceWorkerPostOffice.send({command: 'ping', message: 'ooby dooby'}, response => {
+      console.log("Received", response);
     });
-
-    registration.active.postMessage("uwu hewwo??");
   }
 );
-
 navigator.serviceWorker.startMessages();
-
 
 // In case we're deployed in a subdirectory.
 // Set VITE_PATH_PREFIX in .env, .env.development, or .env.production.

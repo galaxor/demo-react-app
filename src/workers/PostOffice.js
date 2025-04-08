@@ -1,11 +1,22 @@
 export default class PostOffice {
-  constructor(worker) {
-    this.worker = worker;
+
+  // This can be used to communicate with either a worker or a service worker.
+  // If it's a worker, we send to and receive from the same place.  If it's a
+  // service worker, we send to the active registration and receive from the
+  // worker itself.
+  // So if this is used to contact a worker, give it just the one argument --
+  // the worker.
+  // But if it's used for a service worker, put the active registration in the
+  // first argument and put navigator.serviceWorker in the second argument.
+  constructor(worker, serviceWorker) {
+    this.sendTo = worker;
+    this.receiveFrom = serviceWorker ?? worker;
+
     this.messageId = 0;
     this.correspondents = {};
     this.subscriptions = {};
 
-    this.worker.addEventListener('message', event => this.responder(event.data));
+    this.receiveFrom.addEventListener('message', event => this.responder(event.data));
   }
 
   subscribe(eventName, callback) {
@@ -14,7 +25,7 @@ export default class PostOffice {
     }
 
     this.subscriptions[eventName].push(callback);
-    this.worker.postMessage({command: 'subscribe', eventName: eventName});
+    this.sendTo.postMessage({command: 'subscribe', eventName: eventName});
   }
 
   unsubscribe(eventName, callback) {
@@ -25,7 +36,7 @@ export default class PostOffice {
       // If there's no more callbacks waiting on this event, let the worker
       // know not to bother anymore.
       if (this.subscriptions[eventName].length === 0) {
-        this.worker.postMessage({command: 'unsubscribe', eventName: eventName});
+        this.sendTo.postMessage({command: 'unsubscribe', eventName: eventName});
       }
     }
   }
@@ -33,7 +44,7 @@ export default class PostOffice {
   async send(message, callback) {
     const returnAddress = this.messageId++;
     this.correspondents[returnAddress] = callback;
-    this.worker.postMessage({returnAddress, message});
+    this.sendTo.postMessage({returnAddress, message});
   }
 
   responder(responseEnvelope) {
