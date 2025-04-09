@@ -20,15 +20,15 @@ class MyWorker {
       break;
 
     case 'publish':
-      response = this.publish(event);
+      response = this.publish(message.eventName, message.data);
       break;
 
     case 'subscribe':
-      response = this.subscribe(message.eventName, envelope, source);
+      response = this.subscribe(message.eventName, source);
       break;
 
     case 'unsubscribe':
-      response = this.unsubscribe(message.eventName, id);
+      response = this.unsubscribe(message.eventName, source);
       break;
 
     default:
@@ -46,20 +46,30 @@ class MyWorker {
     return {pong: 'pong', message: message.message};
   }
 
-  subscribe(eventName, envelope, source) {
-    if (typeof this.subscriptions[eventName] === "undefined") {
-      this.subscriptions[eventName] = {};
+  publish(eventName, data) {
+    if (typeof this.subscriptions[eventName] === "object") {
+      for (const source of this.subscriptions[eventName]) {
+        source.postMessage({eventName, data});
+      }
     }
-
-    console.log("SOURC", envelope, source);
-
-    return "Check the sw console.";
-
-    // const uuid = crypto.randomUUID();
-    // this.subscriptions[eventName][uuid] = 
   }
 
-  unsubscribe(eventName) {
+  subscribe(eventName, source) {
+    if (typeof this.subscriptions[eventName] === "undefined") {
+      this.subscriptions[eventName] = [];
+    }
+
+    // We don't need to add this source if it's already in the list.
+    if (this.subscriptions[eventName].indexOf(source) < 0) {
+      this.subscriptions[eventName].push(source);
+    }
+  }
+
+  unsubscribe(eventName, source) {
+    const i = this.subscriptions[eventName].indexOf(source);
+    if (i >= 0) {
+      this.subscriptions[eventName].splice(i, 1);
+    }
   }
 }
 

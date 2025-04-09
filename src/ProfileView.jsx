@@ -35,7 +35,7 @@ import './static/ProfileView.css'
 export default function ProfileView({handle, loggedInUser, children }) {
   const { user } = useContext(UserContext);
   const language = useContext(LanguageContext);
-  const {worker} = useContext(WorkerContext);
+  const {worker, serviceWorker} = useContext(WorkerContext);
 
   const loaderData = useLoaderData();
   const loadedPerson = loaderData? loaderData.person : null;
@@ -66,6 +66,10 @@ export default function ProfileView({handle, loggedInUser, children }) {
       setWhoDoTheyFollow(await whoDoTheyFollowPromise);
       setAvatarImage(await db.getImageDataUrl(person.avatar));
 
+      (await serviceWorker).subscribe('followInfo', followInfo => {
+        console.log("I got some dope follow info", followInfo);
+      });
+
       console.log("Asking for follow info for", person);
       worker.send(
         { 
@@ -73,13 +77,14 @@ export default function ProfileView({handle, loggedInUser, children }) {
           person,
         },
         async ({returnedPerson, newFollowers, newFollows}) => {
-          await Promise.all([
+          const [followers, follows] = await Promise.all([
             (async () => {
               const whoFollowsThemMap = Object.fromEntries((await whoFollowsThemPromise).map(follower => [follower.handle, follower]));
               const newFollowersMap = Object.fromEntries(newFollowers.map(follower => [follower.handle, follower]));
               const followers = Object.values({...whoFollowsThemMap, ...newFollowersMap});
               followers.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
               setWhoFollowsThem(followers);
+              return followers;
             })(),
 
             (async () => {
@@ -91,8 +96,11 @@ export default function ProfileView({handle, loggedInUser, children }) {
               const follows = Object.values({...whoDoTheyFollowMap, ...newFollowsMap});
               follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
               setWhoDoTheyFollow(follows);
+              return follows;
             })()
           ]);
+
+          (await serviceWorker).publish('followInfo', {followers, follows});
         }
       );
     })();

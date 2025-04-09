@@ -19,24 +19,30 @@ export default class PostOffice {
     this.receiveFrom.addEventListener('message', event => this.responder(event.data));
   }
 
+  publish(eventName, data) {
+    this.sendTo.postMessage({message: {command: 'publish', eventName, data}});
+  }
+
   subscribe(eventName, callback) {
     if (typeof this.subscriptions[eventName] !== "object") {
       this.subscriptions[eventName] = [];
     }
 
     this.subscriptions[eventName].push(callback);
-    this.sendTo.postMessage({command: 'subscribe', eventName: eventName});
+    this.sendTo.postMessage({message: {command: 'subscribe', eventName: eventName}});
   }
 
   unsubscribe(eventName, callback) {
     if (typeof this.subscriptions[eventName] === "object") {
-      var i = this.subscriptions[eventName].indexOf(callback);
-      this.subscriptions[eventName].splice(i, 1);
+      const i = this.subscriptions[eventName].indexOf(callback);
+      if (i >= 0) {
+        this.subscriptions[eventName].splice(i, 1);
+      }
 
       // If there's no more callbacks waiting on this event, let the worker
       // know not to bother anymore.
       if (this.subscriptions[eventName].length === 0) {
-        this.sendTo.postMessage({command: 'unsubscribe', eventName: eventName});
+        this.sendTo.postMessage({message: {command: 'unsubscribe', eventName: eventName}});
       }
     }
   }
@@ -48,11 +54,21 @@ export default class PostOffice {
   }
 
   responder(responseEnvelope) {
-    const recipient = this.correspondents[responseEnvelope.returnAddress];
-    const response = responseEnvelope.response;
-    if (typeof recipient === 'function') {
-      recipient(response);
+    // If this is an event published from elsewhere, it has the format {eventName, data}.
+    if (typeof responseEnvelope.eventName === "string"
+        && typeof this.subscriptions[responseEnvelope.eventName] === "object")
+    {
+      for (const callback of this.subscriptions[responseEnvelope.eventName]) {
+        callback(responseEnvelope.data);
+      }
+    } else {
+      // If this isn't a published event, it has the format {returnAddress, response}.
+      const recipient = this.correspondents[responseEnvelope.returnAddress];
+      const response = responseEnvelope.response;
+      if (typeof recipient === 'function') {
+        recipient(response);
+      }
+      delete this.correspondents[responseEnvelope.returnAddress];
     }
-    delete this.correspondents[responseEnvelope.returnAddress];
   }
 }
