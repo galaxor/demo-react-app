@@ -34,8 +34,8 @@ export default class PostOffice {
 
   unsubscribe(eventName, callback) {
     if (typeof this.subscriptions[eventName] === "object") {
-      const i = this.subscriptions[eventName].indexOf(callback);
-      if (i >= 0) {
+      var i;
+      while ((i = this.subscriptions[eventName].indexOf(callback)) && i >= 0) {
         this.subscriptions[eventName].splice(i, 1);
       }
 

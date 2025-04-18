@@ -56,6 +56,10 @@ export default function ProfileView({handle, loggedInUser, children }) {
   const peopleDB = new PeopleDB(db);
 
   useEffect(() => {
+    const receiveFollowInfo = followInfo => {
+      console.log("I got some dope follow info", followInfo);
+    }
+
     (async () => {
       if (user) { setYouFollowThem(await peopleDB.doesXFollowY(user.handle, person.handle)); }
 
@@ -66,9 +70,7 @@ export default function ProfileView({handle, loggedInUser, children }) {
       setWhoDoTheyFollow(await whoDoTheyFollowPromise);
       setAvatarImage(await db.getImageDataUrl(person.avatar));
 
-      (await serviceWorker).subscribe('followInfo', followInfo => {
-        console.log("I got some dope follow info", followInfo);
-      });
+      (await serviceWorker).subscribe('followInfo', receiveFollowInfo);
 
       console.log("Asking for follow info for", person);
       worker.send(
@@ -104,6 +106,11 @@ export default function ProfileView({handle, loggedInUser, children }) {
         }
       );
     })();
+
+    return async () => {
+      console.log("Unsubscribing");
+      (await serviceWorker).unsubscribe('followInfo', receiveFollowInfo);
+    };
   }, [user, person]);
 
   const numFollowers = Intl.NumberFormat(language, {
