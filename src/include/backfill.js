@@ -1,4 +1,4 @@
-function backfillIteration({chunkSource, mastodonApi, apiUrl, limit, callback}) {
+export function backfillIteration({chunkSource, mastodonApi, apiUrl, limit, callback}) {
   const parallellism = 3;
 
   const knownChunks = [...chunkSource];
@@ -24,25 +24,26 @@ function backfillIteration({chunkSource, mastodonApi, apiUrl, limit, callback}) 
       params.skip = i * limit;
       promises.push(
         mastodonApi.apiGet(apiUrl, params, {parsePaginationLinkHeader: true}).then(async ({pagination, body}) => {
+          // Make sure the data is actually taken up before we update our
+          // records of what's known.
+          await callback(body);
+
+          // Update our records of what's known.
           return await findHomeForChunk(chunkSource, pagination, body);
         })
       );
     }
   }
 
-  await promises;
+  return promises;
 }
 
 
-async function findHomeForChunk(chunkSource, pagination, body) {
+export function findHomeForChunk(chunkSource, pagination, body) {
   const newChunk = {
     maxId: pagination.prev.sinceId,
     minId: pagination.next.maxId,
   };
-
-  // Make sure the data is actually taken up before we update our
-  // records of what's known.
-  await callback(body);
 
   // Update the chunks.
   // We'll go through the known chunks -- but not the copy we're using
@@ -59,8 +60,8 @@ async function findHomeForChunk(chunkSource, pagination, body) {
   // doesn't mess with the indexes of subsequent chunks.
   for (var chunkSourceIndex=chunkSource.length-1; chunkSourceIndex>=0; chunkSourceIndex--) {
     var replaced = false;
-    if (chunkSource[chunkSourceIndex+1].minId <= newChunk.maxId) {
-      newChunk.maxId = chunkSource[chunkSourceIndex+1].maxid;
+    if (chunkSource[chunkSourceIndex].minId <= newChunk.maxId) {
+      newChunk.maxId = chunkSource[chunkSourceIndex].maxid;
       replaced = true;
     }
     if (chunkSource[chunkSourceIndex].maxId >= newChunk.minId) {
@@ -86,4 +87,6 @@ async function findHomeForChunk(chunkSource, pagination, body) {
       // home.
     }
   }
+
+  return chunkSource;
 }
