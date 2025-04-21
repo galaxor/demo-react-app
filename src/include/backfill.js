@@ -60,12 +60,12 @@ export function findHomeForChunk(chunkSource, pagination, body) {
   // doesn't mess with the indexes of subsequent chunks.
   for (var chunkSourceIndex=chunkSource.length-1; chunkSourceIndex>=0; chunkSourceIndex--) {
     var replaced = false;
-    if (chunkSource[chunkSourceIndex].minId <= newChunk.maxId) {
-      newChunk.maxId = chunkSource[chunkSourceIndex].maxid;
-      replaced = true;
-    }
-    if (chunkSource[chunkSourceIndex].maxId >= newChunk.minId) {
-      chunkSource[chunkSourceIndex].maxId = newChunk.maxId;
+    if (chunkSource[chunkSourceIndex].maxId >= newChunk.minId 
+        && chunkSource[chunkSourceIndex].minId <= newChunk.maxId)
+    {
+      // The chunk we're testing overlaps the new chunk.
+      newChunk.minId = Math.min(chunkSource[chunkSourceIndex].minId, newChunk.minId);
+      newChunk.maxId = Math.max(chunkSource[chunkSourceIndex].maxId, newChunk.maxId);
       replaced = true;
     }
 
@@ -78,8 +78,8 @@ export function findHomeForChunk(chunkSource, pagination, body) {
       // If the new chunk should be after this one, splice it into
       // chunkSource after this chunk and stop this loop:  We've placed
       // the new chunk.
-      if (chunkSource[chunkSourceIndex].maxId < newChunk.minId) {
-        chunkSource.splice(chunkSourceIndex+1, 0, [newChunk]);
+      if (chunkSource[chunkSourceIndex].minId < newChunk.maxId) {
+        chunkSource.splice(chunkSourceIndex+1, 0, newChunk);
         break;
       }
 

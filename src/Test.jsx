@@ -24,14 +24,13 @@ function dumpTable(db, table) {
   });
 }
 
+import {findHomeForChunk} from './include/backfill.js';
+
 export default function Test({dbConnection}) {
-  useEffect(() => {
-    (async () => {
-      await dbConnection.open('https://social.iheartmichelle.com/');
-      await dumpTable(dbConnection, 'people');
-      await dumpTable(dbConnection, 'posts');
-    })();
-  }, []);
+  const chunkSource = [{minId: 1, maxId: 3}];
+  const pagination = {prev: {sinceId: 7}, next: {maxId: 6}};
+  const body = "nothing";
+  console.log(findHomeForChunk(chunkSource, pagination, body));
 
   return "Cool beans";
 }
