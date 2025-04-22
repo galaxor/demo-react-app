@@ -58,7 +58,9 @@ export function findHomeForChunk(chunkSource, pagination, body) {
 
   // Traverse the chunks backward so that if we delete any chunks, it
   // doesn't mess with the indexes of subsequent chunks.
-  for (var chunkSourceIndex=chunkSource.length-1; chunkSourceIndex>=0; chunkSourceIndex--) {
+  var chunkSourceIndex;
+  var placed = false;
+  for (chunkSourceIndex=chunkSource.length-1; chunkSourceIndex>=0; chunkSourceIndex--) {
     var replaced = false;
     if (chunkSource[chunkSourceIndex].maxId >= newChunk.minId 
         && chunkSource[chunkSourceIndex].minId <= newChunk.maxId)
@@ -80,12 +82,19 @@ export function findHomeForChunk(chunkSource, pagination, body) {
       // the new chunk.
       if (chunkSource[chunkSourceIndex].minId < newChunk.maxId) {
         chunkSource.splice(chunkSourceIndex+1, 0, newChunk);
+        placed = true;
         break;
       }
 
       // If the new chunk should be before this one, keep looking for its
       // home.
     }
+  }
+
+  if (placed === false) {
+    // We made it all the way through without finding a chunk that the new
+    // chunk goes after.  That must mean the new chunk goes at the beginning.
+    chunkSource.unshift(newChunk);
   }
 
   return chunkSource;
