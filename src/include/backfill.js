@@ -1,8 +1,4 @@
-export function backfillIteration({chunkSource, mastodonApi, apiUrl, limit, callback}) {
-  const parallellism = 3;
-
-  const knownChunks = [...chunkSource];
-
+export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, callback}) {
   const promises = [];
 
   const deletedChunks = [];
@@ -20,26 +16,23 @@ export function backfillIteration({chunkSource, mastodonApi, apiUrl, limit, call
       maxId: minId,
     };
 
-    for (var i=0; i<parallellism; i++) {
-      params.skip = i * limit;
-      promises.push(
-        mastodonApi.apiGet(apiUrl, params, {parsePaginationLinkHeader: true}).then(async ({pagination, body}) => {
-          // Make sure the data is actually taken up before we update our
-          // records of what's known.
-          await callback(body);
+    promises.push(
+      mastodonApi.apiGet(apiUrl, params, {parsePaginationLinkHeader: true}).then(async ({pagination, body}) => {
+        // Make sure the data is actually taken up before we update our
+        // records of what's known.
+        await callback(body);
 
-          // Update our records of what's known.
-          return await findHomeForChunk(chunkSource, pagination, body);
-        })
-      );
-    }
+        // Update our records of what's known.
+        return await findHomeForChunk(knownChunks, pagination, body);
+      })
+    );
   }
 
   return promises;
 }
 
 
-export function findHomeForChunk(chunkSource, pagination, body) {
+export function findHomeForChunk(knownChunks, pagination, body) {
   const newChunk = {
     maxId: pagination.prev.sinceId,
     minId: pagination.next.maxId,
@@ -49,39 +42,38 @@ export function findHomeForChunk(chunkSource, pagination, body) {
   // We'll go through the known chunks -- but not the copy we're using
   // for this loop, we're going back to the source.  If we have chunks
   // that overlap, merge them.
-  // Note that `knownChunks` is a shallow copy of `chunkSource`.
-  // Mutating chunkSource won't mutate knownChunks. But mutating any of
-  // the chunks will mutate them in the copy.  That's okay.  If we end
-  // up finishing a processing a chunk before we're done dispatching,
-  // then we'll be happy we allowed the chunks to mutate, because that
-  // will cut down on duplicated fetches.
+  // Note that mutating any of the chunks will mutate them for all subsequent
+  // calls to findHomeForChunks.  That's okay.  If we end up finishing a
+  // processing a chunk before we're done dispatching, then we'll be happy we
+  // allowed the chunks to mutate, because that will cut down on duplicated
+  // fetches.
 
   // Traverse the chunks backward so that if we delete any chunks, it
   // doesn't mess with the indexes of subsequent chunks.
-  var chunkSourceIndex;
+  var knownChunksIndex;
   var placed = false;
-  for (chunkSourceIndex=chunkSource.length-1; chunkSourceIndex>=0; chunkSourceIndex--) {
+  for (knownChunksIndex=knownChunks.length-1; knownChunksIndex>=0; knownChunksIndex--) {
     var replaced = false;
-    if (chunkSource[chunkSourceIndex].maxId >= newChunk.minId 
-        && chunkSource[chunkSourceIndex].minId <= newChunk.maxId)
+    if (knownChunks[knownChunksIndex].maxId >= newChunk.minId 
+        && knownChunks[knownChunksIndex].minId <= newChunk.maxId)
     {
       // The chunk we're testing overlaps the new chunk.
-      newChunk.minId = Math.min(chunkSource[chunkSourceIndex].minId, newChunk.minId);
-      newChunk.maxId = Math.max(chunkSource[chunkSourceIndex].maxId, newChunk.maxId);
+      newChunk.minId = Math.min(knownChunks[knownChunksIndex].minId, newChunk.minId);
+      newChunk.maxId = Math.max(knownChunks[knownChunksIndex].maxId, newChunk.maxId);
       replaced = true;
     }
 
     // If we replaced, let's delete the old chunk and try the next old
     // chunk.
     if (replaced) {
-      chunkSource.splice(chunkSourceIndex, 1);
+      knownChunks.splice(knownChunksIndex, 1);
     } else {
       // If we didn't replace a chunk:
       // If the new chunk should be after this one, splice it into
-      // chunkSource after this chunk and stop this loop:  We've placed
+      // knownChunks after this chunk and stop this loop:  We've placed
       // the new chunk.
-      if (chunkSource[chunkSourceIndex].minId < newChunk.maxId) {
-        chunkSource.splice(chunkSourceIndex+1, 0, newChunk);
+      if (knownChunks[knownChunksIndex].minId < newChunk.maxId) {
+        knownChunks.splice(knownChunksIndex+1, 0, newChunk);
         placed = true;
         break;
       }
@@ -94,8 +86,8 @@ export function findHomeForChunk(chunkSource, pagination, body) {
   if (placed === false) {
     // We made it all the way through without finding a chunk that the new
     // chunk goes after.  That must mean the new chunk goes at the beginning.
-    chunkSource.unshift(newChunk);
+    knownChunks.unshift(newChunk);
   }
 
-  return chunkSource;
+  return knownChunks;
 }
