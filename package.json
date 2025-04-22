@@ -12,7 +12,8 @@
   },
 
   "jest": {
-    "transform": {}
+    "transform": {},
+    "collectCoverage": true
   },
 
   "dependencies": {
