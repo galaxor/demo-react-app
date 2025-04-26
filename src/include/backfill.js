@@ -34,8 +34,22 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
 
 export function findHomeForChunk(knownChunks, pagination, body) {
   const newChunk = {
-    maxId: pagination.prev.sinceId,
-    minId: pagination.next.maxId,
+    // How do we figure out the largest and smallest ids in the result we got
+    // from the API?
+    // If we're at the most-recent page, Mastodon will usually say that the
+    // previous page has a "sinceId", so that if we try to find the previous
+    // page, it'll give us the stuff that's new since we last looked.
+    // If we're not at the most-recent page, the prev page will usually have a
+    // "minId", saying "give me all the stuff with this id or lower".
+    // But some calls don't even return pagination.  In that case, we have to
+    // look at what got returned to us to figure out what the max and min ids
+    // are in the results.  Hopefully, they're all at ".id"
+    // Similar for the min id, but we don't have the "since" option.
+    maxId: pagination?.prev?.sinceId
+        ?? pagination?.prev?.minId 
+        ?? body.reduce((max, item) => Math.max(max, item.id)),
+    minId: pagination?.next?.maxId
+        ?? body.reduce((min, item) => Math.min(min, item.id)),
   };
 
   // Update the chunks.
