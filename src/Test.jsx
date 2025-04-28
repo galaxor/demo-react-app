@@ -3,7 +3,7 @@ import * as OpenID from 'openid-client'
 import { useContext, useEffect, useState } from 'react';
 import Database from './logic/database.js'
 import DatabaseContext from './DatabaseContext.jsx';
-import MastodonAPI from './mastodon-api/mastodon-api.js'
+// import MastodonAPI from './mastodon-api/mastodon-api.js'
 import UserDB from './logic/user.js'
 
 import workerUrl from './workers/worker.js?worker&url'
@@ -24,13 +24,13 @@ function dumpTable(db, table) {
   });
 }
 
-import {findHomeForChunk} from './include/backfill.js';
+import MastodonAPI from './mastodon-api/mastodon-api-mock.js'
 
 export default function Test({dbConnection}) {
-  const chunkSource = [{minId: 1, maxId: 3}];
-  const pagination = {prev: {sinceId: 7}, next: {maxId: 6}};
-  const body = "nothing";
-  console.log(findHomeForChunk(chunkSource, pagination, body));
+
+  const mastodonApi = new MastodonAPI([[1, 1]], false);
+  const retval = mastodonApi.apiGet('/', {minId: 1, limit: 40});
+  console.log("RV", retval);
 
   return "Cool beans";
 }
