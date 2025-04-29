@@ -37,22 +37,36 @@ export default class MastodonAPI {
         }
         return accumulator;
       }, []);
-    } else {
-      throw new Error("min or max, what is it?");
     }
 
-    return items;
+    if (this.usePagination) {
+      const maxAvailableId = Math.max(this.dataRanges.map(range => range[1]));
+      const maxId = Math.max(items.map(item => item.id));
+      const prevLink = new URL(requestPath, 'https://localhost');
+      if (maxId == maxAvailableId) {
+        prevLink.search = new URLSearchParams({since_id: maxId}).toString();
+      } else {
+        prevLink.search = new URLSearchParams({min_id: maxId}).toString();
+      }
 
-    /*
-    if (options?.parsePaginationLinkHeader) {
-      const paginationInfo = this.parsePaginationLinkHeader(response.headers.get('Link'));
+      const pagination = {
+        prev: prevLink.toString(),
+      };
+
+      const minAvailableId = Math.min(this.dataRanges.map(range => range[1]));
+      const minId = Math.min(items.map(item => item.id));
+      const nextLink = new URL(requestPath, 'https://localhost');
+      if (minId !== minAvailableId) {
+        nextLink.search = new URLSearchParams({max_id: minId}).toString();
+        pagination.next = nextLink.toString();
+      }
+
       return {
-        pagination: paginationInfo,
-        body: responseJson,
+        pagination: pagination,
+        body: items,
       };
     } else {
-      return responseJson;
+      return items;
     }
-    */
   }
 }
