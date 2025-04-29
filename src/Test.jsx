@@ -30,8 +30,8 @@ export default function Test({dbConnection}) {
 
   useEffect(() => {
     (async () => {
-      const mastodonApi = new MastodonAPI([[1, 5]], true);
-      const retval = await mastodonApi.apiGet('/', {minId: 1, limit: 40});
+      const mastodonApi = new MastodonAPI([[1, 3]], true);
+      const retval = await mastodonApi.apiGet('/', {maxId: 2, limit: 40});
       console.log("RV", retval);
     })();
   }, []);
