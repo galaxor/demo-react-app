@@ -11,9 +11,9 @@ export default class MastodonAPI {
   }
 
   async apiGet(requestPath, params, options) {
-    const requestMin = params.sinceId ?? params.minId;
-    const requestMax = params.maxId;
-    const limit = params.limit ?? this.limitMax;
+    const requestMin = params?.sinceId ?? params?.minId;
+    const requestMax = params?.maxId;
+    const limit = params?.limit ?? this.limitMax;
 
     var items;
 
@@ -32,6 +32,16 @@ export default class MastodonAPI {
       var remaining = limit;
       items = this.dataRanges.filter(range => range[1] >= requestMin).reduce((accumulator, range) => {
         for (var i=Math.max(range[0], requestMin); i <= range[1] && remaining > 0; i++) {
+          accumulator.push({id: i});
+          remaining -= 1;
+        }
+        return accumulator;
+      }, []);
+    } else {
+      // We're going to return the last n things.
+      var remaining = limit;
+      items = this.dataRanges.toReversed().reduce((accumulator, range) => {
+        for (var i=range[1]; i >= range[0] && remaining > 0; i--) {
           accumulator.push({id: i});
           remaining -= 1;
         }

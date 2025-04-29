@@ -180,3 +180,24 @@ test('Stops at limit even while crossing dataRanges (maxId) (paginated)', async 
     body: [{id: 9}, {id: 8}, {id: 6}, {id: 5}],
   });
 });
+
+
+// Check out the constuctor.
+test('usePagination defaults to false', async () => {
+  const mastodonApi = new MastodonAPI([[1]]);
+  expect(mastodonApi.usePagination).toBe(false);
+});
+
+test('use limitMax', async () => {
+  const mastodonApi = new MastodonAPI([[1,10]], false, 5);
+  expect(await mastodonApi.apiGet('/', {maxId: 9})).toStrictEqual(
+    [{id: 9}, {id: 8}, {id: 7}, {id: 6}, {id: 5}]
+  );
+});
+
+test('No params -> get the last n results, where n is limit', async () => {
+  const mastodonApi = new MastodonAPI([[1,10]], false, 5);
+  expect(await mastodonApi.apiGet('/')).toStrictEqual(
+    [{id: 10}, {id: 9}, {id: 8}, {id: 7}, {id: 6}]
+  );
+});
