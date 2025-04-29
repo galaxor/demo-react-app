@@ -28,9 +28,13 @@ import MastodonAPI from './mastodon-api/mastodon-api-mock.js'
 
 export default function Test({dbConnection}) {
 
-  const mastodonApi = new MastodonAPI([[1, 1]], false);
-  const retval = mastodonApi.apiGet('/', {minId: 1, limit: 40});
-  console.log("RV", retval);
+  useEffect(() => {
+    (async () => {
+      const mastodonApi = new MastodonAPI([[1, 5]], true);
+      const retval = await mastodonApi.apiGet('/', {minId: 1, limit: 40});
+      console.log("RV", retval);
+    })();
+  }, []);
 
   return "Cool beans";
 }

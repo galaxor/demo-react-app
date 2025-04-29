@@ -40,8 +40,8 @@ export default class MastodonAPI {
     }
 
     if (this.usePagination) {
-      const maxAvailableId = Math.max(this.dataRanges.map(range => range[1]));
-      const maxId = Math.max(items.map(item => item.id));
+      const maxAvailableId = Math.max(...this.dataRanges.map(range => range[1]));
+      const maxId = Math.max(...items.map(item => item.id));
       const prevLink = new URL(requestPath, 'https://localhost');
       if (maxId == maxAvailableId) {
         prevLink.search = new URLSearchParams({since_id: maxId}).toString();
@@ -53,8 +53,8 @@ export default class MastodonAPI {
         prev: prevLink.toString(),
       };
 
-      const minAvailableId = Math.min(this.dataRanges.map(range => range[1]));
-      const minId = Math.min(items.map(item => item.id));
+      const minAvailableId = Math.min(...this.dataRanges.map(range => range[0]));
+      const minId = Math.min(...items.map(item => item.id));
       const nextLink = new URL(requestPath, 'https://localhost');
       if (minId !== minAvailableId) {
         nextLink.search = new URLSearchParams({max_id: minId}).toString();
