@@ -4,7 +4,7 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
   const deletedChunks = [];
 
   for (const chunkIndex in knownChunks) {
-    const {maxId, minId} = knownChunks[chunkIndex];
+    const [minId, maxId] = knownChunks[chunkIndex];
 
     // Get some pages that have lower ids than the minimum one we know of in
     // this chunk.
@@ -17,7 +17,9 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
     };
 
     promises.push(
-      mastodonApi.apiGet(apiUrl, params, {parsePaginationLinkHeader: true}).then(async ({pagination, body}) => {
+      mastodonApi.apiGet(apiUrl, params, {parsePaginationLinkHeader: true}).then(async (response) => {
+        // XXX Make it work if the response doesn't include pagination, also.
+        const {pagination, body} = response;
         // Make sure the data is actually taken up before we update our
         // records of what's known.
         await callback(body);

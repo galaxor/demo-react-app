@@ -25,14 +25,26 @@ function dumpTable(db, table) {
 }
 
 import MastodonAPI from './mastodon-api/mastodon-api-mock.js'
+import {backfillIteration} from './mastodon-api/backfill.js'
 
 export default function Test({dbConnection}) {
 
   useEffect(() => {
     (async () => {
+      // Test backfillIteration.
+
+      function backfillCallbackFn(accumulator) {
+        return (body) => {
+          accumulator.push(body);
+        };
+      }
+
+      const accumulator = [];
       const mastodonApi = new MastodonAPI([[1, 3]], true);
-      const retval = await mastodonApi.apiGet('/', {maxId: 2, limit: 40});
-      console.log("RV", retval);
+      const knownChunks = [[1,3]];
+      await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
+
+      console.log("Accumulator:", accumulator);
     })();
   }, []);
 

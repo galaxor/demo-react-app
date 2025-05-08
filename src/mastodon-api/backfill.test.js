@@ -1,5 +1,6 @@
-import {findHomeForChunk} from './backfill.js'
+// Test findHomeForChunk.
 
+import {findHomeForChunk} from './backfill.js'
 test('Adds a chunk to the end', () => {
   const knownChunks = [{minId: 1, maxId: 3}];
   const pagination = {prev: {sinceId: 7}, next: {maxId: 6}};
@@ -69,3 +70,35 @@ test('Merge first two chunks', () => {
   const body = "nothing";
   expect(findHomeForChunk(knownChunks, pagination, body)).toStrictEqual([{minId: 1, maxId: 6}, {minId: 9, maxId: 10}]);
 });
+
+
+
+// Test backfillIteration.
+import {backfillIteration} from './backfill.js'
+import MastodonAPI from './mastodon-api-mock.js'
+
+function backfillCallbackFn(accumulator) {
+  return (body) => {
+    accumulator.push(body);
+  };
+}
+
+test('Nothing to backfill', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 3]], true);
+  const knownChunks = [[1,3]];
+  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
+
+  expect(accumulator).toStrictEqual([[{id: 1}]]);
+});
+
+/*
+test('Api doesn\'t support pagination', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 3]], false);
+  const knownChunks = [[1,3]];
+  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
+
+  expect(accumulator).toStrictEqual([]);
+});
+*/
