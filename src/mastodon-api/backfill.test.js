@@ -92,13 +92,11 @@ test('Nothing to backfill', async () => {
   expect(accumulator).toStrictEqual([[{id: 1}]]);
 });
 
-/*
 test('Api doesn\'t support pagination', async () => {
   const accumulator = [];
   const mastodonApi = new MastodonAPI([[1, 3]], false);
   const knownChunks = [[1,3]];
   await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
 
-  expect(accumulator).toStrictEqual([]);
+  expect(accumulator).toStrictEqual([[{id: 1}]]);
 });
-*/

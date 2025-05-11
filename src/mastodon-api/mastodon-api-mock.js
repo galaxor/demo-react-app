@@ -49,7 +49,7 @@ export default class MastodonAPI {
       }, []);
     }
 
-    if (this.usePagination) {
+    if (options?.parsePaginationLinkHeader) {
       const maxAvailableId = Math.max(...this.dataRanges.map(range => range[1]));
       const maxId = Math.max(...items.map(item => item.id));
       const prevLink = new URL(requestPath, 'https://localhost');

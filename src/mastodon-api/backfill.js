@@ -18,8 +18,8 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
 
     promises.push(
       mastodonApi.apiGet(apiUrl, params, {parsePaginationLinkHeader: true}).then(async (response) => {
-        // XXX Make it work if the response doesn't include pagination, also.
         const {pagination, body} = response;
+
         // Make sure the data is actually taken up before we update our
         // records of what's known.
         await callback(body);

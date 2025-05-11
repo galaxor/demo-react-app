@@ -39,10 +39,11 @@ export default function Test({dbConnection}) {
         };
       }
 
-      const accumulator = [];
-      const mastodonApi = new MastodonAPI([[1, 3]], true);
-      const knownChunks = [[1,3]];
-      await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 3]], false);
+  const knownChunks = [[1,3]];
+  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
+
 
       console.log("Accumulator:", accumulator);
     })();
