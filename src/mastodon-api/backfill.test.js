@@ -110,3 +110,27 @@ test('Backfill a whole bunch', async () => {
   const fortyThings = [...Array(40).keys()].toReversed().map(i => {return {id: i+1};});
   expect(accumulator).toStrictEqual([fortyThings]);
 });
+
+test('Backfill multiple non-contiguous areas', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 160]], false);
+  const knownChunks = [[40, 80], [120, 160]];
+  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: 40, callback: backfillCallbackFn(accumulator)});
+
+  const firstFortyThings = [...Array(40).keys()].toReversed().map(i => {return {id: i+1};});
+  const thirdFortyThings = [...firstFortyThings].map(i => {return {id: i.id + 80};});
+  expect(accumulator).toContainEqual(firstFortyThings);
+  expect(accumulator).toContainEqual(thirdFortyThings);
+});
+
+test('Backfill multiple non-contiguous areas (pagination)', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 160]], true);
+  const knownChunks = [[40, 80], [120, 160]];
+  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: 40, callback: backfillCallbackFn(accumulator)});
+
+  const firstFortyThings = [...Array(40).keys()].toReversed().map(i => {return {id: i+1};});
+  const thirdFortyThings = [...firstFortyThings].map(i => {return {id: i.id + 80};});
+  expect(accumulator).toContainEqual(firstFortyThings);
+  expect(accumulator).toContainEqual(thirdFortyThings);
+});
