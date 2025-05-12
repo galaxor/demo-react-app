@@ -4,7 +4,7 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
   const deletedChunks = [];
 
   for (const chunkIndex in knownChunks) {
-    const [minId, maxId] = knownChunks[chunkIndex];
+    const {minId, maxId} = knownChunks[chunkIndex];
 
     // Get some pages that have lower ids than the minimum one we know of in
     // this chunk.
@@ -25,7 +25,10 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
         await callback(body);
 
         // Update our records of what's known.
-        return await findHomeForChunk(knownChunks, pagination, body);
+        console.log("Known Chunks Before", knownChunks);
+        const retVal = await findHomeForChunk(knownChunks, pagination, body);
+        console.log("Known Chunks After", knownChunks);
+        return retVal;
       })
     );
   }
@@ -47,11 +50,11 @@ export function findHomeForChunk(knownChunks, pagination, body) {
     // look at what got returned to us to figure out what the max and min ids
     // are in the results.  Hopefully, they're all at ".id"
     // Similar for the min id, but we don't have the "since" option.
-    maxId: pagination?.prev?.sinceId
-        ?? pagination?.prev?.minId 
-        ?? body.reduce((max, item) => Math.max(max, item.id)),
-    minId: pagination?.next?.maxId
-        ?? body.reduce((min, item) => Math.min(min, item.id)),
+    maxId: pagination?.prev?.args?.since_id
+        ?? pagination?.prev?.args?.min_id 
+        ?? body.reduce((max, item) => Math.max(max, item.id), 0),
+    minId: pagination?.next?.args?.max_id
+        ?? body.reduce((min, item) => Math.min(min, item.id), Number.MAX_SAFE_INTEGER),
   };
 
   // Update the chunks.

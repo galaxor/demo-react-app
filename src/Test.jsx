@@ -40,12 +40,14 @@ export default function Test({dbConnection}) {
       }
 
   const accumulator = [];
-  const mastodonApi = new MastodonAPI([[1, 3]], false);
-  const knownChunks = [[1,3]];
-  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
+  const mastodonApi = new MastodonAPI([[1, 80]], true);
+  const knownChunks = [{minId: 40, maxId: 80}];
+  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: 40, callback: backfillCallbackFn(accumulator)});
 
+  const fortyThings = [...Array(40).keys()].toReversed().map(i => {return {id: i+1};});
 
       console.log("Accumulator:", accumulator);
+      console.log("Known", knownChunks);
     })();
   }, []);
 
