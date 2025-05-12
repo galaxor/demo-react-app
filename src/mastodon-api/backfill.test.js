@@ -32,14 +32,14 @@ test('Adds a chunk in the middle', () => {
 
 test('Adds the only chunk', () => {
   const knownChunks = [];
-  const pagination = {prev: {args: {since_id: 5}, url: "ignored"}, next: {args: {maxId: 4}, url: "ignored"}};
+  const pagination = {prev: {args: {since_id: 5}, url: "ignored"}, next: {args: {max_id: 4}, url: "ignored"}};
   const body = "nothing";
   expect(findHomeForChunk(knownChunks, pagination, body)).toStrictEqual([{minId: 4, maxId: 5}]);
 });
 
 test('Expands the last chunk to the left', () => {
   const knownChunks = [{minId: 1, maxId: 2}, {minId: 7, maxId: 8}];
-  const pagination = {prev: {sinceId: 7}, next: {maxId: 4}};
+  const pagination = {prev: {args: {since_id: 7}, url: "ignored"}, next: {args: {max_id: 4}, url: "ignored"}};
   const body = "nothing";
   expect(findHomeForChunk(knownChunks, pagination, body)).toStrictEqual([{minId: 1, maxId: 2}, {minId: 4, maxId: 8}]);
 });
@@ -60,7 +60,7 @@ test('Expands the last chunk in both directions', () => {
 
 test('Expands the middle chunk in both directions', () => {
   const knownChunks = [{minId: 1, maxId: 2}, {minId: 5, maxId: 6}, {minId: 9, maxId: 10}];
-  const pagination = {prev: {sinceId: 7}, next: {maxId: 4}};
+  const pagination = {prev: {args: {since_id: 7}, url: "ignored"}, next: {args: {max_id: 4}, url: "ignored"}};
   const body = "nothing";
   expect(findHomeForChunk(knownChunks, pagination, body)).toStrictEqual([{minId: 1, maxId: 2}, {minId: 4, maxId: 7}, {minId: 9, maxId: 10}]);
 });
