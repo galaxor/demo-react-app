@@ -60,7 +60,10 @@ export default class MastodonAPI {
       }
 
       const pagination = {
-        prev: prevLink.toString(),
+        prev: {
+          url: prevLink.toString(),
+          args: Object.fromEntries(prevLink.searchParams.entries()),
+        },
       };
 
       const minAvailableId = Math.min(...this.dataRanges.map(range => range[0]));
@@ -68,7 +71,10 @@ export default class MastodonAPI {
       const nextLink = new URL(requestPath, 'https://localhost');
       if (minId !== minAvailableId) {
         nextLink.search = new URLSearchParams({max_id: minId}).toString();
-        pagination.next = nextLink.toString();
+        pagination.next = {
+          url: nextLink.toString(),
+          args: Object.fromEntries(nextLink.searchParams.entries()),
+        };
       }
 
       return {
