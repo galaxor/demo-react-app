@@ -8,6 +8,13 @@ test('Adds a chunk to the end', () => {
   expect(findHomeForChunk(knownChunks, pagination, body)).toStrictEqual([{minId: 1, maxId: 3}, {minId: 6, maxId: 7}]);
 });
 
+test('Adds a chunk to the end (no pagination)', () => {
+  const knownChunks = [{minId: 1, maxId: 3}];
+  const pagination = undefined;
+  const body = [{id: 6}, {id: 7}];
+  expect(findHomeForChunk(knownChunks, pagination, body)).toStrictEqual([{minId: 1, maxId: 3}, {minId: 6, maxId: 7}]);
+});
+
 test('Changes knownChunks by side effect', () => {
   const knownChunks = [{minId: 1, maxId: 3}];
   const pagination = {prev: {args: {since_id: 7}, url: "ignored"}, next: {args: {max_id: 6}, url: "ignored"}};
