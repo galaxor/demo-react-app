@@ -25,15 +25,13 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
         await callback(body);
 
         // Update our records of what's known.
-        console.log("Known Chunks Before", knownChunks);
         const retVal = await findHomeForChunk(knownChunks, pagination, body);
-        console.log("Known Chunks After", knownChunks);
         return retVal;
       })
     );
   }
 
-  return promises;
+  return Promise.all(promises);
 }
 
 
