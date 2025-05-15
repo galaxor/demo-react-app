@@ -25,7 +25,7 @@ function dumpTable(db, table) {
 }
 
 import MastodonAPI from './mastodon-api/mastodon-api-mock.js'
-import {backfillIteration} from './mastodon-api/backfill.js'
+import {backfillAll, backfillIteration} from './mastodon-api/backfill.js'
 
 export default function Test({dbConnection}) {
 
@@ -40,11 +40,11 @@ export default function Test({dbConnection}) {
       }
 
   const accumulator = [];
-  const mastodonApi = new MastodonAPI([[1, 80]], true);
-  const knownChunks = [{minId: 40, maxId: 80}];
-  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: 40, callback: backfillCallbackFn(accumulator)});
+  const mastodonApi = new MastodonAPI([[1, 6]], true);
+  const knownChunks = [{minId: 3, maxId: 6}];
+  await backfillAll({knownChunks, mastodonApi, apiUrl: '/', limit: 3, callback: backfillCallbackFn(accumulator)});
 
-  const fortyThings = [...Array(40).keys()].toReversed().map(i => {return {id: i+1};});
+  // expect(accumulator).toStrictEqual([{id: 1}, {id: 2}, {id: 3}]);
 
       console.log("Accumulator:", accumulator);
       console.log("Known", knownChunks);

@@ -161,3 +161,19 @@ test('Backfill multiple non-contiguous areas (pagination)', async () => {
   expect(accumulator).toContainEqual(firstFortyThings);
   expect(accumulator).toContainEqual(thirdFortyThings);
 });
+
+
+// Test the backfillAll function.
+import {backfillAll} from './backfill.js'
+
+test('BackfillAll, with only one new thing to learn', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 6]], true);
+  const knownChunks = [{minId: 3, maxId: 6}];
+  await backfillAll({knownChunks, mastodonApi, apiUrl: '/', limit: 3, callback: backfillCallbackFn(accumulator)});
+
+  // There are two calls:  One that gets the 3 unknown things, and one call
+  // that sees if there are any further unknowns.  We don't learn anything from
+  // the second call, so we don't launch any more backfill iterations.
+  expect(accumulator).toStrictEqual([[{id: 3}, {id: 2}, {id: 1}], [{id: 1}]]);
+});

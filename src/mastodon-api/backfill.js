@@ -1,4 +1,37 @@
-export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, callback}) {
+export async function backfillAll({knownChunks, mastodonApi, apiUrl, limit, callback}) {
+  var knownBefore = structuredClone(knownChunks);
+
+  // Put the initial stuff into the promises array.
+  var promises = backfillIteration({knownChunks, mastodonApi, apiUrl, limit, callback, returnPromises: true});
+
+  // Each promise needs a counter so we know how to remove it when it resolves.
+  var promiseCounter = promises.length;
+
+  // We're going to keep going until we are out of promises -- no more work to do.
+  // When one of these promises resolves, we remove it from the array.  If it
+  // contained new things we hadn't heard of before, then we initiate another
+  // backfillIteration.  If we didn't learn anything new from the results, then
+  // we don't push any new work on the queue.
+  // How do we know if we learned anything?  We took a snapshot of what
+  // knownChunks looked like before we started doing any work.  If it's changed
+  // now, then we know we learned something.
+  while (promises.length > 0) {
+    const [resolvedPromiseId, knownAfterPromise] = await Promise.race(promises);
+
+    const knownAfter = await knownAfterPromise;
+
+    promises = promises.filter(([promiseId, promise]) => promiseId !== resolvedPromiseId);
+
+    if (!knownChunksEqual(knownBefore, knownAfter)) {
+      knownBefore = structuredClone(knownAfter);
+      const newPromises = backfillIteration({knownChunks, mastodonApi, apiUrl, limit, callback, returnPromises: true, promiseIdStart: promiseCounter});
+      promises.push(...newPromises);
+      promiseCounter += newPromises.length;
+    }
+  }
+}
+
+export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, callback, returnPromises, promiseIdStart}) {
   const promises = [];
 
   const deletedChunks = [];
@@ -31,7 +64,18 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
     );
   }
 
-  return Promise.all(promises);
+  if (!(returnPromises ?? false)) {
+    return Promise.all(promises);
+  } else {
+    // The resolution of each promise needs to contain an id so I can find it and take it out of
+    // the list when it resolves.
+    // The promise itself also needs to be packed in a pair so I can find the
+    // promise to remove it without checking if it's resolved or not.
+    for (var i=0; i<promises.length; i++) {
+      promises[i] = [(promiseIdStart ?? 0)+i, promises[i].then((resolution) => [(promiseIdStart ?? 0)+i, resolution])];
+    }
+    return promises;
+  }
 }
 
 
@@ -107,4 +151,20 @@ export function findHomeForChunk(knownChunks, pagination, body) {
   }
 
   return knownChunks;
+}
+
+function knownChunksEqual(before, after) {
+  if (before.length !== after.length) {
+    return false;
+  }
+
+  for (var i=0; i<before.length; i++) {
+    if (before[i].minId !== after[i].minId
+       || before[i].maxId !== after[i].maxId)
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
