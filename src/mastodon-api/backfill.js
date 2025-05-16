@@ -16,9 +16,9 @@ export async function backfillAll({knownChunks, mastodonApi, apiUrl, limit, call
   // knownChunks looked like before we started doing any work.  If it's changed
   // now, then we know we learned something.
   while (promises.length > 0) {
-    const [resolvedPromiseId, knownAfterPromise] = await Promise.race(promises);
+    const justPromises = promises.map(([promiseId, promise]) => promise);
 
-    const knownAfter = await knownAfterPromise;
+    const [resolvedPromiseId, knownAfter] = await Promise.race(justPromises);
 
     promises = promises.filter(([promiseId, promise]) => promiseId !== resolvedPromiseId);
 
@@ -72,7 +72,8 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
     // The promise itself also needs to be packed in a pair so I can find the
     // promise to remove it without checking if it's resolved or not.
     for (var i=0; i<promises.length; i++) {
-      promises[i] = [(promiseIdStart ?? 0)+i, promises[i].then((resolution) => [(promiseIdStart ?? 0)+i, resolution])];
+      const promiseId = (promiseIdStart ?? 0) + i;
+      promises[i] = [promiseId, promises[i].then((resolution) => [promiseId, resolution])];
     }
     return promises;
   }
