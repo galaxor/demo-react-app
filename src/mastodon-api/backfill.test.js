@@ -177,3 +177,79 @@ test('BackfillAll, with only one new thing to learn', async () => {
   // the second call, so we don't launch any more backfill iterations.
   expect(accumulator).toStrictEqual([[{id: 3}, {id: 2}, {id: 1}], [{id: 1}]]);
 });
+
+test('BackfillAll, with only noting new to learn', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[3, 6]], true);
+  const knownChunks = [{minId: 3, maxId: 6}];
+  await backfillAll({knownChunks, mastodonApi, apiUrl: '/', limit: 3, callback: backfillCallbackFn(accumulator)});
+
+  // There are two calls:  One that gets the 3 unknown things, and one call
+  // that sees if there are any further unknowns.  We don't learn anything from
+  // the second call, so we don't launch any more backfill iterations.
+  expect(accumulator).toStrictEqual([[{id: 3}]]);
+});
+
+test('BackfillAll won\'t forward-fill', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 9]], true);
+  const knownChunks = [{minId: 3, maxId: 6}];
+  await backfillAll({knownChunks, mastodonApi, apiUrl: '/', limit: 3, callback: backfillCallbackFn(accumulator)});
+
+  // There are two calls:  One that gets the 3 unknown things, and one call
+  // that sees if there are any further unknowns.  We don't learn anything from
+  // the second call, so we don't launch any more backfill iterations.
+  expect(accumulator).toStrictEqual([[{id: 3}, {id: 2}, {id: 1}], [{id: 1}]]);
+});
+
+test('Backfill two gaps', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 12]], true);
+  const knownChunks = [{minId: 3, maxId: 6}, {minId: 9, maxId: 12}];
+  await backfillAll({knownChunks, mastodonApi, apiUrl: '/', limit: 4, callback: backfillCallbackFn(accumulator)});
+
+  // There are two calls:  One that gets the 3 unknown things, and one call
+  // that sees if there are any further unknowns.  We don't learn anything from
+  // the second call, so we don't launch any more backfill iterations.
+  expect(accumulator).toContainEqual([{id: 9}, {id: 8}, {id: 7}, {id: 6}]);
+  expect(accumulator).toContainEqual([{id: 3}, {id: 2}, {id: 1}]);
+  expect(accumulator).toContainEqual([{id: 1}]);
+  expect(accumulator.length).toEqual(3);
+});
+
+test('Bridge two gaps that don\'t quite meet', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 12]], true);
+  const knownChunks = [{minId: 3, maxId: 6}, {minId: 9, maxId: 12}];
+  await backfillAll({knownChunks, mastodonApi, apiUrl: '/', limit: 3, callback: backfillCallbackFn(accumulator)});
+
+  // There are two calls:  One that gets the 3 unknown things, and one call
+  // that sees if there are any further unknowns.  We don't learn anything from
+  // the second call, so we don't launch any more backfill iterations.
+  expect(accumulator).toContainEqual([{id: 9}, {id: 8}, {id: 7}]);
+  expect(accumulator).toContainEqual([{id: 3}, {id: 2}, {id: 1}]);
+  expect(accumulator).toContainEqual([{id: 7}, {id: 6}, {id: 5}]);
+  expect(accumulator).toContainEqual([{id: 1}]);
+  expect(accumulator).toContainEqual([{id: 1}]); // There will be two instances of this.  How do I test that??
+  expect(accumulator.length).toEqual(5);
+
+  // Find how many pairs of them that are equal
+  var equalPairs = 0;
+  for (var i=0; i<accumulator.length-1; i++) {
+    for (var j=i; j<accumulator.length; j++) {
+      if (i===j) { continue; }
+
+      if (accumulator[i].length === accumulator[j].length) {
+        var equal = 1;
+        for (var k=0; k<accumulator[i].length; k++) {
+          if (accumulator[i][k].id !== accumulator[j][k].id) {
+            equal = 0;
+          }
+        }
+        equalPairs += equal;
+      }
+    }
+  }
+
+  expect(equalPairs).toEqual(1);
+});
