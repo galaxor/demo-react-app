@@ -36,6 +36,10 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
 
   const deletedChunks = [];
 
+  if (knownChunks.length === 0) {
+    knownChunks.push({minId: null, maxId: null});
+  }
+
   for (const chunkIndex in knownChunks) {
     const {minId, maxId} = knownChunks[chunkIndex];
 
@@ -48,6 +52,12 @@ export function backfillIteration({knownChunks, mastodonApi, apiUrl, limit, call
       limit: limit,
       maxId: minId,
     };
+
+    // This means that we know of no chunks.
+    if (minId === null && maxId === null) {
+      delete params.maxId;
+      knownChunks.pop();
+    }
 
     promises.push(
       mastodonApi.apiGet(apiUrl, params, {parsePaginationLinkHeader: true}).then(async (response) => {
@@ -99,6 +109,9 @@ export function findHomeForChunk(knownChunks, pagination, body) {
     minId: pagination?.next?.args?.max_id
         ?? body.reduce((min, item) => Math.min(min, item.id), Number.MAX_SAFE_INTEGER),
   };
+
+  newChunk.maxId = parseInt(newChunk.maxId);
+  newChunk.minId = parseInt(newChunk.minId);
 
   // Update the chunks.
   // We'll go through the known chunks -- but not the copy we're using

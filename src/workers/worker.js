@@ -182,6 +182,11 @@ class MyWorker {
 
     const [newFollowers, newFollows] = await Promise.all(promises);
 
+    // While we're at it, let's backfill!
+      // Backfill follows
+
+      // Backfill followers
+
     return {person, newFollows, newFollowers};
   }
 

@@ -1,6 +1,13 @@
 // Test findHomeForChunk.
 
 import {findHomeForChunk} from './backfill.js'
+test('findHomeForChunk when we don\'t have any chunks', () => {
+  const knownChunks = [];
+  const pagination = {prev: {args: {since_id: 7}, url: "ignored"}, next: {args: {max_id: 6}, url: "ignored"}};
+  const body = "nothing";
+  expect(findHomeForChunk(knownChunks, pagination, body)).toStrictEqual([{minId: 6, maxId: 7}]);
+});
+
 test('Adds a chunk to the end', () => {
   const knownChunks = [{minId: 1, maxId: 3}];
   const pagination = {prev: {args: {since_id: 7}, url: "ignored"}, next: {args: {max_id: 6}, url: "ignored"}};
@@ -98,6 +105,16 @@ function backfillCallbackFn(accumulator) {
   };
 }
 
+test('backfillIteration when we know no chunks', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 3]], true);
+  const knownChunks = [];
+  await backfillIteration({knownChunks, mastodonApi, apiUrl: '/', limit: undefined, callback: backfillCallbackFn(accumulator)});
+
+  expect(accumulator).toStrictEqual([[{id: 3}, {id: 2}, {id: 1}]]);
+  expect(knownChunks).toStrictEqual([{minId: 1, maxId: 3}]);
+});
+
 test('Nothing to backfill', async () => {
   const accumulator = [];
   const mastodonApi = new MastodonAPI([[1, 3]], true);
@@ -165,6 +182,18 @@ test('Backfill multiple non-contiguous areas (pagination)', async () => {
 
 // Test the backfillAll function.
 import {backfillAll} from './backfill.js'
+
+test('BackfillAll when we know no chunks', async () => {
+  const accumulator = [];
+  const mastodonApi = new MastodonAPI([[1, 6]], true);
+  const knownChunks = [];
+  await backfillAll({knownChunks, mastodonApi, apiUrl: '/', limit: 3, callback: backfillCallbackFn(accumulator)});
+
+  // There are two calls:  One that gets the 3 unknown things, and one call
+  // that sees if there are any further unknowns.  We don't learn anything from
+  // the second call, so we don't launch any more backfill iterations.
+  expect(accumulator).toStrictEqual([[{id: 6}, {id: 5}, {id: 4}], [{id: 4}, {id: 3}, {id: 2}], [{id: 2}, {id: 1}], [{id: 1}]]);
+});
 
 test('BackfillAll, with only one new thing to learn', async () => {
   const accumulator = [];
