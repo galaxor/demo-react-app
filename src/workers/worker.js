@@ -2,6 +2,7 @@ import Database from '../logic/database.js'
 import sha256 from '../include/sha256.js'
 import MastodonAPI from '../mastodon-api/mastodon-api.js'
 import PostOffice from './PostOffice.js'
+import {backfillIteration, backfillAll} from '../mastodon-api/backfill.js'
 
 
 class MyWorker {
@@ -183,7 +184,9 @@ class MyWorker {
     const [newFollowers, newFollows] = await Promise.all(promises);
 
     // While we're at it, let's backfill!
+    const fakeKnownChunks = []; // XXX Oops, I haven't implemented knownChunks yet in a real context.
       // Backfill follows
+    backfillAll({knownChunks: fakeKnownChunks, mastodonApi: this.mastodonApi, apiUrl: `/api/v1/accounts/${person.serverId}/followers`, limit: 80, callback: async (followers) => { (await this.serviceWorker).publish('followInfo', {followers, follows: []}); console.log("Only the dopest:", followers); console.log("Now known:", fakeKnownChunks); }} );
 
       // Backfill followers
 
