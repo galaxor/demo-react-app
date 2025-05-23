@@ -92,9 +92,6 @@ export default function ProfileView({handle, loggedInUser, children }) {
             (async () => {
               const whoDoTheyFollowMap = Object.fromEntries((await whoDoTheyFollowPromise).map(followee => [followee.handle, followee]));
               const newFollowsMap = Object.fromEntries(newFollows.map(followee => [followee.handle, followee]));
-              console.log("Adding follows", Object.values(newFollowsMap).length);
-              console.log("Old follows", whoDoTheyFollowMap);
-              console.log("New follows", newFollowsMap);
               const follows = Object.values({...whoDoTheyFollowMap, ...newFollowsMap});
               follows.sort((a, b) => a.displayName === b.displayName? 0 : a.displayName < b.displayName? -1 : 1);
               setWhoDoTheyFollow(follows);

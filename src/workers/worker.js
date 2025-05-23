@@ -1,6 +1,7 @@
 import Database from '../logic/database.js'
 import sha256 from '../include/sha256.js'
 import MastodonAPI from '../mastodon-api/mastodon-api.js'
+import PostOffice from './PostOffice.js'
 
 
 class MyWorker {
@@ -10,6 +11,15 @@ class MyWorker {
     onmessage = async event => this.dispatcher(event);
 
     this.subscriptions = {};
+
+    this.serviceWorker = new Promise(resolve => {
+      navigator.serviceWorker.ready.then(
+        registration => {
+          const serviceWorkerPostOffice = new PostOffice(registration.active, navigator.serviceWorker);
+          resolve(serviceWorkerPostOffice);
+        }
+      );
+    }); 
 
     this.readyState = new Promise(resolve => this.readyResolve = resolve);
   }
